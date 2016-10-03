@@ -62,8 +62,10 @@ metaTableLayout_ = {
 function Layout(data)
 	verifyNamedTable(data)
 	mandatoryTableArgument(data, "center", "table") -- TODO #8
+	verifyNamedTable(data.center)
 	mandatoryTableArgument(data.center, "lat", "number")
 	mandatoryTableArgument(data.center, "long", "number")
+	verifyUnnecessaryArguments(data.center, {"lat", "long"})
 
 	verifyUnnecessaryArguments(data, {"title", "description", "base", "zoom", "minZoom", "maxZoom", "center"})
 
@@ -83,7 +85,7 @@ function Layout(data)
 	verifyRange(data.maxZoom, 0, 20, "Argument 'maxZoom' must be a number >= 0 and <= 20, got '"..data.maxZoom.."'.")
 
 	if data.minZoom > data.maxZoom then
-		customError("Argument 'minZoom' should be less than 'maxZoom' ("..data.maxZoom..").")
+		customError("Argument 'minZoom' ("..data.minZoom..") should be less than 'maxZoom' ("..data.maxZoom..").")
 	end
 
 	verifyRange(data.center.lat, -90, 90, "Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
