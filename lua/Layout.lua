@@ -37,6 +37,28 @@ metaTableLayout_ = {
 	__tostring = _Gtme.tostring
 }
 
+--- Creates a layout to be applying in the web map. This Layout allow users to change map properties, such as Zoom and Basemaps.
+-- @arg data.title A string with the application's title.
+-- The title will be placed at the center top of the application page.
+-- @arg data.description A string with the application's description.
+-- It will be shown as a box that is shown in the beginning of the application and can be closed.
+-- @arg data.base A string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is roadmap.
+-- @arg data.zoom A number with the initial zoom, ranging from 0 to 20. The default value is 12.
+-- @arg data.minZoom A number with the minimum zoom allowed. The default value is 0.
+-- @arg data.maxZoom A number with the maximum zoom allowed. The default value is 20.
+-- @arg data.center A mandatory named table with two values, lat and long,
+-- describing the initial central point of the application.
+-- @usage import("publish")
+--
+-- layout = Layout{
+--     title = "INPE",
+--     description = "Satellite image of São José dos Campos.",
+--     base = "satellite",
+--     zoom = 17,
+--     center = {lat = -23.179017, long = -45.889188}
+-- }
+--
+-- print(layout)
 function Layout(data)
 	verifyNamedTable(data)
 	mandatoryTableArgument(data, "center", "table") -- TODO #8
