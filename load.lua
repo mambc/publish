@@ -1,3 +1,4 @@
 files = {
-	"Layout.lua"
+	"Layout.lua",
+	"Application.lua"
 }
