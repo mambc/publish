@@ -13,7 +13,7 @@ end
 local lustache = {
   name     = "lustache",
   version  = "1.3.1-0",
-  renderer = require("layout.lustache.renderer"):new(),
+  renderer = require("renderer"):new(),
 }
 
 return setmetatable(lustache, {
