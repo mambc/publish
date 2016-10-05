@@ -131,6 +131,7 @@ metaTableApplication_ = {
 function Application(data)
 	verifyNamedTable(data)
 	verify(data.project or data.layers, "Argument 'project' or 'layers' is mandatory to publish your data.")
+	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
 	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout"})
