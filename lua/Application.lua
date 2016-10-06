@@ -48,6 +48,16 @@ local SourceTypeMapper = {
 	access = "ADO"
 }
 
+local Templates = {}
+local templateDir = Directory(packageInfo("publish").path.."/lua/layout")
+local function registerApplicationTemplate(data)
+	mandatoryTableArgument(data, "input", "string")
+	mandatoryTableArgument(data, "output", "string")
+	verify(isTable(data.model), incompatibleTypeMsg("model", "table", data.model))
+
+	table.insert(Templates, data)
+end
+
 local function createDirectoryStructure(data)
 	if data.clean == true and data.output:exists() then
 		data.output:delete()
@@ -62,28 +72,7 @@ local function createDirectoryStructure(data)
 		data.datasource:create()
 	end
 
-	local layoutDir = Directory(packageInfo("publish").path.."/lua/layout")
-	local depends = {"publish.css", "publish.js"}
-
-	forEachElement(depends, function(_, file)
-		os.execute("cp \"".. layoutDir ..file.."\" \""..data.output.."\"")
-	end)
-end
-
-local function createWebPage(data)
-	local model = {
-		title = data.layout.title,
-		description = data.layout.description,
-		layers = data.layers
-	}
-
-	local fopen = File(packageInfo("publish").path.."/lua/layout/template.mustache"):open()
-	local template = fopen:read("*all")
-	fopen:close()
-
-	local page = File(data.output.."index.html")
-	page:write(lustache:render(template, model))
-	page:close()
+	os.execute("cp \"".. templateDir .."publish.css".."\" \""..data.output.."\"")
 end
 
 local function exportData(data, sof)
@@ -96,6 +85,37 @@ local function exportData(data, sof)
 			layer:export(data.datasource..layer.name..".geojson", true)
 		end
 	end)
+end
+
+local function exportTemplates(data)
+	forEachElement(Templates, function(_, mfile)
+		local fopen = File(mfile.input):open()
+		local template = fopen:read("*all")
+		fopen:close()
+
+		local fwrite = File(data.output..mfile.output)
+		fwrite:write(lustache:render(template, mfile.model))
+		fwrite:close()
+	end)
+end
+
+local function loadTemplates(data)
+	registerApplicationTemplate{
+		input = templateDir .."template.mustache",
+		output = "index.html",
+		model = {
+			title = data.layout.title,
+			description = data.layout.description,
+			layers = data.layers
+		}
+	}
+
+	data.layout.base = data.layout.base:upper()
+	registerApplicationTemplate{
+		input = templateDir .."script.mustache",
+		output = "publish.js",
+		model = data.layout
+	}
 end
 
 Application_ = {
@@ -200,7 +220,8 @@ function Application(data)
 		File(data.project.file):deleteIfExists()
 	end
 
-	createWebPage(data)
+	loadTemplates(data)
+	exportTemplates(data)
 
 	setmetatable(data, metaTableApplication_)
 	return data
