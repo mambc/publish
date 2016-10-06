@@ -71,12 +71,18 @@ local function createDirectoryStructure(data)
 end
 
 local function createWebPage(data)
+	local model = {
+		title = data.layout.title,
+		description = data.layout.description,
+		layers = data.layers
+	}
+
 	local fopen = File(packageInfo("publish").path.."/lua/layout/template.mustache"):open()
 	local template = fopen:read("*all")
 	fopen:close()
 
 	local page = File(data.output.."index.html")
-	page:write(lustache:render(template, data.layout))
+	page:write(lustache:render(template, model))
 	page:close()
 end
 
@@ -166,7 +172,14 @@ function Application(data)
 		end)
 	elseif data.project and data.layers then
 		exportData(data, function(layer)
-			return belong(layer.name, data.layers)
+			local found = false
+			forEachElement(data.layers, function(_, mvalue)
+				if mvalue == layer.name or mvalue == layer.file then
+					found = true
+					return false
+				end
+			end)
+			return found
 		end)
 	else
 		local mproj = {

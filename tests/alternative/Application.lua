@@ -55,12 +55,25 @@ return {
 		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
 
 		local data = {
-			project = emas,
 			layout = layout,
-			clean = 1,
+			clean = true,
 			output = emasDir
 		}
 
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'project' or 'layers' is mandatory to publish your data.")
+
+		data.project = emas
+		data.layout = nil
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("layout"))
+
+		data.layout = layout
+		data.clean = 1
 		error_func = function()
 			Application(clone(data))
 		end

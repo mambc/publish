@@ -27,7 +27,6 @@ return {
 		local terralib = getPackage("terralib")
 		local emas = filePath("emas.tview", "terralib")
 		local emasDir = Directory("EmasWebMap")
-		local count = 0
 		local appFiles = {
 			["data"] = true,
 			["index.html"] = true,
@@ -43,6 +42,7 @@ return {
 			center = {lat = -18.106389, long = -52.927778}
 		}
 
+		-- Testing Application: project: tview, layers: nil.
 		local app = Application{
 			project = emas,
 			layout = layout,
@@ -56,6 +56,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
+		local count = 0
 		local emasFiles = emasDir:list()
 		forEachFile(emasFiles, function(file)
 			unitTest:assert(appFiles[file])
@@ -71,11 +72,9 @@ return {
 
 		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
 
-		if emasDir:exists() then emasDir:delete() end
+		-- Testing Application: project: Project, layers: nil.
 		local fname = File("emas-test.tview")
 		fname:deleteIfExists()
-		count = 0
-
 		emasDir = "EmasWebMap"
 		emas = terralib.Project{
 			file = tostring(fname),
@@ -101,6 +100,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
+		count = 0
 		emasFiles = app.output:list()
 		forEachFile(emasFiles, function(file)
 			unitTest:assert(appFiles[file])
@@ -116,18 +116,79 @@ return {
 
 		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
 
-		fname:deleteIfExists()
-		if app.output:exists() then app.output:delete() end
+		-- Testing Application: project: Project, layers: {firebreak, cover, river}.
+		local layers = {"firebreak", "cover", "river"}
+		app = Application{
+			project = emas,
+			layers = layers,
+			layout = layout,
+			clean = true,
+			output = emasDir
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
+
 		count = 0
-		emas = {
+		emasFiles = app.output:list()
+		forEachFile(emasFiles, function(file)
+			unitTest:assert(appFiles[file])
+			count = count + 1
+		end)
+
+		unitTest:assertEquals(#emasFiles, count)
+
+		count = 0
+		forEachFile(app.datasource:list(), function()
+			count = count + 1
+		end)
+
+		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
+
+		-- Testing Application: project: Project, layers: {firebreak_lin, accumulation_Nov94May00, River_lin}.
+		layers = {
 			filePath("firebreak_lin.shp", "terralib"),
 			filePath("accumulation_Nov94May00.tif", "terralib"),
-			filePath("River_lin.shp", "terralib"),
-			filePath("Limit_pol.shp", "terralib")
+			filePath("River_lin.shp", "terralib")
 		}
 
 		app = Application{
-			layers = emas,
+			project = emas,
+			layers = layers,
+			layout = layout,
+			clean = true,
+			output = emasDir
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
+
+		count = 0
+		emasFiles = app.output:list()
+		forEachFile(emasFiles, function(file)
+			unitTest:assert(appFiles[file])
+			count = count + 1
+		end)
+
+		unitTest:assertEquals(#emasFiles, count)
+
+		count = 0
+		forEachFile(app.datasource:list(), function()
+			count = count + 1
+		end)
+
+		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
+
+		-- Testing Application: project: nil, layers: {firebreak_lin, accumulation_Nov94May00, River_lin, Limit_pol}.
+		table.insert(layers, filePath("Limit_pol.shp", "terralib"))
+		app = Application{
+			layers = layers,
 			layout = layout,
 			clean = true,
 			output = emasDir
@@ -140,6 +201,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
+		count = 0
 		emasFiles = app.output:list()
 		forEachFile(emasFiles, function(file)
 			unitTest:assert(appFiles[file])
