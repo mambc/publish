@@ -31,7 +31,9 @@ return {
 			["data"] = true,
 			["index.html"] = true,
 			["publish.css"] = true,
-			["publish.js"] = true
+			["publish.js"] = true,
+			["config.js"] = true,
+			["colorbrewer.min.js"] = true
 		}
 
 		local layout = Layout{

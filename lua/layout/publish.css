@@ -1,10 +1,18 @@
-body { overflow: hidden; }
-.navbar-offset { margin-top: 50px; }
-#map { position: absolute; top: 50px; bottom: 0px; left: 0px; right: 0px; }
-#map .ol-zoom { font-size: 1.2em; }
+body{overflow: hidden;}
+.navbar-offset{margin-top: 50px;}
 
-.zoom-top-opened-sidebar { margin-top: 5px; }
-.zoom-top-collapsed { margin-top: 45px; }
+#map{
+	position: absolute;
+	top: 50px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+}
+
+#map .ol-zoom {font-size: 1.2em;}
+
+.zoom-top-opened-sidebar {margin-top: 5px;}
+.zoom-top-collapsed {margin-top: 45px;}
 
 .mini-submenu{
 	display:none;
@@ -17,21 +25,21 @@ body { overflow: hidden; }
 	text-align: center;
 }
 
-.mini-submenu-left {
+.mini-submenu-left{
 	position: absolute;
 	top: 60px;
 	left: .5em;
 	z-index: 40;
 }
 
-#map { z-index: 35; }
+#map{z-index: 35;}
 
-.sidebar { z-index: 45; }
+.sidebar{z-index: 45;}
 
-.main-row { position: relative; top: 0; }
+.main-row{position: relative; top: 0;}
 
 .mini-submenu:hover{
-cursor: pointer;
+	cursor: pointer;
 }
 
 .slide-submenu{

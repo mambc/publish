@@ -53,7 +53,7 @@ local templateDir = Directory(packageInfo("publish").path.."/lua/layout")
 local function registerApplicationTemplate(data)
 	mandatoryTableArgument(data, "input", "string")
 	mandatoryTableArgument(data, "output", "string")
-	verify(isTable(data.model), incompatibleTypeMsg("model", "table", data.model))
+	verifyNamedTable(data.model)
 
 	table.insert(Templates, data)
 end
@@ -72,7 +72,10 @@ local function createDirectoryStructure(data)
 		data.datasource:create()
 	end
 
-	os.execute("cp \"".. templateDir .."publish.css".."\" \""..data.output.."\"")
+	local depends = {"publish.css", "publish.js", "colorbrewer.min.js"}
+	forEachElement(depends, function(_, file)
+		os.execute("cp \""..templateDir..file.."\" \""..data.output.."\"")
+	end)
 end
 
 local function exportData(data, sof)
@@ -110,11 +113,16 @@ local function loadTemplates(data)
 		}
 	}
 
-	data.layout.base = data.layout.base:upper()
 	registerApplicationTemplate{
-		input = templateDir .."script.mustache",
-		output = "publish.js",
-		model = data.layout
+		input = templateDir .."config.mustache",
+		output = "config.js",
+		model = {
+			center = data.layout.center,
+			zoom = data.layout.zoom,
+			minZoom = data.layout.minZoom,
+			maxZoom = data.layout.maxZoom,
+			base = data.layout.base:upper()
+		}
 	}
 end
 
@@ -187,7 +195,7 @@ function Application(data)
 	if data.project and not data.layers then
 		data.layers = {}
 		exportData(data, function(layer)
-			table.insert(data.layers, layer.file)
+			table.insert(data.layers, layer.name)
 			return true
 		end)
 	elseif data.project and data.layers then
