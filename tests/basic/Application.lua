@@ -246,6 +246,7 @@ return {
 datasource  Directory
 layers      vector of size 5
 layout      Layout
+legend      string [Legend]
 output      Directory
 project     Project
 ]])

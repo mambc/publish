@@ -1,15 +1,39 @@
 $(function(){
 	var map;
 	var data = {};
+	var $legendContainer = $('#legend-container');
+	var $legend = $('<div id="legend">').appendTo($legendContainer);
+	var colors = (function(){
+		var mcolors = {};
+		$.each(Publish["data"], function (_, properties){
+			$.each(properties, function (property, values){
+				mcolors[property] = {};
+				var classes = (values.length < 3) ? 3 : values.length;
+				$.each(values, function(_, value){
+					mcolors[property][value] = colorbrewer[Publish.color][classes][value];
+				});
+			})
+		});
+
+		return mcolors;
+	}());
+
+	function renderLegend(){
+		$legend.empty();
+		$.each(colors, function(property, values){
+			$.each(values, function(value, color){
+				var $div = $('<div style="height:25px;">')
+					.append($('<div class="legend-color-box">').css({backgroundColor: color}))
+					.append($('<span>').css("lineHeight", "23px").html(property + " " + value));
+				$legend.append($div);
+			});
+		});
+	}
 
 	function setColorProperty(feature){
-		$.each(Publish["data"], function (id, data){
-			$.each(data, function (property, values){
-				var classes = (values.length < 3) ? 3 : values.length;
-				var value = feature.getProperty(property);
-				feature.setProperty("color", colorbrewer[Publish.color][classes][value]);
-			})
-		})
+		$.each(colors, function(property, values){
+			feature.setProperty("color", values[feature.getProperty(property)]);
+		});
 	}
 
 	function setStyle(feature){
@@ -54,7 +78,9 @@ $(function(){
 
 		var mapElement = document.getElementById('map');
 		map = new google.maps.Map(mapElement, mapOptions);
+		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legendContainer[0]);
 
+		renderLegend();
 		$("#layers").find(":button").click(onClick);
 	}
 

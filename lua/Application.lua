@@ -104,17 +104,18 @@ end
 
 local function loadTemplates(data)
 	registerApplicationTemplate{
-		input = templateDir .."template.mustache",
+		input = templateDir.."template.mustache",
 		output = "index.html",
 		model = {
 			title = data.layout.title,
 			description = data.layout.description,
-			layers = data.layers
+			layers = data.layers,
+			legend = data.legend
 		}
 	}
 
 	registerApplicationTemplate{
-		input = templateDir .."config.mustache",
+		input = templateDir.."config.mustache",
 		output = "config.js",
 		model = {
 			center = data.layout.center,
@@ -140,6 +141,7 @@ metaTableApplication_ = {
 -- @arg data.layers A table of strings with the layers to be exported. As default, it will export all the available layers.
 -- @arg data.output A mandatory Directory or directory name where the output will be stored.
 -- @arg data.clean A boolean value indicating if the output directory could be automatically removed. The default value is false.
+-- @arg data.legend A string value with the layers legend. The default value is project title.
 -- @arg data.layout A mandatory Layout.
 -- @usage import("publish")
 -- local emas = filePath("emas.tview", "terralib")
@@ -168,7 +170,8 @@ function Application(data)
 	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout"})
+	defaultTableValue(data, "legend", "Legend")
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend"})
 
 	if type(data.output) == "string" then
 		data.output = Directory(data.output)

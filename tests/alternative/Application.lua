@@ -80,6 +80,13 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("clean", "boolean", 1))
 
 		data.clean = true
+		data.legend = 1
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("legend", "string", 1))
+
+		data.legend = "River values"
 		data.layers = 1
 		error_func = function()
 			Application(clone(data))
