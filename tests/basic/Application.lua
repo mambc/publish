@@ -219,6 +219,19 @@ return {
 
 		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
 
+		-- Testing Application: project: nil, layers: nil.
+--		app = Application{
+--			package = "terralib",
+--			layout = layout,
+--			clean = true,
+--			output = emasDir
+--		}
+--
+--		unitTest:assertType(app, "Application") -- SKIP
+--		unitTest:assertType(app.project, "Project") -- SKIP
+--		unitTest:assertType(app.layers, "table") -- SKIP
+--		unitTest:assertType(app.output, "Directory") -- SKIP
+
 		fname:deleteIfExists()
 		if app.output:exists() then app.output:delete() end
 	end,

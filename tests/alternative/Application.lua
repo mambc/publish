@@ -54,6 +54,15 @@ return {
 		end
 		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
 
+		error_func = function()
+			Application{
+				package = "base",
+				layout = layout,
+				output = emasDir
+			}
+		end
+		unitTest:assertError(error_func, "Package 'base' does not have any project or layer.")
+
 		local data = {
 			layout = layout,
 			clean = true,
@@ -63,7 +72,7 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'project' or 'layers' is mandatory to publish your data.")
+		unitTest:assertError(error_func, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
 
 		data.project = emas
 		data.layout = nil
