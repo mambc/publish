@@ -52,7 +52,7 @@ $(function(){
 
 			delete data[id];
 		}else{
-			var url = "./data/" + id + ".geojson";
+			var url = Publish.path + id + ".geojson";
 			$.getJSON(url, function(geojson){
 				data[id] = map.data.addGeoJson(geojson);
 				map.data.forEach(setColorProperty);

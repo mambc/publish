@@ -69,6 +69,7 @@ local function registerApplicationTemplate(data)
 end
 
 local function createDirectoryStructure(data)
+	printInfo("Creating directory structure.")
 	if data.clean == true and data.output:exists() then
 		data.output:delete()
 	end
@@ -82,10 +83,15 @@ local function createDirectoryStructure(data)
 		data.datasource:create()
 	end
 
+	data.assets = Directory(data.output.."assets")
+	if not data.assets:exists() then
+		data.assets:create()
+	end
+
 	local depends = {"publish.css", "publish.js", "colorbrewer.min.js"}
 	forEachElement(depends, function(_, file)
 		printNormal("Copying dependency '"..file.."'.")
-		os.execute("cp \""..templateDir..file.."\" \""..data.output.."\"")
+		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")
 	end)
 end
 
@@ -158,27 +164,40 @@ local function exportTemplates(data)
 	end)
 end
 
-local function loadTemplates(data)
-	registerApplicationTemplate{
-		input = templateDir.."template.mustache",
-		output = "index.html",
-		model = {
-			title = data.layout.title,
-			description = data.layout.description,
-			layers = data.layers,
-			legend = data.legend
-		}
-	}
+local function loadTemplates(data, path)
+	printInfo("Loading template.")
+	local page, config
+	if not path then
+		path = "null"
+		page = "index.html"
+		config = "config.js"
+	else
+		page = path ..".html"
+		config = path ..".js"
+	end
 
 	registerApplicationTemplate{
 		input = templateDir.."config.mustache",
-		output = "config.js",
+		output = config,
 		model = {
+			path = path,
 			center = data.layout.center,
 			zoom = data.layout.zoom,
 			minZoom = data.layout.minZoom,
 			maxZoom = data.layout.maxZoom,
 			base = data.layout.base:upper()
+		}
+	}
+
+	registerApplicationTemplate{
+		input = templateDir.."template.mustache",
+		output = page,
+		model = {
+			config = config,
+			title = data.layout.title,
+			description = data.layout.description,
+			layers = data.layers,
+			legend = data.legend
 		}
 	}
 
@@ -200,6 +219,7 @@ metaTableApplication_ = {
 -- @arg data.layout A mandatory Layout.
 -- @arg data.legend A string value with the layers legend. The default value is project title.
 -- @arg data.output A mandatory Directory or directory name where the output will be stored.
+-- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project A Project or string with the path to a .tview file.
 -- @usage import("publish")
@@ -226,13 +246,13 @@ metaTableApplication_ = {
 -- if emasDir:exists() then emasDir:delete() end
 function Application(data)
 	verifyNamedTable(data)
-	verify(data.project or data.layers, "Argument 'project' or 'layers' is mandatory to publish your data.")
+	verify(data.project or data.layers or data.package, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
 	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "legend", "Legend")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress"})
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package"})
 
 	local initialTime = os.clock()
 	if not data.progress then
@@ -247,25 +267,76 @@ function Application(data)
 
 	mandatoryTableArgument(data, "output", "Directory")
 
-	if data.project then
-		if type(data.project) == "string" then
-			if File(data.project):exists() then
-				data.project = terralib.Project{file = data.project}
+	if data.package then
+		mandatoryTableArgument(data, "package", "string")
+		verify(not data.layers, unnecessaryArgumentMsg("layers"))
+		data.package = packageInfo(data.package)
+
+		printInfo("Creating application for package '"..data.package.package.."'.")
+		local nProj = 0
+		local projects = {}
+		local dataPath = Directory(data.package.data)
+		forEachFile(dataPath:list(), function(fname)
+			if fname ~= "amazonia.tview" and fname:endswith(".tview") then
+				projects[fname:sub(1, -7)] = terralib.Project{file = dataPath..fname}
+				nProj = nProj + 1
+			end
+		end)
+
+		if nProj == 0 then
+			if data.output:exists() then data.output:delete() end
+			customError("Package '"..data.package.package.."' does not have any project.")
+		else
+			createDirectoryStructure(data)
+
+			if nProj == 1 then
+				loadLayers{
+					project = projects[1],
+					layers = data.layers,
+					output = data.output,
+					clean = data.clean,
+					layout = data.layout,
+					legend = data.legend,
+					datasource = data.datasource
+				}
 			else
-				customError("Project '"..data.project.."' was not found.")
+				forEachElement(projects, function(fname, proj)
+					local datasource = Directory(data.datasource..fname)
+					if not datasource:exists() then
+						datasource:create()
+					end
+
+					loadLayers{
+						project = proj,
+						layers = data.layers,
+						output = data.output,
+						clean = data.clean,
+						layout = data.layout,
+						legend = data.legend,
+						datasource = datasource
+					}
+
+					loadTemplates(data, fname)
+				end)
 			end
 		end
+	else
+		if data.project then
+			if type(data.project) == "string" then
+				if File(data.project):exists() then
+					data.project = terralib.Project{file = data.project}
+				else
+					customError("Project '"..data.project.."' was not found.")
+				end
+			end
 
-		mandatoryTableArgument(data, "project", "Project")
+			mandatoryTableArgument(data, "project", "Project")
+		end
+
+		createDirectoryStructure(data)
+		loadLayers(data)
+		loadTemplates(data)
 	end
-
-	printInfo("Creating directory structure.")
-	createDirectoryStructure(data)
-
-	loadLayers(data)
-
-	printInfo("Loading template.")
-	loadTemplates(data)
 
 	setmetatable(data, metaTableApplication_)
 
