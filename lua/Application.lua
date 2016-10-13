@@ -22,6 +22,16 @@
 --
 -------------------------------------------------------------------------------------------
 
+local printNormal = _Gtme.print
+local printWarning = _Gtme.printWarning
+local printInfo = function (value)
+	if sessionInfo().color then
+		_Gtme.print("\027[00;34m"..tostring(value).."\027[00m")
+	else
+		_Gtme.print(value)
+	end
+end
+
 -- Lustache is an implementation of the mustache template system in Lua (http://mustache.github.io/).
 -- Copyright Luastache (https://github.com/Olivine-Labs/lustache).
 local function loadLuastache()
@@ -74,20 +84,65 @@ local function createDirectoryStructure(data)
 
 	local depends = {"publish.css", "publish.js", "colorbrewer.min.js"}
 	forEachElement(depends, function(_, file)
+		printNormal("Copying dependency '"..file.."'.")
 		os.execute("cp \""..templateDir..file.."\" \""..data.output.."\"")
 	end)
 end
 
-local function exportData(data, sof)
+local function exportLayers(data, sof)
 	terralib.forEachLayer(data.project, function(layer, idx)
 		if sof and not sof(layer, idx) then
 			return
 		end
 
 		if SourceTypeMapper[layer.source] == "OGR" or SourceTypeMapper[layer.source] == "POSTGIS" then
+			printNormal("Exporting layer '"..layer.name.."'.")
 			layer:export(data.datasource..layer.name..".geojson", true)
+		else
+			printWarning("Publish cannot export raster layer '"..layer.name.."'.")
 		end
 	end)
+end
+
+local function loadLayers(data)
+	if data.project and not data.layers then
+		printInfo("Loading layers from '"..data.project.file.."'.")
+		data.layers = {}
+		exportLayers(data, function(layer)
+			table.insert(data.layers, layer.name)
+			return true
+		end)
+	elseif data.project and data.layers then
+		printInfo("Loading layers from '"..data.project.file.."'.")
+		exportLayers(data, function(layer)
+			local found = false
+			forEachElement(data.layers, function(_, mvalue)
+				if mvalue == layer.name or mvalue == layer.file then
+					found = true
+					return false
+				end
+			end)
+			return found
+		end)
+	else
+		printInfo("Loading layers from path.")
+		local mproj = {
+			file = data.layout.title..".tview",
+			clean = true
+		}
+
+		forEachElement(data.layers, function(_, file)
+			file = File(file)
+			if file:exists() then
+				mproj[file:name()] = tostring(file)
+			end
+		end)
+
+		data.project = terralib.Project(mproj)
+		exportLayers(data)
+
+		File(data.project.file):deleteIfExists()
+	end
 end
 
 local function exportTemplates(data)
@@ -96,6 +151,7 @@ local function exportTemplates(data)
 		local template = fopen:read("*all")
 		fopen:close()
 
+		printNormal("Creating file '"..mfile.output.."'.")
 		local fwrite = File(data.output..mfile.output)
 		fwrite:write(lustache:render(template, mfile.model))
 		fwrite:close()
@@ -125,6 +181,8 @@ local function loadTemplates(data)
 			base = data.layout.base:upper()
 		}
 	}
+
+	exportTemplates(data)
 end
 
 Application_ = {
@@ -137,12 +195,13 @@ metaTableApplication_ = {
 }
 
 --- Creates a web page to visualize the published data.
--- @arg data.project A Project or string with the path to a .tview file.
--- @arg data.layers A table of strings with the layers to be exported. As default, it will export all the available layers.
--- @arg data.output A mandatory Directory or directory name where the output will be stored.
 -- @arg data.clean A boolean value indicating if the output directory could be automatically removed. The default value is false.
--- @arg data.legend A string value with the layers legend. The default value is project title.
+-- @arg data.layers A table of strings with the layers to be exported. As default, it will export all the available layers.
 -- @arg data.layout A mandatory Layout.
+-- @arg data.legend A string value with the layers legend. The default value is project title.
+-- @arg data.output A mandatory Directory or directory name where the output will be stored.
+-- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
+-- @arg data.project A Project or string with the path to a .tview file.
 -- @usage import("publish")
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
@@ -159,6 +218,7 @@ metaTableApplication_ = {
 --     project = emas,
 --     layout = layout,
 --     clean = true,
+--     progress = false,
 --     output = emasDir
 -- }
 --
@@ -170,8 +230,16 @@ function Application(data)
 	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
+	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "legend", "Legend")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend"})
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress"})
+
+	local initialTime = os.clock()
+	if not data.progress then
+		printNormal = function() end
+		printWarning = function() end
+		printInfo = function() end
+	end
 
 	if type(data.output) == "string" then
 		data.output = Directory(data.output)
@@ -182,9 +250,7 @@ function Application(data)
 	if data.project then
 		if type(data.project) == "string" then
 			if File(data.project):exists() then
-				data.project = terralib.Project{
-					file = data.project
-				}
+				data.project = terralib.Project{file = data.project}
 			else
 				customError("Project '"..data.project.."' was not found.")
 			end
@@ -193,47 +259,18 @@ function Application(data)
 		mandatoryTableArgument(data, "project", "Project")
 	end
 
+	printInfo("Creating directory structure.")
 	createDirectoryStructure(data)
 
-	if data.project and not data.layers then
-		data.layers = {}
-		exportData(data, function(layer)
-			table.insert(data.layers, layer.name)
-			return true
-		end)
-	elseif data.project and data.layers then
-		exportData(data, function(layer)
-			local found = false
-			forEachElement(data.layers, function(_, mvalue)
-				if mvalue == layer.name or mvalue == layer.file then
-					found = true
-					return false
-				end
-			end)
-			return found
-		end)
-	else
-		local mproj = {
-			file = data.layout.title..".tview",
-			clean = true
-		}
+	loadLayers(data)
 
-		forEachElement(data.layers, function(_, file)
-			file = File(file)
-			if file:exists() then
-				mproj[file:name()] = tostring(file)
-			end
-		end)
-
-		data.project = terralib.Project(mproj)
-		exportData(data)
-
-		File(data.project.file):deleteIfExists()
-	end
-
+	printInfo("Loading template.")
 	loadTemplates(data)
-	exportTemplates(data)
 
 	setmetatable(data, metaTableApplication_)
+
+	local finalTime = os.clock()
+	printInfo("Summing up, application '"..data.layout.title.."' were successfully created in "..round(finalTime - initialTime, 4).." seconds.")
+
 	return data
 end

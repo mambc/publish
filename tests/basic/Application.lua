@@ -49,6 +49,7 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			progress = false,
 			output = emasDir
 		}
 
@@ -56,6 +57,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		local count = 0
@@ -93,6 +96,7 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			progress = false,
 			output = emasDir
 		}
 
@@ -100,6 +104,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		count = 0
@@ -125,6 +131,7 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			progress = false,
 			output = emasDir
 		}
 
@@ -132,6 +139,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
 
 		count = 0
@@ -162,6 +171,7 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			progress = false,
 			output = emasDir
 		}
 
@@ -169,6 +179,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
 
 		count = 0
@@ -193,6 +205,7 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			progress = false,
 			output = emasDir
 		}
 
@@ -201,6 +214,8 @@ return {
 		unitTest:assertType(app.layers, "table")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		count = 0
@@ -238,16 +253,20 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			progress = false,
 			output = emasDir
 		}
 
 		unitTest:assertType(app, "Application")
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(tostring(app), [[clean       boolean [true]
 datasource  Directory
 layers      vector of size 5
 layout      Layout
 legend      string [Legend]
 output      Directory
+progress    boolean [false]
 project     Project
 ]])
 

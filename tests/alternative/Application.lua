@@ -57,6 +57,7 @@ return {
 		local data = {
 			layout = layout,
 			clean = true,
+			progress = false,
 			output = emasDir
 		}
 
@@ -80,6 +81,13 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("clean", "boolean", 1))
 
 		data.clean = true
+		data.progress = 1
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("progress", "boolean", 1))
+
+		data.progress = false
 		data.legend = 1
 		error_func = function()
 			Application(clone(data))
