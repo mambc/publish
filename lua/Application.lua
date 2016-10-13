@@ -22,18 +22,6 @@
 --
 -------------------------------------------------------------------------------------------
 
-local printNormal = _Gtme.print
-local printError = _Gtme.printError
-local printWarning = _Gtme.printWarning
-local printNote = _Gtme.printNote
-local printInfo = function (value)
-	if sessionInfo().color then
-		_Gtme.print("\027[00;34m"..tostring(value).."\027[00m")
-	else
-		_Gtme.print(value)
-	end
-end
-
 -- Lustache is an implementation of the mustache template system in Lua (http://mustache.github.io/).
 -- Copyright Luastache (https://github.com/Olivine-Labs/lustache).
 local function loadLuastache()
@@ -90,62 +78,20 @@ local function createDirectoryStructure(data)
 	end)
 end
 
-local function exportLayers(data, sof)
+local function exportData(data, sof)
 	terralib.forEachLayer(data.project, function(layer, idx)
 		if sof and not sof(layer, idx) then
 			return
 		end
 
 		if SourceTypeMapper[layer.source] == "OGR" or SourceTypeMapper[layer.source] == "POSTGIS" then
-			printNormal("Exporting layer '"..layer.name.."'.")
 			layer:export(data.datasource..layer.name..".geojson", true)
-		else
-			printWarning("Publish cannot export raster layer '"..layer.name.."'.")
 		end
 	end)
 end
 
-local function loadLayers(data)
-	if data.project and not data.layers then
-		data.layers = {}
-		exportLayers(data, function(layer)
-			table.insert(data.layers, layer.name)
-			return true
-		end)
-	elseif data.project and data.layers then
-		exportLayers(data, function(layer)
-			local found = false
-			forEachElement(data.layers, function(_, mvalue)
-				if mvalue == layer.name or mvalue == layer.file then
-					found = true
-					return false
-				end
-			end)
-			return found
-		end)
-	else
-		local mproj = {
-			file = data.layout.title..".tview",
-			clean = true
-		}
-
-		forEachElement(data.layers, function(_, file)
-			file = File(file)
-			if file:exists() then
-				mproj[file:name()] = tostring(file)
-			end
-		end)
-
-		data.project = terralib.Project(mproj)
-		exportLayers(data)
-
-		File(data.project.file):deleteIfExists()
-	end
-end
-
 local function exportTemplates(data)
 	forEachElement(Templates, function(_, mfile)
-		printNormal("Exporting template '"..mfile.input.."'.")
 		local fopen = File(mfile.input):open()
 		local template = fopen:read("*all")
 		fopen:close()
@@ -157,7 +103,6 @@ local function exportTemplates(data)
 end
 
 local function loadTemplates(data)
-	printInfo("Loading template.")
 	registerApplicationTemplate{
 		input = templateDir.."template.mustache",
 		output = "index.html",
@@ -180,8 +125,6 @@ local function loadTemplates(data)
 			base = data.layout.base:upper()
 		}
 	}
-
-	exportTemplates(data)
 end
 
 Application_ = {
@@ -223,13 +166,12 @@ metaTableApplication_ = {
 -- if emasDir:exists() then emasDir:delete() end
 function Application(data)
 	verifyNamedTable(data)
-	verify(data.project or data.layers or data.package, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
+	verify(data.project or data.layers, "Argument 'project' or 'layers' is mandatory to publish your data.")
 	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	optionalTableArgument(data, "layers", "table")
-	optionalTableArgument(data, "package", "string")
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "legend", "Legend")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "package"})
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend"})
 
 	if type(data.output) == "string" then
 		data.output = Directory(data.output)
@@ -237,58 +179,61 @@ function Application(data)
 
 	mandatoryTableArgument(data, "output", "Directory")
 
-	if data.package then
-		data.package = packageInfo(data.package)
-		createDirectoryStructure(data)
-
-		local countTview = 0
-		local dataPath = Directory(data.package.data)
-		printNote("Creating application for package '"..data.package.package.."'.")
-		forEachFile(dataPath:list(), function(fname)
-			if fname:endswith(".tview") then
-				printInfo("Loading layers from '"..fname.."'.")
-				if fname:find("amazonia") then return end
-				loadLayers{
-					project = terralib.Project{file = dataPath..fname},
-					layers = data.layers,
-					output = data.output,
-					clean = data.clean,
-					layout = data.layout,
-					legend = data.legend,
-					datasource = data.datasource
+	if data.project then
+		if type(data.project) == "string" then
+			if File(data.project):exists() then
+				data.project = terralib.Project{
+					file = data.project
 				}
+			else
+				customError("Project '"..data.project.."' was not found.")
+			end
+		end
 
-				countTview = countTview + 1
+		mandatoryTableArgument(data, "project", "Project")
+	end
+
+	createDirectoryStructure(data)
+
+	if data.project and not data.layers then
+		data.layers = {}
+		exportData(data, function(layer)
+			table.insert(data.layers, layer.name)
+			return true
+		end)
+	elseif data.project and data.layers then
+		exportData(data, function(layer)
+			local found = false
+			forEachElement(data.layers, function(_, mvalue)
+				if mvalue == layer.name or mvalue == layer.file then
+					found = true
+					return false
+				end
+			end)
+			return found
+		end)
+	else
+		local mproj = {
+			file = data.layout.title..".tview",
+			clean = true
+		}
+
+		forEachElement(data.layers, function(_, file)
+			file = File(file)
+			if file:exists() then
+				mproj[file:name()] = tostring(file)
 			end
 		end)
 
-		if countTview == 0 and not data.layers then
-			if data.output:exists() then data.output:delete() end
-			customError("Package '"..data.package.package.."' does not have any project or layer.")
-		end
-	else
-		if data.project then
-			if type(data.project) == "string" then
-				if File(data.project):exists() then
-					data.project = terralib.Project{file = data.project}
-				else
-					customError("Project '"..data.project.."' was not found.")
-				end
-			end
+		data.project = terralib.Project(mproj)
+		exportData(data)
 
-			mandatoryTableArgument(data, "project", "Project")
-		end
-
-		createDirectoryStructure(data)
-
-		printInfo("Loading layers from '"..data.project.file.."'.")
-		loadLayers(data)
+		File(data.project.file):deleteIfExists()
 	end
 
 	loadTemplates(data)
+	exportTemplates(data)
 
 	setmetatable(data, metaTableApplication_)
-
-	printNote("Summing up, application '"..data.layout.title.."' were successfully created.")
 	return data
 end
