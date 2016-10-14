@@ -27,14 +27,35 @@ return {
 		local terralib = getPackage("terralib")
 		local emas = filePath("emas.tview", "terralib")
 		local emasDir = Directory("EmasWebMap")
-		local appFiles = {
+
+		local appRoot = {
+			["assets"] = true,
 			["data"] = true,
 			["index.html"] = true,
-			["publish.css"] = true,
-			["publish.js"] = true,
-			["config.js"] = true,
-			["colorbrewer.min.js"] = true
+			["config.js"] = true
 		}
+
+		local appAssets = {
+			["colorbrewer.min.js"] = true,
+			["publish.css"] = true,
+			["publish.js"] = true
+		}
+
+		local appData = {
+			["cells.geojson"] = true,
+			["firebreak.geojson"] = true,
+			["limit.geojson"] = true,
+			["river.geojson"] = true
+		}
+
+		local function assertFiles(dir, files)
+			local list = dir:list()
+			forEachElement(list, function(_, file)
+				unitTest:assert(files[file])
+			end)
+
+			unitTest:assertEquals(#list, getn(files))
+		end
 
 		local layout = Layout{
 			title = "Emas",
@@ -44,7 +65,7 @@ return {
 			center = {lat = -18.106389, long = -52.927778}
 		}
 
-		-- Testing Application: project: tview, layers: nil.
+		-- Testing Application: project = tview, layers = nil and package = nil.
 		local app = Application{
 			project = emas,
 			layout = layout,
@@ -61,25 +82,21 @@ return {
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
-		local count = 0
-		local emasFiles = emasDir:list()
-		forEachFile(emasFiles, function(file)
-			unitTest:assert(appFiles[file])
-			count = count + 1
-		end)
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
 
-		unitTest:assertEquals(#emasFiles, count)
-
-		count = 0
-		forEachFile(app.datasource:list(), function()
-			count = count + 1
-		end)
-
-		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
-
-		-- Testing Application: project: Project, layers: nil.
+		-- Testing Application: project = Project, layers = nil and package = nil.
 		local fname = File("emas-test.tview")
 		fname:deleteIfExists()
+
+		appData = {
+			["firebreak.geojson"] = true,
+			["limit.geojson"] = true,
+			["river.geojson"] = true
+		}
+
 		emasDir = "EmasWebMap"
 		emas = terralib.Project{
 			file = tostring(fname),
@@ -108,23 +125,17 @@ return {
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
-		count = 0
-		emasFiles = app.output:list()
-		forEachFile(emasFiles, function(file)
-			unitTest:assert(appFiles[file])
-			count = count + 1
-		end)
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
 
-		unitTest:assertEquals(#emasFiles, count)
+		-- Testing Application: project = Project, layers = {firebreak, cover, river} and package = nil.
+		appData = {
+			["firebreak.geojson"] = true,
+			["river.geojson"] = true
+		}
 
-		count = 0
-		forEachFile(app.datasource:list(), function()
-			count = count + 1
-		end)
-
-		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
-
-		-- Testing Application: project: Project, layers: {firebreak, cover, river}.
 		local layers = {"firebreak", "cover", "river"}
 		app = Application{
 			project = emas,
@@ -143,23 +154,12 @@ return {
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
 
-		count = 0
-		emasFiles = app.output:list()
-		forEachFile(emasFiles, function(file)
-			unitTest:assert(appFiles[file])
-			count = count + 1
-		end)
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
 
-		unitTest:assertEquals(#emasFiles, count)
-
-		count = 0
-		forEachFile(app.datasource:list(), function()
-			count = count + 1
-		end)
-
-		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
-
-		-- Testing Application: project: Project, layers: {firebreak_lin, accumulation_Nov94May00, River_lin}.
+		-- Testing Application: project = Project, layers = {firebreak_lin, accumulation_Nov94May00, River_lin} and package = nil.
 		layers = {
 			filePath("firebreak_lin.shp", "terralib"),
 			filePath("accumulation_Nov94May00.tif", "terralib"),
@@ -183,23 +183,18 @@ return {
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
 
-		count = 0
-		emasFiles = app.output:list()
-		forEachFile(emasFiles, function(file)
-			unitTest:assert(appFiles[file])
-			count = count + 1
-		end)
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
 
-		unitTest:assertEquals(#emasFiles, count)
+		-- Testing Application: project = nil, layers = {firebreak_lin, accumulation_Nov94May00, River_lin, Limit_pol} and package = nil.
+		appData = {
+			["firebreak_lin.geojson"] = true,
+			["Limit_pol.geojson"] = true,
+			["River_lin.geojson"] = true
+		}
 
-		count = 0
-		forEachFile(app.datasource:list(), function()
-			count = count + 1
-		end)
-
-		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
-
-		-- Testing Application: project: nil, layers: {firebreak_lin, accumulation_Nov94May00, River_lin, Limit_pol}.
 		table.insert(layers, filePath("Limit_pol.shp", "terralib"))
 		app = Application{
 			layers = layers,
@@ -218,36 +213,107 @@ return {
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
-		count = 0
-		emasFiles = app.output:list()
-		forEachFile(emasFiles, function(file)
-			unitTest:assert(appFiles[file])
-			count = count + 1
-		end)
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
 
-		unitTest:assertEquals(#emasFiles, count)
+		if app.output:exists() then app.output:delete() end
 
-		count = 0
-		forEachFile(app.datasource:list(), function()
-			count = count + 1
-		end)
+		-- Testing Application: project = nil, layers = nil and package = "terralib" with 1 tview.
+		appData = {
+			["cells.geojson"] = true,
+			["firebreak.geojson"] = true,
+			["limit.geojson"] = true,
+			["river.geojson"] = true
+		}
 
-		unitTest:assertEquals(#app.layers, count + 1) -- TODO #14
+		app = Application{
+			package = "publish",
+			layout = layout,
+			clean = true,
+			progress = false,
+			output = "terralib-onetview"
+		}
 
-		-- Testing Application: project: nil, layers: nil.
---		app = Application{
---			package = "terralib",
---			layout = layout,
---			clean = true,
---			output = emasDir
---		}
---
---		unitTest:assertType(app, "Application") -- SKIP
---		unitTest:assertType(app.project, "Project") -- SKIP
---		unitTest:assertType(app.layers, "table") -- SKIP
---		unitTest:assertType(app.output, "Directory") -- SKIP
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.layers, "table")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
+		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+
+		if app.output:exists() then app.output:delete() end
 		fname:deleteIfExists()
+
+		-- Testing Application: project = nil, layers = nil and package = "terralib".
+		appRoot = {
+			["assets"] = true,
+			["cabecadeboi.html"] = true,
+			["cabecadeboi.js"] = true,
+			["data"] = true,
+			["emas.html"] = true,
+			["emas.js"] = true,
+			["fillCellExample.html"] = true,
+			["fillCellExample.js"] = true,
+		}
+
+		appData = {
+			["cabecadeboi"] = {
+				["box.geojson"] = true,
+				["cells.geojson"] = true
+			},
+			["emas"] = {
+				["cells.geojson"] = true,
+				["firebreak.geojson"] = true,
+				["limit.geojson"] = true,
+				["river.geojson"] = true
+			},
+			["fillCellExample"] = {
+				["Localidades.geojson"] = true,
+				["Rodovias.geojson"] = true,
+				["Setores.geojson"] = true
+			}
+		}
+
+		app = Application{
+			package = "terralib",
+			layout = layout,
+			clean = true,
+			progress = false,
+			output = "terralib-manytview"
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assertNil(app.layers)
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
+
+		assertFiles(app.assets, appAssets)
+
+		local countDir = 0
+		local countFile = 0
+		forEachElement(app.datasource:list(), function(_, dir)
+			local data = appData[dir]
+			forEachFile(app.datasource..dir, function(file)
+				unitTest:assert(data[file])
+				countFile = countFile + 1
+			end)
+
+			countDir = countDir + 1
+			unitTest:assertType(data, "table")
+		end)
+
+		unitTest:assertEquals(countDir, 3)
+		unitTest:assertEquals(countFile, 9)
 		if app.output:exists() then app.output:delete() end
 	end,
 	__tostring = function(unitTest)
@@ -273,7 +339,8 @@ return {
 		unitTest:assertType(app, "Application")
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(tostring(app), [[clean       boolean [true]
+		unitTest:assertEquals(tostring(app), [[assets      Directory
+clean       boolean [true]
 datasource  Directory
 layers      vector of size 5
 layout      Layout

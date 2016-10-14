@@ -33,8 +33,8 @@ local printInfo = function (value)
 end
 
 -- Lustache is an implementation of the mustache template system in Lua (http://mustache.github.io/).
--- Copyright Luastache (https://github.com/Olivine-Labs/lustache).
-local function loadLuastache()
+-- Copyright Lustache (https://github.com/Olivine-Labs/lustache).
+local function loadLustache()
 	local curr = Directory(currentDir())
 	Directory(packageInfo("publish").path.."/lua/layout/lustache"):setCurrentDir()
 
@@ -44,7 +44,7 @@ local function loadLuastache()
 	return lib
 end
 
-local lustache = loadLuastache()
+local lustache = loadLustache()
 
 local terralib = getPackage("terralib")
 
@@ -60,12 +60,14 @@ local SourceTypeMapper = {
 
 local Templates = {}
 local templateDir = Directory(packageInfo("publish").path.."/lua/layout")
-local function registerApplicationTemplate(data)
+
+local ViewModel = {}
+local function registerApplicationModel(data)
 	mandatoryTableArgument(data, "input", "string")
 	mandatoryTableArgument(data, "output", "string")
 	verifyNamedTable(data.model)
 
-	table.insert(Templates, data)
+	table.insert(ViewModel, data)
 end
 
 local function createDirectoryStructure(data)
@@ -152,10 +154,15 @@ local function loadLayers(data)
 end
 
 local function exportTemplates(data)
-	forEachElement(Templates, function(_, mfile)
-		local fopen = File(mfile.input):open()
-		local template = fopen:read("*all")
-		fopen:close()
+	forEachElement(ViewModel, function(_, mfile)
+		local template = Templates[mfile.input]
+		if not template then
+			local fopen = File(mfile.input):open()
+			Templates[mfile.input] = fopen:read("*all")
+			fopen:close()
+
+			template = Templates[mfile.input]
+		end
 
 		printNormal("Creating file '"..mfile.output.."'.")
 		local fwrite = File(data.output..mfile.output)
@@ -164,11 +171,11 @@ local function exportTemplates(data)
 	end)
 end
 
-local function loadTemplates(data, path)
+local function createApplication(data, path)
 	printInfo("Loading template.")
 	local page, config
 	if not path then
-		path = "null"
+		path = ""
 		page = "index.html"
 		config = "config.js"
 	else
@@ -176,7 +183,7 @@ local function loadTemplates(data, path)
 		config = path ..".js"
 	end
 
-	registerApplicationTemplate{
+	registerApplicationModel {
 		input = templateDir.."config.mustache",
 		output = config,
 		model = {
@@ -189,7 +196,7 @@ local function loadTemplates(data, path)
 		}
 	}
 
-	registerApplicationTemplate{
+	registerApplicationModel {
 		input = templateDir.."template.mustache",
 		output = page,
 		model = {
@@ -277,7 +284,7 @@ function Application(data)
 		local projects = {}
 		local dataPath = Directory(data.package.data)
 		forEachFile(dataPath:list(), function(fname)
-			if fname ~= "amazonia.tview" and fname:endswith(".tview") then
+			if fname ~= "amazonia.tview" and fname ~= "itaituba.tview" and fname:endswith(".tview") then -- TODO #10 remove this, used only to test.
 				projects[fname:sub(1, -7)] = terralib.Project{file = dataPath..fname}
 				nProj = nProj + 1
 			end
@@ -290,15 +297,13 @@ function Application(data)
 			createDirectoryStructure(data)
 
 			if nProj == 1 then
-				loadLayers{
-					project = projects[1],
-					layers = data.layers,
-					output = data.output,
-					clean = data.clean,
-					layout = data.layout,
-					legend = data.legend,
-					datasource = data.datasource
-				}
+				forEachElement(projects, function(_, proj)
+					data.project = proj
+					return false
+				end)
+
+				loadLayers(data)
+				createApplication(data)
 			else
 				forEachElement(projects, function(fname, proj)
 					local datasource = Directory(data.datasource..fname)
@@ -306,7 +311,7 @@ function Application(data)
 						datasource:create()
 					end
 
-					loadLayers{
+					local mdata = {
 						project = proj,
 						layers = data.layers,
 						output = data.output,
@@ -316,7 +321,8 @@ function Application(data)
 						datasource = datasource
 					}
 
-					loadTemplates(data, fname)
+					loadLayers(mdata)
+					createApplication(mdata, fname)
 				end)
 			end
 		end
@@ -335,7 +341,7 @@ function Application(data)
 
 		createDirectoryStructure(data)
 		loadLayers(data)
-		loadTemplates(data)
+		createApplication(data)
 	end
 
 	setmetatable(data, metaTableApplication_)
