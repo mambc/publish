@@ -38,6 +38,77 @@ return {
 			color("Reds", 2.5)
 		end
 		unitTest:assertError(error_func, "Argument classes must be an integer, got '2.5'.")
+	end,
+	verifyColor = function(unitTest)
+		local error_func = function()
+			verifyColor()
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("data"))
+
+		error_func = function()
+			verifyColor("123456")
+		end
+		unitTest:assertError(error_func, "Argument '123456' is not a valid RGB/ColorBrewer color.")
+
+		error_func = function()
+			verifyColor("#afafah")
+		end
+		unitTest:assertError(error_func, "Argument '#afafah' is not a valid hex color.")
+
+		error_func = function()
+			verifyColor("#123abce")
+		end
+		unitTest:assertError(error_func,"Argument '#123abce' is not a valid hex color.")
+
+		error_func = function()
+			verifyColor("aFaE3f")
+		end
+		unitTest:assertError(error_func, "Argument 'aFaE3f' is not a valid RGB/ColorBrewer color.")
+
+		error_func = function()
+			verifyColor("F00")
+		end
+		unitTest:assertError(error_func, "Argument 'F00' is not a valid RGB/ColorBrewer color.")
+
+		error_func = function()
+			verifyColor("#afaf")
+		end
+		unitTest:assertError(error_func, "Argument '#afaf' is not a valid hex color.")
+
+		error_func = function()
+			verifyColor("#F0h")
+		end
+		unitTest:assertError(error_func, "Argument '#F0h' is not a valid hex color.")
+
+		error_func = function()
+			verifyColor("Redss")
+		end
+		unitTest:assertError(error_func, "Argument 'Redss' is not a valid RGB/ColorBrewer color.")
+
+		error_func = function()
+			verifyColor{1.5, 1, 1}
+		end
+		unitTest:assertError(error_func, "Element '1' must be an integer, got '1.5'.")
+
+		error_func = function()
+			verifyColor{-1, 1, 1}
+		end
+		unitTest:assertError(error_func, "Element '1' must be an integer between 0 and 255, got '-1'.")
+
+		error_func = function()
+			verifyColor{256, 255, 255}
+		end
+		unitTest:assertError(error_func, "Element '1' must be an integer between 0 and 255, got '256'.")
+
+		error_func = function()
+			verifyColor{1, 1, 1, 2}
+		end
+		unitTest:assertError(error_func, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '2'.")
+
+		error_func = function()
+			verifyColor{1, 1, 1, 1, 1, 1}
+		end
+		unitTest:assertError(error_func, "Color must be a table with 3 or 4 arguments (red, green, blue and alpha), got '6'.")
 	end
 }
 

@@ -1408,9 +1408,11 @@ local colorBrewer = {
 	}
 }
 
--- Get color by name.
+--- Get color by name.
 -- @arg keyword A mandatory string case-insensitive which represent a specific color, e.g. red, blue, brown, lightseagreen.
--- @arg classes A optional integer with the number of data classes. This argument is madatory to ColorBrewer format.
+-- @arg class A optional integer with the number of data classes. This argument is madatory to ColorBrewer format.
+-- @usage import("publish")
+-- print(color("aqua"))
 function color(keyword, class)
 	mandatoryArgument(1, "string", keyword)
 	optionalArgument(1, "number", class)
@@ -1426,4 +1428,59 @@ function color(keyword, class)
 	end
 
 	return colorW3[keyword]
+end
+
+-- String must start with a “#” symbol , follow by a letter from “a” to “f”,
+-- “A” to “Z” or a digit from “0” to 9″ with exactly 6 or 3 length.
+-- This regular expression pattern is very useful for the Hexadecimal web colors code checking.
+-- http://www.mkyong.com/regular-expressions/how-to-validate-hex-color-code-with-regular-expression/
+local isHex = (function()
+	local hex = "[a-fA-f0-9]"
+	local three = "^#" .. tostring(hex:rep(3)) .. "$"
+	local six = "^#" .. tostring(hex:rep(6)) .. "$"
+	return function(input)
+		input = tostring(input)
+		if input:match(three) or input:match(six) then
+			return true
+		end
+
+		return false
+	end
+end)()
+
+
+--- Validate a color in different formats.
+-- Colors may be specified by using ColorBrewer format (see http://colorbrewer2.org/),
+-- color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
+-- @arg data A mandatory string or table with color name or RGB values.
+-- @usage import("publish")
+-- _, err = pcall(function() verifyColor({10, 15, 20, 2}) end)
+-- print(err)
+function verifyColor(data)
+	if data == nil then
+		customError(mandatoryArgumentMsg("data"))
+	end
+
+	local mtype = type(data)
+	if mtype == "string" then
+		if data:find("#") then
+			verify(isHex(data), "Argument '"..data.."' is not a valid hex color.")
+		elseif not color(data, 3) then
+			customError("Argument '"..data.."' is not a valid RGB/ColorBrewer color.")
+		end
+	elseif mtype == "table" then
+		local size = #data
+		if size == 3 or size == 4 then
+			for i = 1, 3 do
+				local v = data[i]
+				verify(type(v) == "number" and v == math.floor(v), "Element '"..i.."' must be an integer, got '"..v.."'.")
+				verify(v >= 0 and v <= 255, "Element '"..i.."' must be an integer between 0 and 255, got '"..v.."'.")
+			end
+
+			local a = data[4] or 1
+			verify(a >= 0 and a <= 1, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '"..a.."'.")
+		else
+			customError("Color must be a table with 3 or 4 arguments (red, green, blue and alpha), got '"..size.."'.")
+		end
+	end
 end
