@@ -70,6 +70,8 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			color = "BuGn",
+			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
 		}
@@ -113,6 +115,8 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
+			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
 		}
@@ -142,6 +146,8 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			color = {{229, 245, 249}, {153, 216, 201}, {44, 162, 95}},
+			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
 		}
@@ -171,6 +177,8 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			color = {"aliceblue", "darkseagreen", "forestgreen"},
+			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
 		}
@@ -200,6 +208,8 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			color = "BuGn",
+			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
 		}
@@ -232,6 +242,8 @@ return {
 			package = "publish",
 			layout = layout,
 			clean = true,
+			color = "BuGn",
+			value = {0, 1, 2},
 			progress = false,
 			output = "terralib-onetview"
 		}
@@ -254,17 +266,6 @@ return {
 		fname:deleteIfExists()
 
 		-- Testing Application: project = nil, layers = nil and package = "terralib".
-		appRoot = {
-			["assets"] = true,
-			["cabecadeboi.html"] = true,
-			["cabecadeboi.js"] = true,
-			["data"] = true,
-			["emas.html"] = true,
-			["emas.js"] = true,
-			["fillCellExample.html"] = true,
-			["fillCellExample.js"] = true,
-		}
-
 		appData = {
 			["cabecadeboi"] = {
 				["box.geojson"] = true,
@@ -287,6 +288,8 @@ return {
 			package = "terralib",
 			layout = layout,
 			clean = true,
+			color = "BuGn",
+			value = {0, 1, 2},
 			progress = false,
 			output = "terralib-manytview"
 		}
@@ -332,6 +335,8 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			color = "BuGn",
+			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
 		}
@@ -340,6 +345,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(tostring(app), [[assets      Directory
+color       string [BuGn]
 clean       boolean [true]
 datasource  Directory
 layers      vector of size 5
@@ -348,6 +354,7 @@ legend      string [Legend]
 output      Directory
 progress    boolean [false]
 project     Project
+value       vector of size 3
 ]])
 
 		if emasDir:exists() then emasDir:delete() end

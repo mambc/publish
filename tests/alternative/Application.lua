@@ -48,6 +48,9 @@ return {
 		error_func = function()
 			Application{
 				arg = "void",
+				clean = true,
+				color = "BuGn",
+				value = {0, 1, 2},
 				project = emas,
 				layout = layout
 			}
@@ -58,6 +61,8 @@ return {
 			Application{
 				package = "base",
 				clean = true,
+				color = "BuGn",
+				value = {0, 1, 2},
 				progress = false,
 				layout = layout,
 				output = emasDir
@@ -68,6 +73,8 @@ return {
 		local data = {
 			layout = layout,
 			clean = true,
+			color = "BuGn",
+			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
 		}
@@ -131,6 +138,31 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("project", "Project", 1))
+
+		data.project = emas
+		data.color = 123456
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string or table", 123456))
+
+		data.color = "#afafah"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument '#afafah' is not a valid hex color.")
+
+		data.color = "Redss"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'Redss' is not a valid RGB/ColorBrewer color.")
+
+		data.color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument '{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}' is not a vilid RGB color.")
 	end
 }
 
