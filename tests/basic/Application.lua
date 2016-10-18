@@ -345,8 +345,9 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(tostring(app), [[assets      Directory
+classes     number [3]
 clean       boolean [true]
-color       string [BuGn]
+color       vector of size 3
 datasource  Directory
 layers      vector of size 5
 layout      Layout

@@ -188,11 +188,15 @@ local function createApplication(data, path)
 		output = config,
 		model = {
 			path = path,
+			color = data.color,
 			center = data.layout.center,
 			zoom = data.layout.zoom,
 			minZoom = data.layout.minZoom,
 			maxZoom = data.layout.maxZoom,
-			base = data.layout.base:upper()
+			base = data.layout.base:upper(),
+			quotes = function(text, render)
+				return "\""..render(text).."\""
+			end
 		}
 	}
 
@@ -229,6 +233,23 @@ metaTableApplication_ = {
 -- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project A Project or string with the path to a .tview file.
+-- @arg data.value A mandatory table with the possible values for the selected attributes.
+-- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings
+-- ("red", "green", "blue", "white", "black",
+-- "yellow", "brown", "cyan", "gray", "magenta", "orange", "purple", and their light and dark
+-- compositions, such as "lightGray" and "darkGray"), as tables with three integer numbers
+-- representing RGB compositions, such as {0, 0, 0}, or even as a string with a ColorBrewer format
+-- (see http://colorbrewer2.org/). The colors available and the maximum number of slices for each
+-- of them are:
+-- @tabular color
+-- Name & Max \
+-- Accent, Dark, Set2 & 7 \
+-- Pastel2, Set1 & 8 \
+-- Pastel1 & 9 \
+-- PRGn, RdYlGn, Spectral & 10 \
+-- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
+-- BuGn, BuPu, OrRd, PuBu & 19 \
+-- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
 -- @usage import("publish")
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
@@ -245,6 +266,8 @@ metaTableApplication_ = {
 --     project = emas,
 --     layout = layout,
 --     clean = true,
+--     color = "BuGn",
+--     value = {0, 1, 2},
 --     progress = false,
 --     output = emasDir
 -- }
@@ -267,20 +290,33 @@ function Application(data)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
-
-	local class = #data.value
-	verify(class > 0, "Argument 'value' must be a table with size greater than 0, got '"..class.."'.")
-	local ctype = type(data.color)
-	if ctype == "string" then
-		verifyColor(data.color, #data.value)
-	elseif ctype == "table" then
-		forEachElement(data.color, function(_, mcolor) verifyColor(mcolor, #data.value) end)
-	else
-		incompatibleTypeError("color", "string or table", data.color)
-	end
-
 	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value"})
 
+	data.classes = #data.value
+	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got '"..data.classes.."'.")
+
+	local ctype = type(data.color)
+	verify(ctype == "string" or ctype == "table", incompatibleTypeMsg("color", "string or table", data.color))
+	if ctype == "string" then
+		verifyColor(data.color, data.classes)
+		data.color = color(data.color, data.classes)
+	end
+
+	local colors = {}
+	forEachElement(data.color, function(i, mcolor, etype)
+		verifyColor(mcolor)
+		if etype == "table" then
+			local a = mcolor[4] or 1
+			mcolor = {
+				key = data.value[i],
+				rgba = string.format("rgba(%d, %d, %d, %g)", mcolor[1], mcolor[2], mcolor[3], a)
+			}
+		end
+
+		table.insert(colors, mcolor)
+	end)
+
+	data.color = colors
 	local initialTime = os.clock()
 	if not data.progress then
 		printNormal = function() end

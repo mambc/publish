@@ -1459,7 +1459,11 @@ local function verifyStringColor(keyword, class)
 			local errorMsg = "Argument '".. keyword .."' is not a valid color name."
 			mcolor = color(keyword, 3)
 			if mcolor then
-				errorMsg = "The number of data classes '"..class.."' not exist for color '".. keyword .."' in ColorBrewer."
+				if not class then
+					errorMsg = "The number of data classes is mandatory for '".. keyword .."' in ColorBrewer."
+				else
+					errorMsg = "The number of data classes '"..class.."' not exist for color '".. keyword .."' in ColorBrewer."
+				end
 			end
 
 			customError(errorMsg)
@@ -1476,8 +1480,10 @@ local function verifyRGBColor(rgb)
 			verify(vtype == "number" and v == math.floor(v), "Element '"..i.."' must be an integer, got '"..v.."'.")
 			verify(v >= 0 and v <= 255, "Element '"..i.."' must be an integer between 0 and 255, got '"..v.."'.")
 
-			local a = rgb[4] or 1
-			verify(a >= 0 and a <= 1, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '"..a.."'.")
+			local a = rgb[4]
+			if a and (a < 0 or a > 1) then
+				customError("The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '"..a.."'.")
+			end
 		end
 	else
 		customError("Color must be a table with 3 or 4 arguments (red, green, blue and alpha), got '"..size.."'.")

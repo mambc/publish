@@ -3,20 +3,7 @@ $(function(){
 	var data = {};
 	var $legendContainer = $('#legend-container');
 	var $legend = $('<div id="legend">').appendTo($legendContainer);
-	var colors = (function(){
-		var mcolors = {};
-		$.each(Publish["data"], function (_, properties){
-			$.each(properties, function (property, values){
-				mcolors[property] = {};
-				var classes = (values.length < 3) ? 3 : values.length;
-				$.each(values, function(_, value){
-					mcolors[property][value] = colorbrewer[Publish.color][classes][value];
-				});
-			})
-		});
-
-		return mcolors;
-	}());
+	var colors = Publish.data.cells;
 
 	function renderLegend(){
 		$legend.empty();

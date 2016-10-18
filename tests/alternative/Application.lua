@@ -159,6 +159,12 @@ return {
 		end
 		unitTest:assertError(error_func, "Argument 'Redss' is not a valid color name.")
 
+		data.color = {"Reds", "Blues", "PuRd"}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "The number of data classes is mandatory for 'Reds' in ColorBrewer.")
+
 		data.color = {1, 1, 1}
 		error_func = function()
 			Application(clone(data))

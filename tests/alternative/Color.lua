@@ -96,6 +96,11 @@ return {
 		unitTest:assertError(error_func, "The number of data classes '10' not exist for color 'Dark' in ColorBrewer.")
 
 		error_func = function()
+			verifyColor("Dark")
+		end
+		unitTest:assertError(error_func, "The number of data classes is mandatory for 'Dark' in ColorBrewer.")
+
+		error_func = function()
 			verifyColor{1.5, 1, 1}
 		end
 		unitTest:assertError(error_func, "Element '1' must be an integer, got '1.5'.")

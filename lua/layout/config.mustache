@@ -4,7 +4,6 @@ var Publish = {
 	minZoom: {{minZoom}},
 	maxZoom: {{maxZoom}},
 	mapTypeId: "{{base}}",
-	color: "Reds",
 	path: (function(){
 		var data = "./data/";
 		var url = "{{path}}";
@@ -14,7 +13,11 @@ var Publish = {
 	}()),
 	data: {
 		cells: {
-			river: [0, 1, 2]
+			river: {
+			{{#color}}
+				{{key}}: {{#quotes}}{{rgba}}{{/quotes}},
+			{{/color}}
+			}
 		}
 	}
 };
