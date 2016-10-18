@@ -52,7 +52,8 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				project = emas,
-				layout = layout
+				layout = layout,
+				output = emasDir
 			}
 		end
 		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
@@ -156,13 +157,31 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'Redss' is not a valid RGB/ColorBrewer color.")
+		unitTest:assertError(error_func, "Argument 'Redss' is not a valid color name.")
+
+		data.color = {1, 1, 1}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
 
 		data.color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument '{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}' is not a vilid RGB color.")
+		unitTest:assertError(error_func, "Element '1' must be an integer between 0 and 255, got '-1'.")
+
+		data.color = {{0, 0, 0}, {1, 1, 1}, {255, 255, 255, 2}}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '2'.")
+
+		data.color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '1.00001'.")
 	end
 }
 

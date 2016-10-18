@@ -255,11 +255,31 @@ function Application(data)
 	verifyNamedTable(data)
 	verify(data.project or data.layers or data.package, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
 	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
+	mandatoryTableArgument(data, "value", "table")
+	verify(data.color, "Argument 'color' is mandatory to publish your data.")
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "legend", "Legend")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package"})
+
+	if type(data.output) == "string" then
+		data.output = Directory(data.output)
+	end
+
+	mandatoryTableArgument(data, "output", "Directory")
+
+	local class = #data.value
+	verify(class > 0, "Argument 'value' must be a table with size greater than 0, got '"..class.."'.")
+	local ctype = type(data.color)
+	if ctype == "string" then
+		verifyColor(data.color, #data.value)
+	elseif ctype == "table" then
+		forEachElement(data.color, function(_, mcolor) verifyColor(mcolor, #data.value) end)
+	else
+		incompatibleTypeError("color", "string or table", data.color)
+	end
+
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value"})
 
 	local initialTime = os.clock()
 	if not data.progress then
@@ -267,12 +287,6 @@ function Application(data)
 		printWarning = function() end
 		printInfo = function() end
 	end
-
-	if type(data.output) == "string" then
-		data.output = Directory(data.output)
-	end
-
-	mandatoryTableArgument(data, "output", "Directory")
 
 	if data.package then
 		mandatoryTableArgument(data, "package", "string")

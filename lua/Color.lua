@@ -1502,5 +1502,7 @@ function verifyColor(data, class)
 		verifyStringColor(data, class)
 	elseif mtype == "table" then
 		verifyRGBColor(data, class)
+	else
+		customError("Each parameter of color must be a string or table, got '"..mtype.."'.")
 	end
 end

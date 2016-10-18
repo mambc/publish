@@ -46,6 +46,11 @@ return {
 		unitTest:assertError(error_func, mandatoryArgumentMsg("data"))
 
 		error_func = function()
+			verifyColor(1)
+		end
+		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
+
+		error_func = function()
 			verifyColor("123456")
 		end
 		unitTest:assertError(error_func, "Argument '123456' is not a valid color name.")
