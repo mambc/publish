@@ -48,7 +48,7 @@ return {
 		error_func = function()
 			verifyColor("123456")
 		end
-		unitTest:assertError(error_func, "Argument '123456' is not a valid RGB/ColorBrewer color.")
+		unitTest:assertError(error_func, "Argument '123456' is not a valid color name.")
 
 		error_func = function()
 			verifyColor("#afafah")
@@ -63,12 +63,12 @@ return {
 		error_func = function()
 			verifyColor("aFaE3f")
 		end
-		unitTest:assertError(error_func, "Argument 'aFaE3f' is not a valid RGB/ColorBrewer color.")
+		unitTest:assertError(error_func, "Argument 'aFaE3f' is not a valid color name.")
 
 		error_func = function()
 			verifyColor("F00")
 		end
-		unitTest:assertError(error_func, "Argument 'F00' is not a valid RGB/ColorBrewer color.")
+		unitTest:assertError(error_func, "Argument 'F00' is not a valid color name.")
 
 		error_func = function()
 			verifyColor("#afaf")
@@ -83,7 +83,12 @@ return {
 		error_func = function()
 			verifyColor("Redss")
 		end
-		unitTest:assertError(error_func, "Argument 'Redss' is not a valid RGB/ColorBrewer color.")
+		unitTest:assertError(error_func, "Argument 'Redss' is not a valid color name.")
+
+		error_func = function()
+			verifyColor("Dark", 10)
+		end
+		unitTest:assertError(error_func, "The number of data classes '10' not exist for color 'Dark' in ColorBrewer.")
 
 		error_func = function()
 			verifyColor{1.5, 1, 1}
