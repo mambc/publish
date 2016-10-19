@@ -1,25 +1,17 @@
 $(function(){
 	var map;
 	var data = {};
-	var $legendContainer = $('#legend-container');
-	var $legend = $('<div id="legend">').appendTo($legendContainer);
-	var colors = Publish.data.cells;
+	var $legend = $('#legend');
 
-	function renderLegend(){
+	function renderLegend(colors, property){
 		$legend.empty();
-		$.each(colors, function(property, values){
-			$.each(values, function(value, color){
-				var $div = $('<div style="height:25px;">')
-					.append($('<div class="legend-color-box">').css({backgroundColor: color}))
-					.append($('<span>').css("lineHeight", "23px").html(property + " " + value));
-				$legend.append($div);
-			});
-		});
-	}
-
-	function setColorProperty(feature){
-		$.each(colors, function(property, values){
-			feature.setProperty("color", values[feature.getProperty(property)]);
+		$legend.append($('<div id="legend-container"><h4 class="panel-title">Legend</h4></div>'));
+		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
+		$.each(colors, function(attribute, color){
+			var $div = $('<div style="height:25px;">')
+				.append($('<div class="legend-color-box">').css({backgroundColor: color}))
+				.append($('<span>').css("lineHeight", "23px").html(property + " " + attribute));
+			$legendContent.append($div);
 		});
 	}
 
@@ -33,17 +25,31 @@ $(function(){
 	function onClick(event){
 		var id = event.target.id;
 		if(data[id]){
-			map.data.forEach(function(feature) {
-				map.data.remove(feature)
-			});
-
+			$legend.empty();
+			data[id].setMap(null);
 			delete data[id];
 		}else{
 			var url = Publish.path + id + ".geojson";
 			$.getJSON(url, function(geojson){
-				data[id] = map.data.addGeoJson(geojson);
-				map.data.forEach(setColorProperty);
-				map.data.setStyle(setStyle);
+				var property, colors;
+				var selected = Publish.data[id];
+				$.each(selected, function(prop, propColors){
+					property = prop;
+					colors = propColors;
+					return false;
+				});
+
+				renderLegend(colors, property);
+
+				var mdata = new google.maps.Data();
+				mdata.addGeoJson(geojson);
+				mdata.forEach(function(feature){
+					feature.setProperty("color", colors[feature.getProperty(property)]);
+				});
+
+				mdata.setStyle(setStyle);
+				mdata.setMap(map);
+				data[id] = mdata;
 			});
 		}
 	}
@@ -65,10 +71,9 @@ $(function(){
 
 		var mapElement = document.getElementById("map");
 		map = new google.maps.Map(mapElement, mapOptions);
-		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legendContainer[0]);
+		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 
-		renderLegend();
 		$('#layers').find(':button').click(onClick);
 	}
 
