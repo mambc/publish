@@ -82,6 +82,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
+		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)
@@ -115,7 +116,7 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
-			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
+			color = {"#e5f5f9", "#99d8c9", "#2ca25f", "#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
 			output = emasDir
@@ -127,6 +128,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
+		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)
@@ -158,6 +160,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
+		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
 
 		assertFiles(app.output, appRoot)
@@ -189,6 +192,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
+		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
 
 		assertFiles(app.output, appRoot)
@@ -221,6 +225,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
+		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)
@@ -255,6 +260,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
+		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)

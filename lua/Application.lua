@@ -70,6 +70,37 @@ local function registerApplicationModel(data)
 	table.insert(ViewModel, data)
 end
 
+local function getColors(data)
+	local ctype = type(data.color)
+	verify(ctype == "string" or ctype == "table", incompatibleTypeMsg("color", "string or table", data.color))
+
+	if ctype == "string" then
+		verifyColor(data.color, data.classes)
+		data.color = color(data.color, data.classes)
+	end
+
+	local nColors = #data.color
+	verify(nColors >= data.classes, "The number of colors ("..nColors..") must be greater than or equal to number of data classes ("..data.classes..").")
+
+	local colors = {}
+	for i = 1, data.classes do
+		local mcolor = data.color[i]
+		verifyColor(mcolor)
+
+		if type(mcolor) == "table" then
+			local a = mcolor[4] or 1
+			mcolor = {
+				key = data.value[i],
+				rgba = string.format("rgba(%d, %d, %d, %g)", mcolor[1], mcolor[2], mcolor[3], a)
+			}
+		end
+
+		table.insert(colors, mcolor)
+	end
+
+	return colors
+end
+
 local function createDirectoryStructure(data)
 	printInfo("Creating directory structure.")
 	if data.clean == true and data.output:exists() then
@@ -234,13 +265,11 @@ metaTableApplication_ = {
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project A Project or string with the path to a .tview file.
 -- @arg data.value A mandatory table with the possible values for the selected attributes.
--- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings
--- ("red", "green", "blue", "white", "black",
--- "yellow", "brown", "cyan", "gray", "magenta", "orange", "purple", and their light and dark
--- compositions, such as "lightGray" and "darkGray"), as tables with three integer numbers
--- representing RGB compositions, such as {0, 0, 0}, or even as a string with a ColorBrewer format
--- (see http://colorbrewer2.org/). The colors available and the maximum number of slices for each
--- of them are:
+-- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
+-- a color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords),
+-- as tables with three integer numbers representing RGB compositions, such as {0, 0, 0},
+-- or even as a string with a ColorBrewer format (see http://colorbrewer2.org/).
+-- The colors available and the maximum number of slices for each of them are:
 -- @tabular color
 -- Name & Max \
 -- Accent, Dark, Set2 & 7 \
@@ -295,28 +324,8 @@ function Application(data)
 	data.classes = #data.value
 	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got '"..data.classes.."'.")
 
-	local ctype = type(data.color)
-	verify(ctype == "string" or ctype == "table", incompatibleTypeMsg("color", "string or table", data.color))
-	if ctype == "string" then
-		verifyColor(data.color, data.classes)
-		data.color = color(data.color, data.classes)
-	end
+	data.color = getColors(data)
 
-	local colors = {}
-	forEachElement(data.color, function(i, mcolor, etype)
-		verifyColor(mcolor)
-		if etype == "table" then
-			local a = mcolor[4] or 1
-			mcolor = {
-				key = data.value[i],
-				rgba = string.format("rgba(%d, %d, %d, %g)", mcolor[1], mcolor[2], mcolor[3], a)
-			}
-		end
-
-		table.insert(colors, mcolor)
-	end)
-
-	data.color = colors
 	local initialTime = os.clock()
 	if not data.progress then
 		printNormal = function() end

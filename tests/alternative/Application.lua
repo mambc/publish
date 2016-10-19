@@ -188,6 +188,19 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '1.00001'.")
+
+		data.color = {"#edf8fb", "#b2e2e2"}
+		data.value = {}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'value' must be a table with size greater than 0, got '0'.")
+
+		data.value = {0, 1, 2}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "The number of colors (2) must be greater than or equal to number of data classes (3).")
 	end
 }
 
