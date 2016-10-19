@@ -1,5 +1,5 @@
 var Publish = {
-	center: {lat: {{center.lat}}, long: {{center.long}}},
+	center: {lat: {{center.lat}}, long: {{center.long}} },
 	zoom: {{zoom}},
 	minZoom: {{minZoom}},
 	maxZoom: {{maxZoom}},
@@ -13,15 +13,7 @@ var Publish = {
 	}()),
 	data: {
 		{{#layers}}
-		{{.}}: {
-			{{#select}}
-			{{.}}: {
-			{{#color}}
-				{{key}}: {{#quotes}}{{rgba}}{{/quotes}},
-			{{/color}}
-			},
-			{{/select}}
-		},
+		{{.}}: [{{#quotes}}{{select}}{{/quotes}}, { {{#color}}{{key}}: {{#quotes}}{{rgba}}{{/quotes}},{{/color}} }],
 		{{/layers}}
 	}
 };

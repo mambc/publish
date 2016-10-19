@@ -266,7 +266,7 @@ metaTableApplication_ = {
 -- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project A Project or string with the path to a .tview file.
--- @arg data.select A mandatory string or table with the names of the attributes to be visualized.
+-- @arg data.select A mandatory string with the name of the attribute to be visualized.
 -- @arg data.value A mandatory table with the possible values for the selected attributes.
 -- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
 -- a color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords),
@@ -313,6 +313,7 @@ function Application(data)
 	verify(data.color, "Argument 'color' is mandatory to publish your data.")
 	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	mandatoryTableArgument(data, "value", "table")
+	mandatoryTableArgument(data, "select", "string")
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -323,17 +324,7 @@ function Application(data)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
-
-	if type(data.select) == "string" then
-		data.select = {data.select}
-	end
-
-	mandatoryTableArgument(data, "select", "table")
 	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value", "select"})
-
-	forEachElement(data.select, function(_, attr, atype)
-		verify(atype == "string", "Each element of 'select' must be a string. Element '"..attr.."' got '"..atype.."'.")
-	end)
 
 	data.classes = #data.value
 	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got '"..data.classes.."'.")

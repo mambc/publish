@@ -70,7 +70,7 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
-			select = {"river", "firebreak"},
+			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -369,7 +369,7 @@ legend      string [Legend]
 output      Directory
 progress    boolean [false]
 project     Project
-select      vector of size 1
+select      string [river]
 value       vector of size 3
 ]])
 

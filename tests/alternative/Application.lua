@@ -231,14 +231,7 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("select", "table", 1))
-
-		data.color = "BuGn"
-		data.select = {1}
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, "Each element of 'select' must be a string. Element '1' got 'number'.")
+		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string", 1))
 	end
 }
 

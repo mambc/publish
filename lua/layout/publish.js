@@ -31,14 +31,9 @@ $(function(){
 		}else{
 			var url = Publish.path + id + ".geojson";
 			$.getJSON(url, function(geojson){
-				var property, colors;
 				var selected = Publish.data[id];
-				$.each(selected, function(prop, propColors){
-					property = prop;
-					colors = propColors;
-					return false;
-				});
-
+				var property = selected[0];
+				var colors = selected[1];
 				renderLegend(colors, property);
 
 				var mdata = new google.maps.Data();
