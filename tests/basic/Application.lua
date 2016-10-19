@@ -70,6 +70,7 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			select = {"river", "firebreak"},
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -116,6 +117,7 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = {"#e5f5f9", "#99d8c9", "#2ca25f", "#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
@@ -148,6 +150,7 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = {{229, 245, 249}, {153, 216, 201}, {44, 162, 95}},
 			value = {0, 1, 2},
 			progress = false,
@@ -180,6 +183,7 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = {"aliceblue", "darkseagreen", "forestgreen"},
 			value = {0, 1, 2},
 			progress = false,
@@ -212,6 +216,7 @@ return {
 			layers = layers,
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -247,6 +252,7 @@ return {
 			package = "publish",
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -294,6 +300,7 @@ return {
 			package = "terralib",
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -341,6 +348,7 @@ return {
 			project = emas,
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -361,6 +369,7 @@ legend      string [Legend]
 output      Directory
 progress    boolean [false]
 project     Project
+select      vector of size 1
 value       vector of size 3
 ]])
 

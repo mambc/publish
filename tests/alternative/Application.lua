@@ -49,6 +49,7 @@ return {
 			Application{
 				arg = "void",
 				clean = true,
+				select = "river",
 				color = "BuGn",
 				value = {0, 1, 2},
 				project = emas,
@@ -62,6 +63,7 @@ return {
 			Application{
 				package = "base",
 				clean = true,
+				select = "river",
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
@@ -74,6 +76,7 @@ return {
 		local data = {
 			layout = layout,
 			clean = true,
+			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -93,6 +96,27 @@ return {
 		unitTest:assertError(error_func, mandatoryArgumentMsg("layout"))
 
 		data.layout = layout
+		data.value = nil
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("value"))
+
+		data.value = {0, 1, 2}
+		data.select = nil
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+
+		data.select = "river"
+		data.color = nil
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'color' is mandatory to publish your data.")
+
+		data.color = "BuGn"
 		data.clean = 1
 		error_func = function()
 			Application(clone(data))
@@ -201,6 +225,20 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, "The number of colors (2) must be greater than or equal to number of data classes (3).")
+
+		data.color = "BuGn"
+		data.select = 1
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("select", "table", 1))
+
+		data.color = "BuGn"
+		data.select = {1}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Each element of 'select' must be a string. Element '1' got 'number'.")
 	end
 }
 

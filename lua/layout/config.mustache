@@ -12,12 +12,16 @@ var Publish = {
 		return data;
 	}()),
 	data: {
-		cells: {
-			river: {
+		{{#layers}}
+		{{.}}: {
+			{{#select}}
+			{{.}}: {
 			{{#color}}
 				{{key}}: {{#quotes}}{{rgba}}{{/quotes}},
 			{{/color}}
-			}
-		}
+			},
+			{{/select}}
+		},
+		{{/layers}}
 	}
 };
