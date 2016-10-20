@@ -128,13 +128,17 @@ local function createDirectoryStructure(data)
 	end)
 end
 
+local function isValidLayer(layer)
+	return SourceTypeMapper[layer.source] == "OGR" or SourceTypeMapper[layer.source] == "POSTGIS"
+end
+
 local function exportLayers(data, sof)
 	terralib.forEachLayer(data.project, function(layer, idx)
 		if sof and not sof(layer, idx) then
 			return
 		end
 
-		if SourceTypeMapper[layer.source] == "OGR" or SourceTypeMapper[layer.source] == "POSTGIS" then
+		if isValidLayer(layer) then
 			printNormal("Exporting layer '"..layer.name.."'.")
 			layer:export(data.datasource..layer.name..".geojson", true)
 		else
@@ -340,6 +344,7 @@ function Application(data)
 
 	if data.package then
 		mandatoryTableArgument(data, "package", "string")
+		optionalTableArgument(data, "project", "table")
 		verify(not data.layers, unnecessaryArgumentMsg("layers"))
 		data.package = packageInfo(data.package)
 
@@ -348,8 +353,29 @@ function Application(data)
 		local projects = {}
 		local dataPath = Directory(data.package.data)
 		forEachFile(dataPath:list(), function(fname)
-			if fname ~= "amazonia.tview" and fname ~= "itaituba.tview" and fname:endswith(".tview") then -- TODO #10 remove this, used only to test.
-				projects[fname:sub(1, -7)] = terralib.Project{file = dataPath..fname}
+			if fname:endswith(".tview") then -- TODO #10 remove this, used only to test.
+				local proj, bbox
+				local name = fname:sub(1, -7)
+				if data.project then
+					bbox = data.project[name]
+					if not bbox then
+						return
+					end
+
+					local mtype = type(bbox)
+					verify(mtype == "string", "Each element of 'project' must be a string, '"..name.."' got type '"..mtype.."'.")
+				end
+
+				proj = terralib.Project{file = dataPath..fname}
+				if bbox then
+					local abstractLayer = proj.layers[bbox]
+					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '"..fname.."'.")
+
+					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle()}
+					verify(isValidLayer(layer), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[layer.source].."'.")
+				end
+
+				projects[name] = proj
 				nProj = nProj + 1
 			end
 		end)
@@ -375,15 +401,11 @@ function Application(data)
 						datasource:create()
 					end
 
-					local mdata = {
-						project = proj,
-						layers = data.layers,
-						output = data.output,
-						clean = data.clean,
-						layout = data.layout,
-						legend = data.legend,
-						datasource = datasource
-					}
+					local mdata = {project = proj, datasource = datasource}
+					forEachElement(data, function(idx, value)
+						if idx == "project" or idx == "datasource" then return end
+						mdata[idx] = value
+					end)
 
 					loadLayers(mdata)
 					createApplication(mdata, fname)
