@@ -17,7 +17,7 @@ Application{
 	layout = layout,
 	clean = true,
 	select = "river",
-	color = "BuGn",
+	color = "PuBu",
 	value = {0, 1, 2},
 	output = Directory("EmasWebMap")
 }
