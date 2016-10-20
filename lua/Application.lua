@@ -121,7 +121,7 @@ local function createDirectoryStructure(data)
 		data.assets:create()
 	end
 
-	local depends = {"publish.css", "publish.js", "colorbrewer.min.js"}
+	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js"}
 	forEachElement(depends, function(_, file)
 		printNormal("Copying dependency '"..file.."'.")
 		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")

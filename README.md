@@ -15,7 +15,7 @@ $> terrame -package publish -showdoc
 ```
 
 ## Examples
-[Emas](https://cdn.rawgit.com/hguerra/publish/master/examples/EmasWebMap/index.html)
+[Emas](https://rawgit.com/hguerra/publish/master/examples/EmasWebMap/index.html)
 
 ## Reporting Bugs
 If you have found a bug, open an entry in the [issues](https://github.com/pedro-andrade-inpe/publish/issues).
