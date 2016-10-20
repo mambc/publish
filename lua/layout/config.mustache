@@ -13,7 +13,7 @@ var Publish = {
 	}()),
 	data: {
 		{{#layers}}
-		{{.}}: [{{#quotes}}{{select}}{{/quotes}}, { {{#color}}{{key}}: {{#quotes}}{{rgba}}{{/quotes}},{{/color}} }],
+		{{.}}: [{{#quotes}}{{select}}{{/quotes}}, { {{#color}}{{property}}: {{#quotes}}{{rgba}}{{/quotes}},{{/color}} }],
 		{{/layers}}
 	}
 };

@@ -90,7 +90,7 @@ local function getColors(data)
 		if type(mcolor) == "table" then
 			local a = mcolor[4] or 1
 			mcolor = {
-				key = data.value[i],
+				property = data.value[i],
 				rgba = string.format("rgba(%d, %d, %d, %g)", mcolor[1], mcolor[2], mcolor[3], a)
 			}
 		end

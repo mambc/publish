@@ -13,13 +13,13 @@ Publish is distributed under the GNU Lesser General Public License as published 
 ### Running Tests
 The code below shows an example of the command to test TerraME publish package using a config file named test.lua
 
-`test.lua`
 ```lua
+-- test.lua
 lines = true
 ```
 
 ```bash
-$> terrame -package publish -test
+$> terrame -package publish -test test.lua
 ```
 
 ### Documentation
