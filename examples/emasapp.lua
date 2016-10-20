@@ -13,7 +13,7 @@ local layout = Layout{
 }
 
 Application{
-	project = filePath("emas.tview", "terralib"),
+	project = filePath("emas.tview", "publish"),
 	layout = layout,
 	clean = true,
 	select = "river",

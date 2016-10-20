@@ -43,7 +43,7 @@ cl = Layer{
 	clean = true,
 	input = "limit",
 	name = "cells",
-	resolution = 500
+	resolution = 1500
 }
 
 cl:fill{
