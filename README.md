@@ -6,7 +6,7 @@ This is a TerraME package that allows one to export the outputs of different Mod
 TerraME is a programming environment for spatial dynamical modelling. It supports cellular automata, agent-based models, and network models running in 2D cell spaces. TerraME provides an interface to TerraLib geographical database, allowing models direct access to geospatial data. Its modelling language has in-built functions that makes it easier to develop multi-scale and multi-paradigm models for environmental applications. For full documentation visit the [TerraME Home Page](http://terrame.org) and [TerraME Wiki Page](https://github.com/TerraME/terrame/wiki).
 
 ## License
-publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details. 
+Publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details. 
 
 ## Usage
 The complete documentation for TerraME API is available via `-showdoc` command line:
@@ -15,7 +15,7 @@ $> terrame -package publish -showdoc
 ```
 
 ## Examples
-[Emas](http://htmlpreview.github.io/?https://github.com/hguerra/publish/tree/master/examples/EmasWebMap/index.html)
+[Emas](https://cdn.rawgit.com/hguerra/publish/master/examples/EmasWebMap/index.html)
 
 ## Reporting Bugs
 If you have found a bug, open an entry in the [issues](https://github.com/pedro-andrade-inpe/publish/issues).
