@@ -5,7 +5,7 @@ $(function(){
 
 	function renderLegend(colors, property){
 		$legend.empty();
-		$legend.append($('<div id="legend-container"><h4 class="panel-title">Legend</h4><br/></div>'));
+		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend +'</h4><br/></div>'));
 		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
 		$.each(colors, function(attribute, color){
 			var $div = $('<div style="height:25px;">')

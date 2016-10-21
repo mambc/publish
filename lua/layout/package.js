@@ -1,52 +1,52 @@
 $(function(){
 	var map;
-	var data = {};
 	var $legend = $('#legend');
 
-	function renderLegend(colors, property){
-		$legend.empty();
-		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend +'</h4><br/></div>'));
-		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
-		$.each(colors, function(attribute, color){
-			var $div = $('<div style="height:25px;">')
-				.append($('<div class="legend-color-box">').css({backgroundColor: color}))
-				.append($('<span>').css("lineHeight", "23px").html(property + " " + attribute));
-			$legendContent.append($div);
-		});
-	}
+	function getRandomColor() {
+		var letters = '0123456789ABCDEF';
+		var color = '#';
+		for (var i = 0; i < 6; i++ ) {
+			color += letters[Math.floor(Math.random() * 16)];
+		}
 
-	function setStyle(feature){
-		return{
-			fillColor: feature.getProperty("color"),
-			strokeWeight: 1
-		};
+		return color;
 	}
 
 	function onClick(event){
-		var id = event.target.id;
-		if(data[id]){
-			$legend.empty();
-			data[id].setMap(null);
-			delete data[id];
-		}else{
-			var url = Publish.path + id + ".geojson";
-			$.getJSON(url, function(geojson){
-				var selected = Publish.data[id];
-				var property = selected[0];
-				var colors = selected[1];
-				renderLegend(colors, property);
+		window.location.href = "./" + event.target.id + ".html";
+	}
 
+	function loadAreasOfInterest(){
+		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend +'</h4><br/></div>'));
+		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
+
+		$.each(Publish.data, function(proj, layer){
+			var url = Publish.path(proj) + layer + ".geojson";
+			$.getJSON(url, function(geojson){
+				var color = getRandomColor();
 				var mdata = new google.maps.Data();
+
 				mdata.addGeoJson(geojson);
-				mdata.forEach(function(feature){
-					feature.setProperty("color", colors[feature.getProperty(property)]);
+				mdata.setStyle(function(feature){
+					feature.setProperty("project", proj);
+					return{
+						fillColor: color,
+						strokeWeight: 1
+					};
 				});
 
-				mdata.setStyle(setStyle);
+				mdata.addListener("click", function(event){
+					window.location.href = "./" + event.feature.getProperty("project") + ".html";
+				});
+
 				mdata.setMap(map);
-				data[id] = mdata;
+
+				var $div = $('<div style="height:25px;">')
+				.append($('<div class="legend-color-box">').css({backgroundColor: color}))
+				.append($('<span>').css("lineHeight", "23px").html(proj));
+				$legendContent.append($div);
 			});
-		}
+		});
 	}
 
 	function initMap(){
@@ -70,6 +70,7 @@ $(function(){
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 
 		$('#layers').find(':button').click(onClick);
+		loadAreasOfInterest();
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);

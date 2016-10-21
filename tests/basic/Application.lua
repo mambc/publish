@@ -248,6 +248,8 @@ return {
 			["river.geojson"] = true
 		}
 
+		appAssets["package.js"] = true
+
 		app = Application{
 			package = "publish",
 			layout = layout,
@@ -313,6 +315,15 @@ return {
 		unitTest:assertNil(app.layers)
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
+
+		unitTest:assertType(app.project, "table")
+		unitTest:assertEquals(getn(app.project), 3)
+		unitTest:assertEquals(app.project[1].project, "cabecadeboi")
+		unitTest:assertEquals(app.project[2].project, "emas")
+		unitTest:assertEquals(app.project[3].project, "fillCellExample")
+		unitTest:assertEquals(app.project[1].layer, "box")
+		unitTest:assertEquals(app.project[2].layer, "limit")
+		unitTest:assertEquals(app.project[3].layer, "Setores")
 
 		assertFiles(app.assets, appAssets)
 

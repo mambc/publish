@@ -121,7 +121,11 @@ local function createDirectoryStructure(data)
 		data.assets:create()
 	end
 
-	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js"}
+	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js" }
+	if data.package then
+		table.insert(depends, "package.js")
+	end
+
 	forEachElement(depends, function(_, file)
 		printNormal("Copying dependency '"..file.."'.")
 		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")
@@ -206,34 +210,66 @@ local function exportTemplates(data)
 	end)
 end
 
-local function createApplication(data, path)
+local function createApplication(data, proj)
+	local page, pageConf
+	local index = "index.html"
+	local config = "config.js"
+
+	local function quotes(text, render)
+		return "\""..render(text).."\""
+	end
+
 	printInfo("Loading template.")
-	local page, config
-	if not path then
-		path = ""
-		page = "index.html"
-		config = "config.js"
+	if not proj then
+		proj = ""
+		page = index
+		pageConf = config
 	else
-		page = path ..".html"
-		config = path ..".js"
+		page = proj ..".html"
+		pageConf = proj ..".js"
+
+		registerApplicationModel {
+			input = templateDir.."pkgconfig.mustache",
+			output = config,
+			model = {
+				center = data.layout.center,
+				zoom = data.layout.zoom,
+				minZoom = data.layout.minZoom,
+				maxZoom = data.layout.maxZoom,
+				base = data.layout.base:upper(),
+				legend = data.legend,
+				projects = data.projects,
+				quotes = quotes
+			}
+		}
+
+		registerApplicationModel {
+			input = templateDir.."package.mustache",
+			output = index,
+			model = {
+				config = config,
+				package = data.package.package,
+				description = data.package.content,
+				projects = data.projects
+			}
+		}
 	end
 
 	registerApplicationModel {
 		input = templateDir.."config.mustache",
-		output = config,
+		output = pageConf,
 		model = {
 			center = data.layout.center,
 			zoom = data.layout.zoom,
 			minZoom = data.layout.minZoom,
 			maxZoom = data.layout.maxZoom,
 			base = data.layout.base:upper(),
-			path = path,
+			path = proj,
 			color = data.color,
 			select = data.select,
 			layers = data.layers,
-			quotes = function(text, render)
-				return "\""..render(text).."\""
-			end
+			legend = data.legend,
+			quotes = quotes
 		}
 	}
 
@@ -241,11 +277,10 @@ local function createApplication(data, path)
 		input = templateDir.."template.mustache",
 		output = page,
 		model = {
-			config = config,
+			config = pageConf,
 			title = data.layout.title,
 			description = data.layout.description,
-			layers = data.layers,
-			legend = data.legend
+			layers = data.layers
 		}
 	}
 
@@ -373,6 +408,9 @@ function Application(data)
 
 					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle()}
 					verify(isValidLayer(layer), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[layer.source].."'.")
+
+					data.project[name] = nil
+					table.insert(data.project, {project = name, layer = bbox})
 				end
 
 				projects[name] = proj
@@ -403,7 +441,12 @@ function Application(data)
 
 					local mdata = {project = proj, datasource = datasource}
 					forEachElement(data, function(idx, value)
-						if idx == "project" or idx == "datasource" then return end
+						if idx == "datasource" then
+							return
+						elseif idx == "project" then
+							idx = "projects"
+						end
+
 						mdata[idx] = value
 					end)
 
