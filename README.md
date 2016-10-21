@@ -1,34 +1,11 @@
 # Publish
 ## Overview
-This is a TerraME package that allows one to export the outputs of different Model scenarios to a web server.
-
-## TerraME
-TerraME is a programming environment for spatial dynamical modelling. It supports cellular automata, agent-based models, and network models running in 2D cell spaces. TerraME provides an interface to TerraLib geographical database, allowing models direct access to geospatial data. Its modelling language has in-built functions that makes it easier to develop multi-scale and multi-paradigm models for environmental applications. For full documentation visit the [TerraME Home Page](http://terrame.org) and [TerraME Wiki Page](https://github.com/TerraME/terrame/wiki).
+This is a [TerraME](http://terrame.org) package that allows one to export the outputs of different Model scenarios to a web server.
 
 ## License
 Publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details. 
 
-## Usage
-
-### Running Tests
-The code below shows an example of the command to test TerraME publish package using a config file named test.lua
-
-```lua
--- test.lua
-lines = true
-```
-
-```bash
-$> terrame -package publish -test test.lua
-```
-
-### Documentation
-The complete documentation is available via `-showdoc` command line:
-```bash
-$> terrame -package publish -showdoc
-```
-
-### Examples
+## Example
 
 ```lua
 import("publish")
