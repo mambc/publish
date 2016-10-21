@@ -36,7 +36,7 @@ return {
 		}
 
 		local appAssets = {
-			["colorbrewer.min.js"] = true,
+			["jquery-3.1.1.min.js"] = true,
 			["publish.css"] = true,
 			["publish.js"] = true
 		}
@@ -298,6 +298,7 @@ return {
 
 		app = Application{
 			package = "terralib",
+			project = {cabecadeboi = "box", emas = "limit", fillCellExample = "Setores"},
 			layout = layout,
 			clean = true,
 			select = "river",
