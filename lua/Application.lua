@@ -34,17 +34,7 @@ end
 
 -- Lustache is an implementation of the mustache template system in Lua (http://mustache.github.io/).
 -- Copyright Lustache (https://github.com/Olivine-Labs/lustache).
-local function loadLustache()
-	local curr = Directory(currentDir())
-	Directory(packageInfo("publish").path.."/lua/layout/lustache"):setCurrentDir()
-
-	local lib = require "lustache"
-	curr:setCurrentDir()
-
-	return lib
-end
-
-local lustache = loadLustache()
+local lustache = require "lustache"
 
 local terralib = getPackage("terralib")
 
@@ -59,7 +49,7 @@ local SourceTypeMapper = {
 }
 
 local Templates = {}
-local templateDir = Directory(packageInfo("publish").path.."/lua/layout")
+local templateDir = Directory(packageInfo("publish").path.."/template")
 
 local ViewModel = {}
 local function registerApplicationModel(data)
@@ -164,6 +154,7 @@ local function loadLayers(data)
 		exportLayers(data, function(layer)
 			local found = false
 			forEachElement(data.layers, function(_, mvalue)
+				local mvalue = tostring(mvalue)
 				if mvalue == layer.name or mvalue == layer.file then
 					found = true
 					return false
@@ -179,16 +170,16 @@ local function loadLayers(data)
 		}
 
 		forEachElement(data.layers, function(_, file)
-			file = File(file)
 			if file:exists() then
-				mproj[file:name()] = tostring(file)
+				local _, name = file:split()
+				mproj[name] = tostring(file)
 			end
 		end)
 
 		data.project = terralib.Project(mproj)
 		exportLayers(data)
 
-		File(data.project.file):deleteIfExists()
+		data.project.file:deleteIfExists()
 	end
 end
 
@@ -386,11 +377,10 @@ function Application(data)
 		printInfo("Creating application for package '"..data.package.package.."'.")
 		local nProj = 0
 		local projects = {}
-		local dataPath = Directory(data.package.data)
-		forEachFile(dataPath:list(), function(fname)
-			if fname:endswith(".tview") then -- TODO #10 remove this, used only to test.
+		forEachFile(data.package.data, function(file)
+			if file:extension() == "tview" then
 				local proj, bbox
-				local name = fname:sub(1, -7)
+				local _, name = file:split()
 				if data.project then
 					bbox = data.project[name]
 					if not bbox then
@@ -401,10 +391,10 @@ function Application(data)
 					verify(mtype == "string", "Each element of 'project' must be a string, '"..name.."' got type '"..mtype.."'.")
 				end
 
-				proj = terralib.Project{file = dataPath..fname}
+				proj = terralib.Project{file = file}
 				if bbox then
 					local abstractLayer = proj.layers[bbox]
-					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '"..fname.."'.")
+					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
 
 					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle()}
 					verify(isValidLayer(layer), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[layer.source].."'.")
@@ -457,8 +447,14 @@ function Application(data)
 		end
 	else
 		if data.project then
-			if type(data.project) == "string" then
-				if File(data.project):exists() then
+			local ptype = type(data.project)
+			if ptype == "string" then
+				data.project = File(data.project)
+				ptype = type(data.project)
+			end
+
+			if ptype == "File" then
+				if data.project:exists() then
 					data.project = terralib.Project{file = data.project}
 				else
 					customError("Project '"..data.project.."' was not found.")

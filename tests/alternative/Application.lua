@@ -152,7 +152,7 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("output", "Directory", 1))
 
 		data.output = emasDir
-		data.project = "myproject.tview"
+		data.project = File("myproject.tview")
 		error_func = function()
 			Application(clone(data))
 		end

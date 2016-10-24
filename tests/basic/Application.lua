@@ -49,12 +49,11 @@ return {
 		}
 
 		local function assertFiles(dir, files)
-			local list = dir:list()
-			forEachElement(list, function(_, file)
-				unitTest:assert(files[file])
+			forEachFile(dir, function(file)
+				unitTest:assert(files[file:name()])
 			end)
 
-			unitTest:assertEquals(#list, getn(files))
+			unitTest:assertEquals(#dir:list(), getn(files))
 		end
 
 		local layout = Layout{
@@ -329,10 +328,10 @@ return {
 
 		local countDir = 0
 		local countFile = 0
-		forEachElement(app.datasource:list(), function(_, dir)
-			local data = appData[dir]
-			forEachFile(app.datasource..dir, function(file)
-				unitTest:assert(data[file])
+		forEachDirectory(app.datasource, function(dir)
+			local data = appData[dir:name()]
+			forEachFile(dir, function(file)
+				unitTest:assert(data[file:name()])
 				countFile = countFile + 1
 			end)
 
@@ -357,7 +356,7 @@ return {
 		}
 
 		local app = Application{
-			project = emas,
+			project = tostring(emas),
 			layout = layout,
 			clean = true,
 			select = "river",
