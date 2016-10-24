@@ -1418,8 +1418,8 @@ function color(keyword, class)
 	optionalArgument(1, "number", class)
 
 	if class then
-		verify(class == math.floor(class), "Argument classes must be an integer, got '"..class.."'.")
-		verify(class >= 2 and class <= 20, "Argument classes must be >= 2 and <= 20, got '"..class.."'.")
+		verify(class == math.floor(class), "The number of data classes must be an integer, got "..class..".")
+		verify(class >= 2 and class <= 20, "The number of data classes must be >= 2 and <= 20, got "..class..".")
 
 		local brewer = colorBrewer[keyword]
 		if brewer then
@@ -1436,8 +1436,8 @@ end
 -- http://www.mkyong.com/regular-expressions/how-to-validate-hex-color-code-with-regular-expression/
 local isHex = (function()
 	local hex = "[a-fA-f0-9]"
-	local three = "^#" .. tostring(hex:rep(3)) .. "$"
-	local six = "^#" .. tostring(hex:rep(6)) .. "$"
+	local three = "^#"..tostring(hex:rep(3)).."$"
+	local six = "^#"..tostring(hex:rep(6)).."$"
 	return function(input)
 		input = tostring(input)
 		if input:match(three) or input:match(six) then
@@ -1451,18 +1451,18 @@ end)()
 local function verifyStringColor(keyword, class)
 	if keyword:find("#") then
 		if not isHex(keyword) then
-			customError("Argument '".. keyword .."' is not a valid hex color.")
+			customError("Argument 'color' ("..keyword..") is not a valid hex color.")
 		end
 	else
 		local mcolor = color(keyword, class)
 		if not mcolor then
-			local errorMsg = "Argument '".. keyword .."' is not a valid color name."
+			local errorMsg = "Argument 'color' ("..keyword..") is not a valid color name."
 			mcolor = color(keyword, 3)
 			if mcolor then
 				if not class then
-					errorMsg = "The number of data classes is mandatory for '".. keyword .."' in ColorBrewer."
+					errorMsg = "The number of data classes is mandatory for '"..keyword.."' in ColorBrewer."
 				else
-					errorMsg = "The number of data classes '"..class.."' not exist for color '".. keyword .."' in ColorBrewer."
+					errorMsg = "The number of data classes ("..class..") does not exists for color '"..keyword.."' in ColorBrewer."
 				end
 			end
 
@@ -1471,22 +1471,22 @@ local function verifyStringColor(keyword, class)
 	end
 end
 
-local function verifyRGBColor(rgb)
+local function verifyRGBColor(rgb, pos)
 	local size = #rgb
 	if size == 3 or size == 4 then
 		for i = 1, 3 do
 			local v = rgb[i]
 			local vtype = type(v)
-			verify(vtype == "number" and v == math.floor(v), "Element '"..i.."' must be an integer, got '"..v.."'.")
-			verify(v >= 0 and v <= 255, "Element '"..i.."' must be an integer between 0 and 255, got '"..v.."'.")
+			verify(vtype == "number" and v == math.floor(v), "Element '#"..i.."' in color '#"..pos.."' must be an integer, got "..v..".")
+			verify(v >= 0 and v <= 255, "Element '#"..i.."' in color '#"..pos.."' must be an integer between 0 and 255, got "..v..".")
 
 			local a = rgb[4]
 			if a and (a < 0 or a > 1) then
-				customError("The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '"..a.."'.")
+				customError("The alpha parameter of color '#"..pos.."' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got "..a..".")
 			end
 		end
 	else
-		customError("Color must be a table with 3 or 4 arguments (red, green, blue and alpha), got '"..size.."'.")
+		customError("Argument 'color' ("..pos..") must be a table with 3 or 4 arguments (red, green, blue and alpha), got "..size..".")
 	end
 end
 
@@ -1495,19 +1495,21 @@ end
 -- color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
 -- @arg data A mandatory string or table with color name or RGB values.
 -- @arg class A optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
+-- @arg pos A optional integer with the position of color.
 -- @usage import("publish")
 -- _, err = pcall(function() verifyColor({10, 15, 20, 2}) end)
 -- print(err)
-function verifyColor(data, class)
+function verifyColor(data, class, pos)
 	if data == nil then
 		customError(mandatoryArgumentMsg("data"))
 	end
 
+	pos = pos or 1
 	local mtype = type(data)
 	if mtype == "string" then
 		verifyStringColor(data, class)
 	elseif mtype == "table" then
-		verifyRGBColor(data, class)
+		verifyRGBColor(data, pos)
 	else
 		customError("Each parameter of color must be a string or table, got '"..mtype.."'.")
 	end

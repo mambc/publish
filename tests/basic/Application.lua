@@ -117,7 +117,7 @@ return {
 			layout = layout,
 			clean = true,
 			select = "river",
-			color = {"#e5f5f9", "#99d8c9", "#2ca25f", "#e5f5f9", "#99d8c9", "#2ca25f"},
+			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
 			output = emasDir

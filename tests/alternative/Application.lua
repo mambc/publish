@@ -175,13 +175,13 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument '#afafah' is not a valid hex color.")
+		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color.")
 
 		data.color = "Redss"
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'Redss' is not a valid color name.")
+		unitTest:assertError(error_func, "Argument 'color' (Redss) is not a valid color name.")
 
 		data.color = {"Reds", "Blues", "PuRd"}
 		error_func = function()
@@ -199,32 +199,32 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Element '1' must be an integer between 0 and 255, got '-1'.")
+		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got -1.")
 
 		data.color = {{0, 0, 0}, {1, 1, 1}, {255, 255, 255, 2}}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '2'.")
+		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 2.")
 
 		data.color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque), got '1.00001'.")
+		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 1.00001.")
 
 		data.color = {"#edf8fb", "#b2e2e2"}
 		data.value = {}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'value' must be a table with size greater than 0, got '0'.")
+		unitTest:assertError(error_func, "Argument 'value' must be a table with size greater than 0, got 0.")
 
 		data.value = {0, 1, 2}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "The number of colors (2) must be greater than or equal to number of data classes (3).")
+		unitTest:assertError(error_func, "The number of colors (2) must be equal to number of data classes (3).")
 
 		data.color = "BuGn"
 		data.select = 1

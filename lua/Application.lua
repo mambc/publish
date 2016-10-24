@@ -70,12 +70,12 @@ local function getColors(data)
 	end
 
 	local nColors = #data.color
-	verify(nColors >= data.classes, "The number of colors ("..nColors..") must be greater than or equal to number of data classes ("..data.classes..").")
+	verify(data.classes == nColors, "The number of colors ("..nColors..") must be equal to number of data classes ("..data.classes..").")
 
 	local colors = {}
 	for i = 1, data.classes do
 		local mcolor = data.color[i]
-		verifyColor(mcolor)
+		verifyColor(mcolor, nil, i)
 
 		if type(mcolor) == "table" then
 			local a = mcolor[4] or 1
@@ -92,7 +92,7 @@ local function getColors(data)
 end
 
 local function createDirectoryStructure(data)
-	printInfo("Creating directory structure.")
+	printInfo("Creating directory structure")
 	if data.clean == true and data.output:exists() then
 		data.output:delete()
 	end
@@ -117,7 +117,7 @@ local function createDirectoryStructure(data)
 	end
 
 	forEachElement(depends, function(_, file)
-		printNormal("Copying dependency '"..file.."'.")
+		printNormal("Copying dependency '"..file.."'")
 		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")
 	end)
 end
@@ -133,24 +133,24 @@ local function exportLayers(data, sof)
 		end
 
 		if isValidLayer(layer) then
-			printNormal("Exporting layer '"..layer.name.."'.")
+			printNormal("Exporting layer '"..layer.name.."'")
 			layer:export(data.datasource..layer.name..".geojson", true)
 		else
-			printWarning("Publish cannot export raster layer '"..layer.name.."'.")
+			printWarning("Publish cannot export yet raster layer '"..layer.name.."'")
 		end
 	end)
 end
 
 local function loadLayers(data)
 	if data.project and not data.layers then
-		printInfo("Loading layers from '"..data.project.file.."'.")
+		printInfo("Loading layers from '"..data.project.file.."'")
 		data.layers = {}
 		exportLayers(data, function(layer)
 			table.insert(data.layers, layer.name)
 			return true
 		end)
 	elseif data.project and data.layers then
-		printInfo("Loading layers from '"..data.project.file.."'.")
+		printInfo("Loading layers from '"..data.project.file.."'")
 		exportLayers(data, function(layer)
 			local found = false
 			forEachElement(data.layers, function(_, mvalue)
@@ -163,7 +163,7 @@ local function loadLayers(data)
 			return found
 		end)
 	else
-		printInfo("Loading layers from path.")
+		printInfo("Loading layers from path")
 		local mproj = {
 			file = data.layout.title..".tview",
 			clean = true
@@ -194,7 +194,7 @@ local function exportTemplates(data)
 			template = Templates[mfile.input]
 		end
 
-		printNormal("Creating file '"..mfile.output.."'.")
+		printNormal("Creating file '"..mfile.output.."'")
 		local fwrite = File(data.output..mfile.output)
 		fwrite:write(lustache:render(template, mfile.model))
 		fwrite:close()
@@ -210,7 +210,7 @@ local function createApplication(data, proj)
 		return "\""..render(text).."\""
 	end
 
-	printInfo("Loading template.")
+	printInfo("Loading template")
 	if not proj then
 		proj = ""
 		page = index
@@ -292,10 +292,10 @@ metaTableApplication_ = {
 -- @arg data.layers A table of strings with the layers to be exported. As default, it will export all the available layers.
 -- @arg data.layout A mandatory Layout.
 -- @arg data.legend A string value with the layers legend. The default value is project title.
--- @arg data.output A mandatory Directory or directory name where the output will be stored.
+-- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
 -- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
--- @arg data.project A Project or string with the path to a .tview file.
+-- @arg data.project A terralib::Project or string with the path to a .tview file.
 -- @arg data.select A mandatory string with the name of the attribute to be visualized.
 -- @arg data.value A mandatory table with the possible values for the selected attributes.
 -- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
@@ -357,7 +357,7 @@ function Application(data)
 	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value", "select"})
 
 	data.classes = #data.value
-	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got '"..data.classes.."'.")
+	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got "..data.classes..".")
 
 	data.color = getColors(data)
 
@@ -374,7 +374,7 @@ function Application(data)
 		verify(not data.layers, unnecessaryArgumentMsg("layers"))
 		data.package = packageInfo(data.package)
 
-		printInfo("Creating application for package '"..data.package.package.."'.")
+		printInfo("Creating application for package '"..data.package.package.."'")
 		local nProj = 0
 		local projects = {}
 		forEachFile(data.package.data, function(file)
@@ -472,7 +472,7 @@ function Application(data)
 	setmetatable(data, metaTableApplication_)
 
 	local finalTime = os.clock()
-	printInfo("Summing up, application '"..data.layout.title.."' were successfully created in "..round(finalTime - initialTime, 4).." seconds.")
+	printInfo("Summing up, application '"..data.layout.title.."' was successfully created in "..round(finalTime - initialTime, 2).." seconds")
 
 	return data
 end
