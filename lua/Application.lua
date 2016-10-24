@@ -183,6 +183,83 @@ local function loadLayers(data)
 	end
 end
 
+local function createApplicationProjects(data, proj)
+	printInfo("Loading Template")
+	local index = "index.html"
+	local config = "config.js"
+	if proj then
+		index = proj ..".html"
+		config = proj ..".js"
+	else
+		proj = ""
+	end
+
+	registerApplicationModel {
+		input = templateDir.."config.mustache",
+		output = config,
+		model = {
+			center = data.layout.center,
+			zoom = data.layout.zoom,
+			minZoom = data.layout.minZoom,
+			maxZoom = data.layout.maxZoom,
+			base = data.layout.base:upper(),
+			path = proj,
+			color = data.color,
+			select = data.select,
+			layers = data.layers,
+			legend = data.legend,
+			quotes = function(text, render)
+				return "\""..render(text).."\""
+			end
+		}
+	}
+
+	registerApplicationModel {
+		input = templateDir.."template.mustache",
+		output = index,
+		model = {
+			config = config,
+			title = data.layout.title,
+			description = data.layout.description,
+			layers = data.layers
+		}
+	}
+end
+
+local function createApplicationHome(data)
+	printInfo("Loading Home Page")
+	local index = "index.html"
+	local config = "config.js"
+
+	registerApplicationModel {
+		input = templateDir.."pkgconfig.mustache",
+		output = config,
+		model = {
+			center = data.layout.center,
+			zoom = data.layout.zoom,
+			minZoom = data.layout.minZoom,
+			maxZoom = data.layout.maxZoom,
+			base = data.layout.base:upper(),
+			legend = data.legend,
+			projects = data.project,
+			quotes = function(text, render)
+				return "\""..render(text).."\""
+			end
+		}
+	}
+
+	registerApplicationModel {
+		input = templateDir.."package.mustache",
+		output = index,
+		model = {
+			config = config,
+			package = data.package.package,
+			description = data.package.content,
+			projects = data.project
+		}
+	}
+end
+
 local function exportTemplates(data)
 	forEachElement(ViewModel, function(_, mfile)
 		local template = Templates[mfile.input]
@@ -199,83 +276,6 @@ local function exportTemplates(data)
 		fwrite:write(lustache:render(template, mfile.model))
 		fwrite:close()
 	end)
-end
-
-local function createApplication(data, proj)
-	local page, pageConf
-	local index = "index.html"
-	local config = "config.js"
-
-	local function quotes(text, render)
-		return "\""..render(text).."\""
-	end
-
-	printInfo("Loading template")
-	if not proj then
-		proj = ""
-		page = index
-		pageConf = config
-	else
-		page = proj ..".html"
-		pageConf = proj ..".js"
-
-		registerApplicationModel {
-			input = templateDir.."pkgconfig.mustache",
-			output = config,
-			model = {
-				center = data.layout.center,
-				zoom = data.layout.zoom,
-				minZoom = data.layout.minZoom,
-				maxZoom = data.layout.maxZoom,
-				base = data.layout.base:upper(),
-				legend = data.legend,
-				projects = data.projects,
-				quotes = quotes
-			}
-		}
-
-		registerApplicationModel {
-			input = templateDir.."package.mustache",
-			output = index,
-			model = {
-				config = config,
-				package = data.package.package,
-				description = data.package.content,
-				projects = data.projects
-			}
-		}
-	end
-
-	registerApplicationModel {
-		input = templateDir.."config.mustache",
-		output = pageConf,
-		model = {
-			center = data.layout.center,
-			zoom = data.layout.zoom,
-			minZoom = data.layout.minZoom,
-			maxZoom = data.layout.maxZoom,
-			base = data.layout.base:upper(),
-			path = proj,
-			color = data.color,
-			select = data.select,
-			layers = data.layers,
-			legend = data.legend,
-			quotes = quotes
-		}
-	}
-
-	registerApplicationModel {
-		input = templateDir.."template.mustache",
-		output = page,
-		model = {
-			config = pageConf,
-			title = data.layout.title,
-			description = data.layout.description,
-			layers = data.layers
-		}
-	}
-
-	exportTemplates(data)
 end
 
 Application_ = {
@@ -421,7 +421,7 @@ function Application(data)
 				end)
 
 				loadLayers(data)
-				createApplication(data)
+				createApplicationProjects(data)
 			else
 				forEachElement(projects, function(fname, proj)
 					local datasource = Directory(data.datasource..fname)
@@ -441,9 +441,13 @@ function Application(data)
 					end)
 
 					loadLayers(mdata)
-					createApplication(mdata, fname)
+					createApplicationProjects(mdata, fname)
 				end)
+
+				createApplicationHome(data)
 			end
+
+			exportTemplates(data)
 		end
 	else
 		if data.project then
@@ -466,7 +470,8 @@ function Application(data)
 
 		createDirectoryStructure(data)
 		loadLayers(data)
-		createApplication(data)
+		createApplicationProjects(data)
+		exportTemplates(data)
 	end
 
 	setmetatable(data, metaTableApplication_)
