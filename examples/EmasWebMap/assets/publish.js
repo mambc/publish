@@ -95,9 +95,7 @@ $(function(){
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 
 		$('#layers').find(':button').click(onClick);
-
-		if(!Publish.zoom)
-			initialZoom(Publish.data);
+		initialZoom(Publish.data);
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
