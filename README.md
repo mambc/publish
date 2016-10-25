@@ -7,25 +7,29 @@ Publish is distributed under the GNU Lesser General Public License as published 
 
 ## Example
 
+(The example below will work after release 0.1)
+
 ```lua
 import("publish")
 
-local layout = Layout{
-	title = "Emas",
-	description = "Creates a database that can be used by the example fire-spread of base package.",
-	base = "satellite",
-	zoom = 10,
-	center = {lat = -18.106389, long = -52.927778}
-}
-
 Application{
 	project = filePath("emas.tview", "terralib"),
-	layout = layout,
+	description = "A small example related to a fire spread model.",
 	clean = true,
-	select = "river",
-	color = "PuBu",
-	value = {0, 1, 2},
-	output = Directory("EmasWebMap")
+	river = View{
+		color = "blue"
+	},
+	limit = View{
+		border = "blue",
+		width = 2,
+		active = false
+	}
+	cells = View{
+		title = "Emas National Park",
+		select = "coverage",
+		color = "PuBu",
+		value = {0, 1, 2}
+	}
 }
 ```
 You can see the result in [Emas](https://rawgit.com/hguerra/publish/master/examples/EmasWebMap/index.html).
