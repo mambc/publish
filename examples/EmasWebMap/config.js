@@ -1,6 +1,6 @@
 var Publish = {
 	center: {lat: -18.106389, long: -52.927778 },
-	zoom: 10,
+	zoom: null,
 	minZoom: 0,
 	maxZoom: 20,
 	mapTypeId: "SATELLITE",

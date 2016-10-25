@@ -61,7 +61,7 @@ $(function(){
 				mdata.forEach(function(feature){
 					feature.getGeometry().forEachLatLng(function(coordinate){
 						bounds.extend(coordinate);
-					})
+					});
 				});
 			});
 

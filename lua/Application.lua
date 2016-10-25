@@ -199,7 +199,7 @@ local function createApplicationProjects(data, proj)
 		output = config,
 		model = {
 			center = data.layout.center,
-			zoom = data.layout.zoom,
+			zoom = data.layout.zoom or "null",
 			minZoom = data.layout.minZoom,
 			maxZoom = data.layout.maxZoom,
 			base = data.layout.base:upper(),
@@ -236,7 +236,7 @@ local function createApplicationHome(data)
 		output = config,
 		model = {
 			center = data.layout.center,
-			zoom = data.layout.zoom,
+			zoom = data.layout.zoom or "null",
 			minZoom = data.layout.minZoom,
 			maxZoom = data.layout.maxZoom,
 			base = data.layout.base:upper(),

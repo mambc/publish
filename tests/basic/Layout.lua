@@ -62,7 +62,7 @@ return {
 		unitTest:assertEquals(layout.title, "Default")
 		unitTest:assertEquals(layout.description, "")
 		unitTest:assertEquals(layout.base, data.base[2])
-		unitTest:assertEquals(layout.zoom, 12)
+		unitTest:assertNil(layout.zoom)
 		unitTest:assertEquals(layout.minZoom, 0)
 		unitTest:assertEquals(layout.maxZoom, 20)
 
@@ -73,6 +73,7 @@ return {
 
 		unitTest:assertType(layout, "Layout")
 		unitTest:assertEquals(layout.base, data.base[3])
+		unitTest:assertNil(layout.zoom)
 
 		layout = Layout{
 			base = data.base[4],
@@ -81,6 +82,7 @@ return {
 
 		unitTest:assertType(layout, "Layout")
 		unitTest:assertEquals(layout.base, data.base[4])
+		unitTest:assertNil(layout.zoom)
 	end,
 	__tostring = function(unitTest)
 		local layout = Layout{

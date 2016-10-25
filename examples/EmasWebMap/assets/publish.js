@@ -5,7 +5,7 @@ $(function(){
 
 	function renderLegend(colors, property){
 		$legend.empty();
-		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend +'</h4><br/></div>'));
+		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend + '</h4><br/></div>'));
 		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
 		$.each(colors, function(attribute, color){
 			var $div = $('<div style="height:25px;">')
@@ -16,7 +16,7 @@ $(function(){
 	}
 
 	function setStyle(feature){
-		return{
+		return {
 			fillColor: feature.getProperty("color"),
 			strokeWeight: 1
 		};
@@ -34,9 +34,8 @@ $(function(){
 				var selected = Publish.data[id];
 				var property = selected[0];
 				var colors = selected[1];
-				renderLegend(colors, property);
-
 				var mdata = new google.maps.Data();
+
 				mdata.addGeoJson(geojson);
 				mdata.forEach(function(feature){
 					feature.setProperty("color", colors[feature.getProperty(property)]);
@@ -45,8 +44,34 @@ $(function(){
 				mdata.setStyle(setStyle);
 				mdata.setMap(map);
 				data[id] = mdata;
+
+				renderLegend(colors, property);
 			});
 		}
+	}
+
+	function initialZoom(projects) {
+		var XHRs = []
+		var bounds = new google.maps.LatLngBounds();
+		$.each(projects, function(id) {
+			var url = Publish.path + id + ".geojson";
+			var defer = $.getJSON(url, function(geojson){
+				var mdata = new google.maps.Data();
+				mdata.addGeoJson(geojson);
+				mdata.forEach(function(feature){
+					feature.getGeometry().forEachLatLng(function(coordinate){
+						bounds.extend(coordinate);
+					});
+				});
+			});
+
+			if(defer.state() != "rejected")
+				XHRs.push(defer);
+		})
+
+		$.when(XHRs).then(function(){
+			map.fitBounds(bounds);
+		});
 	}
 
 	function initMap(){
@@ -70,22 +95,25 @@ $(function(){
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 
 		$('#layers').find(':button').click(onClick);
+
+		if(!Publish.zoom)
+			initialZoom(Publish.data);
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
 
 	function applyMargins(){
 		var leftToggler = $('.mini-submenu-left');
-		if (leftToggler.is(':visible')) {
-		 	$('#map').find('.ol-zoom')
-			.css('margin-left', 0)
-			.removeClass('zoom-top-opened-sidebar')
-			.addClass('zoom-top-collapsed');
-		} else {
+		if(leftToggler.is(':visible')){
 			$('#map').find('.ol-zoom')
-			.css('margin-left', $('.sidebar-left').width())
-			.removeClass('zoom-top-opened-sidebar')
-			.removeClass('zoom-top-collapsed');
+				.css('margin-left', 0)
+				.removeClass('zoom-top-opened-sidebar')
+				.addClass('zoom-top-collapsed');
+		}else{
+			$('#map').find('.ol-zoom')
+				.css('margin-left', $('.sidebar-left').width())
+				.removeClass('zoom-top-opened-sidebar')
+				.removeClass('zoom-top-collapsed');
 		}
 	}
 
@@ -94,21 +122,21 @@ $(function(){
 	}
 
 	function applyInitialUIState(){
-		if (isConstrained()){
+		if(isConstrained()){
 			$('.sidebar-left .sidebar-body').fadeOut('slide');
 			$('.mini-submenu-left').fadeIn();
 		}
 	}
 
-	$('.sidebar-left .slide-submenu').on('click',function(){
+	$('.sidebar-left .slide-submenu').on('click', function(){
 		var thisEl = $(this);
-		thisEl.closest('.sidebar-body').fadeOut('slide',function(){
+		thisEl.closest('.sidebar-body').fadeOut('slide', function(){
 			$('.mini-submenu-left').fadeIn();
 			applyMargins();
 		});
 	});
 
-	$('.mini-submenu-left').on('click',function(){
+	$('.mini-submenu-left').on('click', function(){
 		var thisEl = $(this);
 		$('.sidebar-left .sidebar-body').toggle('slide');
 		thisEl.hide();

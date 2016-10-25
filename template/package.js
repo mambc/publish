@@ -16,6 +16,17 @@ $(function(){
 		window.location.href = "./" + event.target.id + ".html";
 	}
 
+	function initialZoom(mdata, bounds) {
+		if(Publish.zoom)
+			return;
+
+		mdata.forEach(function(feature){
+			feature.getGeometry().forEachLatLng(function(coordinate){
+				bounds.extend(coordinate);
+			});
+		});
+	}
+
 	function loadAreasOfInterest(){
 		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend +'</h4><br/></div>'));
 		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
@@ -37,17 +48,12 @@ $(function(){
 					};
 				});
 
-				mdata.forEach(function(feature){
-					feature.getGeometry().forEachLatLng(function(coordinate){
-						bounds.extend(coordinate);
-					})
-				});
-
 				mdata.addListener("click", function(event){
 					window.location.href = "./" + event.feature.getProperty("project") + ".html";
 				});
 
 				mdata.setMap(map);
+				initialZoom(mdata, bounds);
 
 				var $div = $('<div style="height:25px;">')
 				.append($('<div class="legend-color-box">').css({backgroundColor: color}))
@@ -60,9 +66,11 @@ $(function(){
 
 		});
 
-		$.when(XHRs).then(function(){
-			map.fitBounds(bounds);
-		});
+		if(!Publish.zoom){
+			$.when(XHRs).then(function(){
+				map.fitBounds(bounds);
+			});
+		}
 	}
 
 	function initMap(){

@@ -8,7 +8,6 @@ local layout = Layout{
 	title = "Emas",
 	description = "Database that can be used by the example fire-spread of base package.",
 	base = "satellite",
-	zoom = 10,
 	center = {lat = -18.106389, long = -52.927778}
 }
 
