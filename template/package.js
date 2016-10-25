@@ -20,9 +20,11 @@ $(function(){
 		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend +'</h4><br/></div>'));
 		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
 
+		var XHRs = [];
+		var bounds = new google.maps.LatLngBounds();
 		$.each(Publish.data, function(proj, layer){
 			var url = Publish.path(proj) + layer + ".geojson";
-			$.getJSON(url, function(geojson){
+			var defer = $.getJSON(url, function(geojson){
 				var color = getRandomColor();
 				var mdata = new google.maps.Data();
 
@@ -33,6 +35,12 @@ $(function(){
 						fillColor: color,
 						strokeWeight: 1
 					};
+				});
+
+				mdata.forEach(function(feature){
+					feature.getGeometry().forEachLatLng(function(coordinate){
+						bounds.extend(coordinate);
+					})
 				});
 
 				mdata.addListener("click", function(event){
@@ -46,6 +54,14 @@ $(function(){
 				.append($('<span>').css("lineHeight", "23px").html(proj));
 				$legendContent.append($div);
 			});
+
+			if(defer.state() != "rejected")
+				XHRs.push(defer);
+
+		});
+
+		$.when(XHRs).then(function(){
+			map.fitBounds(bounds);
 		});
 	}
 
