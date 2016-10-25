@@ -1,0 +1,20 @@
+var Publish = {
+	center: {lat: {{center.lat}}, long: {{center.long}} },
+	zoom: {{zoom}},
+	minZoom: {{minZoom}},
+	maxZoom: {{maxZoom}},
+	mapTypeId: "{{base}}",
+	legend: "{{legend}}",
+	path: (function(){
+		var data = "./data/";
+		var url = "{{path}}";
+		if(url)
+			return data + url + "/";
+		return data;
+	}()),
+	data: {
+		{{#layers}}
+		{{.}}: [{{#quotes}}{{select}}{{/quotes}}, { {{#color}}{{property}}: {{#quotes}}{{rgba}}{{/quotes}},{{/color}} }],
+		{{/layers}}
+	}
+};

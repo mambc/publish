@@ -1,0 +1,19 @@
+var Publish = {
+	center: {lat: {{center.lat}}, long: {{center.long}} },
+	zoom: {{zoom}},
+	minZoom: {{minZoom}},
+	maxZoom: {{maxZoom}},
+	mapTypeId: "{{base}}",
+	legend: "{{legend}}",
+	path: function(project){
+		var data =  "./data/";
+		if(project)
+			data += project += "/";
+		return data
+	},
+	data: {
+ 	{{#projects}}
+		{{project}}: {{#quotes}}{{layer}}{{/quotes}},
+	{{/projects}}
+	}
+};
