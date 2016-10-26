@@ -65,11 +65,14 @@ $(function(){
 				});
 			});
 
-			if(defer.state() != "rejected")
+			if(defer.state() != "rejected"){
+				console.log(id);
 				XHRs.push(defer);
+			}
 		});
 
 		$.when(XHRs).then(function(){
+			console.log(XHRs.length);
 			map.fitBounds(bounds);
 		});
 	}
