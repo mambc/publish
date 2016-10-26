@@ -61,9 +61,9 @@ $(function(){
 				$legendContent.append($div);
 			});
 
-			if(defer.state() != "rejected")
+			defer.done(function(){
 				XHRs.push(defer);
-
+			});
 		});
 
 		if(!Publish.zoom){

@@ -2,6 +2,7 @@ $(function(){
 	var map;
 	var data = {};
 	var $legend = $('#legend');
+	var $loader = $('#loader');
 
 	function renderLegend(colors, property){
 		$legend.empty();
@@ -29,6 +30,7 @@ $(function(){
 			data[id].setMap(null);
 			delete data[id];
 		}else{
+			$loader.fadeIn();
 			var url = Publish.path + id + ".geojson";
 			$.getJSON(url, function(geojson){
 				var selected = Publish.data[id];
@@ -46,6 +48,8 @@ $(function(){
 				data[id] = mdata;
 
 				renderLegend(colors, property);
+			}).always(function() {
+				$loader.fadeOut();
 			});
 		}
 	}
@@ -65,9 +69,9 @@ $(function(){
 				});
 			});
 
-			if(defer.state() != "rejected"){
+			defer.done(function(){
 				XHRs.push(defer);
-			}
+			});
 		});
 
 		$.when(XHRs).then(function(){
@@ -96,8 +100,9 @@ $(function(){
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 
 		$('#layers').find(':button').click(onClick);
-
-		initialZoom(Publish.data);
+		if(!Publish.zoom){
+			initialZoom(Publish.data);
+		}
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);

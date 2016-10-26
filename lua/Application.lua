@@ -111,7 +111,7 @@ local function createDirectoryStructure(data)
 		data.assets:create()
 	end
 
-	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js" }
+	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js", "default.gif"}
 	if data.package then
 		table.insert(depends, "package.js")
 	end

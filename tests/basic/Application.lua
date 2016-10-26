@@ -38,7 +38,8 @@ return {
 		local appAssets = {
 			["jquery-3.1.1.min.js"] = true,
 			["publish.css"] = true,
-			["publish.js"] = true
+			["publish.js"] = true,
+			["default.gif"] = true
 		}
 
 		local appData = {
