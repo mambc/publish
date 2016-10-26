@@ -51,7 +51,7 @@ $(function(){
 	}
 
 	function initialZoom(projects) {
-		var XHRs = []
+		var XHRs = [];
 		var bounds = new google.maps.LatLngBounds();
 		$.each(projects, function(id) {
 			var url = Publish.path + id + ".geojson";
@@ -67,7 +67,7 @@ $(function(){
 
 			if(defer.state() != "rejected")
 				XHRs.push(defer);
-		})
+		});
 
 		$.when(XHRs).then(function(){
 			map.fitBounds(bounds);
@@ -95,7 +95,10 @@ $(function(){
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 
 		$('#layers').find(':button').click(onClick);
-		initialZoom(Publish.data);
+
+		setTimeout(function () {
+			initialZoom(Publish.data);
+		}, 5000);
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
