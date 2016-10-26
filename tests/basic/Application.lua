@@ -83,12 +83,12 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(#app.layers, getn(appData))
 
 		-- Testing Application: project = Project, layers = nil and package = nil.
 		local fname = File("emas-test.tview")
@@ -130,12 +130,12 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(#app.layers, getn(appData))
 
 		-- Testing Application: project = Project, layers = {firebreak, cover, river} and package = nil.
 		appData = {
@@ -230,7 +230,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers) + 1) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
@@ -268,12 +268,12 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(#app.layers, getn(appData))
 
 		if app.output:exists() then app.output:delete() end
 		fname:deleteIfExists()
@@ -374,7 +374,7 @@ classes     number [3]
 clean       boolean [true]
 color       vector of size 3
 datasource  Directory
-layers      vector of size 5
+layers      vector of size 4
 layout      Layout
 legend      string [Legend]
 output      Directory

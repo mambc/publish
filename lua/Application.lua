@@ -122,8 +122,8 @@ local function createDirectoryStructure(data)
 	end)
 end
 
-local function isValidLayer(layer)
-	return SourceTypeMapper[layer.source] == "OGR" or SourceTypeMapper[layer.source] == "POSTGIS"
+local function isValidSource(source)
+	return SourceTypeMapper[source] == "OGR" or SourceTypeMapper[source] == "POSTGIS"
 end
 
 local function exportLayers(data, sof)
@@ -132,12 +132,8 @@ local function exportLayers(data, sof)
 			return
 		end
 
-		if isValidLayer(layer) then
-			printNormal("Exporting layer '"..layer.name.."'")
-			layer:export(data.datasource..layer.name..".geojson", true)
-		else
-			printWarning("Publish cannot export yet raster layer '"..layer.name.."'")
-		end
+		printNormal("Exporting layer '"..layer.name.."'")
+		layer:export(data.datasource..layer.name..".geojson", true)
 	end)
 end
 
@@ -146,6 +142,11 @@ local function loadLayers(data)
 		printInfo("Loading layers from '"..data.project.file.."'")
 		data.layers = {}
 		exportLayers(data, function(layer)
+			if not isValidSource(layer.source) then
+				printWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+				return false
+			end
+
 			table.insert(data.layers, layer.name)
 			return true
 		end)
@@ -153,10 +154,16 @@ local function loadLayers(data)
 		printInfo("Loading layers from '"..data.project.file.."'")
 		exportLayers(data, function(layer)
 			local found = false
-			forEachElement(data.layers, function(_, mvalue)
+			forEachElement(data.layers, function(idx, mvalue)
 				local mvalue = tostring(mvalue)
 				if mvalue == layer.name or mvalue == layer.file then
-					found = true
+					if isValidSource(layer.source) then
+						found = true
+					else
+						printWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+						data.layers[idx] = nil
+					end
+
 					return false
 				end
 			end)
@@ -170,7 +177,7 @@ local function loadLayers(data)
 		}
 
 		forEachElement(data.layers, function(_, file)
-			if file:exists() then
+			if file:exists() and isValidSource(file:extension()) then
 				local _, name = file:split()
 				mproj[name] = tostring(file)
 			end
@@ -396,8 +403,9 @@ function Application(data)
 					local abstractLayer = proj.layers[bbox]
 					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
 
-					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle()}
-					verify(isValidLayer(layer), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[layer.source].."'.")
+					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle() }
+					local source = layer.source
+					verify(isValidSource(source), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[source].."'.")
 
 					data.project[name] = nil
 					table.insert(data.project, {project = name, layer = bbox})
