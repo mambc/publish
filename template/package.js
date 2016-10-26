@@ -76,8 +76,6 @@ $(function(){
 	function initMap(){
 		google.maps.visualRefresh = true;
 		var mapOptions = {
-			center: new google.maps.LatLng(Publish.center.lat, Publish.center.long),
-			zoom: Publish.zoom,
 			minZoom: Publish.minZoom,
 			maxZoom: Publish.maxZoom,
 			mapTypeId: google.maps.MapTypeId[Publish.mapTypeId],
@@ -87,6 +85,14 @@ $(function(){
 				position: google.maps.ControlPosition.TOP_RIGHT
 			}
 		};
+
+		if(Publish.center){
+			mapOptions.center = new google.maps.LatLng(Publish.center.lat, Publish.center.long);
+		}
+
+		if(Publish.zoom){
+			mapOptions.zoom = Publish.zoom;
+		}
 
 		var mapElement = document.getElementById("map");
 		map = new google.maps.Map(mapElement, mapOptions);

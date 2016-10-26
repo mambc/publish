@@ -47,7 +47,6 @@ metaTableLayout_ = {
 -- layout = Layout{
 --     title = "INPE",
 --     description = "Satellite image of São José dos Campos.",
---     base = "satellite",
 --     zoom = 17,
 --     center = {lat = -23.179017, long = -45.889188}
 -- }
@@ -55,18 +54,20 @@ metaTableLayout_ = {
 -- print(layout)
 function Layout(data)
 	verifyNamedTable(data)
-	mandatoryTableArgument(data, "center", "table") -- TODO #8
-	verifyNamedTable(data.center)
-	mandatoryTableArgument(data.center, "lat", "number")
-	mandatoryTableArgument(data.center, "long", "number")
-	verifyUnnecessaryArguments(data.center, {"lat", "long"})
+
+	optionalTableArgument(data, "center", "table")
+	if data.center then
+		verifyNamedTable(data.center)
+		mandatoryTableArgument(data.center, "lat", "number")
+		mandatoryTableArgument(data.center, "long", "number")
+		verifyUnnecessaryArguments(data.center, {"lat", "long"})
+	end
 
 	verifyUnnecessaryArguments(data, {"title", "description", "base", "zoom", "minZoom", "maxZoom", "center"})
-
 	optionalTableArgument(data, "zoom", "number")
 	defaultTableValue(data, "title", "Default")
 	defaultTableValue(data, "description", "")
-	defaultTableValue(data, "base", "roadmap")
+	defaultTableValue(data, "base", "satellite")
 	defaultTableValue(data, "minZoom", 0)
 	defaultTableValue(data, "maxZoom", 20)
 
@@ -90,11 +91,11 @@ function Layout(data)
 		customError("Argument 'minZoom' ("..data.minZoom..") should be less than 'maxZoom' ("..data.maxZoom..").")
 	end
 
-	if data.center.lat < -90 or data.center.lat > 90 then
+	if data.center and (data.center.lat < -90 or data.center.lat > 90) then
 		customError("Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
 	end
 
-	if data.center.long < -180 or data.center.long > 180 then
+	if data.center and (data.center.long < -180 or data.center.long > 180) then
 		customError("Center 'long' must be a number >= -180 and <= 180, got '"..data.center.long.."'.")
 	end
 

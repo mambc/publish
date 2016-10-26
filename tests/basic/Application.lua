@@ -60,7 +60,6 @@ return {
 		local layout = Layout{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
-			base = "satellite",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -351,7 +350,6 @@ return {
 		local layout = Layout{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
-			base = "satellite",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}

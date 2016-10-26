@@ -326,7 +326,6 @@ metaTableApplication_ = {
 -- local layout = Layout{
 --     title = "Emas",
 --     description = "Creates a database that can be used by the example fire-spread of base package.",
---     base = "satellite",
 --     zoom = 14,
 --     center = {lat = -18.106389, long = -52.927778}
 -- }
@@ -348,9 +347,9 @@ function Application(data)
 	verifyNamedTable(data)
 	verify(data.project or data.layers or data.package, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
 	verify(data.color, "Argument 'color' is mandatory to publish your data.")
-	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	mandatoryTableArgument(data, "value", "table")
 	mandatoryTableArgument(data, "select", "string")
+	optionalTableArgument(data, "layout", "Layout")
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -380,6 +379,7 @@ function Application(data)
 		optionalTableArgument(data, "project", "table")
 		verify(not data.layers, unnecessaryArgumentMsg("layers"))
 		data.package = packageInfo(data.package)
+		data.layout = data.layout or Layout{title = data.package.package}
 
 		printInfo("Creating application for package '"..data.package.package.."'")
 		local nProj = 0
@@ -475,6 +475,8 @@ function Application(data)
 
 			mandatoryTableArgument(data, "project", "Project")
 		end
+
+		data.layout = data.layout or Layout{title = data.project.file:name()}
 
 		createDirectoryStructure(data)
 		loadLayers(data)

@@ -30,7 +30,6 @@ return {
 		local layout = Layout{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
-			base = "satellite",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -89,13 +88,6 @@ return {
 		unitTest:assertError(error_func, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
 
 		data.project = emas
-		data.layout = nil
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("layout"))
-
-		data.layout = layout
 		data.value = nil
 		error_func = function()
 			Application(clone(data))
