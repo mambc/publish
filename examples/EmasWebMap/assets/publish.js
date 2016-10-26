@@ -65,9 +65,9 @@ $(function(){
 				});
 			});
 
-			defer.done(function () {
+			if(defer.state() != "rejected"){
 				XHRs.push(defer);
-			});
+			}
 		});
 
 		$.when(XHRs).then(function(){
@@ -97,9 +97,7 @@ $(function(){
 
 		$('#layers').find(':button').click(onClick);
 
-		setTimeout(function () {
-			initialZoom(Publish.data);
-		}, 5000);
+		initialZoom(Publish.data);
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
