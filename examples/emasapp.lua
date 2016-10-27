@@ -6,7 +6,7 @@ import("publish")
 
 local layout = Layout{
 	title = "Emas",
-	description = "Database that can be used by the example fire-spread of base package."
+	description = "A small example related to a fire spread model."
 }
 
 Application{
