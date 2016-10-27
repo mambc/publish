@@ -70,9 +70,11 @@ $(function(){
 			}));
 		});
 
-		$.when(XHRs).then(function(){
-			map.fitBounds(bounds);
-		});
+		setTimeout(function () {
+			$.when(XHRs).then(function(){
+				map.fitBounds(bounds);
+			});
+		}, 1000);
 	}
 
 	function initMap(){
