@@ -69,9 +69,13 @@ $(function(){
 				});
 			});
 
-			defer.done(function(){
+			// defer.done(function(){
+			// 	XHRs.push(defer);
+			// });
+
+			if(defer.state() != "rejected"){
 				XHRs.push(defer);
-			});
+			}
 		});
 
 		$.when(XHRs).then(function(){
