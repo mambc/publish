@@ -59,7 +59,7 @@ $(function(){
 		var bounds = new google.maps.LatLngBounds();
 		$.each(projects, function(id) {
 			var url = Publish.path + id + ".geojson";
-			var defer = $.getJSON(url, function(geojson){
+			XHRs.push($.getJSON(url, function(geojson){
 				var mdata = new google.maps.Data();
 				mdata.addGeoJson(geojson);
 				mdata.forEach(function(feature){
@@ -67,11 +67,7 @@ $(function(){
 						bounds.extend(coordinate);
 					});
 				});
-			});
-
-			defer.done(function(){
-				XHRs.push(defer);
-			});
+			}));
 		});
 
 		$.when(XHRs).then(function(){
@@ -80,59 +76,35 @@ $(function(){
 	}
 
 	function initMap(){
-		var XHRs = [];
-		var bounds = new google.maps.LatLngBounds();
-		$.each(Publish.data, function(id) {
-			var url = Publish.path + id + ".geojson";
-			var defer = $.getJSON(url, function(geojson){
-				var mdata = new google.maps.Data();
-				mdata.addGeoJson(geojson);
-				mdata.forEach(function(feature){
-					feature.getGeometry().forEachLatLng(function(coordinate){
-						bounds.extend(coordinate);
-					});
-				});
-			});
-
-			defer.done(function(){
-				XHRs.push(defer);
-			});
-		});
-
-		$.when(XHRs).then(function(){
-			console.log("Done");
-			// map
-			google.maps.visualRefresh = true;
-			var mapOptions = {
-				minZoom: Publish.minZoom,
-				maxZoom: Publish.maxZoom,
-				mapTypeId: google.maps.MapTypeId[Publish.mapTypeId],
-				mapTypeControl: true,
-				mapTypeControlOptions: {
-					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-					position: google.maps.ControlPosition.TOP_RIGHT
-				}
-			};
-
-			if(Publish.center){
-				mapOptions.center = new google.maps.LatLng(Publish.center.lat, Publish.center.long);
+		google.maps.visualRefresh = true;
+		var mapOptions = {
+			minZoom: Publish.minZoom,
+			maxZoom: Publish.maxZoom,
+			mapTypeId: google.maps.MapTypeId[Publish.mapTypeId],
+			mapTypeControl: true,
+			mapTypeControlOptions: {
+				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+				position: google.maps.ControlPosition.TOP_RIGHT
 			}
+		};
 
-			if(Publish.zoom){
-				mapOptions.zoom = Publish.zoom;
-			}
+		if(Publish.center){
+			mapOptions.center = new google.maps.LatLng(Publish.center.lat, Publish.center.long);
+		}
 
-			var mapElement = document.getElementById("map");
-			map = new google.maps.Map(mapElement, mapOptions);
-			map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
-			map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
-			$('#layers').find(':button').click(onClick);
-			// map
+		if(Publish.zoom){
+			mapOptions.zoom = Publish.zoom;
+		}
 
-			if(!Publish.zoom){
-				map.fitBounds(bounds);
-			}
-		});
+		var mapElement = document.getElementById("map");
+		map = new google.maps.Map(mapElement, mapOptions);
+		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
+		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
+		$('#layers').find(':button').click(onClick);
+
+		if(!Publish.zoom){
+			initialZoom(Publish.data);
+		}
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
