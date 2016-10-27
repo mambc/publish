@@ -307,6 +307,9 @@ metaTableApplication_ = {
 -- @arg data.project A terralib::Project or string with the path to a .tview file.
 -- @arg data.select A mandatory string with the name of the attribute to be visualized.
 -- @arg data.value A mandatory table with the possible values for the selected attributes.
+-- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
+-- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ring-alt", "ripple", "rolling", "spin",
+-- "squares", "triangle", "wheel" (see http://loading.io/).
 -- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
 -- a color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords),
 -- as tables with three integer numbers representing RGB compositions, such as {0, 0, 0},
@@ -321,25 +324,6 @@ metaTableApplication_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
--- @arg data.loading A optional string with the name of loading icon.
--- The loading available are:
--- @tabular loading
--- Name & Icon \
--- balls & <img src="https://github.com/hguerra/publish/tree/master/template/loader/balls.gif"> \
--- box & <img src="https://github.com/hguerra/publish/tree/master/template/loader/box.gif"> \
--- default & <img src="https://github.com/hguerra/publish/tree/master/template/loader/default.gif"> \
--- ellipsis & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ellipsis.gif"> \
--- hourglass & <img src="https://github.com/hguerra/publish/tree/master/template/loader/hourglass.gif"> \
--- poi & <img src="https://github.com/hguerra/publish/tree/master/template/loader/poi.gif"> \
--- reload & <img src="https://github.com/hguerra/publish/tree/master/template/loader/reload.gif"> \
--- ring & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ring"> \
--- ring-alt & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ring-alt.gif"> \
--- ripple & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ripple.gif"> \
--- rolling & <img src="https://github.com/hguerra/publish/tree/master/template/loader/rolling.gif"> \
--- spin & <img src="https://github.com/hguerra/publish/tree/master/template/loader/spin.gif"> \
--- squares & <img src="https://github.com/hguerra/publish/tree/master/template/loader/squares.gif"> \
--- triangle & <img src="https://github.com/hguerra/publish/tree/master/template/loader/triangle.gif"> \
--- wheel & <img src="https://github.com/hguerra/publish/tree/master/template/loader/wheel.gif"> \
 -- @usage import("publish")
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
