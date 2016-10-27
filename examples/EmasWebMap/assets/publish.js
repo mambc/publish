@@ -99,39 +99,40 @@ $(function(){
 			});
 		});
 
-		// map
-		google.maps.visualRefresh = true;
-		var mapOptions = {
-			minZoom: Publish.minZoom,
-			maxZoom: Publish.maxZoom,
-			mapTypeId: google.maps.MapTypeId[Publish.mapTypeId],
-			mapTypeControl: true,
-			mapTypeControlOptions: {
-				style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
-				position: google.maps.ControlPosition.TOP_RIGHT
+		$.when(XHRs).then(function(){
+			console.log("Done");
+			// map
+			google.maps.visualRefresh = true;
+			var mapOptions = {
+				minZoom: Publish.minZoom,
+				maxZoom: Publish.maxZoom,
+				mapTypeId: google.maps.MapTypeId[Publish.mapTypeId],
+				mapTypeControl: true,
+				mapTypeControlOptions: {
+					style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+					position: google.maps.ControlPosition.TOP_RIGHT
+				}
+			};
+
+			if(Publish.center){
+				mapOptions.center = new google.maps.LatLng(Publish.center.lat, Publish.center.long);
 			}
-		};
 
-		if(Publish.center){
-			mapOptions.center = new google.maps.LatLng(Publish.center.lat, Publish.center.long);
-		}
+			if(Publish.zoom){
+				mapOptions.zoom = Publish.zoom;
+			}
 
-		if(Publish.zoom){
-			mapOptions.zoom = Publish.zoom;
-		}
+			var mapElement = document.getElementById("map");
+			map = new google.maps.Map(mapElement, mapOptions);
+			map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
+			map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
+			$('#layers').find(':button').click(onClick);
+			// map
 
-		var mapElement = document.getElementById("map");
-		map = new google.maps.Map(mapElement, mapOptions);
-		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
-		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
-		$('#layers').find(':button').click(onClick);
-		// map
-
-		if(!Publish.zoom){
-			$.when(XHRs).then(function(){
+			if(!Publish.zoom){
 				map.fitBounds(bounds);
-			});
-		}
+			}
+		});
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
