@@ -224,6 +224,19 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string", 1))
+
+		data.select = "river"
+		data.loading = "square"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'loading' ('square') not exist. Do you mean 'squares'?")
+
+		data.loading = "x"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'loading' ('x') not exist.")
 	end
 }
 

@@ -376,6 +376,7 @@ datasource  Directory
 layers      vector of size 4
 layout      Layout
 legend      string [Legend]
+loading     string [default.gif]
 output      Directory
 progress    boolean [false]
 project     Project

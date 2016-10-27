@@ -111,7 +111,7 @@ local function createDirectoryStructure(data)
 		data.assets:create()
 	end
 
-	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js", "default.gif"}
+	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js", "loader/"..data.loading}
 	if data.package then
 		table.insert(depends, "package.js")
 	end
@@ -228,7 +228,8 @@ local function createApplicationProjects(data, proj)
 			config = config,
 			title = data.layout.title,
 			description = data.layout.description,
-			layers = data.layers
+			layers = data.layers,
+			loading = data.loading
 		}
 	}
 end
@@ -262,7 +263,8 @@ local function createApplicationHome(data)
 			config = config,
 			package = data.package.package,
 			description = data.package.content,
-			projects = data.project
+			projects = data.project,
+			loading = data.loading
 		}
 	}
 end
@@ -319,6 +321,25 @@ metaTableApplication_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
+-- @arg data.loading A optional string with the name of loading icon.
+-- The loading available are:
+-- @tabular loading
+-- Name & Icon \
+-- balls & <img src="https://github.com/hguerra/publish/tree/master/template/loader/balls.gif"> \
+-- box & <img src="https://github.com/hguerra/publish/tree/master/template/loader/box.gif"> \
+-- default & <img src="https://github.com/hguerra/publish/tree/master/template/loader/default.gif"> \
+-- ellipsis & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ellipsis.gif"> \
+-- hourglass & <img src="https://github.com/hguerra/publish/tree/master/template/loader/hourglass.gif"> \
+-- poi & <img src="https://github.com/hguerra/publish/tree/master/template/loader/poi.gif"> \
+-- reload & <img src="https://github.com/hguerra/publish/tree/master/template/loader/reload.gif"> \
+-- ring & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ring"> \
+-- ring-alt & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ring-alt.gif"> \
+-- ripple & <img src="https://github.com/hguerra/publish/tree/master/template/loader/ripple.gif"> \
+-- rolling & <img src="https://github.com/hguerra/publish/tree/master/template/loader/rolling.gif"> \
+-- spin & <img src="https://github.com/hguerra/publish/tree/master/template/loader/spin.gif"> \
+-- squares & <img src="https://github.com/hguerra/publish/tree/master/template/loader/squares.gif"> \
+-- triangle & <img src="https://github.com/hguerra/publish/tree/master/template/loader/triangle.gif"> \
+-- wheel & <img src="https://github.com/hguerra/publish/tree/master/template/loader/wheel.gif"> \
 -- @usage import("publish")
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
@@ -354,19 +375,25 @@ function Application(data)
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "legend", "Legend")
+	defaultTableValue(data, "loading", "default")
 
 	if type(data.output) == "string" then
 		data.output = Directory(data.output)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value", "select"})
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value", "select", "loading"})
 
 	data.classes = #data.value
 	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got "..data.classes..".")
-
 	data.color = getColors(data)
 
+	local icons = {"balls", "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ring-alt", "ripple", "rolling", "spin", "squares", "triangle", "wheel"}
+	if not belong(data.loading, icons) then
+		customError("Argument 'loading' ('"..data.loading.."') not exist."..suggestionMsg(suggestion(data.loading, icons)))
+	end
+
+	data.loading= data.loading..".gif"
 	local initialTime = os.clock()
 	if not data.progress then
 		printNormal = function() end

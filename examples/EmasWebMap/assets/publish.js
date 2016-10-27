@@ -25,10 +25,18 @@ $(function(){
 
 	function onClick(event){
 		var id = event.target.id;
-		if(data[id]){
-			$legend.empty();
-			data[id].setMap(null);
-			delete data[id];
+		var found = data[id];
+		if(found){
+			if(found.getMap()){
+				$legend.empty();
+				found.setMap(null);
+			}else{
+				var selected = Publish.data[id];
+				var property = selected[0];
+				var colors = selected[1];
+				renderLegend(colors, property);
+				found.setMap(map);
+			}
 		}else{
 			$loader.fadeIn();
 			var url = Publish.path + id + ".geojson";
