@@ -66,11 +66,11 @@ $(function(){
 			});
 		});
 
-		if(!Publish.zoom){
+		setTimeout(function () {
 			$.when(XHRs).then(function(){
 				map.fitBounds(bounds);
 			});
-		}
+		}, 1000);
 	}
 
 	function initMap(){

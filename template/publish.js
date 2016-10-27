@@ -59,7 +59,7 @@ $(function(){
 		var bounds = new google.maps.LatLngBounds();
 		$.each(projects, function(id) {
 			var url = Publish.path + id + ".geojson";
-			var defer = $.getJSON(url, function(geojson){
+			XHRs.push($.getJSON(url, function(geojson){
 				var mdata = new google.maps.Data();
 				mdata.addGeoJson(geojson);
 				mdata.forEach(function(feature){
@@ -67,16 +67,14 @@ $(function(){
 						bounds.extend(coordinate);
 					});
 				});
-			});
-
-			defer.done(function(){
-				XHRs.push(defer);
-			});
+			}));
 		});
 
-		$.when(XHRs).then(function(){
-			map.fitBounds(bounds);
-		});
+		setTimeout(function () {
+			$.when(XHRs).then(function(){
+				map.fitBounds(bounds);
+			});
+		}, 1000);
 	}
 
 	function initMap(){
@@ -104,8 +102,8 @@ $(function(){
 		map = new google.maps.Map(mapElement, mapOptions);
 		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
-
 		$('#layers').find(':button').click(onClick);
+
 		if(!Publish.zoom){
 			initialZoom(Publish.data);
 		}
