@@ -69,13 +69,9 @@ $(function(){
 				});
 			});
 
-			// defer.done(function(){
-			// 	XHRs.push(defer);
-			// });
-
-			if(defer.state() != "rejected"){
+			defer.done(function(){
 				XHRs.push(defer);
-			}
+			});
 		});
 
 		$.when(XHRs).then(function(){
@@ -110,8 +106,11 @@ $(function(){
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 
 		$('#layers').find(':button').click(onClick);
+
 		if(!Publish.zoom){
-			initialZoom(Publish.data);
+			setTimeout(function () {
+				initialZoom(Publish.data);
+			}, 200);
 		}
 	}
 
