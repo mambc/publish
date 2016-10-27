@@ -102,16 +102,15 @@ $(function(){
 
 		var mapElement = document.getElementById("map");
 		map = new google.maps.Map(mapElement, mapOptions);
+		google.maps.event.addListenerOnce(map, 'idle', function () {
+			if(!Publish.zoom){
+				initialZoom(Publish.data);
+			}
+		});
+
 		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
-
 		$('#layers').find(':button').click(onClick);
-
-		if(!Publish.zoom){
-			setTimeout(function () {
-				initialZoom(Publish.data);
-			}, 200);
-		}
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
