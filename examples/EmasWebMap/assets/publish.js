@@ -80,6 +80,26 @@ $(function(){
 	}
 
 	function initMap(){
+		var XHRs = [];
+		var bounds = new google.maps.LatLngBounds();
+		$.each(Publish.data, function(id) {
+			var url = Publish.path + id + ".geojson";
+			var defer = $.getJSON(url, function(geojson){
+				var mdata = new google.maps.Data();
+				mdata.addGeoJson(geojson);
+				mdata.forEach(function(feature){
+					feature.getGeometry().forEachLatLng(function(coordinate){
+						bounds.extend(coordinate);
+					});
+				});
+			});
+
+			defer.done(function(){
+				XHRs.push(defer);
+			});
+		});
+
+		// map
 		google.maps.visualRefresh = true;
 		var mapOptions = {
 			minZoom: Publish.minZoom,
@@ -102,15 +122,16 @@ $(function(){
 
 		var mapElement = document.getElementById("map");
 		map = new google.maps.Map(mapElement, mapOptions);
-		google.maps.event.addListenerOnce(map, 'idle', function () {
-			if(!Publish.zoom){
-				initialZoom(Publish.data);
-			}
-		});
-
 		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 		$('#layers').find(':button').click(onClick);
+		// map
+
+		if(!Publish.zoom){
+			$.when(XHRs).then(function(){
+				map.fitBounds(bounds);
+			});
+		}
 	}
 
 	google.maps.event.addDomListener(window, "load", initMap);
