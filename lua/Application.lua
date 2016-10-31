@@ -22,13 +22,12 @@
 --
 -------------------------------------------------------------------------------------------
 
-local printNormal = _Gtme.print
-local printWarning = _Gtme.printWarning
+local printNormal = print
 local printInfo = function (value)
 	if sessionInfo().color then
-		_Gtme.print("\027[00;34m"..tostring(value).."\027[00m")
+		printNormal("\027[00;34m"..tostring(value).."\027[00m")
 	else
-		_Gtme.print(value)
+		printNormal(value)
 	end
 end
 
@@ -133,7 +132,11 @@ local function exportLayers(data, sof)
 		end
 
 		printNormal("Exporting layer '"..layer.name.."'")
-		layer:export(data.datasource..layer.name..".geojson", true)
+		layer:export{
+			file = data.datasource..layer.name..".geojson",
+			srid = 4326,
+			overwrite = true
+		}
 	end)
 end
 
@@ -143,7 +146,7 @@ local function loadLayers(data)
 		data.layers = {}
 		exportLayers(data, function(layer)
 			if not isValidSource(layer.source) then
-				printWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+				customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
 				return false
 			end
 
@@ -160,8 +163,8 @@ local function loadLayers(data)
 					if isValidSource(layer.source) then
 						found = true
 					else
-						printWarning("Publish cannot export yet raster layer '"..layer.name.."'")
 						data.layers[idx] = nil
+						customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
 					end
 
 					return false
@@ -366,22 +369,25 @@ function Application(data)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value", "select", "loading"})
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package",
+		"color", "value", "select", "loading"})
 
 	data.classes = #data.value
 	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got "..data.classes..".")
 	data.color = getColors(data)
 
-	local icons = {"balls", "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ring-alt", "ripple", "rolling", "spin", "squares", "triangle", "wheel"}
-	if not belong(data.loading, icons) then
-		customError("Argument 'loading' ('"..data.loading.."') not exist."..suggestionMsg(suggestion(data.loading, icons)))
+	local icons = {["balls"] = true, ["box"] = true, ["default"] = true, ["ellipsis"] = true, ["hourglass"] = true,
+		["poi"] = true, ["reload"] = true, ["ring"] = true, ["ring-alt"] = true, ["ripple"] = true, ["rolling"] = true,
+		["spin"] = true, ["squares"] = true, ["triangle"] = true, ["wheel"] = true}
+
+	if not icons[data.loading] then
+		switchInvalidArgument("loading", data.loading, icons)
 	end
 
-	data.loading= data.loading..".gif"
+	data.loading = data.loading..".gif"
 	local initialTime = os.clock()
 	if not data.progress then
 		printNormal = function() end
-		printWarning = function() end
 		printInfo = function() end
 	end
 

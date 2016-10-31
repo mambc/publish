@@ -1,0 +1,14 @@
+[00;34mCreating directory structure[00m
+Copying dependency 'publish.css'
+Copying dependency 'publish.js'
+Copying dependency 'jquery-3.1.1.min.js'
+Copying dependency 'loader/default.gif'
+[00;34mLoading layers from '/home/terrame/TerraME/terrame/build-cmake/install/bin/packages/publish/data/emas.tview'[00m
+Exporting layer 'limit'
+Exporting layer 'cells'
+Exporting layer 'firebreak'
+Exporting layer 'river'
+[00;34mLoading Template[00m
+Creating file 'config.js'
+Creating file 'index.html'
+[00;34mSumming up, application 'Emas' was successfully created in 0.84 seconds[00m

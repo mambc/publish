@@ -230,13 +230,27 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'loading' ('square') not exist. Do you mean 'squares'?")
+		unitTest:assertError(error_func, "'square' is an invalid value for argument 'loading'. Do you mean 'squares'?")
 
 		data.loading = "x"
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'loading' ('x') not exist.")
+		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
+			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ring-alt', 'ripple',"
+			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
+
+		data.loading = "squares"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'")
+
+		data.layers = {"cover"}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'")
 	end
 }
 
