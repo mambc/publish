@@ -29,8 +29,6 @@ return {
 		local emasDir = Directory("EmasWebMap")
 
 		local appRoot = {
-			["assets"] = true,
-			["data"] = true,
 			["index.html"] = true,
 			["config.js"] = true
 		}
@@ -50,11 +48,14 @@ return {
 		}
 
 		local function assertFiles(dir, files)
+			local count = 0
 			forEachFile(dir, function(file)
 				unitTest:assert(files[file:name()])
+
+				count = count + 1
 			end)
 
-			unitTest:assertEquals(#dir:list(), getn(files))
+			unitTest:assertEquals(count, getn(files))
 		end
 
 		local layout = Layout{
@@ -278,6 +279,17 @@ return {
 		fname:deleteIfExists()
 
 		-- Testing Application: project = nil, layers = nil and package = "terralib".
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["cabecadeboi.html"] = true,
+			["cabecadeboi.js"] = true,
+			["emas.html"] = true,
+			["emas.js"] = true,
+			["fillCellExample.html"] = true,
+			["fillCellExample.js"] = true
+		}
+
 		appData = {
 			["cabecadeboi"] = {
 				["box.geojson"] = true,
@@ -295,7 +307,6 @@ return {
 				["Setores.geojson"] = true
 			}
 		}
-
 
 		local mcustomWarning = customWarning --TODO #14. Raster layers stops with an error.
 		customWarning = function() end
@@ -327,6 +338,7 @@ return {
 		unitTest:assertEquals(app.project[2].layer, "limit")
 		unitTest:assertEquals(app.project[3].layer, "Setores")
 
+		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 
 		local countDir = 0
@@ -344,8 +356,8 @@ return {
 
 		unitTest:assertEquals(countDir, 3)
 		unitTest:assertEquals(countFile, 9)
-		if app.output:exists() then app.output:delete() end
 
+		if app.output:exists() then app.output:delete() end
 		customWarning = mcustomWarning
 	end,
 	__tostring = function(unitTest)

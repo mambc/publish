@@ -158,7 +158,7 @@ local function loadLayers(data)
 		exportLayers(data, function(layer)
 			local found = false
 			forEachElement(data.layers, function(idx, mvalue)
-				local mvalue = tostring(mvalue)
+				mvalue = tostring(mvalue)
 				if mvalue == layer.name or mvalue == layer.file then
 					if isValidSource(layer.source) then
 						found = true
