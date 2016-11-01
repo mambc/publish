@@ -83,7 +83,6 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
@@ -129,7 +128,6 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
@@ -162,7 +160,6 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)
@@ -195,7 +192,6 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)
@@ -229,7 +225,6 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers) + 1) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
@@ -267,7 +262,6 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.color, #app.value)
 		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
@@ -386,9 +380,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(tostring(app), [[assets      Directory
-classes     number [3]
 clean       boolean [true]
-color       vector of size 3
 datasource  Directory
 layers      vector of size 4
 layout      Layout
@@ -397,11 +389,9 @@ loading     string [default.gif]
 output      Directory
 progress    boolean [false]
 project     Project
-select      string [river]
-value       vector of size 3
+view        View
 ]])
 
 		if emasDir:exists() then emasDir:delete() end
 	end
 }
-

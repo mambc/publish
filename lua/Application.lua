@@ -59,37 +59,6 @@ local function registerApplicationModel(data)
 	table.insert(ViewModel, data)
 end
 
-local function getColors(data)
-	local ctype = type(data.color)
-	verify(ctype == "string" or ctype == "table", incompatibleTypeMsg("color", "string or table", data.color))
-
-	if ctype == "string" then
-		verifyColor(data.color, data.classes)
-		data.color = color(data.color, data.classes)
-	end
-
-	local nColors = #data.color
-	verify(data.classes == nColors, "The number of colors ("..nColors..") must be equal to number of data classes ("..data.classes..").")
-
-	local colors = {}
-	for i = 1, data.classes do
-		local mcolor = data.color[i]
-		verifyColor(mcolor, nil, i)
-
-		if type(mcolor) == "table" then
-			local a = mcolor[4] or 1
-			mcolor = {
-				property = data.value[i],
-				rgba = string.format("rgba(%d, %d, %d, %g)", mcolor[1], mcolor[2], mcolor[3], a)
-			}
-		end
-
-		table.insert(colors, mcolor)
-	end
-
-	return colors
-end
-
 local function createDirectoryStructure(data)
 	printInfo("Creating directory structure")
 	if data.clean == true and data.output:exists() then
@@ -214,8 +183,8 @@ local function createApplicationProjects(data, proj)
 			maxZoom = data.layout.maxZoom,
 			base = data.layout.base:upper(),
 			path = proj,
-			color = data.color,
-			select = data.select,
+			color = data.view.color,
+			select = data.view.select,
 			layers = data.layers,
 			legend = data.legend,
 			quotes = function(text, render)
@@ -308,25 +277,9 @@ metaTableApplication_ = {
 -- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project A terralib::Project or string with the path to a .tview file.
--- @arg data.select A mandatory string with the name of the attribute to be visualized.
--- @arg data.value A mandatory table with the possible values for the selected attributes.
 -- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ring-alt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/).
--- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
--- a color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords),
--- as tables with three integer numbers representing RGB compositions, such as {0, 0, 0},
--- or even as a string with a ColorBrewer format (see http://colorbrewer2.org/).
--- The colors available and the maximum number of slices for each of them are:
--- @tabular color
--- Name & Max \
--- Accent, Dark, Set2 & 7 \
--- Pastel2, Set1 & 8 \
--- Pastel1 & 9 \
--- PRGn, RdYlGn, Spectral & 10 \
--- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
--- BuGn, BuPu, OrRd, PuBu & 19 \
--- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
 -- @usage import("publish")
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
@@ -369,12 +322,6 @@ function Application(data)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package",
-		"color", "value", "select", "loading"})
-
-	data.classes = #data.value
-	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got "..data.classes..".")
-	data.color = getColors(data)
 
 	local icons = {["balls"] = true, ["box"] = true, ["default"] = true, ["ellipsis"] = true, ["hourglass"] = true,
 		["poi"] = true, ["reload"] = true, ["ring"] = true, ["ring-alt"] = true, ["ripple"] = true, ["rolling"] = true,
@@ -385,6 +332,29 @@ function Application(data)
 	end
 
 	data.loading = data.loading..".gif"
+
+	local view = {}
+	forEachElement(data, function(_, mview)
+		if type(mview) == "View" then
+			table.insert(view, view)
+		end
+	end)
+
+	if #view == 0 then
+		local mview = {}
+		forEachElement(data, function(idx, value)
+			if belong(idx, {"border", "color", "description", "select", "title", "value", "visible", "width"}) then
+				mview[idx] = value
+				data[idx] = nil
+			end
+		end)
+
+		view = View(mview)
+	end
+
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "loading"})
+
+	data.view = view
 	local initialTime = os.clock()
 	if not data.progress then
 		printNormal = function() end
