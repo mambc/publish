@@ -38,9 +38,15 @@ return {
 		local view = View(data)
 
 		unitTest:assertType(view, "View")
-		forEachElement(view, function(idx, value)
-			unitTest:assertEquals(value, data[idx])
-		end)
+		unitTest:assertEquals(view.title, data.title)
+		unitTest:assertEquals(view.description, data.description)
+		unitTest:assertEquals(view.width, data.width)
+		unitTest:assertEquals(view.visible, data.visible)
+		unitTest:assertEquals(view.select, data.select)
+		unitTest:assertEquals(view.value, data.value)
+
+		unitTest:assertEquals(view.border, data.border)
+		unitTest:assertEquals(view.color, data.color)
 	end,
 	__tostring = function(unitTest)
 		local view = View{
@@ -53,6 +59,13 @@ return {
 			value = {0, 1, 2}
 		}
 
-		unitTest:assertEquals(tostring(view), "")
+		unitTest:assertEquals(tostring(view), [[border   vector of size 3
+color    vector of size 3
+select   string [river]
+title    string [Emas National Park]
+value    vector of size 3
+visible  boolean [false]
+width    number [2]
+]])
 	end
 }

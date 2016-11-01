@@ -23,7 +23,7 @@
 -------------------------------------------------------------------------------------------
 
 View_ = {
-	type_ = "Layout"
+	type_ = "View"
 }
 
 metaTableView_ = {
@@ -32,6 +32,74 @@ metaTableView_ = {
 }
 
 function View(data)
+	verifyNamedTable(data)
+	optionalTableArgument(data, "title", "string")
+	optionalTableArgument(data, "description", "string")
+	optionalTableArgument(data, "value", "table")
+	optionalTableArgument(data, "select", "string")
+
+	defaultTableValue(data, "width", 0)
+	defaultTableValue(data, "visible", true)
+
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value"})
+
+	if data.color then
+		mandatoryTableArgument(data, "value", "table")
+
+		local classes = #data.value
+		if classes <= 0 then
+			customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
+		end
+
+		local ctype = type(data.color)
+		if ctype == "string" then
+			verifyColor(data.color, classes)
+			data.color = color(data.color, classes)
+		elseif ctype ~= "table" then
+			incompatibleTypeError("color", "string or table", data.color)
+		end
+
+		local nColors = #data.color
+		if classes ~= nColors then
+			customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
+		end
+
+		local colors = {}
+		for i = 1, classes do
+			local rgba = data.color[i]
+			verifyColor(rgba, nil, i)
+
+			if type(rgba) == "table" then
+				local a = rgba[4] or 1
+				rgba = {
+					property = data.value[i],
+					rgba = string.format("rgba(%d, %d, %d, %g)", rgba[1], rgba[2], rgba[3], a)
+				}
+			end
+
+			table.insert(colors, rgba)
+		end
+
+		data.color = colors
+	end
+
+	if data.border then
+		local btype = type(data.border)
+		if btype == "string" then
+			verifyColor(data.border)
+			data.border = color(data.border)
+		elseif btype ~= "table" then
+			incompatibleTypeError("border", "string or table", data.border)
+		end
+
+		local nColors = #data.border
+		if nColors == 0 then
+			customError("Argument 'border' must be a table with RGB, got an empty table.")
+		end
+
+		verifyColor(data.border, nil, 1)
+	end
+
 	setmetatable(data, metaTableView_)
 	return data
 end
