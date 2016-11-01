@@ -311,7 +311,7 @@ metaTableApplication_ = {
 -- @arg data.select A mandatory string with the name of the attribute to be visualized.
 -- @arg data.value A mandatory table with the possible values for the selected attributes.
 -- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
--- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ring-alt", "ripple", "rolling", "spin",
+-- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/).
 -- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
 -- a color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords),
@@ -376,16 +376,29 @@ function Application(data)
 	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got "..data.classes..".")
 	data.color = getColors(data)
 
-	local icons = {["balls"] = true, ["box"] = true, ["default"] = true, ["ellipsis"] = true, ["hourglass"] = true,
-		["poi"] = true, ["reload"] = true, ["ring"] = true, ["ring-alt"] = true, ["ripple"] = true, ["rolling"] = true,
-		["spin"] = true, ["squares"] = true, ["triangle"] = true, ["wheel"] = true}
+	local icons = {
+		balls = true,
+		box = true,
+		default = true,
+		ellipsis = true,
+		hourglass= true,
+		poi = true,
+		reload = true,
+		ring = true,
+		ringAlt = true,
+		ripple = true,
+		rolling = true,
+		spin = true,
+		squares = true,
+		triangle = true,
+		wheel = true
+	}
 
 	if not icons[data.loading] then
 		switchInvalidArgument("loading", data.loading, icons)
 	end
 
 	data.loading = data.loading..".gif"
-	local initialTime = os.clock()
 	if not data.progress then
 		printNormal = function() end
 		printInfo = function() end
@@ -504,7 +517,7 @@ function Application(data)
 	setmetatable(data, metaTableApplication_)
 
 	local finalTime = os.clock()
-	printInfo("Summing up, application '"..data.layout.title.."' was successfully created in "..round(finalTime - initialTime, 2).." seconds")
+	printInfo("Summing up, application '"..data.layout.title.."' was successfully created.")
 
 	return data
 end

@@ -237,7 +237,7 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
-			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ring-alt', 'ripple',"
+			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
 
 		data.loading = "squares"
