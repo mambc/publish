@@ -1448,15 +1448,15 @@ local isHex = (function()
 	end
 end)()
 
-local function verifyStringColor(keyword, class)
+local function verifyStringColor(keyword, class, arg)
 	if keyword:find("#") then
 		if not isHex(keyword) then
-			customError("Argument 'color' ("..keyword..") is not a valid hex color.")
+			customError("Argument '"..arg.."' ("..keyword..") is not a valid hex color.")
 		end
 	else
 		local mcolor = color(keyword, class)
 		if not mcolor then
-			local errorMsg = "Argument 'color' ("..keyword..") is not a valid color name."
+			local errorMsg = "Argument '"..arg.."' ("..keyword..") is not a valid color name."
 			mcolor = color(keyword, 3)
 			if mcolor then
 				if not class then
@@ -1471,7 +1471,7 @@ local function verifyStringColor(keyword, class)
 	end
 end
 
-local function verifyRGBColor(rgb, pos)
+local function verifyRGBColor(rgb, pos, arg)
 	local size = #rgb
 	if size == 3 or size == 4 then
 		for i = 1, 3 do
@@ -1486,7 +1486,7 @@ local function verifyRGBColor(rgb, pos)
 			end
 		end
 	else
-		customError("Argument 'color' ("..pos..") must be a table with 3 or 4 arguments (red, green, blue and alpha), got "..size..".")
+		customError("Argument '"..arg.."' ("..pos..") must be a table with 3 or 4 arguments (red, green, blue and alpha), got "..size..".")
 	end
 end
 
@@ -1495,21 +1495,23 @@ end
 -- color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
 -- @arg data A mandatory string or table with color name or RGB values.
 -- @arg class A optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
--- @arg pos A optional integer with the position of color.
+-- @arg pos A optional integer with the position of color. The default value is 1.
+-- @arg argument A optional string with the argument name. The default value is 'color'.
 -- @usage import("publish")
 -- _, err = pcall(function() verifyColor({10, 15, 20, 2}) end)
 -- print(err)
-function verifyColor(data, class, pos)
+function verifyColor(data, class, pos, argument)
 	if data == nil then
 		customError(mandatoryArgumentMsg("data"))
 	end
 
 	pos = pos or 1
+	argument = argument or "color"
 	local mtype = type(data)
 	if mtype == "string" then
-		verifyStringColor(data, class)
+		verifyStringColor(data, class, argument)
 	elseif mtype == "table" then
-		verifyRGBColor(data, pos)
+		verifyRGBColor(data, pos, argument)
 	else
 		customError("Each parameter of color must be a string or table, got '"..mtype.."'.")
 	end

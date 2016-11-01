@@ -62,7 +62,7 @@ return {
 		error_func = function()
 			View{border = {}}
 		end
-		unitTest:assertError(error_func, "Argument 'border' must be a table with RGB, got an empty table.")
+		unitTest:assertError(error_func, "Argument 'border' (1) must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
 			View{width = "mwidth"}
@@ -110,8 +110,48 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("value", "table", "mvalue"))
 
 		error_func = function()
+			View{border = "PuBu"}
+		end
+		unitTest:assertError(error_func, "The number of data classes is mandatory for 'PuBu' in ColorBrewer.")
+
+		error_func = function()
 			View{color = "red", value = {}}
 		end
 		unitTest:assertError(error_func, "Argument 'value' must be a table with size greater than 0, got 0.")
+
+		error_func = function()
+			View{color = "#afafah", value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color.")
+
+		error_func = function()
+			View{color = "Redss", value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "Argument 'color' (Redss) is not a valid color name.")
+
+		error_func = function()
+			View{color = {"Reds", "Blues", "PuRd"}, value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "The number of data classes is mandatory for 'Reds' in ColorBrewer.")
+
+		error_func = function()
+			View{color = {1, 1, 1}, value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
+
+		error_func = function()
+			View{color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}, value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got -1.")
+
+		error_func = function()
+			View{color = {{0, 0, 0}, {1, 1, 1}, {255, 255, 255, 2}}, value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 2.")
+
+		error_func = function()
+			View{color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}, value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 1.00001.")
 	end
 }

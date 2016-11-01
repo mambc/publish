@@ -22,6 +22,18 @@
 --
 -------------------------------------------------------------------------------------------
 
+local function getRGB(arg, mcolor, classes)
+	local ctype = type(mcolor)
+	if ctype == "string" then
+		verifyColor(mcolor, classes)
+		mcolor = color(mcolor, classes)
+	elseif ctype ~= "table" then
+		incompatibleTypeError(arg, "string or table", mcolor)
+	end
+
+	return mcolor
+end
+
 View_ = {
 	type_ = "View"
 }
@@ -31,6 +43,39 @@ metaTableView_ = {
 	__tostring = _Gtme.tostring
 }
 
+--- View is an object that contains the information of the data to be visualized, such as the values and colors.
+-- One Application is composed by a set of Views.
+-- @arg data.select An optional string with the name of the attribute to be visualized.
+-- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
+-- @arg data.visible An optional boolean whether the layer is visible. Defaults to true.
+-- @arg data.width An optional argument with the stroke width in pixels. 
+-- @arg data.border An optional string or table with the stroke color. Colors can be described as strings using
+-- a color name, an RGB value (Ex. {0, 0, 0}), or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
+-- @arg data.color An optional table with the colors for the attributes. Colors can be described as strings using
+-- a color name, an RGB value, a HEX value, or even as a string with a ColorBrewer format (see http://colorbrewer2.org/).
+-- The colors available and the maximum number of slices for each of them are:
+-- @tabular color
+-- Name & Max \
+-- Accent, Dark, Set2 & 7 \
+-- Pastel2, Set1 & 8 \
+-- Pastel1 & 9 \
+-- PRGn, RdYlGn, Spectral & 10 \
+-- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
+-- BuGn, BuPu, OrRd, PuBu & 19 \
+-- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
+-- @usage import("publish")
+-- local view = View{
+--     title = "Emas National Park",
+-- 	   description = "A small example related to a fire spread model.",
+-- 	   border = "blue",
+--     width = 2,
+-- 	   color = "PuBu",
+-- 	   visible = false,
+-- 	   select = "river",
+-- 	   value = {0, 1, 2}
+-- }
+--
+-- print(vardump(view))
 function View(data)
 	verifyNamedTable(data)
 	optionalTableArgument(data, "title", "string")
@@ -51,14 +96,7 @@ function View(data)
 			customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 		end
 
-		local ctype = type(data.color)
-		if ctype == "string" then
-			verifyColor(data.color, classes)
-			data.color = color(data.color, classes)
-		elseif ctype ~= "table" then
-			incompatibleTypeError("color", "string or table", data.color)
-		end
-
+		data.color = getRGB("color", data.color, classes)
 		local nColors = #data.color
 		if classes ~= nColors then
 			customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
@@ -84,20 +122,12 @@ function View(data)
 	end
 
 	if data.border then
-		local btype = type(data.border)
-		if btype == "string" then
-			verifyColor(data.border)
-			data.border = color(data.border)
-		elseif btype ~= "table" then
-			incompatibleTypeError("border", "string or table", data.border)
-		end
+		local rgba = getRGB("border", data.border)
 
-		local nColors = #data.border
-		if nColors == 0 then
-			customError("Argument 'border' must be a table with RGB, got an empty table.")
-		end
+		verifyColor(rgba, nil, 1, "border")
 
-		verifyColor(data.border, nil, 1)
+		local a = rgba[4] or 1
+		data.border = string.format("rgba(%d, %d, %d, %g)", rgba[1], rgba[2], rgba[3], a)
 	end
 
 	setmetatable(data, metaTableView_)
