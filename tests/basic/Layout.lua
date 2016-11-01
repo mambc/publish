@@ -35,6 +35,7 @@ return {
 		}
 
 		local layout = Layout{
+			base = data.base[1],
 			title = data.title,
 			description = data.description,
 			zoom = data.zoom,
@@ -54,7 +55,6 @@ return {
 		unitTest:assertEquals(layout.center.long, data.center.long)
 
 		layout = Layout{
-			base = data.base[2],
 			center = data.center
 		}
 
@@ -62,38 +62,39 @@ return {
 		unitTest:assertEquals(layout.title, "Default")
 		unitTest:assertEquals(layout.description, "")
 		unitTest:assertEquals(layout.base, data.base[2])
-		unitTest:assertEquals(layout.zoom, 12)
+		unitTest:assertNil(layout.zoom)
 		unitTest:assertEquals(layout.minZoom, 0)
 		unitTest:assertEquals(layout.maxZoom, 20)
 
 		layout = Layout{
 			base = data.base[3],
-			center = data.center
 		}
 
 		unitTest:assertType(layout, "Layout")
 		unitTest:assertEquals(layout.base, data.base[3])
+		unitTest:assertNil(layout.center)
 
 		layout = Layout{
 			base = data.base[4],
-			center = data.center
 		}
 
 		unitTest:assertType(layout, "Layout")
 		unitTest:assertEquals(layout.base, data.base[4])
+		unitTest:assertNil(layout.zoom)
+		unitTest:assertNil(layout.center)
 	end,
 	__tostring = function(unitTest)
 		local layout = Layout{
 			title = "Testing tostring",
 			description = "Base test",
-			base = "satellite",
+			base = "terrain",
 			zoom = 10,
 			minZoom = 5,
 			maxZoom = 17,
 			center = {lat = -23.179017, long = -45.889188}
 		}
 
-		unitTest:assertEquals(tostring(layout), [[base         string [satellite]
+		unitTest:assertEquals(tostring(layout), [[base         string [terrain]
 center       named table of size 2
 description  string [Base test]
 maxZoom      number [17]

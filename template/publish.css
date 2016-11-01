@@ -5,15 +5,6 @@ body{ overflow: hidden;}
 .zoom-top-opened-sidebar{ margin-top: 5px;}
 .zoom-top-collapsed{ margin-top: 45px; }
 
-#footer{
-	height: 14px;
-	background-color: white;
-	opacity: 0.65;
-	font-size: 10px;
-	padding-left: 2px;
-	padding-right: 2px;
-}
-
 .mini-submenu{
 	display:none;
 	background-color: rgba(255, 255, 255, 0.46);
@@ -50,6 +41,15 @@ body{ overflow: hidden;}
 	cursor: pointer;
 }
 
+#footer{
+	height: 14px;
+	background-color: white;
+	opacity: 0.65;
+	font-size: 10px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
 #legend-container {
 	font-size: 14px;
 	background: #fff;
@@ -69,4 +69,14 @@ body{ overflow: hidden;}
 	float:left;
 	border:1px solid black;
 	margin-right:6px;
+}
+
+#loader{
+	position: absolute;
+	z-index: 35;
+	top: 0;
+	bottom:0;
+	left: 0;
+	right:0;
+	margin: auto;
 }

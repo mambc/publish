@@ -22,13 +22,12 @@
 --
 -------------------------------------------------------------------------------------------
 
-local printNormal = _Gtme.print
-local printWarning = _Gtme.printWarning
+local printNormal = print
 local printInfo = function (value)
 	if sessionInfo().color then
-		_Gtme.print("\027[00;34m"..tostring(value).."\027[00m")
+		printNormal("\027[00;34m"..tostring(value).."\027[00m")
 	else
-		_Gtme.print(value)
+		printNormal(value)
 	end
 end
 
@@ -111,7 +110,7 @@ local function createDirectoryStructure(data)
 		data.assets:create()
 	end
 
-	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js" }
+	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js", "loader/"..data.loading}
 	if data.package then
 		table.insert(depends, "package.js")
 	end
@@ -122,8 +121,8 @@ local function createDirectoryStructure(data)
 	end)
 end
 
-local function isValidLayer(layer)
-	return SourceTypeMapper[layer.source] == "OGR" or SourceTypeMapper[layer.source] == "POSTGIS"
+local function isValidSource(source)
+	return SourceTypeMapper[source] == "OGR" or SourceTypeMapper[source] == "POSTGIS"
 end
 
 local function exportLayers(data, sof)
@@ -132,12 +131,12 @@ local function exportLayers(data, sof)
 			return
 		end
 
-		if isValidLayer(layer) then
-			printNormal("Exporting layer '"..layer.name.."'")
-			layer:export(data.datasource..layer.name..".geojson", true)
-		else
-			printWarning("Publish cannot export yet raster layer '"..layer.name.."'")
-		end
+		printNormal("Exporting layer '"..layer.name.."'")
+		layer:export{
+			file = data.datasource..layer.name..".geojson",
+			srid = 4326,
+			overwrite = true
+		}
 	end)
 end
 
@@ -146,6 +145,11 @@ local function loadLayers(data)
 		printInfo("Loading layers from '"..data.project.file.."'")
 		data.layers = {}
 		exportLayers(data, function(layer)
+			if not isValidSource(layer.source) then
+				customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+				return false
+			end
+
 			table.insert(data.layers, layer.name)
 			return true
 		end)
@@ -153,10 +157,16 @@ local function loadLayers(data)
 		printInfo("Loading layers from '"..data.project.file.."'")
 		exportLayers(data, function(layer)
 			local found = false
-			forEachElement(data.layers, function(_, mvalue)
-				local mvalue = tostring(mvalue)
+			forEachElement(data.layers, function(idx, mvalue)
+				mvalue = tostring(mvalue)
 				if mvalue == layer.name or mvalue == layer.file then
-					found = true
+					if isValidSource(layer.source) then
+						found = true
+					else
+						data.layers[idx] = nil
+						customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+					end
+
 					return false
 				end
 			end)
@@ -170,7 +180,7 @@ local function loadLayers(data)
 		}
 
 		forEachElement(data.layers, function(_, file)
-			if file:exists() then
+			if file:exists() and isValidSource(file:extension()) then
 				local _, name = file:split()
 				mproj[name] = tostring(file)
 			end
@@ -199,7 +209,7 @@ local function createApplicationProjects(data, proj)
 		output = config,
 		model = {
 			center = data.layout.center,
-			zoom = data.layout.zoom,
+			zoom = data.layout.zoom or "null",
 			minZoom = data.layout.minZoom,
 			maxZoom = data.layout.maxZoom,
 			base = data.layout.base:upper(),
@@ -221,7 +231,8 @@ local function createApplicationProjects(data, proj)
 			config = config,
 			title = data.layout.title,
 			description = data.layout.description,
-			layers = data.layers
+			layers = data.layers,
+			loading = data.loading
 		}
 	}
 end
@@ -236,7 +247,7 @@ local function createApplicationHome(data)
 		output = config,
 		model = {
 			center = data.layout.center,
-			zoom = data.layout.zoom,
+			zoom = data.layout.zoom or "null",
 			minZoom = data.layout.minZoom,
 			maxZoom = data.layout.maxZoom,
 			base = data.layout.base:upper(),
@@ -255,7 +266,8 @@ local function createApplicationHome(data)
 			config = config,
 			package = data.package.package,
 			description = data.package.content,
-			projects = data.project
+			projects = data.project,
+			loading = data.loading
 		}
 	}
 end
@@ -298,6 +310,9 @@ metaTableApplication_ = {
 -- @arg data.project A terralib::Project or string with the path to a .tview file.
 -- @arg data.select A mandatory string with the name of the attribute to be visualized.
 -- @arg data.value A mandatory table with the possible values for the selected attributes.
+-- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
+-- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
+-- "squares", "triangle", "wheel" (see http://loading.io/).
 -- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
 -- a color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords),
 -- as tables with three integer numbers representing RGB compositions, such as {0, 0, 0},
@@ -319,7 +334,6 @@ metaTableApplication_ = {
 -- local layout = Layout{
 --     title = "Emas",
 --     description = "Creates a database that can be used by the example fire-spread of base package.",
---     base = "satellite",
 --     zoom = 14,
 --     center = {lat = -18.106389, long = -52.927778}
 -- }
@@ -341,30 +355,52 @@ function Application(data)
 	verifyNamedTable(data)
 	verify(data.project or data.layers or data.package, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
 	verify(data.color, "Argument 'color' is mandatory to publish your data.")
-	mandatoryTableArgument(data, "layout", "Layout") -- TODO #8
 	mandatoryTableArgument(data, "value", "table")
 	mandatoryTableArgument(data, "select", "string")
+	optionalTableArgument(data, "layout", "Layout")
 	optionalTableArgument(data, "layers", "table")
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "legend", "Legend")
+	defaultTableValue(data, "loading", "default")
 
 	if type(data.output) == "string" then
 		data.output = Directory(data.output)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "color", "value", "select"})
+	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package",
+		"color", "value", "select", "loading"})
 
 	data.classes = #data.value
 	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got "..data.classes..".")
-
 	data.color = getColors(data)
 
-	local initialTime = os.clock()
+	local icons = {
+		balls = true,
+		box = true,
+		default = true,
+		ellipsis = true,
+		hourglass= true,
+		poi = true,
+		reload = true,
+		ring = true,
+		ringAlt = true,
+		ripple = true,
+		rolling = true,
+		spin = true,
+		squares = true,
+		triangle = true,
+		wheel = true
+	}
+
+	if not icons[data.loading] then
+		switchInvalidArgument("loading", data.loading, icons)
+	end
+
+	data.loading = data.loading..".gif"
 	if not data.progress then
 		printNormal = function() end
-		printWarning = function() end
 		printInfo = function() end
 	end
 
@@ -373,6 +409,7 @@ function Application(data)
 		optionalTableArgument(data, "project", "table")
 		verify(not data.layers, unnecessaryArgumentMsg("layers"))
 		data.package = packageInfo(data.package)
+		data.layout = data.layout or Layout{title = data.package.package}
 
 		printInfo("Creating application for package '"..data.package.package.."'")
 		local nProj = 0
@@ -396,8 +433,9 @@ function Application(data)
 					local abstractLayer = proj.layers[bbox]
 					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
 
-					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle()}
-					verify(isValidLayer(layer), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[layer.source].."'.")
+					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle() }
+					local source = layer.source
+					verify(isValidSource(source), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[source].."'.")
 
 					data.project[name] = nil
 					table.insert(data.project, {project = name, layer = bbox})
@@ -468,6 +506,8 @@ function Application(data)
 			mandatoryTableArgument(data, "project", "Project")
 		end
 
+		data.layout = data.layout or Layout{title = data.project.file:name()}
+
 		createDirectoryStructure(data)
 		loadLayers(data)
 		createApplicationProjects(data)
@@ -477,7 +517,7 @@ function Application(data)
 	setmetatable(data, metaTableApplication_)
 
 	local finalTime = os.clock()
-	printInfo("Summing up, application '"..data.layout.title.."' was successfully created in "..round(finalTime - initialTime, 2).." seconds")
+	printInfo("Summing up, application '"..data.layout.title.."' was successfully created.")
 
 	return data
 end

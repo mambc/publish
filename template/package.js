@@ -16,13 +16,26 @@ $(function(){
 		window.location.href = "./" + event.target.id + ".html";
 	}
 
+	function initialZoom(mdata, bounds) {
+		if(Publish.zoom)
+			return;
+
+		mdata.forEach(function(feature){
+			feature.getGeometry().forEachLatLng(function(coordinate){
+				bounds.extend(coordinate);
+			});
+		});
+	}
+
 	function loadAreasOfInterest(){
 		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend +'</h4><br/></div>'));
 		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
 
+		var XHRs = [];
+		var bounds = new google.maps.LatLngBounds();
 		$.each(Publish.data, function(proj, layer){
 			var url = Publish.path(proj) + layer + ".geojson";
-			$.getJSON(url, function(geojson){
+			var defer = $.getJSON(url, function(geojson){
 				var color = getRandomColor();
 				var mdata = new google.maps.Data();
 
@@ -40,20 +53,29 @@ $(function(){
 				});
 
 				mdata.setMap(map);
+				initialZoom(mdata, bounds);
 
 				var $div = $('<div style="height:25px;">')
 				.append($('<div class="legend-color-box">').css({backgroundColor: color}))
 				.append($('<span>').css("lineHeight", "23px").html(proj));
 				$legendContent.append($div);
 			});
+
+			defer.done(function(){
+				XHRs.push(defer);
+			});
 		});
+
+		setTimeout(function () {
+			$.when(XHRs).then(function(){
+				map.fitBounds(bounds);
+			});
+		}, 1000);
 	}
 
 	function initMap(){
 		google.maps.visualRefresh = true;
 		var mapOptions = {
-			center: new google.maps.LatLng(Publish.center.lat, Publish.center.long),
-			zoom: Publish.zoom,
 			minZoom: Publish.minZoom,
 			maxZoom: Publish.maxZoom,
 			mapTypeId: google.maps.MapTypeId[Publish.mapTypeId],
@@ -63,6 +85,14 @@ $(function(){
 				position: google.maps.ControlPosition.TOP_RIGHT
 			}
 		};
+
+		if(Publish.center){
+			mapOptions.center = new google.maps.LatLng(Publish.center.lat, Publish.center.long);
+		}
+
+		if(Publish.zoom){
+			mapOptions.zoom = Publish.zoom;
+		}
 
 		var mapElement = document.getElementById("map");
 		map = new google.maps.Map(mapElement, mapOptions);

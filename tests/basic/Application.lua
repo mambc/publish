@@ -25,12 +25,10 @@
 return {
 	Application = function(unitTest)
 		local terralib = getPackage("terralib")
-		local emas = filePath("emas.tview", "terralib")
+		local emas = filePath("emas.tview", "publish")
 		local emasDir = Directory("EmasWebMap")
 
 		local appRoot = {
-			["assets"] = true,
-			["data"] = true,
 			["index.html"] = true,
 			["config.js"] = true
 		}
@@ -38,7 +36,8 @@ return {
 		local appAssets = {
 			["jquery-3.1.1.min.js"] = true,
 			["publish.css"] = true,
-			["publish.js"] = true
+			["publish.js"] = true,
+			["default.gif"] = true
 		}
 
 		local appData = {
@@ -49,17 +48,19 @@ return {
 		}
 
 		local function assertFiles(dir, files)
+			local count = 0
 			forEachFile(dir, function(file)
 				unitTest:assert(files[file:name()])
+
+				count = count + 1
 			end)
 
-			unitTest:assertEquals(#dir:list(), getn(files))
+			unitTest:assertEquals(count, getn(files))
 		end
 
 		local layout = Layout{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
-			base = "satellite",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -83,12 +84,12 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(#app.layers, getn(appData))
 
 		-- Testing Application: project = Project, layers = nil and package = nil.
 		local fname = File("emas-test.tview")
@@ -107,7 +108,6 @@ return {
 			author = "Carneiro, H.",
 			title = "Emas database",
 			firebreak = filePath("firebreak_lin.shp", "terralib"),
-			cover = filePath("accumulation_Nov94May00.tif", "terralib"),
 			river = filePath("River_lin.shp", "terralib"),
 			limit = filePath("Limit_pol.shp", "terralib")
 		}
@@ -130,12 +130,12 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(#app.layers, getn(appData))
 
 		-- Testing Application: project = Project, layers = {firebreak, cover, river} and package = nil.
 		appData = {
@@ -163,7 +163,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
+		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
@@ -196,7 +196,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers) - 1)
+		unitTest:assertEquals(#app.layers, getn(app.project.layers))
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
@@ -230,7 +230,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers) + 1) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
@@ -268,17 +268,28 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(#app.color, #app.value)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(#app.layers, getn(appData))
 
 		if app.output:exists() then app.output:delete() end
 		fname:deleteIfExists()
 
 		-- Testing Application: project = nil, layers = nil and package = "terralib".
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["cabecadeboi.html"] = true,
+			["cabecadeboi.js"] = true,
+			["emas.html"] = true,
+			["emas.js"] = true,
+			["fillCellExample.html"] = true,
+			["fillCellExample.js"] = true
+		}
+
 		appData = {
 			["cabecadeboi"] = {
 				["box.geojson"] = true,
@@ -296,6 +307,9 @@ return {
 				["Setores.geojson"] = true
 			}
 		}
+
+		local mcustomWarning = customWarning --TODO #14. Raster layers stops with an error.
+		customWarning = function() end
 
 		app = Application{
 			package = "terralib",
@@ -324,6 +338,7 @@ return {
 		unitTest:assertEquals(app.project[2].layer, "limit")
 		unitTest:assertEquals(app.project[3].layer, "Setores")
 
+		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 
 		local countDir = 0
@@ -341,16 +356,17 @@ return {
 
 		unitTest:assertEquals(countDir, 3)
 		unitTest:assertEquals(countFile, 9)
+
 		if app.output:exists() then app.output:delete() end
+		customWarning = mcustomWarning
 	end,
 	__tostring = function(unitTest)
-		local emas = filePath("emas.tview", "terralib")
+		local emas = filePath("emas.tview", "publish")
 		local emasDir = Directory("EmasWebMap")
 
 		local layout = Layout{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
-			base = "satellite",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -374,9 +390,10 @@ classes     number [3]
 clean       boolean [true]
 color       vector of size 3
 datasource  Directory
-layers      vector of size 5
+layers      vector of size 4
 layout      Layout
 legend      string [Legend]
+loading     string [default.gif]
 output      Directory
 progress    boolean [false]
 project     Project

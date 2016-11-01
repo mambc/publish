@@ -32,7 +32,6 @@ project = Project{
 	author = "Almeida, R.",
 	title = "Emas database",
 	firebreak = filePath("firebreak_lin.shp", "terralib"),
-	cover = filePath("accumulation_Nov94May00.tif", "terralib"),
 	river = filePath("River_lin.shp", "terralib"),
 	limit = filePath("Limit_pol.shp", "terralib")
 }
@@ -58,12 +57,6 @@ cl:fill{
 	layer = "river"
 }
 
-cl:fill{
-	operation = "average",
-	attribute = "cover",
-	layer = "cover"
-}
-
 cs = CellularSpace{
 	project = project,
 	layer = "cells"
@@ -81,23 +74,5 @@ Map{
 	select = "river",
 	value = {0, 1},
 	color = {"white", "black"}
-}
-
---[[
-max = 0
-forEachCell(cs, function(cell)
-	if cell.cover > max then max = cell.cover end
-end)
---]]
-
--- the Map below will only work properly when TerraLib
--- loads the band indexes #808
-Map{
-	target = cs,
-	select = "cover",
-	min = 0,
-	max = 300, -- it will be 5 or 6 possibly
-	slices = 6,
-	color = "Greens"
 }
 

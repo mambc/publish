@@ -22,12 +22,6 @@
 --
 -------------------------------------------------------------------------------------------
 
-local function verifyRange(value, min, max, errorMsg)
-	if value < min or value > max then
-		customError(errorMsg)
-	end
-end
-
 Layout_ = {
 	type_ = "Layout"
 }
@@ -53,7 +47,6 @@ metaTableLayout_ = {
 -- layout = Layout{
 --     title = "INPE",
 --     description = "Satellite image of São José dos Campos.",
---     base = "satellite",
 --     zoom = 17,
 --     center = {lat = -23.179017, long = -45.889188}
 -- }
@@ -61,18 +54,20 @@ metaTableLayout_ = {
 -- print(layout)
 function Layout(data)
 	verifyNamedTable(data)
-	mandatoryTableArgument(data, "center", "table") -- TODO #8
-	verifyNamedTable(data.center)
-	mandatoryTableArgument(data.center, "lat", "number")
-	mandatoryTableArgument(data.center, "long", "number")
-	verifyUnnecessaryArguments(data.center, {"lat", "long"})
+
+	optionalTableArgument(data, "center", "table")
+	if data.center then
+		verifyNamedTable(data.center)
+		mandatoryTableArgument(data.center, "lat", "number")
+		mandatoryTableArgument(data.center, "long", "number")
+		verifyUnnecessaryArguments(data.center, {"lat", "long"})
+	end
 
 	verifyUnnecessaryArguments(data, {"title", "description", "base", "zoom", "minZoom", "maxZoom", "center"})
-
+	optionalTableArgument(data, "zoom", "number")
 	defaultTableValue(data, "title", "Default")
 	defaultTableValue(data, "description", "")
-	defaultTableValue(data, "base", "roadmap")
-	defaultTableValue(data, "zoom", 12) -- TODO #7
+	defaultTableValue(data, "base", "satellite")
 	defaultTableValue(data, "minZoom", 0)
 	defaultTableValue(data, "maxZoom", 20)
 
@@ -80,18 +75,30 @@ function Layout(data)
 		customError("Basemap '"..data.base.."' is not supported.")
 	end
 
-	verifyRange(data.zoom, 0, 20, "Argument 'zoom' must be a number >= 0 and <= 20, got '"..data.zoom.."'.")
-	verifyRange(data.minZoom, 0, 20, "Argument 'minZoom' must be a number >= 0 and <= 20, got '"..data.minZoom.."'.")
-	verifyRange(data.maxZoom, 0, 20, "Argument 'maxZoom' must be a number >= 0 and <= 20, got '"..data.maxZoom.."'.")
+	if data.zoom and (data.zoom < 0 or data.zoom > 20) then
+		customError("Argument 'zoom' must be a number >= 0 and <= 20, got '"..data.zoom.."'.")
+	end
+
+	if data.minZoom and (data.minZoom < 0 or data.minZoom > 20) then
+		customError("Argument 'minZoom' must be a number >= 0 and <= 20, got '"..data.minZoom.."'.")
+	end
+
+	if data.maxZoom and (data.maxZoom < 0 or data.maxZoom > 20) then
+		customError("Argument 'maxZoom' must be a number >= 0 and <= 20, got '"..data.maxZoom.."'.")
+	end
 
 	if data.minZoom > data.maxZoom then
 		customError("Argument 'minZoom' ("..data.minZoom..") should be less than 'maxZoom' ("..data.maxZoom..").")
 	end
 
-	verifyRange(data.center.lat, -90, 90, "Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
-	verifyRange(data.center.long, -180, 180, "Center 'long' must be a number >= -180 and <= 180, got '"..data.center.long.."'.")
+	if data.center and (data.center.lat < -90 or data.center.lat > 90) then
+		customError("Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
+	end
+
+	if data.center and (data.center.long < -180 or data.center.long > 180) then
+		customError("Center 'long' must be a number >= -180 and <= 180, got '"..data.center.long.."'.")
+	end
 
 	setmetatable(data, metaTableLayout_)
 	return data
 end
-

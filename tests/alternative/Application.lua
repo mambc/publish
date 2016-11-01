@@ -30,7 +30,6 @@ return {
 		local layout = Layout{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
-			base = "satellite",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -89,13 +88,6 @@ return {
 		unitTest:assertError(error_func, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
 
 		data.project = emas
-		data.layout = nil
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("layout"))
-
-		data.layout = layout
 		data.value = nil
 		error_func = function()
 			Application(clone(data))
@@ -232,6 +224,33 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string", 1))
+
+		data.select = "river"
+		data.loading = "square"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "'square' is an invalid value for argument 'loading'. Do you mean 'squares'?")
+
+		data.loading = "x"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
+			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
+			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
+
+		data.loading = "squares"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'")
+
+		data.layers = {"cover"}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'")
 	end
 }
 
