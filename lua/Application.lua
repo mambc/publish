@@ -346,7 +346,6 @@ function Application(data)
 	end
 
 	data.loading = data.loading..".gif"
-
 	local view = {}
 	forEachElement(data, function(_, mview)
 		if type(mview) == "View" then
@@ -369,7 +368,6 @@ function Application(data)
 	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package", "loading"})
 
 	data.view = view
-
 	if not data.progress then
 		printNormal = function() end
 		printInfo = function() end
