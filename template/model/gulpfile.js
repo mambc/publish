@@ -30,6 +30,6 @@ gulp.task("minify", function() {
 
 gulp.task("default", function() {
 	gulp.watch(files, function(evt) {
-		gulp.run("dist");
+		gulp.run("lint", "dist");
 	});
 });
