@@ -58,20 +58,6 @@ return {
 		end
 		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
 
-		error_func = function()
-			Application{
-				package = "base",
-				clean = true,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				progress = false,
-				layout = layout,
-				output = emasDir
-			}
-		end
-		unitTest:assertError(error_func, "Package 'base' does not have any project.")
-
 		local data = {
 			layout = layout,
 			clean = true,
@@ -123,19 +109,6 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("output", "Directory", 1))
 
 		data.output = emasDir
-		data.project = File("myproject.tview")
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, "Project '"..data.project.."' was not found.")
-
-		data.project = 1
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("project", "Project", 1))
-
-		data.project = emas
 		data.color = 123456
 		error_func = function()
 			Application(clone(data))
@@ -218,25 +191,5 @@ return {
 		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
 			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
-
-		data.loading = "squares"
-		data.project = filePath("emas.tview", "terralib")
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
-
-		error_func = function()
-			Application{
-				project = filePath("emas.tview", "terralib"),
-				layout = layout,
-				clean = true,
-				output = emasDir,
-				cover = View{
-					color = "green"
-				}
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
 	end
 }

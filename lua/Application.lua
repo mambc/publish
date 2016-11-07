@@ -198,6 +198,7 @@ local function loadLayers(data)
 		end)
 
 		if nLayers == 0 then
+			if data.output:exists() then data.output:delete() end
 			customError("Application 'view' does not have any Layer.")
 		end
 
@@ -206,6 +207,7 @@ local function loadLayers(data)
 
 		data.project.file:deleteIfExists()
 	else
+		if data.output:exists() then data.output:delete() end
 		customError("Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
 	end
 end
