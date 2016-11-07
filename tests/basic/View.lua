@@ -52,6 +52,35 @@ return {
 		unitTest:assertEquals(view.color[view.value[1]], "rgba(236, 231, 242, 1)")
 		unitTest:assertEquals(view.color[view.value[2]], "rgba(166, 189, 219, 1)")
 		unitTest:assertEquals(view.color[view.value[3]], "rgba(43, 140, 190, 1)")
+
+		view = View{
+			title = "Emas National Park",
+			description = "A small example related to a fire spread model.",
+			border = "red",
+			width = 2,
+			color = "blue",
+			visible = true,
+			select = "river"
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.title, "Emas National Park")
+		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
+		unitTest:assertEquals(view.width, 2)
+		unitTest:assertEquals(view.visible, true)
+		unitTest:assertEquals(view.select, "river")
+		unitTest:assertEquals(view.border, "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
+
+		view = View{
+			color = "blue",
+			layer = tostring(filePath("Limit_pol.shp", "terralib"))
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
+		unitTest:assertType(view.layer, "File")
+		unitTest:assert(view.layer:exists())
 	end,
 	__tostring = function(unitTest)
 		local view = View{

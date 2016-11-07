@@ -134,12 +134,15 @@ local function loadLayers(data)
 		if type(mview) == "View" then
 			data.view[idx] = mview
 			nView = nView + 1
+			data[idx] = nil
 		end
 	end)
 
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "layout", "legend", "progress", "loading",
+		"assets", "datasource", "view", "border", "color", "description", "select", "title", "value", "visible", "width"})
+
 	if data.project and nView == 0 then
 		printInfo("Loading layers from '"..data.project.file.."'")
-
 		local mview = {}
 		forEachElement(data, function(idx, value)
 			if belong(idx, {"border", "color", "description", "select", "title", "value", "visible", "width"}) then
@@ -150,7 +153,7 @@ local function loadLayers(data)
 
 		exportLayers(data, function(layer)
 			if not isValidSource(layer.source) then
-				customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+				customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
 				return false
 			end
 
@@ -159,7 +162,6 @@ local function loadLayers(data)
 		end)
 	elseif data.project and nView > 0 then
 		printInfo("Loading layers from '"..data.project.file.."'")
-
 		exportLayers(data, function(layer)
 			local found = false
 			forEachElement(data.view, function(name)
@@ -167,8 +169,8 @@ local function loadLayers(data)
 					if isValidSource(layer.source) then
 						found = true
 					else
-						data.view[idx] = nil
-						customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+						data.view[name] = nil
+						customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
 					end
 
 					return false
