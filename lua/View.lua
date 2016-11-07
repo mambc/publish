@@ -22,16 +22,28 @@
 --
 -------------------------------------------------------------------------------------------
 
-local function getRGB(arg, mcolor, classes)
+local function getRGB(mcolor, classes, argument)
 	local ctype = type(mcolor)
 	if ctype == "string" then
 		verifyColor(mcolor, classes)
 		mcolor = color(mcolor, classes)
 	elseif ctype ~= "table" then
-		incompatibleTypeError(arg, "string or table", mcolor)
+		argument = argument or "color"
+		incompatibleTypeError(argument, "string or table", mcolor)
 	end
 
 	return mcolor
+end
+
+local function getStrColor(rgb, pos, argument)
+	verifyColor(rgb, nil, pos, argument)
+
+	if type(rgb) == "string" then
+		return rgb
+	end
+
+	local a = rgb[4] or 1
+	return string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
 end
 
 View_ = {
@@ -48,7 +60,7 @@ metaTableView_ = {
 -- @arg data.select An optional string with the name of the attribute to be visualized.
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
 -- @arg data.visible An optional boolean whether the layer is visible. Defaults to true.
--- @arg data.width An optional argument with the stroke width in pixels. 
+-- @arg data.width An optional argument with the stroke width in pixels.
 -- @arg data.border An optional string or table with the stroke color. Colors can be described as strings using
 -- a color name, an RGB value (Ex. {0, 0, 0}), or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
 -- @arg data.color An optional table with the colors for the attributes. Colors can be described as strings using
@@ -83,51 +95,48 @@ function View(data)
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
 
-	defaultTableValue(data, "width", 0)
-	defaultTableValue(data, "visible", true)
+	defaultTableValue(data, "width", 1)
+	defaultTableValue(data, "visible", false)
 
-	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value"})
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer"})
 
 	if data.color then
-		mandatoryTableArgument(data, "value", "table")
-
-		local classes = #data.value
-		if classes <= 0 then
-			customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
-		end
-
-		data.color = getRGB("color", data.color, classes)
-		local nColors = #data.color
-		if classes ~= nColors then
-			customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
-		end
-
-		local colors = {}
-		for i = 1, classes do
-			local rgba = data.color[i]
-			verifyColor(rgba, nil, i)
-
-			if type(rgba) == "table" then
-				local a = rgba[4] or 1
-				rgba = {
-					property = data.value[i],
-					rgba = string.format("rgba(%d, %d, %d, %g)", rgba[1], rgba[2], rgba[3], a)
-				}
+		if data.value then
+			local classes = #data.value
+			if classes <= 0 then
+				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
 
-			table.insert(colors, rgba)
-		end
+			local color = getRGB(data.color, classes)
+			local nColors = #color
+			if classes ~= nColors then
+				customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
+			end
 
-		data.color = colors
+			local colors = {}
+			for i = 1, classes do
+				local rgb = color[i]
+				colors[data.value[i]] = getStrColor(rgb, i)
+			end
+
+			data.color = colors
+		else
+			local rgb = getRGB(data.color)
+			data.color = getStrColor(rgb, 1)
+		end
 	end
 
 	if data.border then
-		local rgba = getRGB("border", data.border)
+		local rgb = getRGB(data.border, nil, "border")
+		data.border = getStrColor(rgb, 1, "border")
+	end
 
-		verifyColor(rgba, nil, 1, "border")
+	if data.layer then
+		if type(data.layer) == "string" then
+			data.layer = File(data.layer)
+		end
 
-		local a = rgba[4] or 1
-		data.border = string.format("rgba(%d, %d, %d, %g)", rgba[1], rgba[2], rgba[3], a)
+		mandatoryTableArgument(data, "layer", "File")
 	end
 
 	setmetatable(data, metaTableView_)

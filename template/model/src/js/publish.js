@@ -40,15 +40,45 @@ $(function(){
 	function onClick(event){
 		var id = event.target.id;
 		var mdata = data[id];
-		if(mdata.getMap()){
-			$legend.empty();
-			mdata.setMap(null);
+		if(mdata){
+			if(mdata.getMap()){
+				$legend.empty();
+				mdata.setMap(null);
+			}else{
+				var selected = Publish.data[id];
+				var property = selected.select || id;
+				var colors = selected.color;
+				renderLegend(colors, property);
+				mdata.setMap(map);
+			}
 		}else{
-			var selected = Publish.data[id];
-			var property = selected.select;
-			var colors = selected.color;
-			renderLegend(colors, property);
-			mdata.setMap(map);
+			$loader.fadeIn();
+			var url = Publish.path + id + ".geojson";
+			$.getJSON(url, function(geojson){
+				mdata = new google.maps.Data();
+				var selected = Publish.data[id];
+				var property = selected.select || id;
+				var colors = selected.color;
+				mdata.addGeoJson(geojson);
+				mdata.forEach(function(feature){
+					if($.type(colors) == "object"){
+						feature.setProperty("color", colors[feature.getProperty(property)]);
+					}else {
+						feature.setProperty("color", colors);
+					}
+
+					feature.setProperty("border", selected.border);
+					feature.setProperty("width", selected.width);
+				});
+
+				mdata.setStyle(setStyle);
+				mdata.setMap(map);
+				data[id] = mdata;
+
+				renderLegend(colors, property);
+			}).always(function() {
+				$loader.fadeOut();
+			});
 		}
 	}
 

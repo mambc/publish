@@ -24,7 +24,7 @@
 
 return {
 	Application = function(unitTest)
-		local emas = filePath("emas.tview", "terralib")
+		local emas = filePath("emas.tview", "publish")
 		local emasDir = Directory("EmasWebMap")
 
 		local layout = Layout{
@@ -85,30 +85,9 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
+		unitTest:assertError(error_func, "Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
 
 		data.project = emas
-		data.value = nil
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("value"))
-
-		data.value = {0, 1, 2}
-		data.select = nil
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
-
-		data.select = "river"
-		data.color = nil
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, "Argument 'color' is mandatory to publish your data.")
-
-		data.color = "BuGn"
 		data.clean = 1
 		error_func = function()
 			Application(clone(data))
@@ -239,18 +218,5 @@ return {
 		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
 			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
-
-		data.loading = "squares"
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'")
-
-		data.layers = {"cover"}
-		error_func = function()
-			Application(clone(data))
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'")
 	end
 }
-

@@ -35,8 +35,8 @@ return {
 
 		local appAssets = {
 			["jquery-3.1.1.min.js"] = true,
-			["publish.css"] = true,
-			["publish.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
 			["default.gif"] = true
 		}
 
@@ -83,12 +83,12 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData))
+		unitTest:assertEquals(getn(app.view), getn(appData))
 
 		-- Testing Application: project = Project, layers = nil and package = nil.
 		local fname = File("emas-test.tview")
@@ -128,30 +128,31 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData))
+		unitTest:assertEquals(getn(app.view), getn(appData))
 
-		-- Testing Application: project = Project, layers = {firebreak, cover, river} and package = nil.
+		-- Testing Application: project = Project, view = {firebreak, river} and package = nil.
 		appData = {
 			["firebreak.geojson"] = true,
 			["river.geojson"] = true
 		}
 
-		local layers = {"firebreak", "cover", "river"}
 		app = Application{
 			project = emas,
-			layers = layers,
 			layout = layout,
 			clean = true,
-			select = "river",
-			color = {{229, 245, 249}, {153, 216, 201}, {44, 162, 95}},
-			value = {0, 1, 2},
 			progress = false,
-			output = emasDir
+			output = emasDir,
+			river = View{
+				color = "blue"
+			},
+			firebreak = View{
+				color = "black"
+			}
 		}
 
 		unitTest:assertType(app, "Application")
@@ -160,77 +161,62 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
+		unitTest:assertEquals(getn(app.view), getn(app.project.layers) - 1)
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
-
-		-- Testing Application: project = Project, layers = {firebreak_lin, accumulation_Nov94May00, River_lin} and package = nil.
-		layers = {
-			filePath("firebreak_lin.shp", "terralib"),
-			filePath("accumulation_Nov94May00.tif", "terralib"),
-			filePath("River_lin.shp", "terralib")
-		}
-
-		app = Application{
-			project = emas,
-			layers = layers,
-			layout = layout,
-			clean = true,
-			select = "river",
-			color = {"aliceblue", "darkseagreen", "forestgreen"},
-			value = {0, 1, 2},
-			progress = false,
-			output = emasDir
-		}
-
-		unitTest:assertType(app, "Application")
-		unitTest:assertType(app.project, "Project")
-		unitTest:assertType(app.output, "Directory")
-		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers))
-
-		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(appData))
 
 		-- Testing Application: project = nil, layers = {firebreak_lin, accumulation_Nov94May00, River_lin, Limit_pol} and package = nil.
 		appData = {
-			["firebreak_lin.geojson"] = true,
-			["Limit_pol.geojson"] = true,
-			["River_lin.geojson"] = true
+			["firebreak.geojson"] = true,
+			["limit.geojson"] = true,
+			["river.geojson"] = true
 		}
 
-		table.insert(layers, filePath("Limit_pol.shp", "terralib"))
 		app = Application{
-			layers = layers,
 			layout = layout,
 			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
 			progress = false,
-			output = emasDir
+			output = emasDir,
+			river = View{
+				color = "blue",
+				layer = filePath("River_lin.shp", "terralib")
+			},
+			firebreak = View{
+				color = "black",
+				layer = filePath("firebreak_lin.shp", "terralib")
+			},
+			limit = View{
+				border = "blue",
+				color = "goldenrod",
+				width = 2,
+				visible = true,
+				layer = filePath("Limit_pol.shp", "terralib")
+			},
+			cells = View{
+				title = "Emas National Park",
+				select = "cover",
+				color = "PuBu",
+				width = 0,
+				value = {0, 1, 2},
+				layer = filePath("accumulation_Nov94May00.tif", "terralib")
+			}
 		}
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.project, "Project")
-		unitTest:assertType(app.layers, "table")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(app.project.layers) + 1) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(appData) + 1) -- TODO #14. Raster layers are not counted.
 
 		if app.output:exists() then app.output:delete() end
 
@@ -242,7 +228,7 @@ return {
 			["river.geojson"] = true
 		}
 
-		appAssets["package.js"] = true
+		appAssets["package.min.js"] = true
 
 		app = Application{
 			package = "publish",
@@ -257,17 +243,16 @@ return {
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.project, "Project")
-		unitTest:assertType(app.layers, "table")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(#app.layers, getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(#app.layers, getn(appData))
+		unitTest:assertEquals(getn(app.view), getn(appData))
 
 		if app.output:exists() then app.output:delete() end
 		fname:deleteIfExists()
@@ -319,7 +304,6 @@ return {
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.output, "Directory")
-		unitTest:assertNil(app.layers)
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 
@@ -382,14 +366,13 @@ return {
 		unitTest:assertEquals(tostring(app), [[assets      Directory
 clean       boolean [true]
 datasource  Directory
-layers      vector of size 4
 layout      Layout
 legend      string [Legend]
 loading     string [default.gif]
 output      Directory
 progress    boolean [false]
 project     Project
-view        View
+view        named table of size 4
 ]])
 
 		if emasDir:exists() then emasDir:delete() end

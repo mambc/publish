@@ -19,8 +19,7 @@ gulp.task("lint", function() {
 
 gulp.task("distjs", function() {
 	gulp.src(jsfiles)
-		.pipe(concat(output))
-		.pipe(rename("publish.min.js"))
+		.pipe(rename({suffix: ".min"}))
 		.pipe(uglify())
 		.pipe(gulp.dest(output));
 });

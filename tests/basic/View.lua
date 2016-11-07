@@ -30,7 +30,7 @@ return {
 			border = "blue",
 			width = 2,
 			color = "PuBu",
-			visible = false,
+			visible = true,
 			select = "river",
 			value = {0, 1, 2}
 		}
@@ -39,7 +39,7 @@ return {
 		unitTest:assertEquals(view.title, "Emas National Park")
 		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
 		unitTest:assertEquals(view.width, 2)
-		unitTest:assertEquals(view.visible, false)
+		unitTest:assertEquals(view.visible, true)
 		unitTest:assertEquals(view.select, "river")
 		unitTest:assertEquals(view.border, "rgba(0, 0, 255, 1)")
 
@@ -48,13 +48,10 @@ return {
 		unitTest:assertEquals(view.value[3], 2)
 
 		unitTest:assertType(view.color, "table")
-		unitTest:assertEquals(#view.color, 3)
-		unitTest:assertEquals(view.color[1].property, view.value[1])
-		unitTest:assertEquals(view.color[2].property, view.value[2])
-		unitTest:assertEquals(view.color[3].property, view.value[3])
-		unitTest:assertEquals(view.color[1].rgba, "rgba(236, 231, 242, 1)")
-		unitTest:assertEquals(view.color[2].rgba, "rgba(166, 189, 219, 1)")
-		unitTest:assertEquals(view.color[3].rgba, "rgba(43, 140, 190, 1)")
+		unitTest:assertEquals(getn(view.color), 3)
+		unitTest:assertEquals(view.color[view.value[1]], "rgba(236, 231, 242, 1)")
+		unitTest:assertEquals(view.color[view.value[2]], "rgba(166, 189, 219, 1)")
+		unitTest:assertEquals(view.color[view.value[3]], "rgba(43, 140, 190, 1)")
 	end,
 	__tostring = function(unitTest)
 		local view = View{
@@ -62,17 +59,17 @@ return {
 			border = "blue",
 			width = 2,
 			color = "PuBu",
-			visible = false,
+			visible = true,
 			select = "river",
 			value = {0, 1, 2}
 		}
 
 		unitTest:assertEquals(tostring(view), [[border   string [rgba(0, 0, 255, 1)]
-color    vector of size 3
+color    named table of size 3
 select   string [river]
 title    string [Emas National Park]
 value    vector of size 3
-visible  boolean [false]
+visible  boolean [true]
 width    number [2]
 ]])
 	end

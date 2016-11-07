@@ -5,7 +5,7 @@ var Publish = {
 	mapTypeId: "SATELLITE",
 	legend: "Legend",
 	path: (function(){
-		var data = "./data/";
+		var data = ".\/data\/";
 		var url = "";
 		if(url)
 			return data + url + "/";
@@ -16,7 +16,7 @@ var Publish = {
 			"visible": true,
 			"width": 1,
 			"border": "rgba(0, 0, 255, 1)",
-			"color": "rgba(238, 232, 170, 1)",
+			"color": "rgba(238, 232, 170, 1)"
 		},
 		"cells": {
 			"color": {

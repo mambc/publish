@@ -11,7 +11,7 @@ $(function(){
 
 		return color;
 	}
-
+	
 	function onClick(event){
 		window.location.href = "./" + event.target.id + ".html";
 	}
@@ -34,7 +34,7 @@ $(function(){
 		var XHRs = [];
 		var bounds = new google.maps.LatLngBounds();
 		$.each(Publish.data, function(proj, layer){
-			var url = Publish.path(proj) + layer + ".geojson";
+			var url = "./data/" + proj + "/" + layer + ".geojson";
 			var defer = $.getJSON(url, function(geojson){
 				var color = getRandomColor();
 				var mdata = new google.maps.Data();

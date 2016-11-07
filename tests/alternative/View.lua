@@ -70,9 +70,9 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("width", "number", "mwidth"))
 
 		error_func = function()
-			View{width = 0}
+			View{width = 1}
 		end
-		unitTest:assertError(error_func, defaultValueMsg("width", 0))
+		unitTest:assertError(error_func, defaultValueMsg("width", 1))
 
 		error_func = function()
 			View{value = {0, 1, 2}, color = 1}
@@ -95,9 +95,9 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("visible", "boolean", 1))
 
 		error_func = function()
-			View{visible = true}
+			View{visible = false}
 		end
-		unitTest:assertError(error_func, defaultValueMsg("visible", true))
+		unitTest:assertError(error_func, defaultValueMsg("visible", false))
 
 		error_func = function()
 			View{select = 1}
