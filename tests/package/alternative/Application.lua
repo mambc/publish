@@ -24,7 +24,8 @@
 
 return {
 	Application = function(unitTest)
-		local emasDir = Directory("EmasWebMap")
+		local emasDir = Directory("package-alternative-app")
+		if emasDir:exists() then emasDir:delete() end
 
 		local error_func = function()
 			Application{

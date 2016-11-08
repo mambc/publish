@@ -26,12 +26,7 @@ return {
 	Application = function(unitTest)
 		local terralib = getPackage("terralib")
 		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("EmasWebMap")
-
-		local appRoot = {
-			["index.html"] = true,
-			["config.js"] = true
-		}
+		local emasDir = Directory("project-basic-app")
 
 		local appAssets = {
 			["jquery-3.1.1.min.js"] = true,
@@ -88,12 +83,10 @@ return {
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 		unitTest:assertEquals(getn(app.view), getn(appData))
 
-		--assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
 
-
-		if app.output:exists() then app.output:delete() end
+		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = Project, package = nil.
 		local fname = File("emas-test.tview")
@@ -115,6 +108,7 @@ return {
 			limit = filePath("Limit_pol.shp", "terralib")
 		}
 
+		emasDir = "project-basic-app-stroutput"
 		app = Application{
 			project = emas,
 			layout = layout,
@@ -123,7 +117,7 @@ return {
 			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
-			output = "EmasWebMap"
+			output = emasDir
 		}
 
 		unitTest:assertType(app, "Application")
@@ -133,13 +127,13 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
-
-		--assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
 		unitTest:assertEquals(getn(app.view), getn(appData))
 
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+
 		fname:deleteIfExists()
-		if app.output:exists() then app.output:delete() end
+		emasDir = Directory(emasDir)
+		if emasDir:exists() then emasDir:delete() end
 	end
 }

@@ -24,6 +24,9 @@
 
 return {
 	Application = function(unitTest)
+		local emasDir = Directory("package-basic-app-onetview")
+		if emasDir:exists() then emasDir:delete() end
+
 		local appRoot = {
 			["index.html"] = true,
 			["config.js"] = true
@@ -71,7 +74,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = "terralib-onetview"
+			output = emasDir
 		}
 
 		unitTest:assertType(app, "Application")
@@ -82,14 +85,17 @@ return {
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
-		--assertFiles(app.output, appRoot)
+		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
 		unitTest:assertEquals(getn(app.view), getn(appData))
 
-		if app.output:exists() then app.output:delete() end
+		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = nil, package = "terralib".
+		emasDir = Directory("package-basic-app-manytview")
+		if emasDir:exists() then emasDir:delete() end
+
 		appRoot = {
 			["index.html"] = true,
 			["config.js"] = true,
@@ -131,7 +137,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = "terralib-manytview"
+			output = emasDir
 		}
 
 		unitTest:assertType(app, "Application")
@@ -148,7 +154,7 @@ return {
 		unitTest:assertEquals(app.project[2].layer, "limit")
 		unitTest:assertEquals(app.project[3].layer, "Setores")
 
-		--assertFiles(app.output, appRoot)
+		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 
 		local countDir = 0
@@ -167,7 +173,7 @@ return {
 		unitTest:assertEquals(countDir, 3)
 		unitTest:assertEquals(countFile, 9)
 
-		if app.output:exists() then app.output:delete() end
+		if emasDir:exists() then emasDir:delete() end
 		customWarning = mcustomWarning
 	end
 }

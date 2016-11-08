@@ -25,7 +25,7 @@
 return {
 	__tostring = function(unitTest)
 		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("functional-tostring")
+		local emasDir = Directory("functional-basic-tostring")
 
 		local layout = Layout{
 			title = "Emas",

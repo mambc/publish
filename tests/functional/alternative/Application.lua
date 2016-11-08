@@ -25,7 +25,9 @@
 return {
 	Application = function(unitTest)
 		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("EmasWebMap")
+		local emasDir = Directory("functional-alternative-tostring")
+
+		if emasDir:exists() then emasDir:delete() end
 
 		local layout = Layout{
 			title = "Emas",
@@ -191,5 +193,7 @@ return {
 		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
 			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
+
+		if emasDir:exists() then emasDir:delete() end
 	end
 }

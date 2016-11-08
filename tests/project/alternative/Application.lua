@@ -24,8 +24,10 @@
 
 return {
 	Application = function(unitTest)
-		local emasDir = Directory("EmasWebMap")
+		local emasDir = Directory("project-alternative-app")
 		local proj = File("myproject.tview")
+
+		if emasDir:exists() then emasDir:delete() end
 
 		local error_func = function()
 			Application{
