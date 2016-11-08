@@ -33,7 +33,8 @@ $(function(){
 		return {
 			fillColor: feature.getProperty("color"),
 			strokeColor: feature.getProperty("border"),
-			strokeWeight: feature.getProperty("width")
+			strokeWeight: feature.getProperty("width"),
+			zIndex: feature.getProperty("order")
 		};
 	}
 
@@ -69,6 +70,7 @@ $(function(){
 
 					feature.setProperty("border", selected.border);
 					feature.setProperty("width", selected.width);
+					feature.setProperty("order", selected.order);
 				});
 
 				mdata.setStyle(setStyle);

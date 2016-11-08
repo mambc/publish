@@ -42,6 +42,74 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
+
+		error_func = function()
+			Application{
+				title = "Emas",
+				description = "Creates a database that can be used by the example fire-spread of base package.",
+				zoom = 14,
+				center = {lat = -18.106389, long = -52.927778},
+				project = filePath("emas.tview", "terralib"),
+				clean = true,
+				output = emasDir,
+				order = 1,
+				cover = View{
+					color = "green"
+				}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("order", "table", 1))
+
+		error_func = function()
+			Application{
+				title = "Emas",
+				description = "Creates a database that can be used by the example fire-spread of base package.",
+				zoom = 14,
+				center = {lat = -18.106389, long = -52.927778},
+				project = filePath("emas.tview", "publish"),
+				clean = true,
+				output = emasDir,
+				order = {1},
+				cover = View{
+					color = "green"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "All elements of 'order' must be a string. View '1' (1) got 'number'.")
+
+		error_func = function()
+			Application{
+				title = "Emas",
+				description = "Creates a database that can be used by the example fire-spread of base package.",
+				zoom = 14,
+				center = {lat = -18.106389, long = -52.927778},
+				project = filePath("emas.tview", "publish"),
+				clean = true,
+				output = emasDir,
+				order = {"cover", "cells"},
+				cover = View{
+					color = "green"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'order' must be a table with size greater > 0 and <= '1', got '2'.")
+
+		error_func = function()
+			Application{
+				title = "Emas",
+				description = "Creates a database that can be used by the example fire-spread of base package.",
+				zoom = 14,
+				center = {lat = -18.106389, long = -52.927778},
+				project = filePath("emas.tview", "publish"),
+				clean = true,
+				output = emasDir,
+				order = {"cove"},
+				cover = View{
+					color = "green"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "View 'cove' in argument 'order' (1) does not exist.")
 		if emasDir:exists() then emasDir:delete() end
 	end
 }

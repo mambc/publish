@@ -66,6 +66,7 @@ return {
 			clean = true,
 			progress = false,
 			output = emasDir,
+			order = {"cells", "river", "firebreak", "limit"},
 			river = View{
 				color = "blue",
 				layer = filePath("River_lin.shp", "terralib")
@@ -98,11 +99,29 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+
+		unitTest:assertEquals(app.view.river.width, 1)
+		unitTest:assertEquals(app.view.limit.width, 2)
+
+		unitTest:assertEquals(app.view.river.visible, false)
+		unitTest:assertEquals(app.view.limit.visible, true)
+
+		unitTest:assertType(app.view.cells.color, "table")
+		unitTest:assertEquals(app.view.cells.select, "cover")
+		unitTest:assertEquals(app.view.cells.title, "Emas National Park")
+		unitTest:assertEquals(app.view.cells.color[0], "rgba(236, 231, 242, 1)")
+		unitTest:assertEquals(app.view.cells.color[1], "rgba(166, 189, 219, 1)")
+		unitTest:assertEquals(app.view.cells.color[2], "rgba(43, 140, 190, 1)")
+
+		unitTest:assertEquals(app.view.cells.order, 4)
+		unitTest:assertEquals(app.view.river.order, 3)
+		unitTest:assertEquals(app.view.firebreak.order, 2)
+		unitTest:assertEquals(app.view.limit.order, 1)
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(getn(app.view), getn(appData) + 1) -- TODO #14. Raster layers are not counted.
 
 		if emasDir:exists() then emasDir:delete() end
 
@@ -121,6 +140,7 @@ return {
 			clean = true,
 			progress = false,
 			output = emasDir,
+			order = {"river"},
 			river = View{
 				color = "blue"
 			},
@@ -138,9 +158,52 @@ return {
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers) - 2)
 		unitTest:assertEquals(getn(app.view), getn(appData))
 
+		unitTest:assertEquals(app.view.river.order, 2)
+		unitTest:assertEquals(app.view.firebreak.order, 1)
+
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
+
+		if emasDir:exists() then emasDir:delete() end
+
+		app = Application{
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			project = filePath("emas.tview", "publish"),
+			clean = true,
+			progress = false,
+			output = emasDir,
+			river = View{
+				color = "blue"
+			},
+			firebreak = View{
+				color = "black"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertEquals(getn(app.view), getn(app.project.layers) - 2)
+
+		unitTest:assertEquals(app.view.firebreak.order, 2)
+		unitTest:assertEquals(app.view.river.order, 1)
+
+		app = Application{
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			project = filePath("emas.tview", "publish"),
+			clean = true,
+			progress = false,
+			output = emasDir,
+		}
+
+		unitTest:assertEquals(app.view.cells.order, 4)
+		unitTest:assertEquals(app.view.firebreak.order, 3)
+		unitTest:assertEquals(app.view.limit.order, 2)
+		unitTest:assertEquals(app.view.river.order, 1)
 
 		if emasDir:exists() then emasDir:delete() end
 	end

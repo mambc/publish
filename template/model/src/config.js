@@ -16,7 +16,8 @@ var Publish = {
 			"visible": true,
 			"width": 1,
 			"border": "rgba(0, 0, 255, 1)",
-			"color": "rgba(238, 232, 170, 1)"
+			"color": "rgba(238, 232, 170, 1)",
+			"order": 4
 		},
 		"cells": {
 			"color": {
@@ -27,17 +28,20 @@ var Publish = {
 			"select": "river",
 			"title": "Emas National Park",
 			"width": 0,
-			"visible": false
+			"visible": false,
+			"order": 1
 		},
 		"firebreak": {
 			"visible": false,
 			"color": "rgba(0, 0, 0, 1)",
-			"width": 1
+			"width": 1,
+			"order": 2
 		},
 		"river": {
 			"visible": false,
 			"color": "rgba(0, 0, 255, 1)",
-			"width": 1
+			"width": 1,
+			"order": 3
 		}
 	}
 };

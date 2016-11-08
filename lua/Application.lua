@@ -140,78 +140,121 @@ local function loadLayers(data)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
-		"border", "color", "description", "select", "value", "visible", "width"})
+		"border", "color", "description", "select", "value", "visible", "width", "order"})
 
-	if data.project and nView == 0 then
-		printInfo("Loading layers from '"..data.project.file:name().."'")
-		local mview = {}
-		forEachElement(data, function(idx, value)
-			if belong(idx, {"border", "color", "description", "select", "title", "value", "visible", "width"}) then
-				mview[idx] = value
-				if not (idx == "title" or idx == "description") then
-					data[idx] = nil
-				end
-			end
-		end)
+	if nView > 0 then
+		if data.project then
+			printInfo("Loading layers from '"..data.project.file:name().."'")
+			exportLayers(data, function(layer)
+				local found = false
+				forEachElement(data.view, function(name)
+					if name == layer.name then
+						if isValidSource(layer.source) then
+							found = true
+						else
+							data.view[name] = nil
+							customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
+						end
 
-		exportLayers(data, function(layer)
-			if not isValidSource(layer.source) then
-				customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
-				return false
-			end
+						return false
+					end
+				end)
 
-			data.view[layer.name] = View(clone(mview))
-			return true
-		end)
-	elseif data.project and nView > 0 then
-		printInfo("Loading layers from '"..data.project.file:name().."'")
-		exportLayers(data, function(layer)
-			local found = false
-			forEachElement(data.view, function(name)
-				if name == layer.name then
-					if isValidSource(layer.source) then
-						found = true
-					else
-						data.view[name] = nil
-						customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
+				return found
+			end)
+		else
+			printInfo("Loading layers from path")
+			local mproj = {
+				file = data.title..".tview",
+				clean = true
+			}
+
+			local nLayers = 0
+			forEachElement(data.view, function(name, view)
+				if view.layer then
+					if view.layer:exists() and isValidSource(view.layer:extension()) then
+						mproj[name] = tostring(view.layer)
 					end
 
-					return false
+					nLayers = nLayers + 1
 				end
 			end)
 
-			return found
-		end)
-	elseif not data.project and nView > 0 then
-		printInfo("Loading layers from path")
-		local mproj = {
-			file = data.title..".tview",
-			clean = true
-		}
+			if nLayers == 0 then
+				if data.output:exists() then data.output:delete() end
+				customError("Application 'view' does not have any Layer.")
+			end
 
-		local nLayers = 0
-		forEachElement(data.view, function(name, view)
-			if view.layer then
-				if view.layer:exists() and isValidSource(view.layer:extension()) then
-					mproj[name] = tostring(view.layer)
+			data.project = terralib.Project(mproj)
+			exportLayers(data)
+
+			data.project.file:deleteIfExists()
+		end
+	else
+		if data.project then
+			printInfo("Loading layers from '"..data.project.file:name().."'")
+			local mview = {}
+			forEachElement(data, function(idx, value)
+				if belong(idx, {"border", "color", "description", "select", "title", "value", "visible", "width"}) then
+					mview[idx] = value
+					if not (idx == "title" or idx == "description") then
+						data[idx] = nil
+					end
+				end
+			end)
+
+			exportLayers(data, function(layer)
+				if not isValidSource(layer.source) then
+					customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
+					return false
 				end
 
-				nLayers = nLayers + 1
+				data.view[layer.name] = View(clone(mview))
+				nView = nView + 1
+				return true
+			end)
+		else
+			if data.output:exists() then data.output:delete() end
+			customError("Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
+		end
+	end
+
+	if data.order then
+		local orderSize = #data.order
+		if orderSize == 0 or orderSize > nView then
+			if data.output:exists() then data.output:delete() end
+			customError("Argument 'order' must be a table with size greater > 0 and <= '"..nView.."', got '"..orderSize.."'.")
+		end
+
+		forEachElement(data.order, function(order, layer, mtype)
+			if mtype == "string" then
+				local view = data.view[layer]
+				if view then
+					view.order = nView
+					nView = nView - 1
+				else
+					if data.output:exists() then data.output:delete() end
+					customError("View '"..layer.."' in argument 'order' ("..order..") does not exist.")
+				end
+			else
+				if data.output:exists() then data.output:delete() end
+				customError("All elements of 'order' must be a string. View '"..layer.."' ("..order..") got '"..mtype.."'.")
 			end
 		end)
 
-		if nLayers == 0 then
-			if data.output:exists() then data.output:delete() end
-			customError("Application 'view' does not have any Layer.")
+		if nView > 0 then
+			forEachOrderedElement(data.view, function(_, view)
+				if not view.order then
+					view.order = nView
+					nView = nView - 1
+				end
+			end)
 		end
-
-		data.project = terralib.Project(mproj)
-		exportLayers(data)
-
-		data.project.file:deleteIfExists()
 	else
-		if data.output:exists() then data.output:delete() end
-		customError("Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
+		forEachOrderedElement(data.view, function(_, view)
+			view.order = nView
+			nView = nView - 1
+		end)
 	end
 end
 
@@ -232,7 +275,6 @@ local function createApplicationProjects(data, proj)
 	for layer in pairs(view) do
 		table.insert(layers, layer)
 	end
-
 
 	registerApplicationModel {
 		output = config,
@@ -376,6 +418,7 @@ function Application(data)
 	optionalTableArgument(data, "layers", "table")
 	optionalTableArgument(data, "center", "table")
 	optionalTableArgument(data, "zoom", "number")
+	optionalTableArgument(data, "order", "table")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
