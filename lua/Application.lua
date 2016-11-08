@@ -138,8 +138,9 @@ local function loadLayers(data)
 		end
 	end)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "layout", "legend", "progress", "loading",
-		"assets", "datasource", "view", "border", "color", "description", "select", "title", "value", "visible", "width"})
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading",
+		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
+		"border", "color", "description", "select", "value", "visible", "width"})
 
 	if data.project and nView == 0 then
 		printInfo("Loading layers from '"..data.project.file.."'")
@@ -147,7 +148,9 @@ local function loadLayers(data)
 		forEachElement(data, function(idx, value)
 			if belong(idx, {"border", "color", "description", "select", "title", "value", "visible", "width"}) then
 				mview[idx] = value
-				data[idx] = nil
+				if not (idx == "title" or idx == "description") then
+					data[idx] = nil
+				end
 			end
 		end)
 
@@ -182,7 +185,7 @@ local function loadLayers(data)
 	elseif not data.project and nView > 0 then
 		printInfo("Loading layers from path")
 		local mproj = {
-			file = data.layout.title..".tview",
+			file = data.title..".tview",
 			clean = true
 		}
 
@@ -234,11 +237,11 @@ local function createApplicationProjects(data, proj)
 	registerApplicationModel {
 		output = config,
 		model = {
-			center = data.layout.center,
-			zoom = data.layout.zoom,
-			minZoom = data.layout.minZoom,
-			maxZoom = data.layout.maxZoom,
-			mapTypeId = data.layout.base:upper(),
+			center = data.center,
+			zoom = data.zoom,
+			minZoom = data.minZoom,
+			maxZoom = data.maxZoom,
+			mapTypeId = data.base:upper(),
 			legend = data.legend,
 			data = view,
 			path = path
@@ -250,8 +253,8 @@ local function createApplicationProjects(data, proj)
 		output = index,
 		model = {
 			config = config,
-			title = data.layout.title,
-			description = data.layout.description,
+			title = data.title,
+			description = data.description,
 			layers = layers,
 			loading = data.loading
 		}
@@ -271,11 +274,11 @@ local function createApplicationHome(data)
 	registerApplicationModel {
 		output = config,
 		model = {
-			center = data.layout.center,
-			zoom = data.layout.zoom,
-			minZoom = data.layout.minZoom,
-			maxZoom = data.layout.maxZoom,
-			mapTypeId = data.layout.base:upper(),
+			center = data.center,
+			zoom = data.zoom,
+			minZoom = data.minZoom,
+			maxZoom = data.maxZoom,
+			mapTypeId = data.base:upper(),
 			legend = data.legend,
 			data = layers
 		}
@@ -331,12 +334,21 @@ metaTableApplication_ = {
 
 --- Creates a web page to visualize the published data.
 -- @arg data.clean A boolean value indicating if the output directory could be automatically removed. The default value is false.
--- @arg data.layout A mandatory Layout.
 -- @arg data.legend A string value with the layers legend. The default value is project title.
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
 -- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project A terralib::Project or string with the path to a .tview file.
+-- @arg data.title A string with the application's title.
+-- The title will be placed at the center top of the application page.
+-- @arg data.description A string with the application's description.
+-- It will be shown as a box that is shown in the beginning of the application and can be closed.
+-- @arg data.base A string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is roadmap.
+-- @arg data.zoom A number with the initial zoom, ranging from 0 to 20. The default value is 12.
+-- @arg data.minZoom A number with the minimum zoom allowed. The default value is 0.
+-- @arg data.maxZoom A number with the maximum zoom allowed. The default value is 20.
+-- @arg data.center A mandatory named table with two values, lat and long,
+-- describing the initial central point of the application.
 -- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/).
@@ -344,16 +356,8 @@ metaTableApplication_ = {
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
 --
--- local layout = Layout{
---     title = "Emas",
---     description = "Creates a database that can be used by the example fire-spread of base package.",
---     zoom = 14,
---     center = {lat = -18.106389, long = -52.927778}
--- }
---
 -- local app = Application{
 --     project = emas,
---     layout = layout,
 --     clean = true,
 --     select = "river",
 --     color = "BuGn",
@@ -366,20 +370,62 @@ metaTableApplication_ = {
 -- if emasDir:exists() then emasDir:delete() end
 function Application(data)
 	verifyNamedTable(data)
+
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
-	optionalTableArgument(data, "layout", "Layout")
 	optionalTableArgument(data, "layers", "table")
+	optionalTableArgument(data, "center", "table")
+	optionalTableArgument(data, "zoom", "number")
+
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "legend", "Legend")
 	defaultTableValue(data, "loading", "default")
+	defaultTableValue(data, "description", "")
+	defaultTableValue(data, "base", "satellite")
+	defaultTableValue(data, "minZoom", 0)
+	defaultTableValue(data, "maxZoom", 20)
 
 	if type(data.output) == "string" then
 		data.output = Directory(data.output)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
+
+	if data.center then
+		verifyNamedTable(data.center)
+		mandatoryTableArgument(data.center, "lat", "number")
+		mandatoryTableArgument(data.center, "long", "number")
+		verifyUnnecessaryArguments(data.center, {"lat", "long"})
+	end
+
+	if not belong(data.base, {"roadmap", "satellite", "hybrid", "terrain"}) then
+		customError("Basemap '"..data.base.."' is not supported.")
+	end
+
+	if data.zoom and (data.zoom < 0 or data.zoom > 20) then
+		customError("Argument 'zoom' must be a number >= 0 and <= 20, got '"..data.zoom.."'.")
+	end
+
+	if data.minZoom and (data.minZoom < 0 or data.minZoom > 20) then
+		customError("Argument 'minZoom' must be a number >= 0 and <= 20, got '"..data.minZoom.."'.")
+	end
+
+	if data.maxZoom and (data.maxZoom < 0 or data.maxZoom > 20) then
+		customError("Argument 'maxZoom' must be a number >= 0 and <= 20, got '"..data.maxZoom.."'.")
+	end
+
+	if data.minZoom > data.maxZoom then
+		customError("Argument 'minZoom' ("..data.minZoom..") should be less than 'maxZoom' ("..data.maxZoom..").")
+	end
+
+	if data.center and (data.center.lat < -90 or data.center.lat > 90) then
+		customError("Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
+	end
+
+	if data.center and (data.center.long < -180 or data.center.long > 180) then
+		customError("Center 'long' must be a number >= -180 and <= 180, got '"..data.center.long.."'.")
+	end
 
 	local icons = {
 		balls = true,
@@ -414,7 +460,7 @@ function Application(data)
 		mandatoryTableArgument(data, "package", "string")
 		optionalTableArgument(data, "project", "table")
 		data.package = packageInfo(data.package)
-		data.layout = data.layout or Layout{title = data.package.package}
+		defaultTableValue(data, "title", data.package.package)
 
 		printInfo("Creating application for package '"..data.package.package.."'")
 		local nProj = 0
@@ -511,16 +557,18 @@ function Application(data)
 			mandatoryTableArgument(data, "project", "Project")
 		end
 
-		data.layout = data.layout or Layout{title = data.project.file:name()}
-
 		createDirectoryStructure(data)
 		loadLayers(data)
+
+		local _, name = data.project.file:split()
+		defaultTableValue(data, "title", "Application "..name.."")
+
 		createApplicationProjects(data)
 		exportTemplates(data)
 	end
 
 	setmetatable(data, metaTableApplication_)
-	printInfo("Summing up, application '"..data.layout.title.."' was successfully created.")
+	printInfo("Summing up, application '"..data.title.."' was successfully created.")
 
 	return data
 end

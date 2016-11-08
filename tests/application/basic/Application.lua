@@ -57,16 +57,12 @@ return {
 
 		if emasDir:exists() then emasDir:delete() end
 
-		local layout = Layout{
-			title = "Emas",
-			description = "Creates a database that can be used by the example fire-spread of base package.",
-			zoom = 14,
-			center = {lat = -18.106389, long = -52.927778}
-		}
-
 		-- Testing Application: project = nil, layers = {firebreak_lin, accumulation_Nov94May00, River_lin, Limit_pol} and package = nil.
 		local app = Application{
-			layout = layout,
+			title = "app",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			zoom = 14,
+			center = {lat = -18.106389, long = -52.927778},
 			clean = true,
 			progress = false,
 			output = emasDir,
@@ -117,8 +113,11 @@ return {
 		}
 
 		app = Application{
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			zoom = 14,
+			center = {lat = -18.106389, long = -52.927778},
 			project = filePath("emas.tview", "publish"),
-			layout = layout,
 			clean = true,
 			progress = false,
 			output = emasDir,

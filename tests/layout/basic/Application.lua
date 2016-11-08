@@ -23,46 +23,59 @@
 -------------------------------------------------------------------------------------------
 
 return {
-	__tostring = function(unitTest)
-		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("functional-basic-tostring")
-
+	Application = function(unitTest)
+		local emasDir = Directory("layout-basic-app")
 		if emasDir:exists() then emasDir:delete() end
 
 		local app = Application{
-			project = tostring(emas),
+			project = filePath("emas.tview", "publish"),
 			clean = true,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
 			output = emasDir,
-			title = "Emas",
-			description = "Creates a database that can be used by the example fire-spread of base package.",
-			zoom = 14,
-			center = {lat = -18.106389, long = -52.927778}
+			title = "Testing Application Functional",
+			description = "Basic Test"
 		}
 
 		unitTest:assertType(app, "Application")
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(tostring(app), [[assets       Directory
-base         string [satellite]
-center       named table of size 2
-clean        boolean [true]
-datasource   Directory
-description  string [Creates a database that can be used by the example fire-spread of base package.]
-legend       string [Legend]
-loading      string [default.gif]
-maxZoom      number [20]
-minZoom      number [0]
-output       Directory
-progress     boolean [false]
-project      Project
-title        string [Emas]
-view         named table of size 4
-zoom         number [14]
-]])
+		unitTest:assertEquals(app.title, "Testing Application Functional")
+		unitTest:assertEquals(app.description, "Basic Test")
+		unitTest:assertEquals(app.base, "satellite")
+		unitTest:assertEquals(app.minZoom, 0)
+		unitTest:assertEquals(app.maxZoom, 20)
+		unitTest:assertNil(app.zoom)
+		unitTest:assertNil(app.center)
+
+		if emasDir:exists() then emasDir:delete() end
+
+		app = Application{
+			project = filePath("emas.tview", "publish"),
+			clean = true,
+			select = "river",
+			color = "BuGn",
+			value = {0, 1, 2},
+			progress = false,
+			output = emasDir,
+			title = "Testing Application Functional",
+			description = "Basic Test",
+			base = "roadmap",
+			zoom = 10,
+			minZoom = 5,
+			maxZoom = 17,
+			center = {lat = -23.179017, long = -45.889188}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertEquals(app.title, "Testing Application Functional")
+		unitTest:assertEquals(app.description, "Basic Test")
+		unitTest:assertEquals(app.base, "roadmap")
+		unitTest:assertEquals(app.zoom, 10)
+		unitTest:assertEquals(app.minZoom, 5)
+		unitTest:assertEquals(app.maxZoom, 17)
+		unitTest:assertEquals(app.center.lat, -23.179017)
+		unitTest:assertEquals(app.center.long, -45.889188)
 
 		if emasDir:exists() then emasDir:delete() end
 	end

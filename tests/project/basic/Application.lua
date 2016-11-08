@@ -55,23 +55,19 @@ return {
 
 		if emasDir:exists() then emasDir:delete() end
 
-		local layout = Layout{
-			title = "Emas",
-			description = "Creates a database that can be used by the example fire-spread of base package.",
-			zoom = 14,
-			center = {lat = -18.106389, long = -52.927778}
-		}
-
 		-- Testing Application: project = tview, package = nil.
 		local app = Application{
 			project = emas,
-			layout = layout,
 			clean = true,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = emasDir
+			output = emasDir,
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			zoom = 14,
+			center = {lat = -18.106389, long = -52.927778}
 		}
 
 		unitTest:assertType(app, "Application")
@@ -111,13 +107,16 @@ return {
 		emasDir = "project-basic-app-stroutput"
 		app = Application{
 			project = emas,
-			layout = layout,
 			clean = true,
 			select = "river",
 			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
-			output = emasDir
+			output = emasDir,
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			zoom = 14,
+			center = {lat = -18.106389, long = -52.927778}
 		}
 
 		unitTest:assertType(app, "Application")

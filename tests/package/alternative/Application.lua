@@ -35,7 +35,6 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
-				layout = layout,
 				output = emasDir
 			}
 		end

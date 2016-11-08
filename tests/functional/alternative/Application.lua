@@ -29,13 +29,6 @@ return {
 
 		if emasDir:exists() then emasDir:delete() end
 
-		local layout = Layout{
-			title = "Emas",
-			description = "Creates a database that can be used by the example fire-spread of base package.",
-			zoom = 14,
-			center = {lat = -18.106389, long = -52.927778}
-		}
-
 		local error_func = function()
 			Application()
 		end
@@ -54,20 +47,22 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				project = emas,
-				layout = layout,
 				output = emasDir
 			}
 		end
 		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
 
 		local data = {
-			layout = layout,
 			clean = true,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = emasDir
+			output = emasDir,
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			zoom = 14,
+			center = {lat = -18.106389, long = -52.927778}
 		}
 
 		error_func = function()

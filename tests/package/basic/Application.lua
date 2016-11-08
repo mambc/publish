@@ -58,23 +58,19 @@ return {
 			unitTest:assertEquals(count, getn(files))
 		end
 
-		local layout = Layout{
-			title = "Emas",
-			description = "Creates a database that can be used by the example fire-spread of base package.",
-			zoom = 14,
-			center = {lat = -18.106389, long = -52.927778}
-		}
-
 		-- Testing Application: project = nil, package = "terralib" with 1 tview.
 		local app = Application{
 			package = "publish",
-			layout = layout,
 			clean = true,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = emasDir
+			output = emasDir,
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			zoom = 14,
+			center = {lat = -18.106389, long = -52.927778}
 		}
 
 		unitTest:assertType(app, "Application")
@@ -131,13 +127,16 @@ return {
 		app = Application{
 			package = "terralib",
 			project = {cabecadeboi = "box", emas = "limit", fillCellExample = "Setores"},
-			layout = layout,
 			clean = true,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = emasDir
+			output = emasDir,
+			title = "Emas",
+			description = "Creates a database that can be used by the example fire-spread of base package.",
+			zoom = 14,
+			center = {lat = -18.106389, long = -52.927778}
 		}
 
 		unitTest:assertType(app, "Application")
