@@ -143,7 +143,7 @@ local function loadLayers(data)
 		"border", "color", "description", "select", "value", "visible", "width"})
 
 	if data.project and nView == 0 then
-		printInfo("Loading layers from '"..data.project.file.."'")
+		printInfo("Loading layers from '"..data.project.file:name().."'")
 		local mview = {}
 		forEachElement(data, function(idx, value)
 			if belong(idx, {"border", "color", "description", "select", "title", "value", "visible", "width"}) then
@@ -164,7 +164,7 @@ local function loadLayers(data)
 			return true
 		end)
 	elseif data.project and nView > 0 then
-		printInfo("Loading layers from '"..data.project.file.."'")
+		printInfo("Loading layers from '"..data.project.file:name().."'")
 		exportLayers(data, function(layer)
 			local found = false
 			forEachElement(data.view, function(name)
