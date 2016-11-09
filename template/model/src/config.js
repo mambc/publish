@@ -17,7 +17,8 @@ var Publish = {
 			"width": 1,
 			"border": "rgba(0, 0, 255, 1)",
 			"color": "rgba(238, 232, 170, 1)",
-			"order": 4
+			"order": 4,
+			"description": "Bounding box of Emas National Park"
 		},
 		"cells": {
 			"color": {
@@ -27,6 +28,7 @@ var Publish = {
 			},
 			"select": "river",
 			"title": "Emas National Park",
+			"description": "Cellular layer",
 			"width": 0,
 			"visible": false,
 			"order": 1

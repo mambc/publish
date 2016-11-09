@@ -3,6 +3,8 @@ $(function(){
 	var data = {};
 	var $legend = $('#legend');
 	var $loader = $('#loader');
+	var $title = $('#layer-title');
+	var $description = $('#layer-description');
 
 	function addLegendContent(lengend, color, property, attribute) {
 		if(attribute){
@@ -49,6 +51,9 @@ $(function(){
 				var selected = Publish.data[id];
 				var property = selected.select || id;
 				var colors = selected.color;
+
+				$title.text(selected.title || "").css("font-weight","Bold");
+				$description.text(selected.description || "");
 				renderLegend(colors, property);
 				mdata.setMap(map);
 			}
@@ -113,6 +118,8 @@ $(function(){
 				mdata.setStyle(setStyle);
 				data[id] = mdata;
 				if(selected.visible){
+					$title.text(selected.title || "").css("font-weight","Bold");
+					$description.text(selected.description || "");
 					mdata.setMap(map);
 					renderLegend(colors, property);
 				}
@@ -203,6 +210,7 @@ $(function(){
 	});
 
 	$(window).on('resize', applyMargins);
+	$('#modal-app-description').modal('show');
 
 	applyInitialUIState();
 	applyMargins();
