@@ -272,9 +272,13 @@ local function createApplicationProjects(data, proj)
 	end
 
 	local layers = {}
-	for layer in pairs(view) do
-		table.insert(layers, layer)
+	for name, value in pairs(view) do
+		table.insert(layers, {order = value.order, layer = name})
 	end
+
+	table.sort (layers, function(k1, k2)
+		return k1.order > k2.order
+	end)
 
 	registerApplicationModel {
 		output = config,
