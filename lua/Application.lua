@@ -22,21 +22,19 @@
 --
 -------------------------------------------------------------------------------------------
 
-local printNormal = print
-local printInfo = function (value)
-	if sessionInfo().color then
-		printNormal("\027[00;34m"..tostring(value).."\027[00m")
-	else
-		printNormal(value)
-	end
-end
-
 -- Lustache is an implementation of the mustache template system in Lua (http://mustache.github.io/).
 -- Copyright Lustache (https://github.com/Olivine-Labs/lustache).
 local lustache = require "lustache"
 
+-- JSON (Javascript Object Notation - http://www.json.org) encoding / decoding module for Lua.
+-- Copyright json4lua (https://github.com/craigmj/json4lua).
+local json = require "json"
+
 local terralib = getPackage("terralib")
 
+local templateDir = Directory(packageInfo("publish").path.."/template")
+local Templates = {}
+local ViewModel = {}
 local SourceTypeMapper = {
 	shp = "OGR",
 	geojson = "OGR",
@@ -47,47 +45,36 @@ local SourceTypeMapper = {
 	access = "ADO"
 }
 
-local Templates = {}
-local templateDir = Directory(packageInfo("publish").path.."/template")
+local printNormal = print
+local printInfo = function (value)
+	if sessionInfo().color then
+		printNormal("\027[00;34m"..tostring(value).."\027[00m")
+	else
+		printNormal(value)
+	end
+end
 
-local ViewModel = {}
+local function clone(tab, ignore)
+	local isTable = isTable
+	local copy = {}
+	for k, v in pairs(tab) do
+		if not (ignore and ignore[k]) then
+			if isTable(v) then
+				copy[k] = clone(v, ignore)
+			else
+				copy[k] = v
+			end
+		end
+	end
+
+	return copy
+end
+
 local function registerApplicationModel(data)
-	mandatoryTableArgument(data, "input", "string")
 	mandatoryTableArgument(data, "output", "string")
 	verifyNamedTable(data.model)
 
 	table.insert(ViewModel, data)
-end
-
-local function getColors(data)
-	local ctype = type(data.color)
-	verify(ctype == "string" or ctype == "table", incompatibleTypeMsg("color", "string or table", data.color))
-
-	if ctype == "string" then
-		verifyColor(data.color, data.classes)
-		data.color = color(data.color, data.classes)
-	end
-
-	local nColors = #data.color
-	verify(data.classes == nColors, "The number of colors ("..nColors..") must be equal to number of data classes ("..data.classes..").")
-
-	local colors = {}
-	for i = 1, data.classes do
-		local mcolor = data.color[i]
-		verifyColor(mcolor, nil, i)
-
-		if type(mcolor) == "table" then
-			local a = mcolor[4] or 1
-			mcolor = {
-				property = data.value[i],
-				rgba = string.format("rgba(%d, %d, %d, %g)", mcolor[1], mcolor[2], mcolor[3], a)
-			}
-		end
-
-		table.insert(colors, mcolor)
-	end
-
-	return colors
 end
 
 local function createDirectoryStructure(data)
@@ -110,9 +97,9 @@ local function createDirectoryStructure(data)
 		data.assets:create()
 	end
 
-	local depends = {"publish.css", "publish.js", "jquery-3.1.1.min.js", "loader/"..data.loading}
+	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-3.1.1.min.js", "loader/"..data.loading}
 	if data.package then
-		table.insert(depends, "package.js")
+		table.insert(depends, "model/dist/package.min.js")
 	end
 
 	forEachElement(depends, function(_, file)
@@ -141,86 +128,169 @@ local function exportLayers(data, sof)
 end
 
 local function loadLayers(data)
-	if data.project and not data.layers then
-		printInfo("Loading layers from '"..data.project.file.."'")
-		data.layers = {}
-		exportLayers(data, function(layer)
-			if not isValidSource(layer.source) then
-				customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
-				return false
-			end
+	data.view = {}
+	local nView = 0
+	forEachElement(data, function(idx, mview)
+		if type(mview) == "View" then
+			data.view[idx] = mview
+			nView = nView + 1
+			data[idx] = nil
+		end
+	end)
 
-			table.insert(data.layers, layer.name)
-			return true
-		end)
-	elseif data.project and data.layers then
-		printInfo("Loading layers from '"..data.project.file.."'")
-		exportLayers(data, function(layer)
-			local found = false
-			forEachElement(data.layers, function(idx, mvalue)
-				mvalue = tostring(mvalue)
-				if mvalue == layer.name or mvalue == layer.file then
-					if isValidSource(layer.source) then
-						found = true
-					else
-						data.layers[idx] = nil
-						customWarning("Publish cannot export yet raster layer '"..layer.name.."'")
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading",
+		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
+		"border", "color", "description", "select", "value", "visible", "width", "order"})
+
+	if nView > 0 then
+		if data.project then
+			printInfo("Loading layers from '"..data.project.file:name().."'")
+			exportLayers(data, function(layer)
+				local found = false
+				forEachElement(data.view, function(name)
+					if name == layer.name then
+						if isValidSource(layer.source) then
+							found = true
+						else
+							data.view[name] = nil
+							customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
+						end
+
+						return false
+					end
+				end)
+
+				return found
+			end)
+		else
+			printInfo("Loading layers from path")
+			local mproj = {
+				file = data.title..".tview",
+				clean = true
+			}
+
+			local nLayers = 0
+			forEachElement(data.view, function(name, view)
+				if view.layer then
+					if view.layer:exists() and isValidSource(view.layer:extension()) then
+						mproj[name] = tostring(view.layer)
 					end
 
-					return false
+					nLayers = nLayers + 1
 				end
 			end)
-			return found
-		end)
-	else
-		printInfo("Loading layers from path")
-		local mproj = {
-			file = data.layout.title..".tview",
-			clean = true
-		}
 
-		forEachElement(data.layers, function(_, file)
-			if file:exists() and isValidSource(file:extension()) then
-				local _, name = file:split()
-				mproj[name] = tostring(file)
+			if nLayers == 0 then
+				if data.output:exists() then data.output:delete() end
+				customError("Application 'view' does not have any Layer.")
+			end
+
+			data.project = terralib.Project(mproj)
+			exportLayers(data)
+
+			data.project.file:deleteIfExists()
+		end
+	else
+		if data.project then
+			printInfo("Loading layers from '"..data.project.file:name().."'")
+			local mview = {}
+			forEachElement(data, function(idx, value)
+				if belong(idx, {"border", "color", "description", "select", "title", "value", "visible", "width"}) then
+					mview[idx] = value
+					if not (idx == "title" or idx == "description") then
+						data[idx] = nil
+					end
+				end
+			end)
+
+			exportLayers(data, function(layer)
+				if not isValidSource(layer.source) then
+					customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
+					return false
+				end
+
+				data.view[layer.name] = View(clone(mview))
+				nView = nView + 1
+				return true
+			end)
+		else
+			if data.output:exists() then data.output:delete() end
+			customError("Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
+		end
+	end
+
+	if data.order then
+		local orderSize = #data.order
+		if orderSize == 0 or orderSize > nView then
+			if data.output:exists() then data.output:delete() end
+			customError("Argument 'order' must be a table with size greater > 0 and <= '"..nView.."', got '"..orderSize.."'.")
+		end
+
+		forEachElement(data.order, function(order, layer, mtype)
+			if mtype == "string" then
+				local view = data.view[layer]
+				if view then
+					view.order = nView
+					nView = nView - 1
+				else
+					if data.output:exists() then data.output:delete() end
+					customError("View '"..layer.."' in argument 'order' ("..order..") does not exist.")
+				end
+			else
+				if data.output:exists() then data.output:delete() end
+				customError("All elements of 'order' must be a string. View '"..layer.."' ("..order..") got '"..mtype.."'.")
 			end
 		end)
 
-		data.project = terralib.Project(mproj)
-		exportLayers(data)
-
-		data.project.file:deleteIfExists()
+		if nView > 0 then
+			forEachOrderedElement(data.view, function(_, view)
+				if not view.order then
+					view.order = nView
+					nView = nView - 1
+				end
+			end)
+		end
+	else
+		forEachOrderedElement(data.view, function(_, view)
+			view.order = nView
+			nView = nView - 1
+		end)
 	end
 end
 
 local function createApplicationProjects(data, proj)
 	printInfo("Loading Template")
+	local path = "./data/"
 	local index = "index.html"
 	local config = "config.js"
+	local view = clone(data.view, {type_ = true, value = true})
+
 	if proj then
-		index = proj ..".html"
-		config = proj ..".js"
-	else
-		proj = ""
+		index = proj..".html"
+		config = proj..".js"
+		path = path..proj.."/"
 	end
 
+	local layers = {}
+	for name, value in pairs(view) do
+		table.insert(layers, {order = value.order, layer = name})
+	end
+
+	table.sort (layers, function(k1, k2)
+		return k1.order > k2.order
+	end)
+
 	registerApplicationModel {
-		input = templateDir.."config.mustache",
 		output = config,
 		model = {
-			center = data.layout.center,
-			zoom = data.layout.zoom or "null",
-			minZoom = data.layout.minZoom,
-			maxZoom = data.layout.maxZoom,
-			base = data.layout.base:upper(),
-			path = proj,
-			color = data.color,
-			select = data.select,
-			layers = data.layers,
+			center = data.center,
+			zoom = data.zoom,
+			minZoom = data.minZoom,
+			maxZoom = data.maxZoom,
+			mapTypeId = data.base:upper(),
 			legend = data.legend,
-			quotes = function(text, render)
-				return "\""..render(text).."\""
-			end
+			data = view,
+			path = path
 		}
 	}
 
@@ -229,9 +299,9 @@ local function createApplicationProjects(data, proj)
 		output = index,
 		model = {
 			config = config,
-			title = data.layout.title,
-			description = data.layout.description,
-			layers = data.layers,
+			title = data.title,
+			description = data.description,
+			layers = layers,
 			loading = data.loading
 		}
 	}
@@ -242,20 +312,21 @@ local function createApplicationHome(data)
 	local index = "index.html"
 	local config = "config.js"
 
+	local layers = {}
+	for _, mproj in pairs(data.project) do
+		layers[mproj.project] = mproj.layer
+	end
+
 	registerApplicationModel {
-		input = templateDir.."pkgconfig.mustache",
 		output = config,
 		model = {
-			center = data.layout.center,
-			zoom = data.layout.zoom or "null",
-			minZoom = data.layout.minZoom,
-			maxZoom = data.layout.maxZoom,
-			base = data.layout.base:upper(),
+			center = data.center,
+			zoom = data.zoom,
+			minZoom = data.minZoom,
+			maxZoom = data.maxZoom,
+			mapTypeId = data.base:upper(),
 			legend = data.legend,
-			projects = data.project,
-			quotes = function(text, render)
-				return "\""..render(text).."\""
-			end
+			data = layers
 		}
 	}
 
@@ -274,18 +345,26 @@ end
 
 local function exportTemplates(data)
 	forEachElement(ViewModel, function(_, mfile)
-		local template = Templates[mfile.input]
-		if not template then
-			local fopen = File(mfile.input):open()
-			Templates[mfile.input] = fopen:read("*all")
-			fopen:close()
+		printNormal("Creating file '"..mfile.output.."'")
+		local model
+		local fwrite = File(data.output..mfile.output)
 
-			template = Templates[mfile.input]
+		if mfile.input then
+			local template = Templates[mfile.input]
+			if not template then
+				local fopen = File(mfile.input):open()
+				Templates[mfile.input] = fopen:read("*all")
+				fopen:close()
+
+				template = Templates[mfile.input]
+			end
+
+			model = lustache:render(template, mfile.model)
+		else
+			model = "var Publish = "..json.encode(mfile.model)..";"
 		end
 
-		printNormal("Creating file '"..mfile.output.."'")
-		local fwrite = File(data.output..mfile.output)
-		fwrite:write(lustache:render(template, mfile.model))
+		fwrite:write(model)
 		fwrite:close()
 	end)
 end
@@ -301,46 +380,30 @@ metaTableApplication_ = {
 
 --- Creates a web page to visualize the published data.
 -- @arg data.clean A boolean value indicating if the output directory could be automatically removed. The default value is false.
--- @arg data.layers A table of strings with the layers to be exported. As default, it will export all the available layers.
--- @arg data.layout A mandatory Layout.
 -- @arg data.legend A string value with the layers legend. The default value is project title.
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
 -- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project A terralib::Project or string with the path to a .tview file.
--- @arg data.select A mandatory string with the name of the attribute to be visualized.
--- @arg data.value A mandatory table with the possible values for the selected attributes.
+-- @arg data.title A string with the application's title.
+-- The title will be placed at the center top of the application page.
+-- @arg data.description A string with the application's description.
+-- It will be shown as a box that is shown in the beginning of the application and can be closed.
+-- @arg data.base A string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is roadmap.
+-- @arg data.zoom A number with the initial zoom, ranging from 0 to 20. The default value is 12.
+-- @arg data.minZoom A number with the minimum zoom allowed. The default value is 0.
+-- @arg data.maxZoom A number with the maximum zoom allowed. The default value is 20.
+-- @arg data.center A mandatory named table with two values, lat and long,
+-- describing the initial central point of the application.
 -- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/).
--- @arg data.color A mandatory table with the colors for the attributes. Colors can be described as strings using
--- a color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords),
--- as tables with three integer numbers representing RGB compositions, such as {0, 0, 0},
--- or even as a string with a ColorBrewer format (see http://colorbrewer2.org/).
--- The colors available and the maximum number of slices for each of them are:
--- @tabular color
--- Name & Max \
--- Accent, Dark, Set2 & 7 \
--- Pastel2, Set1 & 8 \
--- Pastel1 & 9 \
--- PRGn, RdYlGn, Spectral & 10 \
--- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
--- BuGn, BuPu, OrRd, PuBu & 19 \
--- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
 -- @usage import("publish")
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
 --
--- local layout = Layout{
---     title = "Emas",
---     description = "Creates a database that can be used by the example fire-spread of base package.",
---     zoom = 14,
---     center = {lat = -18.106389, long = -52.927778}
--- }
---
 -- local app = Application{
 --     project = emas,
---     layout = layout,
 --     clean = true,
 --     select = "river",
 --     color = "BuGn",
@@ -353,28 +416,62 @@ metaTableApplication_ = {
 -- if emasDir:exists() then emasDir:delete() end
 function Application(data)
 	verifyNamedTable(data)
-	verify(data.project or data.layers or data.package, "Argument 'project', 'layers' or 'package' is mandatory to publish your data.")
-	verify(data.color, "Argument 'color' is mandatory to publish your data.")
-	mandatoryTableArgument(data, "value", "table")
-	mandatoryTableArgument(data, "select", "string")
-	optionalTableArgument(data, "layout", "Layout")
+
+	optionalTableArgument(data, "value", "table")
+	optionalTableArgument(data, "select", "string")
 	optionalTableArgument(data, "layers", "table")
+	optionalTableArgument(data, "center", "table")
+	optionalTableArgument(data, "zoom", "number")
+	optionalTableArgument(data, "order", "table")
+
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "legend", "Legend")
 	defaultTableValue(data, "loading", "default")
+	defaultTableValue(data, "base", "satellite")
+	defaultTableValue(data, "minZoom", 0)
+	defaultTableValue(data, "maxZoom", 20)
 
 	if type(data.output) == "string" then
 		data.output = Directory(data.output)
 	end
 
 	mandatoryTableArgument(data, "output", "Directory")
-	verifyUnnecessaryArguments(data, {"project", "layers", "output", "clean", "layout", "legend", "progress", "package",
-		"color", "value", "select", "loading"})
 
-	data.classes = #data.value
-	verify(data.classes > 0, "Argument 'value' must be a table with size greater than 0, got "..data.classes..".")
-	data.color = getColors(data)
+	if data.center then
+		verifyNamedTable(data.center)
+		mandatoryTableArgument(data.center, "lat", "number")
+		mandatoryTableArgument(data.center, "long", "number")
+		verifyUnnecessaryArguments(data.center, {"lat", "long"})
+	end
+
+	if not belong(data.base, {"roadmap", "satellite", "hybrid", "terrain"}) then
+		customError("Basemap '"..data.base.."' is not supported.")
+	end
+
+	if data.zoom and (data.zoom < 0 or data.zoom > 20) then
+		customError("Argument 'zoom' must be a number >= 0 and <= 20, got '"..data.zoom.."'.")
+	end
+
+	if data.minZoom and (data.minZoom < 0 or data.minZoom > 20) then
+		customError("Argument 'minZoom' must be a number >= 0 and <= 20, got '"..data.minZoom.."'.")
+	end
+
+	if data.maxZoom and (data.maxZoom < 0 or data.maxZoom > 20) then
+		customError("Argument 'maxZoom' must be a number >= 0 and <= 20, got '"..data.maxZoom.."'.")
+	end
+
+	if data.minZoom > data.maxZoom then
+		customError("Argument 'minZoom' ("..data.minZoom..") should be less than 'maxZoom' ("..data.maxZoom..").")
+	end
+
+	if data.center and (data.center.lat < -90 or data.center.lat > 90) then
+		customError("Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
+	end
+
+	if data.center and (data.center.long < -180 or data.center.long > 180) then
+		customError("Center 'long' must be a number >= -180 and <= 180, got '"..data.center.long.."'.")
+	end
 
 	local icons = {
 		balls = true,
@@ -399,6 +496,7 @@ function Application(data)
 	end
 
 	data.loading = data.loading..".gif"
+
 	if not data.progress then
 		printNormal = function() end
 		printInfo = function() end
@@ -407,9 +505,8 @@ function Application(data)
 	if data.package then
 		mandatoryTableArgument(data, "package", "string")
 		optionalTableArgument(data, "project", "table")
-		verify(not data.layers, unnecessaryArgumentMsg("layers"))
 		data.package = packageInfo(data.package)
-		data.layout = data.layout or Layout{title = data.package.package}
+		defaultTableValue(data, "title", data.package.package)
 
 		printInfo("Creating application for package '"..data.package.package.."'")
 		local nProj = 0
@@ -433,7 +530,7 @@ function Application(data)
 					local abstractLayer = proj.layers[bbox]
 					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
 
-					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle() }
+					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle()}
 					local source = layer.source
 					verify(isValidSource(source), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[source].."'.")
 
@@ -506,18 +603,18 @@ function Application(data)
 			mandatoryTableArgument(data, "project", "Project")
 		end
 
-		data.layout = data.layout or Layout{title = data.project.file:name()}
-
 		createDirectoryStructure(data)
 		loadLayers(data)
+
+		local _, name = data.project.file:split()
+		defaultTableValue(data, "title", "Application "..name.."")
+
 		createApplicationProjects(data)
 		exportTemplates(data)
 	end
 
 	setmetatable(data, metaTableApplication_)
-
-	local finalTime = os.clock()
-	printInfo("Summing up, application '"..data.layout.title.."' was successfully created.")
+	printInfo("Summing up, application '"..data.title.."' was successfully created.")
 
 	return data
 end

@@ -4,14 +4,10 @@
 
 import("publish")
 
-local layout = Layout{
-	title = "Emas",
-	description = "A small example related to a fire spread model."
-}
-
 Application{
+	title = "Emas",
+	description = "A small example related to a fire spread model.",
 	project = filePath("emas.tview", "publish"),
-	layout = layout,
 	clean = true,
 	select = "river",
 	color = "PuBu",

@@ -3,52 +3,79 @@ $(function(){
 	var data = {};
 	var $legend = $('#legend');
 	var $loader = $('#loader');
+	var $title = $('#layer-title');
+	var $description = $('#layer-description');
+
+	function addLegendContent(lengend, color, property, attribute) {
+		if(attribute){
+			property = property + " " + attribute;
+		}
+
+		var $div = $('<div style="height:25px;">')
+			.append($('<div class="legend-color-box">').css({backgroundColor: color}))
+			.append($('<span>').css("lineHeight", "23px").html(property));
+		lengend.append($div);
+	}
 
 	function renderLegend(colors, property){
 		$legend.empty();
 		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend + '</h4><br/></div>'));
 		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
-		$.each(colors, function(attribute, color){
-			var $div = $('<div style="height:25px;">')
-				.append($('<div class="legend-color-box">').css({backgroundColor: color}))
-				.append($('<span>').css("lineHeight", "23px").html(property + " " + attribute));
-			$legendContent.append($div);
-		});
+
+		if($.type(colors) == "object"){
+			$.each(colors, function(attribute, color){
+				addLegendContent($legendContent, color, property, attribute);
+			});
+		}else{
+			addLegendContent($legendContent, colors, property);
+		}
 	}
 
 	function setStyle(feature){
 		return {
 			fillColor: feature.getProperty("color"),
-			strokeWeight: 1
+			strokeColor: feature.getProperty("border"),
+			strokeWeight: feature.getProperty("width"),
+			zIndex: feature.getProperty("order")
 		};
 	}
 
 	function onClick(event){
 		var id = event.target.id;
-		var found = data[id];
-		if(found){
-			if(found.getMap()){
+		var mdata = data[id];
+		if(mdata){
+			if(mdata.getMap()){
 				$legend.empty();
-				found.setMap(null);
+				mdata.setMap(null);
 			}else{
 				var selected = Publish.data[id];
-				var property = selected[0];
-				var colors = selected[1];
+				var property = selected.select || id;
+				var colors = selected.color;
+
+				$title.text(selected.title || "").css("font-weight","Bold");
+				$description.text(selected.description || "");
 				renderLegend(colors, property);
-				found.setMap(map);
+				mdata.setMap(map);
 			}
 		}else{
 			$loader.fadeIn();
 			var url = Publish.path + id + ".geojson";
 			$.getJSON(url, function(geojson){
+				mdata = new google.maps.Data();
 				var selected = Publish.data[id];
-				var property = selected[0];
-				var colors = selected[1];
-				var mdata = new google.maps.Data();
-
+				var property = selected.select || id;
+				var colors = selected.color;
 				mdata.addGeoJson(geojson);
 				mdata.forEach(function(feature){
-					feature.setProperty("color", colors[feature.getProperty(property)]);
+					if($.type(colors) == "object"){
+						feature.setProperty("color", colors[feature.getProperty(property)]);
+					}else {
+						feature.setProperty("color", colors);
+					}
+
+					feature.setProperty("border", selected.border);
+					feature.setProperty("width", selected.width);
+					feature.setProperty("order", selected.order);
 				});
 
 				mdata.setStyle(setStyle);
@@ -65,22 +92,44 @@ $(function(){
 	function initialZoom(projects) {
 		var XHRs = [];
 		var bounds = new google.maps.LatLngBounds();
-		$.each(projects, function(id) {
+		$loader.fadeIn();
+		$.each(projects, function(id, selected) {
 			var url = Publish.path + id + ".geojson";
 			XHRs.push($.getJSON(url, function(geojson){
 				var mdata = new google.maps.Data();
+				var property = selected.select || id;
+				var colors = selected.color;
+
 				mdata.addGeoJson(geojson);
 				mdata.forEach(function(feature){
+					if($.type(colors) == "object"){
+						feature.setProperty("color", colors[feature.getProperty(property)]);
+					}else {
+						feature.setProperty("color", colors);
+					}
+
+					feature.setProperty("border", selected.border);
+					feature.setProperty("width", selected.width);
 					feature.getGeometry().forEachLatLng(function(coordinate){
 						bounds.extend(coordinate);
 					});
 				});
+
+				mdata.setStyle(setStyle);
+				data[id] = mdata;
+				if(selected.visible){
+					$title.text(selected.title || "").css("font-weight","Bold");
+					$description.text(selected.description || "");
+					mdata.setMap(map);
+					renderLegend(colors, property);
+				}
 			}));
 		});
 
 		setTimeout(function () {
 			$.when(XHRs).then(function(){
 				map.fitBounds(bounds);
+				$loader.fadeOut();
 			});
 		}, 1000);
 	}
@@ -161,6 +210,7 @@ $(function(){
 	});
 
 	$(window).on('resize', applyMargins);
+	$('#modal-app-description').modal('show');
 
 	applyInitialUIState();
 	applyMargins();

@@ -1,9 +1,9 @@
 [00;34mCreating directory structure[00m
-Copying dependency 'publish.css'
-Copying dependency 'publish.js'
-Copying dependency 'jquery-3.1.1.min.js'
+Copying dependency 'model/dist/publish.min.css'
+Copying dependency 'model/dist/publish.min.js'
+Copying dependency 'model/src/assets/jquery-3.1.1.min.js'
 Copying dependency 'loader/default.gif'
-[00;34mLoading layers from '/home/terrame/TerraME/terrame/build-cmake/install/bin/packages/publish/data/emas.tview'[00m
+[00;34mLoading layers from 'emas.tview'[00m
 Exporting layer 'cells'
 Exporting layer 'firebreak'
 Exporting layer 'limit'
