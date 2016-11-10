@@ -10,7 +10,7 @@ Application{
 	output = "EmasWebMap",
 	title = "Emas",
 	description = "A small example related to a fire spread model.",
-	order = {"limit", "river", "firebreak", "cells"},
+	order = {"cells", "river", "firebreak", "limit"},
 	river = View{
 		color = "blue"
 	},
