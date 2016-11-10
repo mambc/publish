@@ -1418,8 +1418,13 @@ function color(keyword, class)
 	optionalArgument(1, "number", class)
 
 	if class then
-		verify(class == math.floor(class), "The number of data classes must be an integer, got "..class..".")
-		verify(class >= 2 and class <= 20, "The number of data classes must be >= 2 and <= 20, got "..class..".")
+		if class ~= math.floor(class) then
+			customError("The number of data classes must be an integer, got "..class..".")
+		end
+
+		if class < 2 or class > 20 then
+			customError("The number of data classes must be >= 2 and <= 20, got "..class..".")
+		end
 
 		local brewer = colorBrewer[keyword]
 		if brewer then
@@ -1477,8 +1482,13 @@ local function verifyRGBColor(rgb, pos, arg)
 		for i = 1, 3 do
 			local v = rgb[i]
 			local vtype = type(v)
-			verify(vtype == "number" and v == math.floor(v), "Element '#"..i.."' in color '#"..pos.."' must be an integer, got "..v..".")
-			verify(v >= 0 and v <= 255, "Element '#"..i.."' in color '#"..pos.."' must be an integer between 0 and 255, got "..v..".")
+			if vtype ~= "number" or v ~= math.floor(v) then
+				customError("Element '#"..i.."' in color '#"..pos.."' must be an integer, got "..v..".")
+			end
+
+			if v < 0 or v > 255 then
+				customError("Element '#"..i.."' in color '#"..pos.."' must be an integer between 0 and 255, got "..v..".")
+			end
 
 			local a = rgb[4]
 			if a and (a < 0 or a > 1) then

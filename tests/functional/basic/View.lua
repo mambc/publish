@@ -49,9 +49,9 @@ return {
 
 		unitTest:assertType(view.color, "table")
 		unitTest:assertEquals(getn(view.color), 3)
-		unitTest:assertEquals(view.color[view.value[1]], "rgba(236, 231, 242, 1)")
-		unitTest:assertEquals(view.color[view.value[2]], "rgba(166, 189, 219, 1)")
-		unitTest:assertEquals(view.color[view.value[3]], "rgba(43, 140, 190, 1)")
+		unitTest:assertEquals(view.color[tostring(view.value[1])], "rgba(236, 231, 242, 1)")
+		unitTest:assertEquals(view.color[tostring(view.value[2])], "rgba(166, 189, 219, 1)")
+		unitTest:assertEquals(view.color[tostring(view.value[3])], "rgba(43, 140, 190, 1)")
 
 		view = View{
 			title = "Emas National Park",
@@ -81,6 +81,28 @@ return {
 		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
 		unitTest:assertType(view.layer, "File")
 		unitTest:assert(view.layer:exists())
+
+		view = View{
+			select = "classe",
+			color = {"red", "orange", "yellow"},
+			value = {1, 2, 3}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.color["1"], "red")
+		unitTest:assertEquals(view.color["2"], "orange")
+		unitTest:assertEquals(view.color["3"], "yellow")
+
+		view = View{
+			select = "classe",
+			color = {"#088da5", "#0b7b47", "#7b0b3f"},
+			value = {1, 2, 3}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.color["1"], "#088da5")
+		unitTest:assertEquals(view.color["2"], "#0b7b47")
+		unitTest:assertEquals(view.color["3"], "#7b0b3f")
 	end,
 	__tostring = function(unitTest)
 		local view = View{

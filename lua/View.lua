@@ -116,7 +116,7 @@ function View(data)
 			local colors = {}
 			for i = 1, classes do
 				local rgb = color[i]
-				colors[data.value[i]] = getStrColor(rgb, i)
+				colors[tostring(data.value[i])] = getStrColor(rgb, i)
 			end
 
 			data.color = colors
