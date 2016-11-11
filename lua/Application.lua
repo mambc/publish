@@ -615,8 +615,12 @@ function Application(data)
 		createDirectoryStructure(data)
 		loadLayers(data)
 
-		local _, name = data.project.file:split()
-		defaultTableValue(data, "title", "Application "..name.."")
+		defaultTableValue(data, "title", data.project.title)
+
+		local description = data.project.description
+		if description ~= nil and description ~= "" then
+			defaultTableValue(data, "description", description)
+		end
 
 		createApplicationProjects(data)
 		exportTemplates(data)

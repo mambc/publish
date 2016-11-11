@@ -30,8 +30,6 @@ Application{
 	project = filePath("emas.tview", "publish"),
 	clean = true,
 	output = "EmasWebMap",
-	title = "Emas",
-	description = "A small example related to a fire spread model.",
 	order = {"cells", "river", "firebreak", "limit"},
 	river = View{
 		color = "blue"
