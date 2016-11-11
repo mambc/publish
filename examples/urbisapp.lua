@@ -27,8 +27,6 @@
 -- Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação
 -- Urbana em Caraguatatuba, SP.
 
-import("publish")
-
 Application{
 	project = filePath("urbis.tview", "publish"),
 	clean = true,
