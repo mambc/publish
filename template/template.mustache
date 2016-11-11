@@ -22,7 +22,7 @@
 		<div class="navbar-offset"></div>
 		<div id="map"></div>
 		<div class="row main-row" >
-			<div class="col-sm-4 col-md-3 sidebar sidebar-left pull-left">
+			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
 					<div class="panel panel-default">
 						<div class="panel-heading" >
@@ -34,7 +34,7 @@
 						<div id="layers" class="panel-collapse collapse in">
 							<div class="panel-body list-group">
 								{{#layers}}
-									<button id="{{layer}}" type="button" class="list-group-item"><i class="fa fa-globe"></i> {{layer}}</button>
+									<button id="{{layer}}" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> {{layer}}</button>
 								{{/layers}}
 							</div>
 						</div>
@@ -49,6 +49,16 @@
 							<div class="panel-body">
 								<p id="layer-title"></p>
 								<p id="layer-description"></p>
+							</div>
+						</div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title">
+									<i class="fa fa-list-alt"></i><a id="legend-title" data-toggle="collapse" href="#legend"></a>
+								</h4>
+							</div>
+							<div class="panel-collapse collapse in">
+								<div id="legend" class="panel-body"></div>
 							</div>
 						</div>
 					</div>
@@ -70,14 +80,13 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{title}}</h4>
 					</div>
 					<div class="modal-body">
 						<p>{{description}}</p>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
 					</div>
 				</div>
 			</div>

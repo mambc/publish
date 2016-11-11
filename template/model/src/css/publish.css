@@ -50,18 +50,6 @@ body{ overflow: hidden;}
 	padding-right: 2px;
 }
 
-#legend-container {
-	font-size: 14px;
-	background: #fff;
-	padding: 10px;
-	margin: 10px;
-	border: 3px solid #000;
-}
-
-#legend-container h3{
-	margin-top: 0;
-}
-
 .legend-color-box{
 	height:20px;
 	width:20px;
@@ -79,4 +67,27 @@ body{ overflow: hidden;}
 	left: 0;
 	right:0;
 	margin: auto;
+}
+
+.modal{
+	text-align: center;
+	padding: 0!important;
+}
+
+.modal:before{
+	content: '';
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+	margin-right: -4px;
+}
+
+.modal-dialog{
+	display: inline-block;
+	text-align: left;
+	vertical-align: middle;
+}
+
+.highlight{
+	color: #C5C6C7;
 }

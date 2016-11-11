@@ -20,7 +20,9 @@ app.use(function(req, res, next) {
 	}
 });
 
-server.listen(8080);
+server.listen(8080, function () {
+	console.log("Server listening on: http://localhost:%s", 8080);
+});
 
 app.get('/', function (req, res) {
 	res.send('OK');

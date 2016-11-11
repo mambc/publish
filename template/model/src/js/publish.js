@@ -19,15 +19,14 @@ $(function(){
 
 	function renderLegend(colors, property){
 		$legend.empty();
-		$legend.append($('<div id="legend-container"><h4 class="panel-title">' + Publish.legend + '</h4><br/></div>'));
-		var $legendContent = $('<div id="legend-content">').appendTo($('#legend-container'));
+		$('#legend-title').text(" " + Publish.legend);
 
 		if($.type(colors) == "object"){
 			$.each(colors, function(attribute, color){
-				addLegendContent($legendContent, color, property, attribute);
+				addLegendContent($legend, color, property, attribute);
 			});
 		}else{
-			addLegendContent($legendContent, colors, property);
+			addLegendContent($legend, colors, property);
 		}
 	}
 
@@ -87,6 +86,8 @@ $(function(){
 				$loader.fadeOut();
 			});
 		}
+
+		$("i", this).toggleClass("highlight");
 	}
 
 	function initialZoom(projects) {
@@ -120,6 +121,7 @@ $(function(){
 				if(selected.visible){
 					$title.text(selected.title || "").css("font-weight","Bold");
 					$description.text(selected.description || "");
+					$('#'+id).children('i').toggleClass("highlight");
 					mdata.setMap(map);
 					renderLegend(colors, property);
 				}
@@ -157,7 +159,7 @@ $(function(){
 
 		var mapElement = document.getElementById("map");
 		map = new google.maps.Map(mapElement, mapOptions);
-		map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
+		//map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 		$('#layers').find(':button').click(onClick);
 
