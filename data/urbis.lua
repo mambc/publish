@@ -32,7 +32,7 @@ import("terralib")
 project = Project{
 	title = "URBIS-Caraguá",
 	author = "Carneiro, H.",
-	file = "caragua.tview",
+	file = "urbis.tview",
 	clean = true,
 	limit = filePath("caragua.shp", "publish"),
 	regions = filePath("regions.shp", "publish"),

@@ -30,7 +30,7 @@
 import("publish")
 
 Application{
-	project = filePath("caragua.tview", "publish"),
+	project = filePath("urbis.tview", "publish"),
 	clean = true,
 	output = "CaraguaWebMap",
 	title = "URBIS-Caraguá",
