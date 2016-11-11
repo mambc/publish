@@ -273,7 +273,16 @@ local function createApplicationProjects(data, proj)
 
 	local layers = {}
 	for name, value in pairs(view) do
-		table.insert(layers, {order = value.order, layer = name})
+		local label = value.title
+		if label == nil or label == "" then
+			label = _Gtme.stringToLabel(name)
+		end
+
+		table.insert(layers, {
+			order = value.order,
+			layer = name,
+			label = label
+		})
 	end
 
 	table.sort (layers, function(k1, k2)

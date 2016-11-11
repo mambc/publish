@@ -3,7 +3,6 @@ $(function(){
 	var data = {};
 	var $legend = $('#legend');
 	var $loader = $('#loader');
-	var $title = $('#layer-title');
 	var $description = $('#layer-description');
 
 	function addLegendContent(lengend, color, property, attribute) {
@@ -51,7 +50,6 @@ $(function(){
 				var property = selected.select || id;
 				var colors = selected.color;
 
-				$title.text(selected.title || "").css("font-weight","Bold");
 				$description.text(selected.description || "");
 				renderLegend(colors, property);
 				mdata.setMap(map);
@@ -119,7 +117,6 @@ $(function(){
 				mdata.setStyle(setStyle);
 				data[id] = mdata;
 				if(selected.visible){
-					$title.text(selected.title || "").css("font-weight","Bold");
 					$description.text(selected.description || "");
 					$('#'+id).children('i').toggleClass("highlight");
 					mdata.setMap(map);
@@ -159,7 +156,6 @@ $(function(){
 
 		var mapElement = document.getElementById("map");
 		map = new google.maps.Map(mapElement, mapOptions);
-		//map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push($legend[0]);
 		map.controls[google.maps.ControlPosition.BOTTOM_RIGHT].push($('#footer')[0]);
 		$('#layers').find(':button').click(onClick);
 
