@@ -28,14 +28,14 @@ gulp.task("distcss", function() {
 	gulp.src(cssfiles)
 		.pipe(concat(output))
 		.pipe(rename("publish.min.css"))
-    	.pipe(cleancss({compatibility: "ie8"}))
-    	.pipe(gulp.dest(output));
+		.pipe(cleancss({compatibility: "ie8"}))
+		.pipe(gulp.dest(output));
 });
 
 gulp.task("minify", function() {
-    gulp.src(data)
-    	.pipe(jsonminify())
-        .pipe(gulp.dest(output + "/data"));
+	gulp.src(data)
+	.pipe(jsonminify())
+	.pipe(gulp.dest(output + "/data"));
 });
 
 gulp.task("watch", function() {
