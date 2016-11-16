@@ -1,0 +1,14 @@
+[00;34mCreating directory structure[00m
+Copying dependency 'model/dist/publish.min.css'
+Copying dependency 'model/dist/publish.min.js'
+Copying dependency 'model/src/assets/jquery-3.1.1.min.js'
+Copying dependency 'loader/default.gif'
+[00;34mLoading layers from 'emas.tview'[00m
+Exporting layer 'cells'
+Exporting layer 'firebreak'
+Exporting layer 'limit'
+Exporting layer 'river'
+[00;34mLoading Template[00m
+Creating file 'config.js'
+Creating file 'index.html'
+[00;34mSumming up, application 'Emas database' was successfully created.[00m

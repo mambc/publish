@@ -26,6 +26,8 @@
 -- There is a layout with the web page properties.
 -- Each polygon is drawn using the attribute 'select'.
 
+import("publish")
+
 Application{
 	project = filePath("emas.tview", "publish"),
 	clean = true,
