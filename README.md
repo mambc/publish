@@ -3,7 +3,7 @@
 This is a [TerraME](http://terrame.org) package that allows one to export the outputs of different Model scenarios to a web server.
 
 ## License
-Publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details. 
+Publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details.
 
 ## Instructions
 Publish currently supports only shapefiles in the <b>“EPSG:4326”</b> projection (i.e. GCS_WGS_1984). Make sure it all your data are in this format.
@@ -16,8 +16,6 @@ Application{
     project = filePath("emas.tview", "publish"),
     clean = true,
     output = "EmasWebMap",
-    title = "Emas",
-    description = "A small example related to a fire spread model.",
     order = {"limit", "river"},
     river = View{
         color = "blue"
@@ -49,9 +47,6 @@ Application{
     project = filePath("caragua.tview", "publish"),
     clean = true,
     output = "CaraguaWebMap",
-    title = "URBIS-Caraguá",
-    description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá:"
-                 .."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
     order = {"richer", "poorer", "plus", "less", "baseline", "uso", "real", "regions", "limit"},
     limit = View{
         description = "Bounding box of Caraguatatuba",
