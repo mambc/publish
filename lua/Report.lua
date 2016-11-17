@@ -24,6 +24,12 @@
 
 Report_ = {
 	type_ = "Report",
+	--- Add a new image to the report.
+	-- @arg image A mandatory string or File with the image of the report.
+	-- @arg package An optional string with the name of the package.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:addImage("urbis_2010_real.PNG", "publish")
 	addImage = function(self, image, package)
 		if type(image) == "string" then
 			if package then
@@ -50,17 +56,27 @@ Report_ = {
 			resourceNotFoundError("image", tostring(image))
 		end
 	end,
-	--- Add a line in the report
+	--- Add a line in the report.
 	-- @usage import("publish")
 	-- local report = Report()
-	-- report:separator()
+	-- report:addSeparator()
 	addSeparator = function(self)
 		table.insert(self.separator, #self.text + 1)
 	end,
+	--- Add a new text to the report.
+	-- @arg text A mandatory string with the text to the report.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:addText("My text")
 	addText = function(self, text)
 		mandatoryArgument(1, "string", text)
 		table.insert(self.text, text)
 	end,
+	--- Set the title of the report.
+	-- @arg title A mandatory string with the name of the title of the report.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:setTitle("My title")
 	setTitle = function(self, title)
 		mandatoryArgument(1, "string", title)
 		self.title = title
@@ -76,6 +92,11 @@ metaTableReport_ = {
 -- @arg data.title An optional string with the name of the title of the report.
 -- @arg data.text An optional string with the text to the report.
 -- @arg data.image An optional string or File with the image of the report.
+-- @usage import("publish")
+-- local report = Report()
+-- report:setTitle("Social Classes 2010 Real")
+-- report:addImage("urbis_2010_real.PNG", "publish")
+-- report:addText("This is the main endogenous variable of the model.")
 function Report(data)
 	data = data or {}
 	mandatoryArgument(1, "table", data)
