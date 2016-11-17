@@ -24,101 +24,79 @@
 
 return {
 	Report = function(unitTest)
-		local report = Report()
-		unitTest:assertType(report, "Report")
-		unitTest:assertNil(report.title)
-		unitTest:assertEquals(#report.text, 0)
-		unitTest:assertEquals(#report.image, 0)
+		local error_func = function()
+			Report(1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(1, "table", 1))
 
-		local image = packageInfo("publish").path.."images/urbis_2010_real.PNG"
-		report = Report{
-			title = "My Report",
-			text = "Some text",
-			image = image
-		}
+		error_func = function()
+			Report{title = 1}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("title", "string", 1))
 
-		unitTest:assertType(report, "Report")
-		unitTest:assertEquals(report.title, "My Report")
-		unitTest:assertEquals(report.text[1], "Some text")
-		unitTest:assertEquals(tostring(report.image[1]), image)
+		error_func = function()
+			Report{
+				title = "My Report",
+				text = "Some text",
+				arg = "void"
+			}
+		end
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
 	end,
 	addImage = function(unitTest)
 		local report = Report()
 
-		unitTest:assertType(report, "Report")
-		unitTest:assertNil(report.title)
-		unitTest:assertEquals(#report.text, 0)
-		unitTest:assertEquals(#report.image, 0)
+		local error_func = function()
+			report:addImage()
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
 
-		report:addImage("urbis_2010_real.PNG", "publish")
+		error_func = function()
+			report:addImage(1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(1, "File", 1))
 
-		unitTest:assertNil(report.title)
-		unitTest:assertEquals(#report.text, 0)
-		unitTest:assertEquals(#report.image, 1)
-		unitTest:assertEquals(tostring(report.image[1]), packageInfo("publish").path.."images/urbis_2010_real.PNG")
-	end,
-	addSeparator = function(unitTest)
-		local report = Report()
+		error_func = function()
+			report:addImage("urbis_2010_real.PNG", 1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(2, "string", 1))
 
-		unitTest:assertType(report, "Report")
-		unitTest:assertNil(report.title)
-		unitTest:assertEquals(#report.text, 0)
-		unitTest:assertEquals(#report.image, 0)
-		unitTest:assertEquals(#report.separator, 0)
+		local image = File("my_image")
+		error_func = function()
+			report:addImage(image)
+		end
+		unitTest:assertError(error_func, resourceNotFoundMsg("image", tostring(image)))
 
-		report:addSeparator()
-
-		unitTest:assertEquals(#report.separator, 1)
-		unitTest:assertEquals(report.separator[1], 1)
-
-		report:addText("My text 1")
-		report:addText("My text 2")
-		report:addSeparator()
-
-		unitTest:assertEquals(#report.separator, 2)
-		unitTest:assertEquals(#report.text, 2)
-		unitTest:assertEquals(report.separator[1], 1)
-		unitTest:assertEquals(report.separator[2], 3)
+		image = filePath("agents.csv")
+		error_func = function()
+			report:addImage(image)
+		end
+		unitTest:assertError(error_func, "'csv' is an invalid extension for argument 'image'. Valid extensions ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'].")
 	end,
 	addText = function(unitTest)
 		local report = Report()
-		local text = "This is the main endogenous variable of the model."
 
-		unitTest:assertType(report, "Report")
-		unitTest:assertNil(report.title)
-		unitTest:assertEquals(#report.text, 0)
-		unitTest:assertEquals(#report.image, 0)
+		local error_func = function()
+			report:addText()
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
 
-		report:addText(text)
-
-		unitTest:assertEquals(#report.text, 1)
-		unitTest:assertEquals(#report.image, 0)
-		unitTest:assertEquals(report.text[1], text)
+		error_func = function()
+			report:addText(1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
 	end,
 	setTitle = function(unitTest)
 		local report = Report()
 
-		unitTest:assertType(report, "Report")
-		unitTest:assertNil(report.title)
-		unitTest:assertEquals(#report.text, 0)
+		local error_func = function()
+			report:setTitle()
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
 
-		report:setTitle("My title")
-
-		unitTest:assertEquals(#report.text, 0)
-		unitTest:assertEquals(report.title, "My title")
-	end,
-	__tostring = function(unitTest)
-		local report = Report{
-			title = "My Report",
-			text = "Some text",
-			image = packageInfo("publish").path.."images/urbis_2010_real.PNG"
-		}
-
-		unitTest:assertType(report, "Report")
-		unitTest:assertEquals(tostring(report), [[image      vector of size 1
-separator  vector of size 0
-text       vector of size 1
-title      string [My Report]
-]])
+		error_func = function()
+			report:setTitle(1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
 	end
 }
