@@ -1,7 +1,7 @@
 data{
 	file = "caragua.shp",
-	summary = "Caraguatatuba statistical information.",
-	source = "IBGE (http://www.ibge.gov.br)",
+	summary = "",
+	source = "",
 	attributes = {
 		population = "Population of Caraguatatuba.",
 		pib = "Gross Domestic Product (GDP) of Caraguatatuba.",
@@ -12,81 +12,73 @@ data{
 
 data{
 	file = "regions.shp",
-	summary = "Regions of Caraguatatuba.",
-	source = "IBGE (http://www.ibge.gov.br)",
-	image = "urbis_regions.png",
+	summary = "",
+	source = "",
 	attributes = {
-		name = "Regions of Caraguatatuba, North (1), Central (2) and South (3).",
+		name = "Regions of Caraguatatuba.",
 	}
 }
 
 data{
 	file = "caragua_classes2010_regioes.shp",
-	summary = "Social Classe 2010 Real.",
-	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	image = "urbis_2010_real.PNG",
+	summary = "",
+	source = "",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Social Classe 2010 Real.",
 	}
 }
 
 data{
 	file = "occupational2010.shp",
-	summary = "Occupational Classes (IBGE, 2010).",
-	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	image = "urbis_uso_2010.PNG",
+	summary = "",
+	source = "",
 	attributes = {
-		uso = "The percentage of houses and apartments inside such areas that is typically used in summer vacations and holidays.",
+		uso = "Occupational Classes (IBGE, 2010).",
 	}
 }
 
 data{
 	file = "simulation2025_baseline.shp",
-	summary = "Social Classes 2025 Simulated.",
-	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	image = "urbis_simulation_2025_baseline.PNG",
+	summary = "",
+	source = "",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Social Classes 2025 Simulated.",
 	}
 }
 
 data{
 	file = "simulation2025_lessgrowth.shp",
-	summary = "Urban Population Lessgrowth 2025.",
-	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	image = "urbis_simulation_2025_lessgrowth.PNG",
+	summary = "",
+	source = "",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Urban Population Lessgrowth 2025.",
 	}
 }
 
 data{
 	file = "simulation2025_plusgrowth.shp",
-	summary = "Urban Population Plusgrowth 2025.",
-	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	image = "urbis_simulation_2025_plusgrowth.PNG",
+	summary = "",
+	source = "",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Urban Population Plusgrowth 2025.",
 	}
 }
 
 data{
 	file = "simulation2025_poorer.shp",
-	summary = "Socioeconomic Status Poorer 2025.",
-	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	image = "urbis_simulation_2025_poorer.PNG",
+	summary = "",
+	source = "",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Socioeconomic Status Poorer 2025.",
 	}
 }
 
 data{
 	file = "simulation2025_richer_final.shp",
-	summary = "Socioeconomic Status Richer 2025.",
-	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	image = "urbis_simulation_2025_richer.PNG",
+	summary = "",
+	source = "",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Socioeconomic Status Richer 2025.",
 	}
 }
 
