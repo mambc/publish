@@ -48,7 +48,7 @@ Report_ = {
 		if image:exists() then
 			local extension = image:extension():lower()
 			if belong(extension, {"bmp", "gif", "jpeg", "jpg", "png", "svg"}) then
-				table.insert(self.image, image)
+				self.image[self.nextIdx_] = image
 			else
 				customError("'"..extension.."' is an invalid extension for argument 'image'. Valid extensions ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'].")
 			end
@@ -61,7 +61,7 @@ Report_ = {
 	-- local report = Report()
 	-- report:addSeparator()
 	addSeparator = function(self)
-		table.insert(self.separator, #self.text + 1)
+		self.separator[self.nextIdx_] = true
 	end,
 	--- Add a new text to the report.
 	-- @arg text A mandatory string with the text to the report.
@@ -70,7 +70,20 @@ Report_ = {
 	-- report:addText("My text")
 	addText = function(self, text)
 		mandatoryArgument(1, "string", text)
-		table.insert(self.text, text)
+		self.text[self.nextIdx_] = text
+	end,
+	--- Return the report created.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:addText("My text")
+	-- report:get()
+	get = function(self)
+		local template = {}
+		for i = 1, self.nextIdx_ - 1 do
+			table.insert(template, {text = self.text[i], separator = self.separator[i], image = self.image[i]})
+		end
+
+		return template
 	end,
 	--- Set the title of the report.
 	-- @arg title A mandatory string with the name of the title of the report.
@@ -103,15 +116,28 @@ function Report(data)
 	verifyUnnecessaryArguments(data, {"title", "text", "image"})
 	optionalTableArgument(data, "title", "string")
 
-	local mdata = {title = data.title, text = {}, image = {}, separator = {}}
-	setmetatable(mdata, metaTableReport_)
+	local mdata = {nextIdx_ = 1, title = data.title, text = {}, image = {}, separator = {}}
+	local metaTableIdxs = {
+		__newindex = function(self, k, v)
+			if v and not rawget(self, k) then
+				mdata.nextIdx_ = mdata.nextIdx_ + 1
+			end
 
-	if data.text then
-		mdata:addText(data.text)
-	end
+			rawset(self, k, v)
+		end
+	}
+
+	setmetatable(mdata.text, metaTableIdxs)
+	setmetatable(mdata.image, metaTableIdxs)
+	setmetatable(mdata.separator, metaTableIdxs)
+	setmetatable(mdata, metaTableReport_)
 
 	if data.image then
 		mdata:addImage(data.image)
+	end
+
+	if data.text then
+		mdata:addText(data.text)
 	end
 
 	return mdata
