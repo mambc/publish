@@ -1,9 +1,9 @@
-[00;34mCreating directory structure[00m
+Creating directory structure
 Copying dependency 'model/dist/publish.min.css'
 Copying dependency 'model/dist/publish.min.js'
 Copying dependency 'model/src/assets/jquery-3.1.1.min.js'
 Copying dependency 'loader/default.gif'
-[00;34mLoading layers from 'urbis.tview'[00m
+Loading layers from 'urbis.tview'
 Exporting layer 'baseline'
 Exporting layer 'less'
 Exporting layer 'limit'
@@ -13,7 +13,7 @@ Exporting layer 'real'
 Exporting layer 'regions'
 Exporting layer 'richer'
 Exporting layer 'uso'
-[00;34mLoading Template[00m
+Loading Template
 Creating file 'config.js'
 Creating file 'index.html'
-[00;34mSumming up, application 'URBIS-Caraguá' was successfully created.[00m
+Summing up, application 'URBIS-Caraguá' was successfully created.
