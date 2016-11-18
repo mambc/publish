@@ -110,9 +110,9 @@ return {
 		unitTest:assertType(app.view.cells.color, "table")
 		unitTest:assertEquals(app.view.cells.select, "cover")
 		unitTest:assertEquals(app.view.cells.title, "Emas National Park")
-		unitTest:assertEquals(app.view.cells.color[0], "rgba(236, 231, 242, 1)")
-		unitTest:assertEquals(app.view.cells.color[1], "rgba(166, 189, 219, 1)")
-		unitTest:assertEquals(app.view.cells.color[2], "rgba(43, 140, 190, 1)")
+		unitTest:assertEquals(app.view.cells.color["0"], "rgba(236, 231, 242, 1)")
+		unitTest:assertEquals(app.view.cells.color["1"], "rgba(166, 189, 219, 1)")
+		unitTest:assertEquals(app.view.cells.color["2"], "rgba(43, 140, 190, 1)")
 
 		unitTest:assertEquals(app.view.cells.order, 4)
 		unitTest:assertEquals(app.view.river.order, 3)

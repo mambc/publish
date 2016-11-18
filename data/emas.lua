@@ -27,10 +27,11 @@
 import("terralib")
 
 project = Project{
+	title = "Emas database",
+	description = "A small example related to a fire spread model.",
 	file = "emas.tview",
 	clean = true,
 	author = "Almeida, R.",
-	title = "Emas database",
 	firebreak = filePath("firebreak_lin.shp", "terralib"),
 	river = filePath("River_lin.shp", "terralib"),
 	limit = filePath("Limit_pol.shp", "terralib")

@@ -3,7 +3,10 @@
 This is a [TerraME](http://terrame.org) package that allows one to export the outputs of different Model scenarios to a web server.
 
 ## License
-Publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details. 
+Publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details.
+
+## Instructions
+Publish currently supports only shapefiles in the <b>“EPSG:4326”</b> projection (i.e. GCS_WGS_1984). Make sure it all your data are in this format.
 
 ## Example
 ```lua
@@ -13,8 +16,6 @@ Application{
     project = filePath("emas.tview", "publish"),
     clean = true,
     output = "EmasWebMap",
-    title = "Emas",
-    description = "A small example related to a fire spread model.",
     order = {"limit", "river"},
     river = View{
         color = "blue"
@@ -38,6 +39,88 @@ Application{
 }
 ```
 You can see the result in [Emas](https://rawgit.com/hguerra/publish/master/examples/EmasWebMap/index.html).
+
+```lua
+import("publish")
+
+Application{
+    project = filePath("caragua.tview", "publish"),
+    clean = true,
+    output = "CaraguaWebMap",
+    order = {"richer", "poorer", "plus", "less", "baseline", "uso", "real", "regions", "limit"},
+    limit = View{
+        description = "Bounding box of Caraguatatuba",
+        color = "goldenrod",
+        visible = true
+    },
+    regions = View{
+        title = "Regions",
+        description = "Regions of Caraguatatuba",
+        select = "name",
+        color = "Set2",
+        value = {1, 2, 3}
+    },
+    real = View{
+        title = "Social Classes 2010 Real",
+        description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+                    .."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+        width = 0,
+        select = "classe",
+        color = {"red", "orange", "yellow"},
+        value = {1, 2, 3}
+    },
+    uso = View{
+        title = "Occupational Classes (IBGE, 2010)",
+        description = "The occupational class describes the percentage of houses and apartments inside such areas that "
+                    .."have occasional use. The dwelling is typically used in summer vacations and holidays.",
+        width = 0,
+        select = "uso",
+        color = {{255, 204, 255}, {242, 160, 241}, {230, 117, 228}, {214, 71, 212}, {199, 0, 199}},
+        value = {1, 2, 3, 4, 5}
+    },
+    baseline = View{
+        title = "Social Classes 2025 Simulated",
+        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+        width = 0,
+        select = "classe",
+        color = {"red", "orange", "yellow"},
+        value = {1, 2, 3}
+    },
+    less = View{
+        title = "Urban Population Lessgrowth 2025",
+        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+        width = 0,
+        select = "classe",
+        color = {"red", "orange", "yellow"},
+        value = {1, 2, 3}
+    },
+    plus = View{
+        title = "Urban Population Plusgrowth 2025",
+        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+        width = 0,
+        select = "classe",
+        color = {"red", "orange", "yellow"},
+        value = {1, 2, 3}
+    },
+    poorer = View{
+        title = "Socioeconomic Status Poorer 2025",
+        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+        width = 0,
+        select = "classe",
+        color = {"red", "orange", "yellow"},
+        value = {1, 2, 3}
+    },
+    richer = View{
+        title = "Socioeconomic Status Richer 2025",
+        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+        width = 0,
+        select = "classe",
+        color = {"red", "orange", "yellow"},
+        value = {1, 2, 3}
+    }
+}
+```
+You can see the result in [URBIS-Caraguá](https://rawgit.com/hguerra/publish/master/examples/CaraguaWebMap/index.html).
 
 ## Reporting Bugs
 If you have found a bug, open an entry in the [issues](https://github.com/pedro-andrade-inpe/publish/issues).

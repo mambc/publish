@@ -32,7 +32,7 @@ local json = require "json"
 
 local terralib = getPackage("terralib")
 
-local templateDir = Directory(packageInfo("publish").path.."/template")
+local templateDir = Directory(packageInfo("publish").path.."/lib/template")
 local Templates = {}
 local ViewModel = {}
 local SourceTypeMapper = {
@@ -273,7 +273,16 @@ local function createApplicationProjects(data, proj)
 
 	local layers = {}
 	for name, value in pairs(view) do
-		table.insert(layers, {order = value.order, layer = name})
+		local label = value.title
+		if label == nil or label == "" then
+			label = _Gtme.stringToLabel(name)
+		end
+
+		table.insert(layers, {
+			order = value.order,
+			layer = name,
+			label = label
+		})
 	end
 
 	table.sort (layers, function(k1, k2)
@@ -379,26 +388,27 @@ metaTableApplication_ = {
 }
 
 --- Creates a web page to visualize the published data.
--- @arg data.clean A boolean value indicating if the output directory could be automatically removed. The default value is false.
--- @arg data.legend A string value with the layers legend. The default value is project title.
+-- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is false.
+-- @arg data.legend An optional value with the layers legend. The default value is 'Legend'.
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
--- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
--- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
--- @arg data.project A terralib::Project or string with the path to a .tview file.
--- @arg data.title A string with the application's title.
--- The title will be placed at the center top of the application page.
--- @arg data.description A string with the application's description.
--- It will be shown as a box that is shown in the beginning of the application and can be closed.
--- @arg data.base A string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is roadmap.
--- @arg data.zoom A number with the initial zoom, ranging from 0 to 20. The default value is 12.
--- @arg data.minZoom A number with the minimum zoom allowed. The default value is 0.
--- @arg data.maxZoom A number with the maximum zoom allowed. The default value is 20.
--- @arg data.center A mandatory named table with two values, lat and long,
+-- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
+-- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
+-- @arg data.project An optional terralib::Project or string with the path to a .tview file.
+-- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
+-- If Application is created from terralib::Project the default value is project title.
+-- @arg data.description An optional string with the application's description. It will be shown as a box that is shown in the beginning of the application and can be closed.
+-- If Application is created from terralib::Project the default value is project description.
+-- @arg data.base An optional string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is satellite.
+-- @arg data.zoom An optional number with the initial zoom, ranging from 0 to 20. The default value is the center of the bounding box containing all geometries.
+-- @arg data.minZoom An optional number with the minimum zoom allowed. The default value is 0.
+-- @arg data.maxZoom An optional number with the maximum zoom allowed. The default value is 20.
+-- @arg data.center An optional named table with two values, lat and long,
 -- describing the initial central point of the application.
--- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
+-- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
--- "squares", "triangle", "wheel" (see http://loading.io/).
+-- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
 -- @usage import("publish")
+--
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
 --
@@ -606,8 +616,12 @@ function Application(data)
 		createDirectoryStructure(data)
 		loadLayers(data)
 
-		local _, name = data.project.file:split()
-		defaultTableValue(data, "title", "Application "..name.."")
+		defaultTableValue(data, "title", data.project.title)
+
+		local description = data.project.description
+		if description ~= nil and description ~= "" then
+			defaultTableValue(data, "description", description) -- SKIP TODO Terrame/#1534
+		end
 
 		createApplicationProjects(data)
 		exportTemplates(data)
