@@ -49,9 +49,9 @@ return {
 
 		unitTest:assertType(view.color, "table")
 		unitTest:assertEquals(getn(view.color), 3)
-		unitTest:assertEquals(view.color[view.value[1]], "rgba(236, 231, 242, 1)")
-		unitTest:assertEquals(view.color[view.value[2]], "rgba(166, 189, 219, 1)")
-		unitTest:assertEquals(view.color[view.value[3]], "rgba(43, 140, 190, 1)")
+		unitTest:assertEquals(view.color[tostring(view.value[1])], "rgba(236, 231, 242, 1)")
+		unitTest:assertEquals(view.color[tostring(view.value[2])], "rgba(166, 189, 219, 1)")
+		unitTest:assertEquals(view.color[tostring(view.value[3])], "rgba(43, 140, 190, 1)")
 
 		view = View{
 			title = "Emas National Park",
@@ -81,6 +81,43 @@ return {
 		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
 		unitTest:assertType(view.layer, "File")
 		unitTest:assert(view.layer:exists())
+
+		view = View{
+			select = "classe",
+			color = {"red", "orange", "yellow"},
+			value = {1, 2, 3}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.color["1"], "red")
+		unitTest:assertEquals(view.color["2"], "orange")
+		unitTest:assertEquals(view.color["3"], "yellow")
+
+		local report = Report{
+			title = "URBIS-Caraguá",
+			author = "Feitosa et. al (2014)"
+		}
+
+		report:addImage("urbis_2010_real.PNG", "publish")
+		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.")
+
+		view = View{
+			select = "classe",
+			color = {"#088da5", "#0b7b47", "#7b0b3f"},
+			value = {1, 2, 3},
+			report = report
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.color["1"], "#088da5")
+		unitTest:assertEquals(view.color["2"], "#0b7b47")
+		unitTest:assertEquals(view.color["3"], "#7b0b3f")
+
+		unitTest:assertType(view.report, "table")
+		unitTest:assertEquals(view.report.title, "URBIS-Caraguá")
+		unitTest:assertEquals(view.report.author, "Feitosa et. al (2014)")
+		unitTest:assertType(view.report.reports, "table")
+		unitTest:assertEquals(#view.report.reports, 2)
 	end,
 	__tostring = function(unitTest)
 		local view = View{

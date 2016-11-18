@@ -110,9 +110,9 @@ return {
 		unitTest:assertType(app.view.cells.color, "table")
 		unitTest:assertEquals(app.view.cells.select, "cover")
 		unitTest:assertEquals(app.view.cells.title, "Emas National Park")
-		unitTest:assertEquals(app.view.cells.color[0], "rgba(236, 231, 242, 1)")
-		unitTest:assertEquals(app.view.cells.color[1], "rgba(166, 189, 219, 1)")
-		unitTest:assertEquals(app.view.cells.color[2], "rgba(43, 140, 190, 1)")
+		unitTest:assertEquals(app.view.cells.color["0"], "rgba(236, 231, 242, 1)")
+		unitTest:assertEquals(app.view.cells.color["1"], "rgba(166, 189, 219, 1)")
+		unitTest:assertEquals(app.view.cells.color["2"], "rgba(43, 140, 190, 1)")
 
 		unitTest:assertEquals(app.view.cells.order, 4)
 		unitTest:assertEquals(app.view.river.order, 3)
@@ -206,5 +206,121 @@ return {
 		unitTest:assertEquals(app.view.river.order, 1)
 
 		if emasDir:exists() then emasDir:delete() end
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		local appImages = {["urbis_2010_real.PNG"] = true}
+
+		appData = {
+			["real.geojson"] = true,
+			["limit.geojson"] = true,
+			["use.geojson"] = true
+		}
+
+		local report = Report{title = "URBIS-Caraguá"}
+		report:addImage("urbis_2010_real.PNG", "publish")
+		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.")
+
+		app = Application{
+			project = filePath("urbis.tview", "publish"),
+			clean = true,
+			output = caraguaDir,
+			report = report,
+			limit = View{
+				description = "Bounding box of Caraguatatuba",
+				color = "goldenrod",
+				visible = true
+			},
+			real = View{
+				title = "Social Classes 2010 Real",
+				description = "This is the main endogenous variable of the model. It was obtained from a classification that"
+							.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+				width = 0,
+				select = "classe",
+				color = {"red", "orange", "yellow"},
+				value = {1, 2, 3}
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertType(app.images, "Directory")
+		unitTest:assert(app.images:exists())
+
+		unitTest:assertType(app.report, "table")
+		unitTest:assertEquals(app.report.title, "URBIS-Caraguá")
+		unitTest:assertType(app.report.reports, "table")
+		unitTest:assertEquals(#app.report.reports, 2)
+		unitTest:assertNil(app.report.layer)
+
+		local reportUse = Report{title = "Occupational Classes"}
+		reportUse:addText("The percentage of houses and apartments inside such areas that is typically used in summer vacations and holidays.")
+
+		app = Application{
+			project = filePath("urbis.tview", "publish"),
+			clean = true,
+			output = caraguaDir,
+			limit = View{
+				description = "Bounding box of Caraguatatuba",
+				color = "goldenrod",
+				visible = true,
+				report = report
+			},
+			real = View{
+				title = "Social Classes 2010 Real",
+				description = "This is the main endogenous variable of the model. It was obtained from a classification that"
+						.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+				width = 0,
+				select = "classe",
+				color = {"red", "orange", "yellow"},
+				value = {1, 2, 3},
+				report = report
+			},
+			use = View{
+				title = "Occupational Classes (IBGE, 2010)",
+				description = "The occupational class describes the percentage of houses and apartments inside such areas that have occasional use.",
+				width = 0,
+				select = "uso",
+				color = {{255, 204, 255}, {242, 160, 241}, {230, 117, 228}, {214, 71, 212}, {199, 0, 199}},
+				value = {1, 2, 3, 4, 5},
+				report = reportUse
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertType(app.images, "Directory")
+		unitTest:assert(app.images:exists())
+
+		unitTest:assertType(app.view.limit.report, "table")
+		unitTest:assertEquals(app.view.limit.report.title, "URBIS-Caraguá")
+		unitTest:assertType(app.view.limit.report.reports, "table")
+		unitTest:assertEquals(#app.view.limit.report.reports, 2)
+		unitTest:assertNotNil(app.view.limit.report.layer)
+		unitTest:assertEquals(app.view.limit.report.layer, "limit")
+
+		unitTest:assertType(app.view.real.report, "table")
+		unitTest:assertEquals(app.view.real.report.title, "URBIS-Caraguá")
+		unitTest:assertType(app.view.real.report.reports, "table")
+		unitTest:assertEquals(#app.view.real.report.reports, 2)
+		unitTest:assertNotNil(app.view.real.report.layer)
+		unitTest:assertEquals(app.view.real.report.layer, "real")
+
+		unitTest:assertType(app.view.use.report, "table")
+		unitTest:assertEquals(app.view.use.report.title, "Occupational Classes")
+		unitTest:assertType(app.view.use.report.reports, "table")
+		unitTest:assertEquals(#app.view.use.report.reports, 1)
+		unitTest:assertNotNil(app.view.use.report.layer)
+		unitTest:assertEquals(app.view.use.report.layer, "use")
+
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		assertFiles(app.images, appImages)
+
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }

@@ -1,9 +1,8 @@
-version = "0.1"
+version = "0.1.1"
 license = "LGPL-3"
 package = "publish"
 title = "Publishing Model Results"
-url = "https://github.com/pedro-andrade-inpe/publish"
+url = "https://github.com/TerraME/publish"
 authors = "Heitor Carneiro and Pedro R. Andrade"
 contact = "heitorguerrac@gmail.com, pedro.andrade@inpe.br"
 content = "This package allows one to export the outputs of different Model scenarios to a web server."
-

@@ -32,7 +32,7 @@ local json = require "json"
 
 local terralib = getPackage("terralib")
 
-local templateDir = Directory(packageInfo("publish").path.."/template")
+local templateDir = Directory(packageInfo("publish").path.."/lib/template")
 local Templates = {}
 local ViewModel = {}
 local SourceTypeMapper = {
@@ -106,6 +106,29 @@ local function createDirectoryStructure(data)
 		printNormal("Copying dependency '"..file.."'")
 		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")
 	end)
+
+	if data.report then
+		local reports = data.report:get()
+		forEachElement(reports, function(_, rp)
+			if rp.image then
+				local img = rp.image:name()
+
+				if not data.images then
+					data.images = Directory(data.output.."images")
+					if not data.images:exists() then
+						data.images:create()
+					end
+				end
+
+				printNormal("Copying image '"..img.."'")
+				os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+
+				rp.image = img
+			end
+		end)
+
+		data.report = {title = data.report.title, author = data.report.author, reports = reports}
+	end
 end
 
 local function isValidSource(source)
@@ -130,17 +153,17 @@ end
 local function loadLayers(data)
 	data.view = {}
 	local nView = 0
-	forEachElement(data, function(idx, mview)
-		if type(mview) == "View" then
+	forEachElement(data, function(idx, mview, mtype)
+		if mtype == "View" then
 			data.view[idx] = mview
 			nView = nView + 1
 			data[idx] = nil
 		end
 	end)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading",
-		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
-		"border", "color", "description", "select", "value", "visible", "width", "order"})
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
+		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
+		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images"})
 
 	if nView > 0 then
 		if data.project then
@@ -263,7 +286,7 @@ local function createApplicationProjects(data, proj)
 	local path = "./data/"
 	local index = "index.html"
 	local config = "config.js"
-	local view = clone(data.view, {type_ = true, value = true})
+	local view = data.view
 
 	if proj then
 		index = proj..".html"
@@ -272,13 +295,55 @@ local function createApplicationProjects(data, proj)
 	end
 
 	local layers = {}
+	local reports = {}
 	for name, value in pairs(view) do
-		table.insert(layers, {order = value.order, layer = name})
+		local label = value.title
+		if label == nil or label == "" then
+			label = _Gtme.stringToLabel(name)
+		end
+
+		table.insert(layers, {
+			order = value.order,
+			layer = name,
+			label = label
+		})
+
+		if value.report then
+			local mreports = value.report.reports
+			forEachElement(mreports, function(_, rp)
+				if rp.image then
+					local img = rp.image:name()
+
+					if not data.images then
+						data.images = Directory(data.output.."images")
+						if not data.images:exists() then
+							data.images:create()
+						end
+					end
+
+					if not isFile(data.images..img) then
+						printNormal("Copying image '"..img.."'")
+						os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+					end
+
+					rp.image = img
+				end
+			end)
+
+			value.report.layer = name
+			table.insert(reports, value.report)
+		elseif data.report then
+			local report = clone(data.report)
+			report.layer = name
+			table.insert(reports, report)
+		end
 	end
 
 	table.sort (layers, function(k1, k2)
 		return k1.order > k2.order
 	end)
+
+	view = clone(data.view, {type_ = true, value = true})
 
 	registerApplicationModel {
 		output = config,
@@ -302,7 +367,11 @@ local function createApplicationProjects(data, proj)
 			title = data.title,
 			description = data.description,
 			layers = layers,
-			loading = data.loading
+			loading = data.loading,
+			report = reports,
+			key = data.key,
+			navbarColor = data.template.navbar,
+			titleColor = data.template.title
 		}
 	}
 end
@@ -338,7 +407,10 @@ local function createApplicationHome(data)
 			package = data.package.package,
 			description = data.package.content,
 			projects = data.project,
-			loading = data.loading
+			loading = data.loading,
+			key = data.key,
+			navbarColor = data.template.navbar,
+			titleColor = data.template.title
 		}
 	}
 end
@@ -379,26 +451,33 @@ metaTableApplication_ = {
 }
 
 --- Creates a web page to visualize the published data.
--- @arg data.clean A boolean value indicating if the output directory could be automatically removed. The default value is false.
--- @arg data.legend A string value with the layers legend. The default value is project title.
+-- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is false.
+-- @arg data.legend An optional value with the layers legend. The default value is 'Legend'.
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
--- @arg data.package A string with the package name. Uses automatically the .tview files of the package to create the application.
--- @arg data.progress A boolean value indicating if the progress should be shown. The default value is true.
--- @arg data.project A terralib::Project or string with the path to a .tview file.
--- @arg data.title A string with the application's title.
--- The title will be placed at the center top of the application page.
--- @arg data.description A string with the application's description.
--- It will be shown as a box that is shown in the beginning of the application and can be closed.
--- @arg data.base A string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is roadmap.
--- @arg data.zoom A number with the initial zoom, ranging from 0 to 20. The default value is 12.
--- @arg data.minZoom A number with the minimum zoom allowed. The default value is 0.
--- @arg data.maxZoom A number with the maximum zoom allowed. The default value is 20.
--- @arg data.center A mandatory named table with two values, lat and long,
+-- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
+-- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
+-- @arg data.project An optional terralib::Project or string with the path to a .tview file.
+-- @arg data.report An option Report with data information.
+-- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
+-- If Application is created from terralib::Project the default value is project title.
+-- @arg data.description An optional string with the application's description. It will be shown as a box that is shown in the beginning of the application and can be closed.
+-- If Application is created from terralib::Project the default value is project description.
+-- @arg data.base An optional string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is satellite.
+-- @arg data.zoom An optional number with the initial zoom, ranging from 0 to 20. The default value is the center of the bounding box containing all geometries.
+-- @arg data.minZoom An optional number with the minimum zoom allowed. The default value is 0.
+-- @arg data.maxZoom An optional number with the maximum zoom allowed. The default value is 20.
+-- @arg data.center An optional named table with two values, lat and long,
 -- describing the initial central point of the application.
--- @arg data.loading A optional string with the name of loading icon. The loading available are: "balls",
+-- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
--- "squares", "triangle", "wheel" (see http://loading.io/).
+-- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
+-- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
+-- The Google Maps API key monitors your Application's usage in the Google API Console.
+-- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
+-- @arg data.template An optional named table with two string elements called navbar and
+-- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
 -- @usage import("publish")
+--
 -- local emas = filePath("emas.tview", "terralib")
 -- local emasDir = Directory("EmasWebMap")
 --
@@ -423,6 +502,9 @@ function Application(data)
 	optionalTableArgument(data, "center", "table")
 	optionalTableArgument(data, "zoom", "number")
 	optionalTableArgument(data, "order", "table")
+	optionalTableArgument(data, "report", "Report")
+	optionalTableArgument(data, "key", "string")
+	optionalTableArgument(data, "template", "table")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -496,6 +578,42 @@ function Application(data)
 	end
 
 	data.loading = data.loading..".gif"
+
+	if data.key then
+		local len = data.key:len()
+		if len ~= 39 then
+			customError("Argument 'key' must be a string with size equals to 39, got "..len..".")
+		end
+	end
+
+	if data.template then
+		verifyNamedTable(data.template)
+		verifyUnnecessaryArguments(data.template, {"navbar", "title"})
+
+		if data.template.navbar then
+			verifyColor(data.template.navbar, nil, 1, "navbar")
+			if type(data.template.navbar) == "table" then
+				local rgb = data.template.navbar
+				local a = rgb[4] or 1
+				data.template.navbar = string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
+			end
+		else
+			customError("Argument 'template' should contain the field 'navbar'.")
+		end
+
+		if data.template.title then
+			verifyColor(data.template.title, nil, 1, "title")
+			if type(data.template.title) == "table" then
+				local rgb = data.template.title
+				local a = rgb[4] or 1
+				data.template.title = string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
+			end
+		else
+			customError("Argument 'template' should contain the field 'title'.")
+		end
+	else
+		data.template = {navbar = "#1ea789", title = "white"}
+	end
 
 	if not data.progress then
 		printNormal = function() end
@@ -606,8 +724,12 @@ function Application(data)
 		createDirectoryStructure(data)
 		loadLayers(data)
 
-		local _, name = data.project.file:split()
-		defaultTableValue(data, "title", "Application "..name.."")
+		defaultTableValue(data, "title", data.project.title)
+
+		local description = data.project.description
+		if description ~= nil and description ~= "" then
+			defaultTableValue(data, "description", description) -- SKIP TODO Terrame/#1534
+		end
 
 		createApplicationProjects(data)
 		exportTemplates(data)
