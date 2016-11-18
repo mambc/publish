@@ -55,7 +55,7 @@ metaTableView_ = {
 	__tostring = _Gtme.tostring
 }
 
---- View is an object that contains the information of the data to be visualized, such as the values and colors.
+--- View is an object that contains the information of the data to be visualized.
 -- One Application is composed by a set of Views.
 -- @arg data.select An optional string with the name of the attribute to be visualized.
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
@@ -64,7 +64,7 @@ metaTableView_ = {
 -- @arg data.border An optional string or table with the stroke color. Colors can be described as strings using
 -- a color name, an RGB value (Ex. {0, 0, 0}), or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
 -- @arg data.color An optional table with the colors for the attributes. Colors can be described as strings using
--- a color name, an RGB value, a HEX value, or even as a string with a ColorBrewer format (see http://colorbrewer2.org/).
+-- a color name, an RGB value, a HEX value, or even as a string with a ColorBrewer format (see http://www.colorbrewer2.org).
 -- The colors available and the maximum number of slices for each of them are:
 -- @tabular color
 -- Name & Max \
@@ -76,15 +76,15 @@ metaTableView_ = {
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
 -- @usage import("publish")
+--
 -- local view = View{
 --     title = "Emas National Park",
--- 	   description = "A small example related to a fire spread model.",
--- 	   border = "blue",
+--     description = "A small example related to a fire spread model.",
+--     border = "blue",
 --     width = 2,
--- 	   color = "PuBu",
--- 	   visible = false,
--- 	   select = "river",
--- 	   value = {0, 1, 2}
+--     color = "PuBu",
+--     select = "river",
+--     value = {0, 1, 2}
 -- }
 --
 -- print(vardump(view))
@@ -116,7 +116,7 @@ function View(data)
 			local colors = {}
 			for i = 1, classes do
 				local rgb = color[i]
-				colors[data.value[i]] = getStrColor(rgb, i)
+				colors[tostring(data.value[i])] = getStrColor(rgb, i)
 			end
 
 			data.color = colors
