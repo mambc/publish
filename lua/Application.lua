@@ -32,7 +32,7 @@ local json = require "json"
 
 local terralib = getPackage("terralib")
 
-local templateDir = Directory(packageInfo("publish").path.."/template")
+local templateDir = Directory(packageInfo("publish").path.."/lib/template")
 local Templates = {}
 local ViewModel = {}
 local SourceTypeMapper = {
@@ -620,7 +620,7 @@ function Application(data)
 
 		local description = data.project.description
 		if description ~= nil and description ~= "" then
-			defaultTableValue(data, "description", description)
+			defaultTableValue(data, "description", description) -- SKIP TODO Terrame/#1534
 		end
 
 		createApplicationProjects(data)
