@@ -20,7 +20,9 @@
 			</nav>
 		</div>
 		<div class="navbar-offset"></div>
-		<div id="map"></div>
+		<div id="map-canvas">
+			<div id="map"></div>
+		</div>
 		<div class="row main-row" >
 			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
@@ -85,6 +87,54 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal modal-fullscreen fade" id="modal-report" tabindex="-1" role="dialog" aria-labelledby="modal-report-label" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label"> Emas</h2>
+					</div>
+					<div class="modal-body">
+						<div id="map-modal"></div>
+					</div>
+
+					<div class="modal-body">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In eget faucibus lacus. Nullam at nulla eget velit vulputate varius id at lacus.
+							Pellentesque fringilla bibendum lorem, ut fringilla purus pretium sed. Sed a scelerisque mi. Praesent sodales felis a dapibus rutrum.
+							Pellentesque ac iaculis nulla. Etiam eu consectetur nisl.
+							Sed auctor rutrum mauris, volutpat pulvinar ipsum congue quis. Nulla nec elementum nisl. Vestibulum ante ipsum primis in faucibus orci
+							luctus et ultrices posuere cubilia Curae; Fusce tempor malesuada arcu quis lobortis. Nunc elit ex, sodales vitae lacus fermentum, pulvinar
+							sagittis quam. Integer scelerisque mi nulla, a mattis enim rutrum quis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+							posuere cubilia Curae; Nulla suscipit id lacus sit amet condimentum. Aenean sollicitudin imperdiet mauris. Vestibulum a pharetra odio,
+							eget dictum enim. Curabitur ac odio ultrices, pretium nisi nec,
+							aliquam lacus. Mauris nibh augue, blandit in dignissim ac, imperdiet vel arcu. Curabitur egestas, odio eu sagittis bibendum, dui libero
+							venenatis odio, blandit lacinia mi enim sit amet lectus. Proin convallis vulputate condimentum. Ut feugiat, lacus eget congue fermentum,
+							sem libero euismod risus, eu volutpat lorem mi ut sapien.
+							Vestibulum eget tempus ligula. Nam fringilla dui et mauris sagittis, quis vestibulum elit consectetur. Phasellus ut iaculis diam. Nulla
+							mi elit, maximus sed neque non, rhoncus dictum enim. Maecenas pharetra ligula quam. Sed ultricies est at ligula vestibulum dignissim.
+							Sed id lacus et odio luctus fermentum. Vivamus at blandit metus, ut luctus quam. Sed porta feugiat diam. Proin elit orci, egestas ut
+							fermentum faucibus, condimentum et sem. Pellentesque cursus tortor sed turpis dictum facilisis. Aliquam volutpat at leo eget elementum.
+							Quisque congue, metus in feugiat hendrerit, sapien ex commodo ipsum, in lacinia libero libero sed mi.
+							In consectetur, risus id gravida rutrum, tellus leo volutpat orci, quis convallis nisi leo sit amet risus. Maecenas eu sem non magna
+							rhoncus laoreet. Phasellus vel congue enim. Nullam suscipit nec massa vel mattis. Fusce ac quam blandit, accumsan lectus id, imperdiet
+							lectus. Curabitur viverra vitae nisi at hendrerit. Suspendisse at velit mollis, pharetra nulla a, mattis diam. Maecenas sed condimentum
+							turpis, eget interdum lorem. Praesent condimentum maximus odio in placerat. Vivamus ac lacinia nisl. Class aptent taciti sociosqu ad
+							litora torquent per conubia nostra, per inceptos himenaeos. Curabitur sollicitudin porta ornare. Aenean a massa ut dui consequat elementum et sit amet quam.
+							Etiam tortor nunc, porttitor eu massa sed, commodo consequat augue. Proin varius tortor tellus, quis rhoncus quam consectetur molestie.
+							Ut pretium lorem sapien, nec dignissim ipsum sollicitudin sed. Nullam at orci quam. Nullam quis mattis risus, eget scelerisque sem.
+							Proin et purus in ante fringilla bibendum sed quis nisl. Ut malesuada ex eget mi facilisis dignissim. Cras accumsan justo vitae nisi
+							consectetur consectetur. Nulla dapibus est dapibus, faucibus leo vitae, efficitur nulla. Etiam eu finibus tellus. Donec finibus,
+							nibh ut fringilla sollicitudin, tellus tellus tincidunt ex, et eleifend dui arcu ut ligula. Nunc consectetur, metus et mollis sodales,
+							purus quam vestibulum lorem, quis gravida tortor purus ac lectus. Aliquam sed placerat purus. Integer tempor laoreet augue quis venenatis.
+							Donec mauris justo, tempus ac arcu vel, mollis lacinia ex.
+						</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
