@@ -106,6 +106,26 @@ local function createDirectoryStructure(data)
 		printNormal("Copying dependency '"..file.."'")
 		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")
 	end)
+
+	if data.report then
+		data.images = Directory(data.output.."images")
+		if not data.images:exists() then
+			data.images:create()
+		end
+
+		local reports = data.report:get()
+		forEachElement(reports, function(_, rp)
+			if rp.image then
+				local img = rp.image:name()
+				printNormal("Copying image '"..img.."'")
+				os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+
+				rp.image = img
+			end
+		end)
+
+		data.report = {title = data.report.title, reports = reports}
+	end
 end
 
 local function isValidSource(source)
@@ -140,7 +160,7 @@ local function loadLayers(data)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
-		"border", "color", "description", "select", "value", "visible", "width", "order"})
+		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images"})
 
 	if nView > 0 then
 		if data.project then
@@ -311,7 +331,8 @@ local function createApplicationProjects(data, proj)
 			title = data.title,
 			description = data.description,
 			layers = layers,
-			loading = data.loading
+			loading = data.loading,
+			report = data.report
 		}
 	}
 end
@@ -394,6 +415,7 @@ metaTableApplication_ = {
 -- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project An optional terralib::Project or string with the path to a .tview file.
+-- @arg data.report An option Report with data information.
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
 -- If Application is created from terralib::Project the default value is project title.
 -- @arg data.description An optional string with the application's description. It will be shown as a box that is shown in the beginning of the application and can be closed.
@@ -433,6 +455,7 @@ function Application(data)
 	optionalTableArgument(data, "center", "table")
 	optionalTableArgument(data, "zoom", "number")
 	optionalTableArgument(data, "order", "table")
+	optionalTableArgument(data, "report", "Report")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)

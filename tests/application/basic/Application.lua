@@ -206,5 +206,53 @@ return {
 		unitTest:assertEquals(app.view.river.order, 1)
 
 		if emasDir:exists() then emasDir:delete() end
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		local appImages = {["urbis_2010_real.PNG"] = true}
+
+		appData = {
+			["real.geojson"] = true,
+			["limit.geojson"] = true
+		}
+
+		local report = Report()
+		report:setTitle("URBIS-Caraguá")
+		report:addImage("urbis_2010_real.PNG", "publish")
+		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.")
+
+		app = Application{
+			project = filePath("urbis.tview", "publish"),
+			clean = true,
+			output = caraguaDir,
+			report = report,
+			limit = View{
+				description = "Bounding box of Caraguatatuba",
+				color = "goldenrod",
+				visible = true
+			},
+			real = View{
+				title = "Social Classes 2010 Real",
+				description = "This is the main endogenous variable of the model. It was obtained from a classification that"
+							.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+				width = 0,
+				select = "classe",
+				color = {"red", "orange", "yellow"},
+				value = {1, 2, 3}
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertType(app.images, "Directory")
+		unitTest:assert(app.images:exists())
+
+		assertFiles(app.output, appRoot)
+		assertFiles(app.assets, appAssets)
+		assertFiles(app.datasource, appData)
+		assertFiles(app.images, appImages)
+
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }

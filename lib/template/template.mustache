@@ -20,7 +20,9 @@
 			</nav>
 		</div>
 		<div class="navbar-offset"></div>
-		<div id="map"></div>
+		<div id="map-canvas">
+			<div id="map"></div>
+		</div>
 		<div class="row main-row" >
 			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
@@ -90,6 +92,36 @@
 			</div>
 		</div>
 		{{/description}}
+		{{#report}}
+		<div class="modal modal-fullscreen fade" id="modal-report" tabindex="-1" role="dialog" aria-labelledby="modal-report-label" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label"> {{title}}</h2>
+					</div>
+					<div id="map-modal-canvas" class="modal-body">
+						<div id="map-modal"></div>
+					</div>
+					<div id="modal-report-text" class="modal-body">
+					{{#reports}}
+						{{#image}}
+						<img class="report-img" src="./images/{{image}}"/>
+						<br/>
+						{{/image}}
+						{{#text}}
+						<P>{{text}}</P>
+						{{/text}}
+						{{#separator}}<hr>{{/separator}}
+					{{/reports}}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/report}}
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
