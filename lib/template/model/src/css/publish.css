@@ -79,6 +79,10 @@ body{overflow: hidden;}
 	margin: auto;
 }
 
+.highlight{
+	color: #C5C6C7;
+}
+
 .modal{
 	text-align: center;
 	padding: 0!important;
@@ -94,11 +98,17 @@ body{overflow: hidden;}
 
 .modal-dialog{
 	display: inline-block;
-	text-align: left;
+	text-align: justify;
+	text-justify: inter-word;
 	vertical-align: middle;
 }
 
+.modal-fullscreen {
+	background: #ffffff;
+}
+
 .modal-fullscreen .modal-content{
+	background: #ffffff;
 	border: 0;
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -112,11 +122,12 @@ body{overflow: hidden;}
 	filter: alpha(opacity=97);
 }
 
-.modal-fullscreen .modal-dialog {
+.modal-fullscreen .modal-dialog{
 	margin: 0 auto;
 	width: 96%;
 }
 
-.highlight{
-	color: #C5C6C7;
+.report-img{
+	display: block;
+	margin: 0 auto;
 }
