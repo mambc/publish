@@ -1,9 +1,20 @@
-body{ overflow: hidden;}
-.navbar-offset{ margin-top: 50px; }
-#map{ position: absolute; top: 50px; bottom: 0px; left: 0px; right: 0px;}
-#map .ol-zoom{ font-size: 1.2em;}
+body{overflow: hidden;}
+.navbar-offset{margin-top: 50px;}
+
+#map{
+	position: absolute;
+	top: 50px; bottom: 0;
+	left: 0; right: 0;
+}
+
+#map-modal{
+	height: 300px;
+	padding-bottom: 5px;
+}
+
+#map .ol-zoom{font-size: 1.2em;}
 .zoom-top-opened-sidebar{ margin-top: 5px;}
-.zoom-top-collapsed{ margin-top: 45px; }
+.zoom-top-collapsed{margin-top: 45px;}
 
 .mini-submenu{
 	display:none;
@@ -11,7 +22,6 @@ body{ overflow: hidden;}
 	border: 1px solid rgba(0, 0, 0, 0.9);
 	border-radius: 4px;
 	padding: 9px;
-	/*position: relative;*/
 	width: 42px;
 	text-align: center;
 }
@@ -23,7 +33,7 @@ body{ overflow: hidden;}
 	z-index: 40;
 }
 
-#map{ z-index: 35;}
+#map{z-index: 35;}
 
 .sidebar{ z-index: 45;}
 
@@ -86,6 +96,25 @@ body{ overflow: hidden;}
 	display: inline-block;
 	text-align: left;
 	vertical-align: middle;
+}
+
+.modal-fullscreen .modal-content{
+	border: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.modal-backdrop.modal-backdrop-fullscreen{
+	background: #ffffff;
+}
+.modal-backdrop.modal-backdrop-fullscreen.in{
+	opacity: .97;
+	filter: alpha(opacity=97);
+}
+
+.modal-fullscreen .modal-dialog {
+	margin: 0 auto;
+	width: 96%;
 }
 
 .highlight{
