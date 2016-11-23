@@ -23,27 +23,26 @@
 -------------------------------------------------------------------------------------------
 
 -- @example Creates a database that can be used by urbisapp.
--- The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá:
--- Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação
--- Urbana em Caraguatatuba, SP.
+-- The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: Um Modelo
+-- de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.
 
 import("terralib")
 
 project = Project{
 	title = "URBIS-Caraguá",
-	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá:"
+	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
 				.."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	author = "Carneiro, H.",
 	file = "urbis.tview",
 	clean = true,
-	limit = "caragua.shp",
-	regions = "regions.shp",
-	real = "caragua_classes2010_regioes.shp",
-	baseline = "simulation2025_baseline.shp",
-	less = "simulation2025_lessgrowth.shp",
-	plus = "simulation2025_plusgrowth.shp",
-	poorer = "simulation2025_poorer.shp",
-	richer = "simulation2025_richer_final.shp",
-	uso = "occupational2010.shp"
+	limit = filePath("caragua.shp", "publish"),
+	regions = filePath("regions.shp", "publish"),
+	real = filePath("caragua_classes2010_regioes.shp", "publish"),
+	baseline = filePath("simulation2025_baseline.shp", "publish"),
+	less = filePath("simulation2025_lessgrowth.shp", "publish"),
+	plus = filePath("simulation2025_plusgrowth.shp", "publish"),
+	poorer = filePath("simulation2025_poorer.shp", "publish"),
+	richer = filePath("simulation2025_richer_final.shp", "publish"),
+	use = filePath("occupational2010.shp", "publish")
 }
 
