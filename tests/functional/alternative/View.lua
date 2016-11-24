@@ -110,6 +110,11 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("value", "table", "mvalue"))
 
 		error_func = function()
+			View{report = "myreport"}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("report", "Report", "myreport"))
+
+		error_func = function()
 			View{border = "PuBu"}
 		end
 		unitTest:assertError(error_func, "The number of data classes is mandatory for 'PuBu' in ColorBrewer.")

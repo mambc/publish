@@ -108,15 +108,18 @@ local function createDirectoryStructure(data)
 	end)
 
 	if data.report then
-		data.images = Directory(data.output.."images")
-		if not data.images:exists() then
-			data.images:create()
-		end
-
 		local reports = data.report:get()
 		forEachElement(reports, function(_, rp)
 			if rp.image then
 				local img = rp.image:name()
+
+				if not data.images then
+					data.images = Directory(data.output.."images")
+					if not data.images:exists() then
+						data.images:create()
+					end
+				end
+
 				printNormal("Copying image '"..img.."'")
 				os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
 
@@ -150,8 +153,8 @@ end
 local function loadLayers(data)
 	data.view = {}
 	local nView = 0
-	forEachElement(data, function(idx, mview)
-		if type(mview) == "View" then
+	forEachElement(data, function(idx, mview, mtype)
+		if mtype == "View" then
 			data.view[idx] = mview
 			nView = nView + 1
 			data[idx] = nil
@@ -283,7 +286,7 @@ local function createApplicationProjects(data, proj)
 	local path = "./data/"
 	local index = "index.html"
 	local config = "config.js"
-	local view = clone(data.view, {type_ = true, value = true})
+	local view = data.view
 
 	if proj then
 		index = proj..".html"
@@ -292,6 +295,7 @@ local function createApplicationProjects(data, proj)
 	end
 
 	local layers = {}
+	local reports = {}
 	for name, value in pairs(view) do
 		local label = value.title
 		if label == nil or label == "" then
@@ -303,11 +307,43 @@ local function createApplicationProjects(data, proj)
 			layer = name,
 			label = label
 		})
+
+		if value.report then
+			local mreports = value.report.reports
+			forEachElement(mreports, function(_, rp)
+				if rp.image then
+					local img = rp.image:name()
+
+					if not data.images then
+						data.images = Directory(data.output.."images")
+						if not data.images:exists() then
+							data.images:create()
+						end
+					end
+
+					if not isFile(data.images..img) then
+						printNormal("Copying image '"..img.."'")
+						os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+					end
+
+					rp.image = img
+				end
+			end)
+
+			value.report.layer = name
+			table.insert(reports, value.report)
+		elseif data.report then
+			local report = clone(data.report)
+			report.layer = name
+			table.insert(reports, report)
+		end
 	end
 
 	table.sort (layers, function(k1, k2)
 		return k1.order > k2.order
 	end)
+
+	view = clone(data.view, {type_ = true, value = true})
 
 	registerApplicationModel {
 		output = config,
@@ -332,7 +368,7 @@ local function createApplicationProjects(data, proj)
 			description = data.description,
 			layers = layers,
 			loading = data.loading,
-			report = data.report
+			report = reports
 		}
 	}
 end

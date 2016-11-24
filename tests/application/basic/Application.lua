@@ -212,7 +212,8 @@ return {
 
 		appData = {
 			["real.geojson"] = true,
-			["limit.geojson"] = true
+			["limit.geojson"] = true,
+			["use.geojson"] = true
 		}
 
 		local report = Report()
@@ -247,6 +248,74 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertType(app.images, "Directory")
 		unitTest:assert(app.images:exists())
+
+		unitTest:assertType(app.report, "table")
+		unitTest:assertEquals(app.report.title, "URBIS-Caraguá")
+		unitTest:assertType(app.report.reports, "table")
+		unitTest:assertEquals(#app.report.reports, 2)
+		unitTest:assertNil(app.report.layer)
+
+		app = Application{
+			project = filePath("urbis.tview", "publish"),
+			clean = true,
+			output = caraguaDir,
+			limit = View{
+				description = "Bounding box of Caraguatatuba",
+				color = "goldenrod",
+				visible = true,
+				report = report
+			},
+			real = View{
+				title = "Social Classes 2010 Real",
+				description = "This is the main endogenous variable of the model. It was obtained from a classification that"
+						.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+				width = 0,
+				select = "classe",
+				color = {"red", "orange", "yellow"},
+				value = {1, 2, 3},
+				report = report
+			},
+			use = View{
+				title = "Occupational Classes (IBGE, 2010)",
+				description = "The occupational class describes the percentage of houses and apartments inside such areas that have occasional use.",
+				width = 0,
+				select = "uso",
+				color = {{255, 204, 255}, {242, 160, 241}, {230, 117, 228}, {214, 71, 212}, {199, 0, 199}},
+				value = {1, 2, 3, 4, 5},
+				report = Report{
+					title = "Occupational Classes",
+					text = "The percentage of houses and apartments inside such areas that is typically used in summer vacations and holidays."
+				}
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertType(app.images, "Directory")
+		unitTest:assert(app.images:exists())
+
+		unitTest:assertType(app.view.limit.report, "table")
+		unitTest:assertEquals(app.view.limit.report.title, "URBIS-Caraguá")
+		unitTest:assertType(app.view.limit.report.reports, "table")
+		unitTest:assertEquals(#app.view.limit.report.reports, 2)
+		unitTest:assertNotNil(app.view.limit.report.layer)
+		unitTest:assertEquals(app.view.limit.report.layer, "limit")
+
+		unitTest:assertType(app.view.real.report, "table")
+		unitTest:assertEquals(app.view.real.report.title, "URBIS-Caraguá")
+		unitTest:assertType(app.view.real.report.reports, "table")
+		unitTest:assertEquals(#app.view.real.report.reports, 2)
+		unitTest:assertNotNil(app.view.real.report.layer)
+		unitTest:assertEquals(app.view.real.report.layer, "real")
+
+		unitTest:assertType(app.view.use.report, "table")
+		unitTest:assertEquals(app.view.use.report.title, "Occupational Classes")
+		unitTest:assertType(app.view.use.report.reports, "table")
+		unitTest:assertEquals(#app.view.use.report.reports, 1)
+		unitTest:assertNotNil(app.view.use.report.layer)
+		unitTest:assertEquals(app.view.use.report.layer, "use")
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
