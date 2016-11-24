@@ -70,6 +70,39 @@ body{
 	margin: 0 auto;
 }
 
+.modal{
+	text-align: center;
+	padding: 0!important;
+}
+
+.modal:before{
+	content: '';
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+	margin-right: -4px;
+}
+
+.modal-dialog{
+	display: inline-block;
+	text-align: left;
+	vertical-align: middle;
+	position: relative;
+}
+
+.modal-body{
+	text-align: justify;
+	height: auto;
+}
+
+@media (min-width: 768px){
+	.modal-dialog {
+		width: auto;
+		max-width: 90%;
+	}
+}
+
+
 #map{
 	position: absolute;
 	top: 50px;
@@ -77,11 +110,6 @@ body{
 	left: 0;
 	right: 0;
 	z-index: 35;
-}
-
-.map-modal{
-	height: 300px;
-	padding-bottom: 5px;
 }
 
 #map .ol-zoom{
@@ -105,42 +133,4 @@ body{
 	left: 0;
 	right:0;
 	margin: auto;
-}
-
-.modal{
-	text-align: center;
-	padding: 0!important;
-}
-
-.modal:before{
-	content: '';
-	display: inline-block;
-	height: 100%;
-	vertical-align: middle;
-	margin-right: -4px;
-}
-
-.modal-dialog{
-	display: inline-block;
-	text-align: left;
-	vertical-align: middle;
-}
-
-.modal-fullscreen .modal-content{
-	border: 0;
-	-webkit-box-shadow: none;
-	box-shadow: none;
-}
-
-.modal-backdrop.modal-backdrop-fullscreen{
-	background: #ffffff;
-}
-.modal-backdrop.modal-backdrop-fullscreen.in{
-	opacity: .97;
-	filter: alpha(opacity=97);
-}
-
-.modal-fullscreen .modal-dialog {
-	margin: 0 auto;
-	width: 96%;
 }

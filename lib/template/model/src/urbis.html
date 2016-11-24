@@ -35,15 +35,11 @@
 						</div>
 						<div id="layers" class="panel-collapse collapse in">
 							<div class="panel-body list-group">
-									<button id="richer" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Socioeconomic Status Richer 2025</button>
-									<button id="poorer" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Socioeconomic Status Poorer 2025</button>
-									<button id="plus" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Urban Population Plusgrowth 2025</button>
-									<button id="less" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Urban Population Lessgrowth 2025</button>
-									<button id="baseline" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Social Classes 2025 Simulated</button>
-									<button id="uso" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Occupational Classes (IBGE, 2010)</button>
-									<button id="real" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Social Classes 2010 Real</button>
-									<button id="regions" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Regions</button>
+									<button id="baseline" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Social Classes 2025</button>
 									<button id="limit" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Limit</button>
+									<button id="real" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Social Classes 2010</button>
+									<button id="regions" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Regions</button>
+									<button id="use" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Occupational Classes 2010</button>
 							</div>
 						</div>
 					</div>
@@ -81,104 +77,31 @@
 				<p>© 2016 Powered by package <a href="https://github.com/pedro-andrade-inpe/publish">publish</a> of <a href="http://www.terrame.org">TerraME</a>.</p>
 			</div>
 		</footer>
-		<div class="modal modal-fullscreen fade" id="modal-report-less" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-less" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-less"> URBIS-Caraguá</h2>
-					</div>
-					<div id="map-modal-canvas-less" class="modal-body">
-						<div class="map-modal" id="map-modal-less"></div>
-					</div>
-					<div id="modal-report-text-less" class="modal-body">
-						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
-						<br/>
-
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
-						<br/>
-
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
-						<br/>
-
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-regions" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-regions" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-regions"> URBIS-Caraguá</h2>
-					</div>
-					<div id="map-modal-canvas-regions" class="modal-body">
-						<div class="map-modal" id="map-modal-regions"></div>
-					</div>
-					<div id="modal-report-text-regions" class="modal-body">
-						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
-						<br/>
-
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
-						<br/>
-
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
-						<br/>
-
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-real" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-real" aria-hidden="true">
+		<div class="modal fade" id="modal-report-real" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<h2 class="modal-title" id="modal-report-label-real"> URBIS-Caraguá</h2>
 					</div>
-					<div id="map-modal-canvas-real" class="modal-body">
-						<div class="map-modal" id="map-modal-real"></div>
-					</div>
-					<div id="modal-report-text-real" class="modal-body">
+					<div class="modal-body" id="modal-report-text-real">
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
-
+						
 						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
+						
 						<hr>
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
-
+						
 						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
+						
 						<hr>
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
-
+						
 						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
+						
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -186,174 +109,31 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-use" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-use" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-use"> URBIS-Caraguá</h2>
-					</div>
-					<div id="map-modal-canvas-use" class="modal-body">
-						<div class="map-modal" id="map-modal-use"></div>
-					</div>
-					<div id="modal-report-text-use" class="modal-body">
-						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
-						<br/>
-
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
-						<br/>
-
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
-						<br/>
-
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-poorer" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-poorer" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-poorer"> URBIS-Caraguá</h2>
-					</div>
-					<div id="map-modal-canvas-poorer" class="modal-body">
-						<div class="map-modal" id="map-modal-poorer"></div>
-					</div>
-					<div id="modal-report-text-poorer" class="modal-body">
-						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
-						<br/>
-
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
-						<br/>
-
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
-						<br/>
-
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-baseline" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-baseline" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-baseline"> URBIS-Caraguá</h2>
-					</div>
-					<div id="map-modal-canvas-baseline" class="modal-body">
-						<div class="map-modal" id="map-modal-baseline"></div>
-					</div>
-					<div id="modal-report-text-baseline" class="modal-body">
-						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
-						<br/>
-
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
-						<br/>
-
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
-						<br/>
-
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-richer" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-richer" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-richer"> URBIS-Caraguá</h2>
-					</div>
-					<div id="map-modal-canvas-richer" class="modal-body">
-						<div class="map-modal" id="map-modal-richer"></div>
-					</div>
-					<div id="modal-report-text-richer" class="modal-body">
-						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
-						<br/>
-
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
-						<br/>
-
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
-						<hr>
-						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
-						<br/>
-
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-limit" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-limit" aria-hidden="true">
+		<div class="modal fade" id="modal-report-limit" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<h2 class="modal-title" id="modal-report-label-limit"> URBIS-Caraguá</h2>
 					</div>
-					<div id="map-modal-canvas-limit" class="modal-body">
-						<div class="map-modal" id="map-modal-limit"></div>
-					</div>
-					<div id="modal-report-text-limit" class="modal-body">
+					<div class="modal-body" id="modal-report-text-limit">
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
-
+						
 						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
+						
 						<hr>
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
-
+						
 						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
+						
 						<hr>
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
-
+						
 						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
+						
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -361,34 +141,31 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal modal-fullscreen fade" id="modal-report-plus" tabindex="-1" role="dialog" aria-labelledby="modal-report-label-plus" aria-hidden="true">
+		<div class="modal fade" id="modal-report-baseline" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-plus"> URBIS-Caraguá</h2>
+						<h2 class="modal-title" id="modal-report-label-baseline"> URBIS-Caraguá</h2>
 					</div>
-					<div id="map-modal-canvas-plus" class="modal-body">
-						<div class="map-modal" id="map-modal-plus"></div>
-					</div>
-					<div id="modal-report-text-plus" class="modal-body">
+					<div class="modal-body" id="modal-report-text-baseline">
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
-
+						
 						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
-
+						
 						<hr>
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
-
+						
 						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
-
+						
 						<hr>
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
-
+						
 						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
-
+						
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -396,7 +173,71 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
+		<div class="modal fade" id="modal-report-use" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-use"> URBIS-Caraguá</h2>
+					</div>
+					<div class="modal-body" id="modal-report-text-use">
+						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
+						<br/>
+						
+						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
+						
+						<hr>
+						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
+						<br/>
+						
+						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
+						
+						<hr>
+						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
+						<br/>
+						
+						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-regions" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-regions"> URBIS-Caraguá</h2>
+					</div>
+					<div class="modal-body" id="modal-report-text-regions">
+						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
+						<br/>
+						
+						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on &quot;condition A&quot; (best), &quot;B&quot; or &quot;C&quot;. This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.</P>
+						
+						<hr>
+						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
+						<br/>
+						
+						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
+						
+						<hr>
+						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
+						<br/>
+						
+						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
 		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="./urbis.js"></script>
