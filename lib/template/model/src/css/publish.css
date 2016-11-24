@@ -1,20 +1,18 @@
-body{overflow: hidden;}
-.navbar-offset{margin-top: 50px;}
-
-#map{
-	position: absolute;
-	top: 50px; bottom: 0;
-	left: 0; right: 0;
+body{
+	overflow: hidden;
 }
 
-#map-modal{
-	height: 300px;
-	padding-bottom: 5px;
+.navbar-offset{
+	margin-top: 50px;
 }
 
-#map .ol-zoom{font-size: 1.2em;}
-.zoom-top-opened-sidebar{ margin-top: 5px;}
-.zoom-top-collapsed{margin-top: 45px;}
+.zoom-top-opened-sidebar{
+	margin-top: 5px;
+}
+
+.zoom-top-collapsed{
+	margin-top: 45px;
+}
 
 .mini-submenu{
 	display:none;
@@ -33,11 +31,14 @@ body{overflow: hidden;}
 	z-index: 40;
 }
 
-#map{z-index: 35;}
+.sidebar{
+	z-index: 45;
+}
 
-.sidebar{ z-index: 45;}
-
-.main-row{ position: relative; top: 0;}
+.main-row{
+	position: relative;
+	top: 0;
+}
 
 .mini-submenu:hover{
 	cursor: pointer;
@@ -51,13 +52,8 @@ body{overflow: hidden;}
 	cursor: pointer;
 }
 
-#footer{
-	height: 14px;
-	background-color: white;
-	opacity: 0.65;
-	font-size: 10px;
-	padding-left: 2px;
-	padding-right: 2px;
+.highlight{
+	color: #C5C6C7;
 }
 
 .legend-color-box{
@@ -69,6 +65,38 @@ body{overflow: hidden;}
 	margin-right:6px;
 }
 
+.report-img{
+	display: block;
+	margin: 0 auto;
+}
+
+#map{
+	position: absolute;
+	top: 50px;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 35;
+}
+
+.map-modal{
+	height: 300px;
+	padding-bottom: 5px;
+}
+
+#map .ol-zoom{
+	font-size: 1.2em;
+}
+
+#footer{
+	height: 14px;
+	background-color: white;
+	opacity: 0.65;
+	font-size: 10px;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
 #loader{
 	position: absolute;
 	z-index: 35;
@@ -77,10 +105,6 @@ body{overflow: hidden;}
 	left: 0;
 	right:0;
 	margin: auto;
-}
-
-.highlight{
-	color: #C5C6C7;
 }
 
 .modal{
@@ -98,17 +122,11 @@ body{overflow: hidden;}
 
 .modal-dialog{
 	display: inline-block;
-	text-align: justify;
-	text-justify: inter-word;
+	text-align: left;
 	vertical-align: middle;
 }
 
-.modal-fullscreen {
-	background: #ffffff;
-}
-
 .modal-fullscreen .modal-content{
-	background: #ffffff;
 	border: 0;
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -122,12 +140,7 @@ body{overflow: hidden;}
 	filter: alpha(opacity=97);
 }
 
-.modal-fullscreen .modal-dialog{
+.modal-fullscreen .modal-dialog {
 	margin: 0 auto;
 	width: 96%;
-}
-
-.report-img{
-	display: block;
-	margin: 0 auto;
 }
