@@ -100,6 +100,7 @@ minZoom      number [0]
 output       Directory
 progress     boolean [false]
 project      Project
+template     named table of size 2
 title        string [Emas]
 view         named table of size 4
 zoom         number [14]

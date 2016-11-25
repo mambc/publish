@@ -37,7 +37,7 @@ body{
 
 .main-row{
 	position: relative;
-	top: 0;
+	top: 6px;
 }
 
 .mini-submenu:hover{
@@ -101,7 +101,6 @@ body{
 		max-width: 90%;
 	}
 }
-
 
 #map{
 	position: absolute;

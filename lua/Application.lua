@@ -162,7 +162,7 @@ local function loadLayers(data)
 	end)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
-		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
+		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images"})
 
 	if nView > 0 then
@@ -369,7 +369,9 @@ local function createApplicationProjects(data, proj)
 			layers = layers,
 			loading = data.loading,
 			report = reports,
-			key = data.key
+			key = data.key,
+			navbarColor = data.template.navbar,
+			titleColor = data.template.title
 		}
 	}
 end
@@ -406,7 +408,9 @@ local function createApplicationHome(data)
 			description = data.package.content,
 			projects = data.project,
 			loading = data.loading,
-			key = data.key
+			key = data.key,
+			navbarColor = data.template.navbar,
+			titleColor = data.template.title
 		}
 	}
 end
@@ -468,6 +472,7 @@ metaTableApplication_ = {
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
 -- @arg data.key An optional string with the Google Maps key/authentication.
+-- @arg data.template An optional table with: navbar color and title color.
 -- @usage import("publish")
 --
 -- local emas = filePath("emas.tview", "terralib")
@@ -496,6 +501,7 @@ function Application(data)
 	optionalTableArgument(data, "order", "table")
 	optionalTableArgument(data, "report", "Report")
 	optionalTableArgument(data, "key", "string")
+	optionalTableArgument(data, "template", "table")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -575,6 +581,35 @@ function Application(data)
 		if len ~= 39 then
 			customError("Argument 'key' must be a string with size equals to 39, got "..len..".")
 		end
+	end
+
+	if data.template then
+		verifyNamedTable(data.template)
+		verifyUnnecessaryArguments(data.template, {"navbar", "title"})
+
+		if data.template.navbar then
+			verifyColor(data.template.navbar, nil, 1, "navbar")
+			if type(data.template.navbar) == "table" then
+				local rgb = data.template.navbar
+				local a = rgb[4] or 1
+				data.template.navbar = string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
+			end
+		else
+			customError("Argument 'template' should contain the field 'navbar'.")
+		end
+
+		if data.template.title then
+			verifyColor(data.template.title, nil, 1, "title")
+			if type(data.template.title) == "table" then
+				local rgb = data.template.title
+				local a = rgb[4] or 1
+				data.template.title = string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
+			end
+		else
+			customError("Argument 'template' should contain the field 'title'.")
+		end
+	else
+		data.template = {navbar = "#1ea789", title = "white"}
 	end
 
 	if not data.progress then
