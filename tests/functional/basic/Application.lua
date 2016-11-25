@@ -23,6 +23,47 @@
 -------------------------------------------------------------------------------------------
 
 return {
+	Application = function(unitTest)
+		local emasDir = Directory("functional-basic-app")
+		if emasDir:exists() then emasDir:delete() end
+
+		local app = Application{
+			project = filePath("emas.tview", "publish"),
+			output = "functional-basic-app",
+			clean = true,
+			select = "river",
+			color = "BuGn",
+			value = {0, 1, 2},
+			progress = false
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assertEquals(app.title, "Emas database")
+		-- unitTest:assertEquals(app.description, "A small example related to a fire spread model.") -- SKIP TODO Terrame/#1534
+		unitTest:assertEquals(app.clean, true)
+		unitTest:assertEquals(app.progress, false)
+		unitTest:assertNil(app.key)
+
+		if app.output:exists() then app.output:delete() end
+
+		app = Application{
+			project = filePath("emas.tview", "publish"),
+			output = emasDir,
+			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
+			clean = true,
+			select = "river",
+			color = "BuGn",
+			value = {0, 1, 2},
+			progress = false
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertNotNil(app.key)
+		unitTest:assertEquals(app.key, "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA")
+
+		if emasDir:exists() then emasDir:delete() end
+	end,
 	__tostring = function(unitTest)
 		local emas = filePath("emas.tview", "publish")
 		local emasDir = Directory("functional-basic-tostring")

@@ -161,7 +161,7 @@ local function loadLayers(data)
 		end
 	end)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading",
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
 		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images"})
 
@@ -368,7 +368,8 @@ local function createApplicationProjects(data, proj)
 			description = data.description,
 			layers = layers,
 			loading = data.loading,
-			report = reports
+			report = reports,
+			key = data.key
 		}
 	}
 end
@@ -404,7 +405,8 @@ local function createApplicationHome(data)
 			package = data.package.package,
 			description = data.package.content,
 			projects = data.project,
-			loading = data.loading
+			loading = data.loading,
+			key = data.key
 		}
 	}
 end
@@ -465,6 +467,7 @@ metaTableApplication_ = {
 -- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
+-- @arg data.key An optional string with the Google Maps key/authentication.
 -- @usage import("publish")
 --
 -- local emas = filePath("emas.tview", "terralib")
@@ -492,6 +495,7 @@ function Application(data)
 	optionalTableArgument(data, "zoom", "number")
 	optionalTableArgument(data, "order", "table")
 	optionalTableArgument(data, "report", "Report")
+	optionalTableArgument(data, "key", "string")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -565,6 +569,13 @@ function Application(data)
 	end
 
 	data.loading = data.loading..".gif"
+
+	if data.key then
+		local len = data.key:len()
+		if len ~= 39 then
+			customError("Argument 'key' must be a string with size equals to 39, got "..len..".")
+		end
+	end
 
 	if not data.progress then
 		printNormal = function() end

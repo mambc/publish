@@ -71,6 +71,19 @@ return {
 		unitTest:assertError(error_func, "Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
 
 		data.project = emas
+		data.key = 1
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("key", "string", 1))
+
+		data.key = "AIzaSyCFXMRJlfDoDK7H"
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'key' must be a string with size equals to 39, got 20.")
+
+		data.key = nil
 		data.clean = 1
 		error_func = function()
 			Application(clone(data))
