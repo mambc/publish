@@ -1,4 +1,4 @@
-version = "0.1"
+version = "0.1.1"
 license = "LGPL-3"
 package = "publish"
 title = "Publishing Model Results"
