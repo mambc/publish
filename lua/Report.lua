@@ -24,6 +24,15 @@
 
 Report_ = {
 	type_ = "Report",
+	--- Add a new heading to the report. A heading element briefly describes the topic of the section it introduces.
+	-- @arg heading A mandatory string with the heading of the report.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:addHeading("My Heading", "publish")
+	addHeading = function(self, heading)
+		mandatoryArgument(1, "string", heading)
+		self.heading[self.nextIdx_] = heading
+	end,
 	--- Add a new image to the report.
 	-- @arg image A mandatory string or File with the image of the report.
 	-- @arg package An optional string with the name of the package.
@@ -80,7 +89,7 @@ Report_ = {
 	get = function(self)
 		local template = {}
 		for i = 1, self.nextIdx_ - 1 do
-			table.insert(template, {text = self.text[i], separator = self.separator[i], image = self.image[i]})
+			table.insert(template, {text = self.text[i], separator = self.separator[i], image = self.image[i], heading = self.heading[i]})
 		end
 
 		return template
@@ -113,10 +122,10 @@ metaTableReport_ = {
 function Report(data)
 	data = data or {}
 	mandatoryArgument(1, "table", data)
-	verifyUnnecessaryArguments(data, {"title", "text", "image"})
+	verifyUnnecessaryArguments(data, {"title", "text", "image", "heading"})
 	optionalTableArgument(data, "title", "string")
 
-	local mdata = {nextIdx_ = 1, title = data.title, text = {}, image = {}, separator = {}}
+	local mdata = {nextIdx_ = 1, title = data.title, text = {}, image = {}, separator = {}, heading = {}}
 	local metaTableIdxs = {
 		__newindex = function(self, k, v)
 			if v and not rawget(self, k) then
@@ -130,7 +139,12 @@ function Report(data)
 	setmetatable(mdata.text, metaTableIdxs)
 	setmetatable(mdata.image, metaTableIdxs)
 	setmetatable(mdata.separator, metaTableIdxs)
+	setmetatable(mdata.heading, metaTableIdxs)
 	setmetatable(mdata, metaTableReport_)
+
+	if data.heading then
+		mdata:addHeading(data.heading)
+	end
 
 	if data.image then
 		mdata:addImage(data.image)

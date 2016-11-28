@@ -33,18 +33,39 @@ return {
 		local image = packageInfo("publish").path.."images/urbis_2010_real.PNG"
 		report = Report{
 			title = "My Report",
+			heading = "My Heading",
 			text = "Some text",
 			image = image
 		}
 
 		unitTest:assertType(report, "Report")
 		unitTest:assertEquals(report.title, "My Report")
-		unitTest:assertEquals(tostring(report.image[1]), image)
-		unitTest:assertEquals(report.text[2], "Some text")
-		unitTest:assertEquals(report.nextIdx_, 3)
+		unitTest:assertEquals(report.heading[1], "My Heading")
+		unitTest:assertEquals(tostring(report.image[2]), image)
+		unitTest:assertEquals(report.text[3], "Some text")
+		unitTest:assertEquals(report.nextIdx_, 4)
 
 		report.image["fake"] = nil
-		unitTest:assertEquals(report.nextIdx_, 3)
+		unitTest:assertEquals(report.nextIdx_, 4)
+	end,
+	addHeading = function(unitTest)
+		local report = Report()
+
+		unitTest:assertType(report, "Report")
+		unitTest:assertNil(report.title)
+		unitTest:assertEquals(getn(report.text), 0)
+		unitTest:assertEquals(getn(report.image), 0)
+		unitTest:assertEquals(getn(report.separator), 0)
+		unitTest:assertEquals(getn(report.heading), 0)
+
+		report:addHeading("Social Classes 2010 Real")
+		report:addText("This is the main endogenous variable of the model.")
+
+		unitTest:assertEquals(getn(report.image), 0)
+		unitTest:assertEquals(getn(report.heading), 1)
+		unitTest:assertEquals(getn(report.text), 1)
+		unitTest:assertEquals(report.heading[1], "Social Classes 2010 Real")
+		unitTest:assertEquals(report.text[2], "This is the main endogenous variable of the model.")
 	end,
 	addImage = function(unitTest)
 		local report = Report()
@@ -112,37 +133,48 @@ return {
 		unitTest:assertType(template, "table")
 		unitTest:assertEquals(getn(template), 0)
 
-		report:setTitle("Social Classes 2010")
+		report:setTitle("URBIS")
 		report:addSeparator()
+		report:addHeading("Social Classes 2010")
 		report:addImage("urbis_2010_real.PNG", "publish")
 		report:addText("This is the main endogenous variable of the model.")
 		report:addText("It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.")
 
-		unitTest:assertEquals(report.title, "Social Classes 2010")
+		unitTest:assertEquals(report.title, "URBIS")
 		unitTest:assertEquals(report.separator[1], true)
-		unitTest:assertEquals(tostring(report.image[2]), packageInfo("publish").path.."images/urbis_2010_real.PNG")
-		unitTest:assertEquals(report.text[3], "This is the main endogenous variable of the model.")
-		unitTest:assertEquals(report.text[4], "It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.")
+		unitTest:assertEquals(report.heading[2], "Social Classes 2010")
+		unitTest:assertEquals(tostring(report.image[3]), packageInfo("publish").path.."images/urbis_2010_real.PNG")
+		unitTest:assertEquals(report.text[4], "This is the main endogenous variable of the model.")
+		unitTest:assertEquals(report.text[5], "It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.")
 
 		template = report:get()
 		unitTest:assertType(template, "table")
-		unitTest:assertEquals(getn(template), 4)
+		unitTest:assertEquals(getn(template), 5)
 
 		unitTest:assertNil(template[1].text)
 		unitTest:assertNotNil(template[1].separator)
 		unitTest:assertNil(template[1].image)
+		unitTest:assertNil(template[1].heading)
 
 		unitTest:assertNil(template[2].text)
 		unitTest:assertNil(template[2].separator)
-		unitTest:assertNotNil(template[2].image)
+		unitTest:assertNil(template[2].image)
+		unitTest:assertNotNil(template[2].heading)
 
-		unitTest:assertNotNil(template[3].text)
+		unitTest:assertNil(template[3].text)
 		unitTest:assertNil(template[3].separator)
-		unitTest:assertNil(template[3].image)
+		unitTest:assertNotNil(template[3].image)
+		unitTest:assertNil(template[3].heading)
 
 		unitTest:assertNotNil(template[4].text)
 		unitTest:assertNil(template[4].separator)
 		unitTest:assertNil(template[4].image)
+		unitTest:assertNil(template[4].heading)
+
+		unitTest:assertNotNil(template[5].text)
+		unitTest:assertNil(template[5].separator)
+		unitTest:assertNil(template[5].image)
+		unitTest:assertNil(template[5].heading)
 	end,
 	setTitle = function(unitTest)
 		local report = Report()
@@ -164,7 +196,8 @@ return {
 		}
 
 		unitTest:assertType(report, "Report")
-		unitTest:assertEquals(tostring(report), [[image      vector of size 1
+		unitTest:assertEquals(tostring(report), [[heading    vector of size 0
+image      vector of size 1
 nextIdx_   number [3]
 separator  vector of size 0
 text       named table of size 1
