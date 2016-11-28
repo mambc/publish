@@ -472,7 +472,8 @@ metaTableApplication_ = {
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
 -- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
--- @arg data.template An optional table with: navbar color and title color.
+-- @arg data.template An optional named table with two string elements called navbar and
+-- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
 -- @usage import("publish")
 --
 -- local emas = filePath("emas.tview", "terralib")
