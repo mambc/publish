@@ -471,7 +471,7 @@ metaTableApplication_ = {
 -- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
--- @arg data.key An optional string with the Google Maps key/authentication.
+-- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
 -- @arg data.template An optional table with: navbar color and title color.
 -- @usage import("publish")
 --
