@@ -24,7 +24,7 @@
 
 Report_ = {
 	type_ = "Report",
-	--- Add a new heading to the report. A heading element briefly describes the topic of the section it introduces.
+	--- Add a new heading to the Report. A heading element briefly describes the topic of the section it introduces.
 	-- @arg heading A mandatory string with the heading of the report.
 	-- @usage import("publish")
 	-- local report = Report()
@@ -33,8 +33,8 @@ Report_ = {
 		mandatoryArgument(1, "string", heading)
 		self.heading[self.nextIdx_] = heading
 	end,
-	--- Add a new image to the report.
-	-- @arg image A mandatory string or File with the image of the report.
+	--- Add a new image to the Report.
+	-- @arg image A mandatory string or base::File with the image of the report.
 	-- @arg package An optional string with the name of the package.
 	-- @usage import("publish")
 	-- local report = Report()
@@ -65,14 +65,14 @@ Report_ = {
 			resourceNotFoundError("image", tostring(image))
 		end
 	end,
-	--- Add a line in the report.
+	--- Add a line in the Report.
 	-- @usage import("publish")
 	-- local report = Report()
 	-- report:addSeparator()
 	addSeparator = function(self)
 		self.separator[self.nextIdx_] = true
 	end,
-	--- Add a new text to the report.
+	--- Add a new text to the Report.
 	-- @arg text A mandatory string with the text to the report.
 	-- @usage import("publish")
 	-- local report = Report()
@@ -81,7 +81,7 @@ Report_ = {
 		mandatoryArgument(1, "string", text)
 		self.text[self.nextIdx_] = text
 	end,
-	--- Return the report created.
+	--- Return the Report created.
 	-- @usage import("publish")
 	-- local report = Report()
 	-- report:addText("My text")
@@ -93,24 +93,6 @@ Report_ = {
 		end
 
 		return template
-	end,
-	--- Set the author of the report.
-	-- @arg author A mandatory string with the name of the Report's author.
-	-- @usage import("publish")
-	-- local report = Report()
-	-- report:setAuthor("Carneiro, Heitor")
-	setAuthor = function(self, author)
-		mandatoryArgument(1, "string", author)
-		self.author = author
-	end,
-	--- Set the title of the report.
-	-- @arg title A mandatory string with the name of the title of the report.
-	-- @usage import("publish")
-	-- local report = Report()
-	-- report:setTitle("My title")
-	setTitle = function(self, title)
-		mandatoryArgument(1, "string", title)
-		self.title = title
 	end
 }
 
@@ -120,20 +102,20 @@ metaTableReport_ = {
 }
 
 --- Creates a page with data information.
--- @arg data.title An optional string with the name of the Report's title.
--- @arg data.author An optional string with the name of the Report's author.
--- @arg data.heading An optional string with the Report's heading.
--- @arg data.text An optional string with the Report's text.
--- @arg data.image An optional string or File with the Report's image.
+-- @arg data.title An optional string with the Report's title.
+-- @arg data.author An optional string with the Report's author.
 -- @usage import("publish")
--- local report = Report()
--- report:setTitle("Social Classes 2010 Real")
+-- local report = Report{
+--     title = "Social Classes 2010 Real",
+--     author = "Feitosa et al. (2012)"
+-- }
+--
 -- report:addImage("urbis_2010_real.PNG", "publish")
 -- report:addText("This is the main endogenous variable of the model.")
 function Report(data)
 	data = data or {}
 	mandatoryArgument(1, "table", data)
-	verifyUnnecessaryArguments(data, {"title", "text", "image", "heading", "author"})
+	verifyUnnecessaryArguments(data, {"title", "author"})
 	optionalTableArgument(data, "title", "string")
 	optionalTableArgument(data, "author", "string")
 
@@ -153,18 +135,6 @@ function Report(data)
 	setmetatable(mdata.separator, metaTableIdxs)
 	setmetatable(mdata.heading, metaTableIdxs)
 	setmetatable(mdata, metaTableReport_)
-
-	if data.heading then
-		mdata:addHeading(data.heading)
-	end
-
-	if data.image then
-		mdata:addImage(data.image)
-	end
-
-	if data.text then
-		mdata:addText(data.text)
-	end
 
 	return mdata
 end

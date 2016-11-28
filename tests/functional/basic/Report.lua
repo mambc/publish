@@ -31,12 +31,11 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 
 		local image = packageInfo("publish").path.."images/urbis_2010_real.PNG"
-		report = Report{
-			title = "My Report",
-			heading = "My Heading",
-			text = "Some text",
-			image = image
-		}
+		report = Report{title = "My Report"}
+
+		report:addHeading("My Heading")
+		report:addImage(image)
+		report:addText("Some text")
 
 		unitTest:assertType(report, "Report")
 		unitTest:assertEquals(report.title, "My Report")
@@ -125,6 +124,12 @@ return {
 
 		unitTest:assertType(report, "Report")
 		unitTest:assertNil(report.title)
+		unitTest:assertNil(report.author)
+
+		report = Report{
+			title = "URBIS"
+		}
+
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.separator), 0)
@@ -133,7 +138,6 @@ return {
 		unitTest:assertType(template, "table")
 		unitTest:assertEquals(getn(template), 0)
 
-		report:setTitle("URBIS")
 		report:addSeparator()
 		report:addHeading("Social Classes 2010")
 		report:addImage("urbis_2010_real.PNG", "publish")
@@ -176,43 +180,21 @@ return {
 		unitTest:assertNil(template[5].image)
 		unitTest:assertNil(template[5].heading)
 	end,
-	setAuthor = function(unitTest)
-		local report = Report()
-
-		unitTest:assertType(report, "Report")
-		unitTest:assertNil(report.author)
-		unitTest:assertEquals(getn(report.text), 0)
-
-		report:setAuthor("Carneiro, Heitor")
-
-		unitTest:assertEquals(getn(report.text), 0)
-		unitTest:assertEquals(report.author, "Carneiro, Heitor")
-	end,
-	setTitle = function(unitTest)
-		local report = Report()
-
-		unitTest:assertType(report, "Report")
-		unitTest:assertNil(report.title)
-		unitTest:assertEquals(getn(report.text), 0)
-
-		report:setTitle("My title")
-
-		unitTest:assertEquals(getn(report.text), 0)
-		unitTest:assertEquals(report.title, "My title")
-	end,
 	__tostring = function(unitTest)
 		local report = Report{
 			title = "My Report",
-			text = "Some text",
-			image = packageInfo("publish").path.."images/urbis_2010_real.PNG"
+			author = "Carneiro, Heitor"
 		}
 
+		report:addText("My text")
+
 		unitTest:assertType(report, "Report")
-		unitTest:assertEquals(tostring(report), [[heading    vector of size 0
-image      vector of size 1
-nextIdx_   number [3]
+		unitTest:assertEquals(tostring(report), [[author     string [Carneiro, Heitor]
+heading    vector of size 0
+image      vector of size 0
+nextIdx_   number [2]
 separator  vector of size 0
-text       named table of size 1
+text       vector of size 1
 title      string [My Report]
 ]])
 	end

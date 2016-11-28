@@ -37,7 +37,6 @@ return {
 		error_func = function()
 			Report{
 				title = "My Report",
-				text = "Some text",
 				arg = "void"
 			}
 		end
@@ -96,32 +95,6 @@ return {
 
 		error_func = function()
 			report:addText(1)
-		end
-		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
-	end,
-	setAuthor = function(unitTest)
-		local report = Report()
-
-		local error_func = function()
-			report:setAuthor()
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
-
-		error_func = function()
-			report:setAuthor(1)
-		end
-		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
-	end,
-	setTitle = function(unitTest)
-		local report = Report()
-
-		local error_func = function()
-			report:setTitle()
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
-
-		error_func = function()
-			report:setTitle(1)
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
 	end
