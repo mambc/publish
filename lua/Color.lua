@@ -1409,6 +1409,7 @@ local colorBrewer = {
 }
 
 --- Get color by name.
+-- <br><img src="../../lib/color_keyword_names.svg" alt="Color keywords name">.
 -- @arg keyword A mandatory string case-insensitive which represent a specific color, e.g. red, blue, brown, lightseagreen.
 -- @arg class A optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
 -- @usage import("publish")
