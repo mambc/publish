@@ -127,7 +127,7 @@ local function createDirectoryStructure(data)
 			end
 		end)
 
-		data.report = {title = data.report.title, reports = reports}
+		data.report = {title = data.report.title, author = data.report.author, reports = reports}
 	end
 end
 

@@ -99,6 +99,9 @@
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<h2 class="modal-title" id="modal-report-label-{{layer}}"> {{title}}</h2>
+						{{#author}}
+						<p class="text-muted">By {{author}}</p>
+						{{/author}}
 					</div>
 					<div class="modal-body" id="modal-report-text-{{layer}}">
 					{{#reports}}

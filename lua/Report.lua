@@ -94,6 +94,15 @@ Report_ = {
 
 		return template
 	end,
+	--- Set the author of the report.
+	-- @arg author A mandatory string with the name of the Report's author.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:setAuthor("Carneiro, Heitor")
+	setAuthor = function(self, author)
+		mandatoryArgument(1, "string", author)
+		self.author = author
+	end,
 	--- Set the title of the report.
 	-- @arg title A mandatory string with the name of the title of the report.
 	-- @usage import("publish")
@@ -111,9 +120,11 @@ metaTableReport_ = {
 }
 
 --- Creates a page with data information.
--- @arg data.title An optional string with the name of the title of the report.
--- @arg data.text An optional string with the text to the report.
--- @arg data.image An optional string or File with the image of the report.
+-- @arg data.title An optional string with the name of the Report's title.
+-- @arg data.author An optional string with the name of the Report's author.
+-- @arg data.heading An optional string with the Report's heading.
+-- @arg data.text An optional string with the Report's text.
+-- @arg data.image An optional string or File with the Report's image.
 -- @usage import("publish")
 -- local report = Report()
 -- report:setTitle("Social Classes 2010 Real")
@@ -122,10 +133,11 @@ metaTableReport_ = {
 function Report(data)
 	data = data or {}
 	mandatoryArgument(1, "table", data)
-	verifyUnnecessaryArguments(data, {"title", "text", "image", "heading"})
+	verifyUnnecessaryArguments(data, {"title", "text", "image", "heading", "author"})
 	optionalTableArgument(data, "title", "string")
+	optionalTableArgument(data, "author", "string")
 
-	local mdata = {nextIdx_ = 1, title = data.title, text = {}, image = {}, separator = {}, heading = {}}
+	local mdata = {nextIdx_ = 1, title = data.title, author = data.author, text = {}, image = {}, separator = {}, heading = {}}
 	local metaTableIdxs = {
 		__newindex = function(self, k, v)
 			if v and not rawget(self, k) then

@@ -43,6 +43,19 @@ return {
 		end
 		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
 	end,
+	addHeading = function(unitTest)
+		local report = Report()
+
+		local error_func = function()
+			report:addHeading()
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
+
+		error_func = function()
+			report:addHeading(1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
+	end,
 	addImage = function(unitTest)
 		local report = Report()
 
@@ -83,6 +96,19 @@ return {
 
 		error_func = function()
 			report:addText(1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
+	end,
+	setAuthor = function(unitTest)
+		local report = Report()
+
+		local error_func = function()
+			report:setAuthor()
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
+
+		error_func = function()
+			report:setAuthor(1)
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg(1, "string", 1))
 	end,

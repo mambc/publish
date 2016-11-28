@@ -176,6 +176,18 @@ return {
 		unitTest:assertNil(template[5].image)
 		unitTest:assertNil(template[5].heading)
 	end,
+	setAuthor = function(unitTest)
+		local report = Report()
+
+		unitTest:assertType(report, "Report")
+		unitTest:assertNil(report.author)
+		unitTest:assertEquals(getn(report.text), 0)
+
+		report:setAuthor("Carneiro, Heitor")
+
+		unitTest:assertEquals(getn(report.text), 0)
+		unitTest:assertEquals(report.author, "Carneiro, Heitor")
+	end,
 	setTitle = function(unitTest)
 		local report = Report()
 
