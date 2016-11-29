@@ -11,17 +11,19 @@
 	</head>
 	<body>
 		<div class="container">
-			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: #1ea789;" role="navigation">
+			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: {{navbarColor}};" role="navigation">
 				<div class="container-fluid">
 					<div class="navbar-header">
-						<a class="navbar-brand" style="color: white;">{{title}}</a>
+						<a class="navbar-brand" style="color: {{titleColor}};">{{title}}</a>
 					</div>
 				</div>
 			</nav>
 		</div>
 		<div class="navbar-offset"></div>
-		<div id="map"></div>
-		<div class="row main-row" >
+		<div id="map-canvas">
+			<div id="map"></div>
+		</div>
+		<div class="row main-row">
 			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
 					<div class="panel panel-default">
@@ -90,7 +92,41 @@
 			</div>
 		</div>
 		{{/description}}
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+		{{#report}}
+		<div class="modal fade" id="modal-report-{{layer}}" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-{{layer}}"> {{title}}</h2>
+						{{#author}}
+						<p class="text-muted">By {{author}}</p>
+						{{/author}}
+					</div>
+					<div class="modal-body" id="modal-report-text-{{layer}}">
+					{{#reports}}
+						{{#heading}}
+						<h4><strong>{{heading}}</strong></h4>
+						<br/>
+						{{/heading}}
+						{{#image}}
+						<img class="report-img" src="./images/{{image}}"/>
+						<br/>
+						{{/image}}
+						{{#text}}
+						<P>{{text}}</P>
+						{{/text}}
+						{{#separator}}<hr>{{/separator}}
+					{{/reports}}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/report}}
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?{{#key}}key={{key}}&{{/key}}sensor=false"></script>
 		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="./{{config}}"></script>

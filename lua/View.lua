@@ -94,11 +94,12 @@ function View(data)
 	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
+	optionalTableArgument(data, "report", "Report")
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "visible", false)
 
-	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer"})
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report"})
 
 	if data.color then
 		if data.value then
@@ -137,6 +138,11 @@ function View(data)
 		end
 
 		mandatoryTableArgument(data, "layer", "File")
+	end
+
+	if data.report then
+		local rp = data.report:get()
+		data.report = {title = data.report.title, author = data.report.author, reports = rp}
 	end
 
 	setmetatable(data, metaTableView_)
