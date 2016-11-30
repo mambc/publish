@@ -22,30 +22,6 @@
 --
 -------------------------------------------------------------------------------------------
 
-local function getRGB(mcolor, classes, argument)
-	local ctype = type(mcolor)
-	if ctype == "string" then
-		verifyColor(mcolor, classes)
-		mcolor = color(mcolor, classes)
-	elseif ctype ~= "table" then
-		argument = argument or "color"
-		incompatibleTypeError(argument, "string or table", mcolor)
-	end
-
-	return mcolor
-end
-
-local function getStrColor(rgb, pos, argument)
-	verifyColor(rgb, nil, pos, argument)
-
-	if type(rgb) == "string" then
-		return rgb
-	end
-
-	local a = rgb[4] or 1
-	return string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
-end
-
 View_ = {
 	type_ = "View"
 }
@@ -65,7 +41,10 @@ metaTableView_ = {
 -- a color name, an RGB value (Ex. {0, 0, 0}), or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
 -- @arg data.color An optional table with the colors for the attributes. Colors can be described as strings using
 -- a color name, an RGB value, a HEX value, or even as a string with a ColorBrewer format (see http://www.colorbrewer2.org).
--- The colors available and the maximum number of slices for each of them are:
+-- The available color names are:
+-- <br><img src="../../lib/color_keyword_names.svg" alt="Color keywords name"> <br>
+-- These colors are defined by www.w3.org (see https://www.w3.org/TR/SVG/types.html#ColorKeywords).
+-- The colors available in ColorBrewer format and the maximum number of slices for each of them are:
 -- @tabular color
 -- Name & Max \
 -- Accent, Dark, Set2 & 7 \
@@ -108,28 +87,31 @@ function View(data)
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
 
-			local color = getRGB(data.color, classes)
-			local nColors = #color
+			local mcolor
+			if type(data.color) == "string" then
+				mcolor = color("color", data.color, classes)
+			else
+				mcolor = color("color", data.color)
+			end
+
+			local nColors = #mcolor
 			if classes ~= nColors then
 				customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
 			end
 
 			local colors = {}
 			for i = 1, classes do
-				local rgb = color[i]
-				colors[tostring(data.value[i])] = getStrColor(rgb, i)
+				colors[tostring(data.value[i])] = mcolor[i]
 			end
 
 			data.color = colors
 		else
-			local rgb = getRGB(data.color)
-			data.color = getStrColor(rgb, 1)
+			data.color = color("color", data.color)
 		end
 	end
 
 	if data.border then
-		local rgb = getRGB(data.border, nil, "border")
-		data.border = getStrColor(rgb, 1, "border")
+		data.border = color("border", data.border)
 	end
 
 	if data.layer then

@@ -125,29 +125,29 @@ return {
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string or table", 123456))
 
-		data.color = "#afafah"
+		data.color = {"#afafah", "#afafah", "#afafah"}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color.")
+		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		data.color = "Redss"
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'color' (Redss) is not a valid color name.")
+		unitTest:assertError(error_func, "Argument 'color' (Redss) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
 
 		data.color = {"Reds", "Blues", "PuRd"}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "The number of data classes is mandatory for 'Reds' in ColorBrewer.")
+		unitTest:assertError(error_func, "Argument 'color' (Reds) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
-		data.color = {1, 1, 1}
+		data.color = {true, true, true}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
+		unitTest:assertError(error_func, "Argument 'color' has an invalid description for color in position '#1'. It should be a string, number or table, got boolean.")
 
 		data.color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}
 		error_func = function()

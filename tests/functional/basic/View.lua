@@ -89,9 +89,9 @@ return {
 		}
 
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.color["1"], "red")
-		unitTest:assertEquals(view.color["2"], "orange")
-		unitTest:assertEquals(view.color["3"], "yellow")
+		unitTest:assertEquals(view.color["1"], "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(view.color["2"], "rgba(255, 165, 0, 1)")
+		unitTest:assertEquals(view.color["3"], "rgba(255, 255, 0, 1)")
 
 		local report = Report{
 			title = "URBIS-Caraguá",

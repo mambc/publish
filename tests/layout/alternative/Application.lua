@@ -199,7 +199,7 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
+		unitTest:assertError(error_func, "Incompatible types. Argument 'navbar' expected string or table, got number.")
 
 		data.template = {navbar = "dodgerblue"}
 		error_func = function()
@@ -217,19 +217,19 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
+		unitTest:assertError(error_func, "Incompatible types. Argument 'title' expected string or table, got number.")
 
 		data.template = {navbar = 1, title = "dodgerblue"}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
+		unitTest:assertError(error_func, "Incompatible types. Argument 'navbar' expected string or table, got number.")
 
 		data.template = {navbar = "#afafah", title = "dodgerblue"}
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'navbar' (#afafah) is not a valid hex color.")
+		unitTest:assertError(error_func, "Argument 'navbar' (#afafah) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		data.template = {navbar = "dodgerblue", title = {256, 256, 256}}
 		error_func = function()

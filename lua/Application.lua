@@ -591,23 +591,13 @@ function Application(data)
 		verifyUnnecessaryArguments(data.template, {"navbar", "title"})
 
 		if data.template.navbar then
-			verifyColor(data.template.navbar, nil, 1, "navbar")
-			if type(data.template.navbar) == "table" then
-				local rgb = data.template.navbar
-				local a = rgb[4] or 1
-				data.template.navbar = string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
-			end
+			data.template.navbar = color("navbar", data.template.navbar)
 		else
 			customError("Argument 'template' should contain the field 'navbar'.")
 		end
 
 		if data.template.title then
-			verifyColor(data.template.title, nil, 1, "title")
-			if type(data.template.title) == "table" then
-				local rgb = data.template.title
-				local a = rgb[4] or 1
-				data.template.title = string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
-			end
+			data.template.title = color("title", data.template.title)
 		else
 			customError("Argument 'template' should contain the field 'title'.")
 		end

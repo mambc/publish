@@ -24,34 +24,53 @@
 
 return {
 	color = function(unitTest)
-		local mcolor = color("aqua")
+		local mcolor = color("color", "aqua")
 
+		unitTest:assertType(mcolor, "string")
+		unitTest:assertEquals(mcolor, "rgba(0, 255, 255, 1)")
+
+		mcolor = color("color", {10, 10 ,10})
+		unitTest:assertType(mcolor, "string")
+		unitTest:assertEquals(mcolor, "rgba(10, 10, 10, 1)")
+
+		mcolor = color("color", {{255, 255, 255}})
 		unitTest:assertType(mcolor, "table")
-		unitTest:assertEquals(mcolor[1], 0)
-		unitTest:assertEquals(mcolor[2], 255)
-		unitTest:assertEquals(mcolor[3], 255)
+		unitTest:assertType(mcolor[1], "string")
+		unitTest:assertEquals(mcolor[1], "rgba(255, 255, 255, 1)")
 
-		mcolor = color("aqua", 3)
+		mcolor = color("color", {{10, 10, 10}, {11, 11, 11}, {12, 12, 12, 0.5}})
 		unitTest:assertType(mcolor, "table")
-		unitTest:assertEquals(mcolor[1], 0)
-		unitTest:assertEquals(mcolor[2], 255)
-		unitTest:assertEquals(mcolor[3], 255)
+		unitTest:assertType(mcolor[1], "string")
+		unitTest:assertType(mcolor[2], "string")
+		unitTest:assertType(mcolor[3], "string")
+		unitTest:assertEquals(mcolor[1], "rgba(10, 10, 10, 1)")
+		unitTest:assertEquals(mcolor[2], "rgba(11, 11, 11, 1)")
+		unitTest:assertEquals(mcolor[3], "rgba(12, 12, 12, 0.5)")
 
-		mcolor = color("Reds")
-		unitTest:assertNil(mcolor)
-
-		mcolor = color("Reds", 2)
-		local brewer1 = mcolor[1]
-		local brewer2 = mcolor[2]
+		mcolor = color("color", {"red", "green", "yellow"})
 		unitTest:assertType(mcolor, "table")
-		unitTest:assertType(brewer1, "table")
-		unitTest:assertType(brewer2, "table")
-		unitTest:assertEquals(brewer1[1], 254)
-		unitTest:assertEquals(brewer1[2], 224)
-		unitTest:assertEquals(brewer1[3], 210)
-		unitTest:assertEquals(brewer2[1], 222)
-		unitTest:assertEquals(brewer2[2], 45)
-		unitTest:assertEquals(brewer2[3], 38)
+		unitTest:assertType(mcolor[1], "string")
+		unitTest:assertType(mcolor[2], "string")
+		unitTest:assertType(mcolor[3], "string")
+		unitTest:assertEquals(mcolor[1], "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(mcolor[2], "rgba(0, 128, 0, 1)")
+		unitTest:assertEquals(mcolor[3], "rgba(255, 255, 0, 1)")
+
+		mcolor = color("color", {"#798174", "#261305", "#7c4c24"})
+		unitTest:assertType(mcolor, "table")
+		unitTest:assertType(mcolor[1], "string")
+		unitTest:assertType(mcolor[2], "string")
+		unitTest:assertType(mcolor[3], "string")
+		unitTest:assertEquals(mcolor[1], "#798174")
+		unitTest:assertEquals(mcolor[2], "#261305")
+		unitTest:assertEquals(mcolor[3], "#7c4c24")
+
+		mcolor = color("color", "Reds", 2)
+		unitTest:assertType(mcolor, "table")
+		unitTest:assertType(mcolor[1], "string")
+		unitTest:assertType(mcolor[2], "string")
+		unitTest:assertEquals(mcolor[1], "rgba(254, 224, 210, 1)")
+		unitTest:assertEquals(mcolor[2], "rgba(222, 45, 38, 1)")
 	end
 }
 
