@@ -591,13 +591,13 @@ function Application(data)
 		verifyUnnecessaryArguments(data.template, {"navbar", "title"})
 
 		if data.template.navbar then
-			data.template.navbar = color("navbar", data.template.navbar)
+			data.template.navbar = color{navbar = data.template.navbar}
 		else
 			customError("Argument 'template' should contain the field 'navbar'.")
 		end
 
 		if data.template.title then
-			data.template.title = color("title", data.template.title)
+			data.template.title = color{title = data.template.title}
 		else
 			customError("Argument 'template' should contain the field 'title'.")
 		end

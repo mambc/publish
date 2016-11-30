@@ -27,125 +27,135 @@ return {
 		local error_func = function()
 			color()
 		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
+		unitTest:assertError(error_func, "Argument must be a table.")
 
 		error_func = function()
-			color("color")
+			color{}
 		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg(2))
+		unitTest:assertError(error_func, "Argument 'arg' is mandatory.")
 
 		error_func = function()
-			color("color", 1)
+			color{classes = 1}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("arg"))
+
+		error_func = function()
+			color{color = 1}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string or table", 1))
 
 		error_func = function()
-			color("color", "Reds", 1)
+			color{arg = 1}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("arg", "string or table", 1))
+
+		error_func = function()
+			color{color = "Reds", classes = 1}
 		end
 		unitTest:assertError(error_func, "The number of data classes must be >= 2 and <= 20, got 1.")
 
 		error_func = function()
-			color("color", "Reds", 21)
+			color{color = "Reds", classes = 21}
 		end
 		unitTest:assertError(error_func, "The number of data classes must be >= 2 and <= 20, got 21.")
 
 		error_func = function()
-			color("color", "Reds", 2.5)
+			color{color = "Reds", classes = 2.5}
 		end
 		unitTest:assertError(error_func, "The number of data classes must be an integer, got 2.5.")
 
 		error_func = function()
-			color("color", "123456")
+			color{color = "123456"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (123456) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "#afafah")
+			color{color = "#afafah"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "#123abce")
+			color{color = "#123abce"}
 		end
 		unitTest:assertError(error_func,"Argument 'color' (#123abce) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "aFaE3f")
+			color{color = "aFaE3f"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (aFaE3f) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "F00")
+			color{color = "F00"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (F00) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "#afaf")
+			color{color = "#afaf"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (#afaf) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "#F0h")
+			color{color = "#F0h"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (#F0h) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "Redss")
+			color{color = "Redss"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (Redss) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", "Dark", 10)
+			color{color = "Dark", classes = 10}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (Dark) does not exist in ColorBrewer with (10) data classes.")
 
 		error_func = function()
-			color("color", "Dark")
+			color{color = "Dark"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (Dark) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			color("color", {1.5, 1, 1})
+			color{color = {1.5, 1, 1}}
 		end
 		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer, got 1.5.")
 
 		error_func = function()
-			color("color", {-1, 1, 1})
+			color{color = {-1, 1, 1}}
 		end
 		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got -1.")
 
 		error_func = function()
-			color("color", {256, 255, 255})
+			color{color = {256, 255, 255}}
 		end
 		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got 256.")
 
 		error_func = function()
-			color("color", {1, 1, 1, 2})
+			color{color = {1, 1, 1, 2}}
 		end
 		unitTest:assertError(error_func, "The alpha parameter of color '#1' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 2.")
 
 		error_func = function()
-			color("color", {1, 1, 1, 1, 1, 1})
+			color{color = {1, 1, 1, 1, 1, 1}}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (1) must be a table with 3 or 4 arguments (red, green, blue and alpha), got 6.")
 
 		error_func = function()
-			color("color", {10, 10, 10}, 3)
+			color{color = {10, 10, 10}, classes = 3}
 		end
 		unitTest:assertError(error_func, "Argument 'classes' is unnecessary.")
 
 		error_func = function()
-			color("color", {true, true, true})
+			color{color = {true, true, true}}
 		end
 		unitTest:assertError(error_func, "Argument 'color' has an invalid description for color in position '#1'. It should be a string, number or table, got boolean.")
 
 		error_func = function()
-			color("color", {"aqua", {10, 10, 10}, "#798174"})
+			color{color = {"aqua", {10, 10, 10}, "#798174"}}
 		end
 		unitTest:assertError(error_func, "All elements of argument 'color' must have the same type, got at least 2 different types.")
 
 		error_func = function()
-			color("color", {})
+			color{color = {}}
 		end
 		unitTest:assertError(error_func, "Argument 'color' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 	end

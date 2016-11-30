@@ -97,9 +97,9 @@ function View(data)
 
 			local mcolor
 			if type(data.color) == "string" then
-				mcolor = color("color", data.color, classes, realTransparency)
+				mcolor = color{color = data.color, classes = classes, alpha = realTransparency}
 			else
-				mcolor = color("color", data.color, nil, realTransparency)
+				mcolor = color{color = data.color, alpha = realTransparency}
 			end
 
 			local nColors = #mcolor
@@ -114,12 +114,12 @@ function View(data)
 
 			data.color = colors
 		else
-			data.color = color("color", data.color, nil, realTransparency)
+			data.color = color{color = data.color, alpha = realTransparency}
 		end
 	end
 
 	if data.border then
-		data.border = color("border", data.border)
+		data.border = color{border = data.border}
 	end
 
 	if data.layer then

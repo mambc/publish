@@ -1512,53 +1512,64 @@ local function getColorBrewer(arg, brewer, classes, a)
 end
 
 --- Validate a color in different formats and return it in RGBA.
--- @arg arg A mandatory string with the argument name.
--- @arg colors A mandatory string or table with the color. Colors can be described as strings using a color name, an RGB value,
+-- @arg data.... Argument name. A mandatory string or table with the color. Colors can be described as strings using a color name, an RGB value,
 -- a HEX value, or even as a string with a ColorBrewer format (see http://www.colorbrewer2.org).
 -- The available color names are:
 -- <br><img src="../../lib/color_keyword_names.svg" alt="Color keywords name"> <br>
 -- These colors are defined by www.w3.org (see https://www.w3.org/TR/SVG/types.html#ColorKeywords).
--- @arg classes A optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
--- @arg alpha A optional number with the opacity for a color. The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque).
+-- @arg data.classes An optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
+-- @arg data.alpha An optional number with the opacity for a color. The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque).
 -- The default value is 1.
 -- @usage import("publish")
--- print(color("color", "aqua"))
--- print(color("color", {{255, 255, 255}}))
--- print(color("color", "Reds", 3))
--- print(color("color", {{10, 10, 10}, {11, 11, 11}, {12, 12, 12, 0.5}}))
--- print(color("color", {"red", "green", "yellow"}))
--- print(color("color", {"#798174", "#261305", "#7c4c24"}))
-function color(arg, colors, classes, alpha)
-	mandatoryArgument(1, "string", arg)
+-- print(color{color = "aqua"})
+-- print(color{border = "blue"})
+-- print(color{color = "red", alpha = 0.5})
+-- print(color{color = {{255, 255, 255}}})
+-- print(color{color = "Reds", classes = 3})
+-- print(color{color = {{10, 10, 10}, {11, 11, 11}, {12, 12, 12, 0.5}}})
+-- print(color{color = {"red", "green", "yellow"}})
+-- print(color{color = {"#798174", "#261305", "#7c4c24"}})
+function color(data)
+	verifyNamedTable(data)
 
-	if not colors then
-		customError(mandatoryArgumentMsg(2))
+	local args = {classes = true, alpha = true}
+	for k, v in pairs(data) do
+		if not args[k] then
+			data[k] = nil
+			data.arg = k
+			data.colors = v
+			break
+		end
 	end
 
-	optionalArgument(3, "number", classes)
-	verifyAlphaRGB(alpha)
+	mandatoryTableArgument(data, "arg", "string")
+	mandatoryTableArgument(data, "colors")
+	optionalTableArgument(data, "classes", "number")
+	optionalTableArgument(data, "alpha", "number")
 
-	if type(colors) == "string" then
-		if classes then
-			colors = getColorBrewer(arg, colors, classes, alpha)
+	verifyAlphaRGB(data.alpha)
+
+	if type(data.colors) == "string" then
+		if data.classes then
+			data.colors = getColorBrewer(data.arg, data.colors, data.classes, data.alpha)
 		else
-			colors = getColorByName(arg, colors, alpha)
+			data.colors = getColorByName(data.arg, data.colors, data.alpha)
 		end
-	elseif type(colors) == "table" then
-		if classes then
+	elseif type(data.colors) == "table" then
+		if data.classes then
 			strictWarning(unnecessaryArgumentMsg("classes"))
 		end
 
-		if #colors == 0 then
-			customError("Argument '"..arg.."' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
+		if #data.colors == 0 then
+			customError("Argument '".. data.arg .."' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 		end
 
 		local lenTypes = 0
 		local types = {}
-		for i = 1, #colors do
-			local mtype = type(colors[i])
+		for i = 1, #data.colors do
+			local mtype = type(data.colors[i])
 			if not (mtype == "string" or mtype == "number" or mtype == "table") then
-				customError("Argument '"..arg.."' has an invalid description for color in position '#"..i.."'. It should be a string, number or table, got "..mtype..".")
+				customError("Argument '".. data.arg .."' has an invalid description for color in position '#"..i.."'. It should be a string, number or table, got "..mtype..".")
 			end
 
 			if not types[mtype] then
@@ -1566,24 +1577,24 @@ function color(arg, colors, classes, alpha)
 				lenTypes = lenTypes + 1
 			end
 
-			local value = colors[i]
+			local value = data.colors[i]
 			if mtype == "string" then
-				colors[i] = getColorByName(arg, value, alpha)
+				data.colors[i] = getColorByName(data.arg, value, data.alpha)
 			elseif mtype == "table" then
-				colors[i] = getColorByRGB(arg, value, i, alpha)
+				data.colors[i] = getColorByRGB(data.arg, value, i, data.alpha)
 			end
 		end
 
 		if lenTypes ~= 1 then
-			customError("All elements of argument '"..arg.."' must have the same type, got at least "..lenTypes.." different types.")
+			customError("All elements of argument '".. data.arg .."' must have the same type, got at least "..lenTypes.." different types.")
 		end
 
 		if types["number"] then
-			colors = getColorByRGB(arg, colors, 1, alpha)
+			data.colors = getColorByRGB(data.arg, data.colors, 1, data.alpha)
 		end
 	else
-		customError(incompatibleTypeMsg(arg, "string or table", colors))
+		customError(incompatibleTypeMsg(data.arg, "string or table", data.colors))
 	end
 
-	return colors
+	return data.colors
 end
