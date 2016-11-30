@@ -1436,19 +1436,22 @@ local function verifyIntensityRGB(value, el, pos)
 	end
 end
 
-local function verifyAlphaRGB(value, pos)
-	local a = value[4]
+local function verifyAlphaRGB(a, pos)
+	optionalArgument(1, "number", a)
+	optionalArgument(2, "number", pos)
+
+	pos = pos or 1
 	if a and (a < 0 or a > 1) then
 		customError("The alpha parameter of color '#"..pos.."' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got "..a..".")
 	end
 end
 
-local function formatColor(rgb)
-	local a = rgb[4] or 1
+local function formatColor(rgb, a)
+	a = a or rgb[4] or 1
 	return string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
 end
 
-local function getColorByName(arg, keyword)
+local function getColorByName(arg, keyword, a)
 	if keyword:find("#") then
 		if not isHex(keyword) then
 			customError("Argument '"..arg.."' ("..keyword..") is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
@@ -1461,11 +1464,11 @@ local function getColorByName(arg, keyword)
 			customError("Argument '"..arg.."' ("..keyword..") is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 		end
 
-		return formatColor(rgb)
+		return formatColor(rgb, a)
 	end
 end
 
-local function getColorByRGB(arg, value, pos)
+local function getColorByRGB(arg, value, pos, a)
 	local len = #value
 	if len < 3 or len > 4 then
 		customError("Argument '"..arg.."' ("..pos..") must be a table with 3 or 4 arguments (red, green, blue and alpha), got "..len..".")
@@ -1475,12 +1478,12 @@ local function getColorByRGB(arg, value, pos)
 		verifyIntensityRGB(value[j], j, pos)
 	end
 
-	verifyAlphaRGB(value, pos)
+	verifyAlphaRGB(value[4], pos)
 
-	return formatColor(value)
+	return formatColor(value, a)
 end
 
-local function getColorBrewer(arg, brewer, classes)
+local function getColorBrewer(arg, brewer, classes, a)
 	if classes ~= math.floor(classes) then
 		customError("The number of data classes must be an integer, got ".. classes ..".")
 	end
@@ -1499,7 +1502,7 @@ local function getColorBrewer(arg, brewer, classes)
 		local result = {}
 		for i = 1, #colors do
 			local rgb = colors[i]
-			result[i] = formatColor(rgb)
+			result[i] = formatColor(rgb, a)
 		end
 
 		return result
@@ -1516,6 +1519,8 @@ end
 -- <br><img src="../../lib/color_keyword_names.svg" alt="Color keywords name"> <br>
 -- These colors are defined by www.w3.org (see https://www.w3.org/TR/SVG/types.html#ColorKeywords).
 -- @arg classes A optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
+-- @arg alpha A optional number with the opacity for a color. The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque).
+-- The default value is 1.
 -- @usage import("publish")
 -- print(color("color", "aqua"))
 -- print(color("color", {{255, 255, 255}}))
@@ -1523,7 +1528,7 @@ end
 -- print(color("color", {{10, 10, 10}, {11, 11, 11}, {12, 12, 12, 0.5}}))
 -- print(color("color", {"red", "green", "yellow"}))
 -- print(color("color", {"#798174", "#261305", "#7c4c24"}))
-function color(arg, colors, classes)
+function color(arg, colors, classes, alpha)
 	mandatoryArgument(1, "string", arg)
 
 	if not colors then
@@ -1531,12 +1536,13 @@ function color(arg, colors, classes)
 	end
 
 	optionalArgument(3, "number", classes)
+	verifyAlphaRGB(alpha)
 
 	if type(colors) == "string" then
 		if classes then
-			colors = getColorBrewer(arg, colors, classes)
+			colors = getColorBrewer(arg, colors, classes, alpha)
 		else
-			colors = getColorByName(arg, colors)
+			colors = getColorByName(arg, colors, alpha)
 		end
 	elseif type(colors) == "table" then
 		if classes then
@@ -1562,9 +1568,9 @@ function color(arg, colors, classes)
 
 			local value = colors[i]
 			if mtype == "string" then
-				colors[i] = getColorByName(arg, value)
+				colors[i] = getColorByName(arg, value, alpha)
 			elseif mtype == "table" then
-				colors[i] = getColorByRGB(arg, value, i)
+				colors[i] = getColorByRGB(arg, value, i, alpha)
 			end
 		end
 
@@ -1573,7 +1579,7 @@ function color(arg, colors, classes)
 		end
 
 		if types["number"] then
-			colors = getColorByRGB(arg, colors, 1)
+			colors = getColorByRGB(arg, colors, 1, alpha)
 		end
 	else
 		customError(incompatibleTypeMsg(arg, "string or table", colors))

@@ -163,5 +163,30 @@ return {
 			View{color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}, value = {1, 2, 3}}
 		end
 		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 1.00001.")
+
+		error_func = function()
+			View{color = {"red", "blue"}, value = {1}}
+		end
+		unitTest:assertError(error_func, "The number of colors (2) must be equal to number of data classes (1).")
+
+		error_func = function()
+			View{color = "red", transparency = "a"}
+		end
+		unitTest:assertError(error_func, "Incompatible types. Argument 'transparency' expected number, got string.")
+
+		error_func = function()
+			View{color = "red", transparency = 0}
+		end
+		unitTest:assertError(error_func, "Argument 'transparency' could be removed as it is the default value (0).")
+
+		error_func = function()
+			View{color = "red", transparency = -1}
+		end
+		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got -1.")
+
+		error_func = function()
+			View{color = "red", transparency = 1.1}
+		end
+		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 1.1.")
 	end
 }

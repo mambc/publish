@@ -37,6 +37,8 @@ metaTableView_ = {
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
 -- @arg data.visible An optional boolean whether the layer is visible. Defaults to true.
 -- @arg data.width An optional argument with the stroke width in pixels.
+-- @arg data.transparency An optional argument with the opacity of color attribute. The transparency parameter is a number between 0.0 (fully opaque) and 1.0 (fully transparent).
+-- The default value is 0.
 -- @arg data.border An optional string or table with the stroke color. Colors can be described as strings using
 -- a color name, an RGB value (Ex. {0, 0, 0}), or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
 -- @arg data.color An optional table with the colors for the attributes. Colors can be described as strings using
@@ -76,10 +78,16 @@ function View(data)
 	optionalTableArgument(data, "report", "Report")
 
 	defaultTableValue(data, "width", 1)
+	defaultTableValue(data, "transparency", 0)
 	defaultTableValue(data, "visible", false)
 
-	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report"})
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency"})
 
+	if data.transparency < 0 or data.transparency > 1 then
+		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
+	end
+
+	local realTransparency = 1 - data.transparency
 	if data.color then
 		if data.value then
 			local classes = #data.value
@@ -89,9 +97,9 @@ function View(data)
 
 			local mcolor
 			if type(data.color) == "string" then
-				mcolor = color("color", data.color, classes)
+				mcolor = color("color", data.color, classes, realTransparency)
 			else
-				mcolor = color("color", data.color)
+				mcolor = color("color", data.color, nil, realTransparency)
 			end
 
 			local nColors = #mcolor
@@ -106,7 +114,7 @@ function View(data)
 
 			data.color = colors
 		else
-			data.color = color("color", data.color)
+			data.color = color("color", data.color, nil, realTransparency)
 		end
 	end
 

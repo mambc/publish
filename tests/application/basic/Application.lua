@@ -142,10 +142,12 @@ return {
 			output = emasDir,
 			order = {"river"},
 			river = View{
-				color = "blue"
+				color = "blue",
+				transparency = 0.6
 			},
 			firebreak = View{
-				color = "black"
+				color = "black",
+				transparency = 0.5
 			}
 		}
 
@@ -160,6 +162,9 @@ return {
 
 		unitTest:assertEquals(app.view.river.order, 2)
 		unitTest:assertEquals(app.view.firebreak.order, 1)
+
+		unitTest:assertEquals(app.view.river.color, "rgba(0, 0, 255, 0.4)")
+		unitTest:assertEquals(app.view.firebreak.color, "rgba(0, 0, 0, 0.5)")
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)

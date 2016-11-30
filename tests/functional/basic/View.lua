@@ -49,6 +49,7 @@ return {
 
 		unitTest:assertType(view.color, "table")
 		unitTest:assertEquals(getn(view.color), 3)
+		unitTest:assertEquals(view.transparency, 0)
 		unitTest:assertEquals(view.color[tostring(view.value[1])], "rgba(236, 231, 242, 1)")
 		unitTest:assertEquals(view.color[tostring(view.value[2])], "rgba(166, 189, 219, 1)")
 		unitTest:assertEquals(view.color[tostring(view.value[3])], "rgba(43, 140, 190, 1)")
@@ -59,6 +60,7 @@ return {
 			border = "red",
 			width = 2,
 			color = "blue",
+			transparency = 0.7,
 			visible = true,
 			select = "river"
 		}
@@ -69,16 +71,19 @@ return {
 		unitTest:assertEquals(view.width, 2)
 		unitTest:assertEquals(view.visible, true)
 		unitTest:assertEquals(view.select, "river")
+		unitTest:assertEquals(view.transparency, 0.7)
 		unitTest:assertEquals(view.border, "rgba(255, 0, 0, 1)")
-		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
+		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 0.3)")
 
 		view = View{
 			color = "blue",
+			transparency = 0.95,
 			layer = tostring(filePath("Limit_pol.shp", "terralib"))
 		}
 
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
+		unitTest:assertEquals(view.transparency, 0.95)
+		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 0.05)")
 		unitTest:assertType(view.layer, "File")
 		unitTest:assert(view.layer:exists())
 
@@ -130,13 +135,14 @@ return {
 			value = {0, 1, 2}
 		}
 
-		unitTest:assertEquals(tostring(view), [[border   string [rgba(0, 0, 255, 1)]
-color    named table of size 3
-select   string [river]
-title    string [Emas National Park]
-value    vector of size 3
-visible  boolean [true]
-width    number [2]
+		unitTest:assertEquals(tostring(view), [[border        string [rgba(0, 0, 255, 1)]
+color         named table of size 3
+select        string [river]
+title         string [Emas National Park]
+transparency  number [0]
+value         vector of size 3
+visible       boolean [true]
+width         number [2]
 ]])
 	end
 }
