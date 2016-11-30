@@ -1,6 +1,7 @@
-version = "0.1.1"
+version = "0.2"
 license = "LGPL-3"
 package = "publish"
+depends = "terrame (>= 2.0)"
 title = "Publishing Model Results"
 url = "https://github.com/TerraME/publish"
 authors = "Heitor Carneiro and Pedro R. Andrade"
