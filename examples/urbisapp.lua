@@ -34,8 +34,7 @@ Application{
 	output = "CaraguaWebMap",
 	limit = View{
 		description = "Bounding box of Caraguatatuba.",
-		color = "goldenrod",
-		visible = true
+		color = "goldenrod"
 	},
 	regions = View{
 		description = "Regions of Caraguatatuba.",

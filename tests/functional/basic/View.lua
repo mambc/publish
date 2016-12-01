@@ -30,7 +30,6 @@ return {
 			border = "blue",
 			width = 2,
 			color = "PuBu",
-			visible = true,
 			select = "river",
 			value = {0, 1, 2}
 		}
@@ -61,7 +60,7 @@ return {
 			width = 2,
 			color = "blue",
 			transparency = 0.7,
-			visible = true,
+			visible = false,
 			select = "river"
 		}
 
@@ -69,7 +68,7 @@ return {
 		unitTest:assertEquals(view.title, "Emas National Park")
 		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
 		unitTest:assertEquals(view.width, 2)
-		unitTest:assertEquals(view.visible, true)
+		unitTest:assertEquals(view.visible, false)
 		unitTest:assertEquals(view.select, "river")
 		unitTest:assertEquals(view.transparency, 0.7)
 		unitTest:assertEquals(view.border, "rgba(255, 0, 0, 1)")
@@ -173,7 +172,6 @@ return {
 			border = "blue",
 			width = 2,
 			color = "PuBu",
-			visible = true,
 			select = "river",
 			value = {0, 1, 2}
 		}

@@ -79,7 +79,6 @@ return {
 				border = "blue",
 				color = "goldenrod",
 				width = 2,
-				visible = true,
 				layer = filePath("Limit_pol.shp", "terralib")
 			},
 			cells = View{
@@ -88,7 +87,8 @@ return {
 				color = "PuBu",
 				width = 0,
 				value = {0, 1, 2},
-				layer = filePath("accumulation_Nov94May00.tif", "terralib")
+				layer = filePath("accumulation_Nov94May00.tif", "terralib"),
+				visible = false
 			}
 		}
 
@@ -104,7 +104,7 @@ return {
 		unitTest:assertEquals(app.view.river.width, 1)
 		unitTest:assertEquals(app.view.limit.width, 2)
 
-		unitTest:assertEquals(app.view.river.visible, false)
+		unitTest:assertEquals(app.view.cells.visible, false)
 		unitTest:assertEquals(app.view.limit.visible, true)
 
 		unitTest:assertType(app.view.cells.color, "table")
@@ -232,15 +232,14 @@ return {
 			report = report,
 			limit = View{
 				description = "Bounding box of Caraguatatuba",
-				color = "goldenrod",
-				visible = true
+				color = "goldenrod"
 			},
 			real = View{
 				title = "Social Classes 2010 Real",
 				description = "This is the main endogenous variable of the model. It was obtained from a classification that"
 							.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
 				width = 0,
-				visible = true,
+				visible = false,
 				select = "classe",
 				color = {"red", "orange", "yellow"}
 			}
@@ -273,7 +272,6 @@ return {
 			limit = View{
 				description = "Bounding box of Caraguatatuba",
 				color = "goldenrod",
-				visible = true,
 				report = report
 			},
 			real = View{

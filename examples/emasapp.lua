@@ -44,8 +44,7 @@ Application{
 		description = "Bounding box of Emas National Park",
 		border = "blue",
 		color = "goldenrod",
-		width = 2,
-		visible = true
+		width = 2
 	},
 	cells = View{
 		title = "Emas National Park",
@@ -53,6 +52,7 @@ Application{
 		select = "river",
 		color = "PuBu",
 		width = 0,
-		value = {0, 1, 2}
+		value = {0, 1, 2},
+		visible = false
 	}
 }

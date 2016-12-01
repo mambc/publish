@@ -100,9 +100,9 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("visible", "boolean", 1))
 
 		error_func = function()
-			View{visible = false}
+			View{visible = true}
 		end
-		unitTest:assertError(error_func, defaultValueMsg("visible", false))
+		unitTest:assertError(error_func, defaultValueMsg("visible", true))
 
 		error_func = function()
 			View{select = 1}

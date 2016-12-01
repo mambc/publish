@@ -35,7 +35,7 @@ metaTableView_ = {
 -- One Application is composed by a set of Views.
 -- @arg data.select An optional string with the name of the attribute to be visualized.
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
--- @arg data.visible An optional boolean whether the layer is visible. Defaults to true.
+-- @arg data.visible An optional boolean whether the layer is visible. Defaults to false.
 -- @arg data.width An optional argument with the stroke width in pixels.
 -- @arg data.transparency An optional argument with the opacity of color attribute. The transparency parameter is a number between 0.0 (fully opaque) and 1.0 (fully transparent).
 -- The default value is 0.
@@ -79,7 +79,7 @@ function View(data)
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
-	defaultTableValue(data, "visible", false)
+	defaultTableValue(data, "visible", true)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency"})
 

@@ -255,8 +255,8 @@ local function loadLayers(data)
 				mview.transparency = view.transparency
 			end
 
-			if view.visible == true then
-				mview.visible = true
+			if view.visible == false then
+				mview.visible = false
 			end
 
 			do
