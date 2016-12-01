@@ -27,12 +27,12 @@ return {
 		local error_func = function()
 			color()
 		end
-		unitTest:assertError(error_func, "Argument must be a table.")
+		unitTest:assertError(error_func, tableArgumentMsg())
 
 		error_func = function()
 			color{}
 		end
-		unitTest:assertError(error_func, "Argument 'arg' is mandatory.")
+		unitTest:assertError(error_func, mandatoryArgumentMsg("arg"))
 
 		error_func = function()
 			color{classes = 1}
@@ -142,7 +142,7 @@ return {
 		error_func = function()
 			color{color = {10, 10, 10}, classes = 3}
 		end
-		unitTest:assertError(error_func, "Argument 'classes' is unnecessary.")
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("classes"))
 
 		error_func = function()
 			color{color = {true, true, true}}

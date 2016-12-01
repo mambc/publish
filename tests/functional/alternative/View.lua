@@ -172,12 +172,12 @@ return {
 		error_func = function()
 			View{color = "red", transparency = "a"}
 		end
-		unitTest:assertError(error_func, "Incompatible types. Argument 'transparency' expected number, got string.")
+		unitTest:assertError(error_func, incompatibleTypeMsg("transparency", "number", "a"))
 
 		error_func = function()
 			View{color = "red", transparency = 0}
 		end
-		unitTest:assertError(error_func, "Argument 'transparency' could be removed as it is the default value (0).")
+		unitTest:assertError(error_func, defaultValueMsg("transparency", 0))
 
 		error_func = function()
 			View{color = "red", transparency = -1}
