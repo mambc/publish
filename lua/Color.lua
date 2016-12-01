@@ -1408,36 +1408,6 @@ local colorBrewer = {
 	}
 }
 
---- Get color by name.
--- The available names are:
--- <br><img src="../../lib/color_keyword_names.svg" alt="Color keywords name"> <br>
--- These colors are defined by www.w3.org (see https://www.w3.org/TR/SVG/types.html#ColorKeywords).
--- @arg keyword A mandatory string case-insensitive which represent a specific color, e.g. red, blue, brown, lightseagreen.
--- @arg class A optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
--- @usage import("publish")
--- print(color("aqua"))
-function color(keyword, class)
-	mandatoryArgument(1, "string", keyword)
-	optionalArgument(1, "number", class)
-
-	if class then
-		if class ~= math.floor(class) then
-			customError("The number of data classes must be an integer, got "..class..".")
-		end
-
-		if class < 2 or class > 20 then
-			customError("The number of data classes must be >= 2 and <= 20, got "..class..".")
-		end
-
-		local brewer = colorBrewer[keyword]
-		if brewer then
-			return brewer[class]
-		end
-	end
-
-	return colorW3[keyword]
-end
-
 -- String must start with a “#” symbol , follow by a letter from “a” to “f”,
 -- “A” to “Z” or a digit from “0” to 9″ with exactly 6 or 3 length.
 -- This regular expression pattern is very useful for the Hexadecimal web colors code checking.
@@ -1456,76 +1426,175 @@ local isHex = (function()
 	end
 end)()
 
-local function verifyStringColor(keyword, class, arg)
-	if keyword:find("#") then
-		if not isHex(keyword) then
-			customError("Argument '"..arg.."' ("..keyword..") is not a valid hex color.")
-		end
-	else
-		local mcolor = color(keyword, class)
-		if not mcolor then
-			local errorMsg = "Argument '"..arg.."' ("..keyword..") is not a valid color name."
-			mcolor = color(keyword, 3)
-			if mcolor then
-				if not class then
-					errorMsg = "The number of data classes is mandatory for '"..keyword.."' in ColorBrewer."
-				else
-					errorMsg = "The number of data classes ("..class..") does not exists for color '"..keyword.."' in ColorBrewer."
-				end
-			end
+local function verifyIntensityRGB(value, el, pos)
+	if type(value) ~= "number" or value ~= math.floor(value) then
+		customError("Element '#".. el .."' in color '#"..pos.."' must be an integer, got ".. value ..".")
+	end
 
-			customError(errorMsg)
-		end
+	if value < 0 or value > 255 then
+		customError("Element '#".. el .."' in color '#"..pos.."' must be an integer between 0 and 255, got ".. value ..".")
 	end
 end
 
-local function verifyRGBColor(rgb, pos, arg)
-	local size = #rgb
-	if size == 3 or size == 4 then
-		for i = 1, 3 do
-			local v = rgb[i]
-			local vtype = type(v)
-			if vtype ~= "number" or v ~= math.floor(v) then
-				customError("Element '#"..i.."' in color '#"..pos.."' must be an integer, got "..v..".")
-			end
-
-			if v < 0 or v > 255 then
-				customError("Element '#"..i.."' in color '#"..pos.."' must be an integer between 0 and 255, got "..v..".")
-			end
-
-			local a = rgb[4]
-			if a and (a < 0 or a > 1) then
-				customError("The alpha parameter of color '#"..pos.."' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got "..a..".")
-			end
-		end
-	else
-		customError("Argument '"..arg.."' ("..pos..") must be a table with 3 or 4 arguments (red, green, blue and alpha), got "..size..".")
-	end
-end
-
---- Validate a color in different formats.
--- Colors may be specified by using ColorBrewer format (see http://colorbrewer2.org/),
--- color name, an RGB value, or a HEX value (see https://www.w3.org/wiki/CSS/Properties/color/keywords).
--- @arg data A mandatory string or table with color name or RGB values.
--- @arg class A optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
--- @arg pos A optional integer with the position of color. The default value is 1.
--- @arg argument A optional string with the argument name. The default value is 'color'.
--- @usage import("publish")
--- _, err = pcall(function() verifyColor({10, 15, 20, 2}) end)
--- print(err)
-function verifyColor(data, class, pos, argument)
-	if data == nil then
-		customError(mandatoryArgumentMsg("data"))
-	end
+local function verifyAlphaRGB(a, pos)
+	optionalArgument(1, "number", a)
+	optionalArgument(2, "number", pos)
 
 	pos = pos or 1
-	argument = argument or "color"
-	local mtype = type(data)
-	if mtype == "string" then
-		verifyStringColor(data, class, argument)
-	elseif mtype == "table" then
-		verifyRGBColor(data, pos, argument)
-	else
-		customError("Each parameter of color must be a string or table, got '"..mtype.."'.")
+	if a and (a < 0 or a > 1) then
+		customError("The alpha parameter of color '#"..pos.."' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got "..a..".")
 	end
+end
+
+local function formatColor(rgb, a)
+	a = a or rgb[4] or 1
+	return string.format("rgba(%d, %d, %d, %g)", rgb[1], rgb[2], rgb[3], a)
+end
+
+local function getColorByName(arg, keyword, a)
+	if keyword:find("#") then
+		if not isHex(keyword) then
+			customError("Argument '"..arg.."' ("..keyword..") is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
+		end
+
+		return keyword
+	else
+		local rgb = colorW3[keyword]
+		if not rgb then
+			customError("Argument '"..arg.."' ("..keyword..") is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
+		end
+
+		return formatColor(rgb, a)
+	end
+end
+
+local function getColorByRGB(arg, value, pos, a)
+	local len = #value
+	if len < 3 or len > 4 then
+		customError("Argument '"..arg.."' ("..pos..") must be a table with 3 or 4 arguments (red, green, blue and alpha), got "..len..".")
+	end
+
+	for j = 1, 3 do
+		verifyIntensityRGB(value[j], j, pos)
+	end
+
+	verifyAlphaRGB(value[4], pos)
+
+	return formatColor(value, a)
+end
+
+local function getColorBrewer(arg, brewer, classes, a)
+	if classes ~= math.floor(classes) then
+		customError("The number of data classes must be an integer, got ".. classes ..".")
+	end
+
+	if classes < 2 or classes > 20 then
+		customError("The number of data classes must be >= 2 and <= 20, got ".. classes ..".")
+	end
+
+	local colors = colorBrewer[brewer]
+	if colors then
+		colors = colors[classes]
+		if not colors then
+			customError("Argument '"..arg.."' ("..brewer..") does not exist in ColorBrewer with ("..classes..") data classes.")
+		end
+
+		local result = {}
+		for i = 1, #colors do
+			local rgb = colors[i]
+			result[i] = formatColor(rgb, a)
+		end
+
+		return result
+	else
+		customError("Argument '"..arg.."' ("..brewer..") does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
+	end
+end
+
+--- Validate a color in different formats and return it in RGBA.
+-- @arg data.... Argument name. A mandatory string or table with the color. Colors can be described as strings using a color name, an RGB value,
+-- a HEX value, or even as a string with a ColorBrewer format (see http://www.colorbrewer2.org).
+-- The available color names are:
+-- <br><img src="../../lib/color_keyword_names.svg" alt="Color keywords name"> <br>
+-- These colors are defined by www.w3.org (see https://www.w3.org/TR/SVG/types.html#ColorKeywords).
+-- @arg data.classes An optional integer with the number of data classes. This argument is madatory to verify ColorBrewer format.
+-- @arg data.alpha An optional number with the opacity for a color. The alpha parameter is a number between 0.0 (fully transparent) and 1.0 (fully opaque).
+-- The default value is 1.
+-- @usage import("publish")
+-- print(color{color = "aqua"})
+-- print(color{border = "blue"})
+-- print(color{color = "red", alpha = 0.5})
+-- print(color{color = {{255, 255, 255}}})
+-- print(color{color = "Reds", classes = 3})
+-- print(color{color = {{10, 10, 10}, {11, 11, 11}, {12, 12, 12, 0.5}}})
+-- print(color{color = {"red", "green", "yellow"}})
+-- print(color{color = {"#798174", "#261305", "#7c4c24"}})
+function color(data)
+	verifyNamedTable(data)
+
+	local args = {classes = true, alpha = true}
+	for k, v in pairs(data) do
+		if not args[k] then
+			data[k] = nil
+			data.arg = k
+			data.colors = v
+			break
+		end
+	end
+
+	mandatoryTableArgument(data, "arg", "string")
+	mandatoryTableArgument(data, "colors")
+	optionalTableArgument(data, "classes", "number")
+	optionalTableArgument(data, "alpha", "number")
+
+	verifyAlphaRGB(data.alpha)
+
+	if type(data.colors) == "string" then
+		if data.classes then
+			data.colors = getColorBrewer(data.arg, data.colors, data.classes, data.alpha)
+		else
+			data.colors = getColorByName(data.arg, data.colors, data.alpha)
+		end
+	elseif type(data.colors) == "table" then
+		if data.classes then
+			strictWarning(unnecessaryArgumentMsg("classes"))
+		end
+
+		if #data.colors == 0 then
+			customError("Argument '".. data.arg .."' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
+		end
+
+		local lenTypes = 0
+		local types = {}
+		for i = 1, #data.colors do
+			local mtype = type(data.colors[i])
+			if not (mtype == "string" or mtype == "number" or mtype == "table") then
+				customError("Argument '".. data.arg .."' has an invalid description for color in position '#"..i.."'. It should be a string, number or table, got "..mtype..".")
+			end
+
+			if not types[mtype] then
+				types[mtype] = true
+				lenTypes = lenTypes + 1
+			end
+
+			local value = data.colors[i]
+			if mtype == "string" then
+				data.colors[i] = getColorByName(data.arg, value, data.alpha)
+			elseif mtype == "table" then
+				data.colors[i] = getColorByRGB(data.arg, value, i, data.alpha)
+			end
+		end
+
+		if lenTypes ~= 1 then
+			customError("All elements of argument '".. data.arg .."' must have the same type, got at least "..lenTypes.." different types.")
+		end
+
+		if types["number"] then
+			data.colors = getColorByRGB(data.arg, data.colors, 1, data.alpha)
+		end
+	else
+		customError(incompatibleTypeMsg(data.arg, "string or table", data.colors))
+	end
+
+	return data.colors
 end

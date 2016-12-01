@@ -130,8 +130,8 @@ return {
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.template, "table")
-		unitTest:assertEquals(app.template.navbar, "dodgerblue")
-		unitTest:assertEquals(app.template.title, "brown")
+		unitTest:assertEquals(app.template.navbar, "rgba(30, 144, 255, 1)")
+		unitTest:assertEquals(app.template.title, "rgba(165, 42, 42, 1)")
 
 		if emasDir:exists() then emasDir:delete() end
 	end

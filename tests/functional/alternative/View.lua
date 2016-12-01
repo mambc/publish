@@ -62,7 +62,7 @@ return {
 		error_func = function()
 			View{border = {}}
 		end
-		unitTest:assertError(error_func, "Argument 'border' (1) must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
+		unitTest:assertError(error_func, "Argument 'border' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
 			View{width = "mwidth"}
@@ -82,12 +82,12 @@ return {
 		error_func = function()
 			View{value = {0, 1, 2}, color = {}}
 		end
-		unitTest:assertError(error_func, "The number of colors (0) must be equal to number of data classes (3).")
+		unitTest:assertError(error_func, "Argument 'color' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
 			View{value = {0, 1, 2}, color = "mcolor"}
 		end
-		unitTest:assertError(error_func, "Argument 'color' (mcolor) is not a valid color name.")
+		unitTest:assertError(error_func, "Argument 'color' (mcolor) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
 			View{visible = 1}
@@ -117,7 +117,7 @@ return {
 		error_func = function()
 			View{border = "PuBu"}
 		end
-		unitTest:assertError(error_func, "The number of data classes is mandatory for 'PuBu' in ColorBrewer.")
+		unitTest:assertError(error_func, "Argument 'border' (PuBu) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
 			View{color = "red", value = {}}
@@ -125,24 +125,29 @@ return {
 		unitTest:assertError(error_func, "Argument 'value' must be a table with size greater than 0, got 0.")
 
 		error_func = function()
-			View{color = "#afafah", value = {1, 2, 3}}
+			View{color = {"#afafah", "#afafah", "#afafah"}, value = {1, 2, 3}}
 		end
-		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color.")
+		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
 			View{color = "Redss", value = {1, 2, 3}}
 		end
-		unitTest:assertError(error_func, "Argument 'color' (Redss) is not a valid color name.")
+		unitTest:assertError(error_func, "Argument 'color' (Redss) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
 			View{color = {"Reds", "Blues", "PuRd"}, value = {1, 2, 3}}
 		end
-		unitTest:assertError(error_func, "The number of data classes is mandatory for 'Reds' in ColorBrewer.")
+		unitTest:assertError(error_func, "Argument 'color' (Reds) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = {1, 1, 1}, value = {1, 2, 3}}
+			View{color = {"Reds", "Blues", "PuRd"}}
 		end
-		unitTest:assertError(error_func, "Each parameter of color must be a string or table, got 'number'.")
+		unitTest:assertError(error_func, "Argument 'color' (Reds) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
+
+		error_func = function()
+			View{color = {true, true, true}, value = {1, 2, 3}}
+		end
+		unitTest:assertError(error_func, "Argument 'color' has an invalid description for color in position '#1'. It should be a string, number or table, got boolean.")
 
 		error_func = function()
 			View{color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}, value = {1, 2, 3}}
@@ -158,5 +163,30 @@ return {
 			View{color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}, value = {1, 2, 3}}
 		end
 		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 1.00001.")
+
+		error_func = function()
+			View{color = {"red", "blue"}, value = {1}}
+		end
+		unitTest:assertError(error_func, "The number of colors (2) must be equal to number of data classes (1).")
+
+		error_func = function()
+			View{color = "red", transparency = "a"}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("transparency", "number", "a"))
+
+		error_func = function()
+			View{color = "red", transparency = 0}
+		end
+		unitTest:assertError(error_func, defaultValueMsg("transparency", 0))
+
+		error_func = function()
+			View{color = "red", transparency = -1}
+		end
+		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got -1.")
+
+		error_func = function()
+			View{color = "red", transparency = 1.1}
+		end
+		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 1.1.")
 	end
 }
