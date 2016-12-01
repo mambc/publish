@@ -240,9 +240,9 @@ return {
 				description = "This is the main endogenous variable of the model. It was obtained from a classification that"
 							.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
 				width = 0,
+				visible = true,
 				select = "classe",
-				color = {"red", "orange", "yellow"},
-				value = {1, 2, 3}
+				color = {"red", "orange", "yellow"}
 			}
 		}
 
@@ -258,6 +258,10 @@ return {
 		unitTest:assertType(app.report.reports, "table")
 		unitTest:assertEquals(#app.report.reports, 2)
 		unitTest:assertNil(app.report.layer)
+
+		unitTest:assertEquals(app.view.real.color["1"], "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(app.view.real.color["2"], "rgba(255, 165, 0, 1)")
+		unitTest:assertEquals(app.view.real.color["3"], "rgba(255, 255, 0, 1)")
 
 		local reportUse = Report{title = "Occupational Classes"}
 		reportUse:addText("The percentage of houses and apartments inside such areas that is typically used in summer vacations and holidays.")

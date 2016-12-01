@@ -242,6 +242,45 @@ local function loadLayers(data)
 		end
 	end
 
+	forEachElement(data.view, function(name, view)
+		if view.color and not view.value and view.select then
+			local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true})
+			mview.value = {}
+
+			if view.width ~= 1 then
+				mview.width = view.width
+			end
+
+			if view.transparency ~= 0 then
+				mview.transparency = view.transparency
+			end
+
+			if view.visible == true then
+				mview.visible = true
+			end
+
+			do
+				local set = {}
+				local tlib = terralib.TerraLib{}
+				local dset = tlib:getDataSet(data.project, name)
+				for i = 0, #dset do
+					for k, v in pairs(dset[i]) do
+						if k == view.select and not set[v] then
+							set[v] = true
+						end
+					end
+				end
+
+				for v in pairs(set) do
+					table.insert(mview.value, v)
+				end
+			end
+
+			table.sort(mview.value)
+			data.view[name] = View(mview)
+		end
+	end)
+
 	if data.order then
 		local orderSize = #data.order
 		if orderSize == 0 or orderSize > nView then
@@ -498,7 +537,6 @@ function Application(data)
 
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
-	optionalTableArgument(data, "layers", "table")
 	optionalTableArgument(data, "center", "table")
 	optionalTableArgument(data, "zoom", "number")
 	optionalTableArgument(data, "order", "table")
