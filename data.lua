@@ -26,7 +26,7 @@ data{
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_2010_real.PNG",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
 	}
 }
 
@@ -46,7 +46,7 @@ data{
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_baseline.PNG",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
 	}
 }
 
@@ -56,7 +56,7 @@ data{
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_lessgrowth.PNG",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
 	}
 }
 
@@ -66,7 +66,7 @@ data{
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_plusgrowth.PNG",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
 	}
 }
 
@@ -76,7 +76,7 @@ data{
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_poorer.PNG",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
 	}
 }
 
@@ -86,7 +86,7 @@ data{
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_richer.PNG",
 	attributes = {
-		classe = "Categorizes the social conditions of households in Caraguatatuba on condition A (3), B (2) or C (1).",
+		classe = "Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
 	}
 }
 
