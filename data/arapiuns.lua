@@ -22,21 +22,21 @@
 --
 -------------------------------------------------------------------------------------------
 
--- @example Creates a database that can be used by arapinsapp.
--- The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: Um Modelo
--- de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.
+-- @example Creates a database that can be used by arapiunsapp.
+-- The data of this application were extracted from Escada et. al (2013) Infraestrutura,
+-- Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.
 
 import("terralib")
 
 project = Project{
-	title = "Arapiuns",
-	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
-				.."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+	title = "The riverine settlements at Arapiuns (PA)",
+	description = "This Application characterize the organization and interdependence between settlements concerning to: "
+				.."infrastructure, health and education services, land use, ecosystem services provision and perception of welfare.",
 	author = "Carneiro, H.",
-	file = "arapins.tview",
+	file = "arapiuns.tview",
 	clean = true,
-	camp = filePath("Cmm_Arap2012_pt.shp", "publish"),
 	beginning = filePath("Traj_IDA_lin.shp", "publish"),
-	ending = filePath("Traj_VOLTA_lin.shp", "publish")
+	ending = filePath("Traj_VOLTA_lin.shp", "publish"),
+	villages = filePath("Cmm_Arap2012_pt.shp", "publish")
 }
 
