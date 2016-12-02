@@ -68,7 +68,6 @@ report:addText([[Welfare indicators varies from regular to satisfactory, and the
 	better understand the role of settlement networks as part of urban tissue in the southwest of Pará state.]])
 
 Application{
-	key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 	project = filePath("arapiuns.tview", "publish"),
 	base = "roadmap",
 	clean = true,
