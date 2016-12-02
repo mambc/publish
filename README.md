@@ -38,7 +38,7 @@ Application{
     }
 }
 ```
-You can see the result in [Emas](https://rawgit.com/hguerra/publish/master/examples/EmasWebMap/index.html).
+You can see the result in [Emas](https://rawgit.com/TerraME/publish/master/examples/EmasWebMap/index.html).
 
 ```lua
 import("publish")
@@ -104,7 +104,7 @@ Application{
     }
 }
 ```
-You can see the result in [Caragua](https://rawgit.com/hguerra/publish/master/examples/CaraguaWebMap/index.html).
+You can see the result in [Caragua](https://rawgit.com/TerraME/publish/master/examples/CaraguaWebMap/index.html).
 
 ```lua
 import("publish")
@@ -172,7 +172,7 @@ Application{
     }
 }
 ```
-You can see the result in [Arapiuns](https://rawgit.com/hguerra/publish/master/examples/ArapiunsWebMap/index.html).
+You can see the result in [Arapiuns](https://rawgit.com/TerraME/publish/master/examples/ArapiunsWebMap/index.html).
 
 ## Reporting Bugs
 If you have found a bug, open an entry in the [issues](https://github.com/TerraME/publish/issues).
