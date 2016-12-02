@@ -35,7 +35,7 @@ metaTableView_ = {
 -- One Application is composed by a set of Views.
 -- @arg data.select An optional string with the name of the attribute to be visualized.
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
--- @arg data.visible An optional boolean whether the layer is visible. Defaults to true.
+-- @arg data.visible An optional boolean whether the layer is visible. Defaults to false.
 -- @arg data.width An optional argument with the stroke width in pixels.
 -- @arg data.transparency An optional argument with the opacity of color attribute. The transparency parameter is a number between 0.0 (fully opaque) and 1.0 (fully transparent).
 -- The default value is 0.
@@ -79,7 +79,7 @@ function View(data)
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
-	defaultTableValue(data, "visible", false)
+	defaultTableValue(data, "visible", true)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency"})
 
@@ -87,9 +87,11 @@ function View(data)
 		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
 	end
 
-	local realTransparency = 1 - data.transparency
 	if data.color then
+		local realTransparency = 1 - data.transparency
 		if data.value then
+			mandatoryTableArgument(data, "select", "string")
+
 			local classes = #data.value
 			if classes <= 0 then
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
@@ -114,7 +116,21 @@ function View(data)
 
 			data.color = colors
 		else
-			data.color = color{color = data.color, alpha = realTransparency}
+			if data.select then
+				local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
+					"Oranges", "PRGn", "Paired", "Pastel1", "Pastel2", "PiYG", "PuBu", "PuBuGn", "PuOr", "PuRd", "Purples",
+					"RdBu", "RdGy", "RdPu", "RdYlBu", "RdYlGn", "Reds", "Set1", "Set2", "Set3", "Spectral", "YlGn", "YlGnBu",
+					"YlOrBr", "YlOrRd" }
+
+				local isColorBrewer = type(data.color) == "string" and belong(data.color, brewerNames)
+				local isTableColors = type(data.color) == "table" and #data.color > 1 and (type(data.color[1]) == "string" or type(data.color[1]) == "table")
+
+				if not (isColorBrewer or isTableColors) then
+					data.color = color{color = data.color, alpha = realTransparency}
+				end
+			else
+				data.color = color{color = data.color, alpha = realTransparency}
+			end
 		end
 	end
 

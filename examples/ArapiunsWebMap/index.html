@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+		<title>The riverine settlements at Arapiuns (PA)</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+		<link rel="stylesheet" href="./assets/publish.min.css"/>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: #00587A;" role="navigation">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand" style="color: #FFFFFF;">The riverine settlements at Arapiuns (PA)</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+		<div class="navbar-offset"></div>
+		<div id="map-canvas">
+			<div id="map"></div>
+		</div>
+		<div class="row main-row">
+			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
+				<div class="panel-group sidebar-body" id="accordion-left">
+					<div class="panel panel-default">
+						<div class="panel-heading" >
+							<h4 class="panel-title">
+								<a data-toggle="collapse" href="#layers"><i class="fa fa-list-alt"></i> Layers</a>
+								<span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span>
+							</h4>
+						</div>
+						<div id="layers" class="panel-collapse collapse in">
+							<div class="panel-body list-group">
+									<button id="beginning" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Beginning</button>
+									<button id="ending" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Ending</button>
+									<button id="villages" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> Villages</button>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" href="#properties"><i class="fa fa-list-alt"></i> Description</a>
+							</h4>
+						</div>
+						<div id="properties" class="panel-collapse collapse">
+							<div class="panel-body">
+								<p id="layer-description"></p>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<i class="fa fa-list-alt"></i><a id="legend-title" data-toggle="collapse" href="#legends"> Legend</a>
+							</h4>
+						</div>
+						<div id="legends" class="panel-collapse collapse">
+							<div id="legend" class="panel-body"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mini-submenu mini-submenu-left pull-left">
+			<i class="fa fa-list-alt"></i>
+		</div>
+		<img id="loader" src="./assets/default.gif" hidden="hidden"/>
+		<footer class="navbar-default navbar-fixed-bottom">
+			<div id="footer" class="container-fluid">
+				<p>© 2016 Powered by package <a href="https://github.com/pedro-andrade-inpe/publish">publish</a> of <a href="http://www.terrame.org">TerraME</a>.</p>
+			</div>
+		</footer>
+		<div class="modal fade" id="modal-report-villages" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villages"> The riverine settlements at Arapiuns (PA)</h2>
+						<p class="text-muted">By Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villages">
+						<P>This report presents the methodology and the initial results obtained at the fieldwork along riverine
+	settlements at Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
+	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the infrastructure
+	and network relations of riverine human settlements.</P>
+						
+						<P>The main objective was to characterize the organization and interdependence between settlements concerning to:
+	infrastructure, health and education services, land use, ecosystem services provision and perception of welfare. We covered
+	approximately 300 km, navigating in a motor boat along the riverbanks of Arapiuns River and its tributaries Aruã and Maró Rivers.</P>
+						
+						<P>Based on a semi-structured questionnaire, we interviewed key informants in 49 localities. Riverine settlements
+	corresponded to Indian tribes, villages, and communities that are inserted into public lands: Terra Indígena do Maró, Resex Tapajós-Arapiuns,
+	Projeto de Assentamento Extrativista Lago Grande and Gleba Nova Olinda.</P>
+						
+						<P>In general, the settlements lack basic infrastructure and depend on the city of Santarém for urban services.
+	There are primary schools in most of the localities, but only a few secondary schools, requiring population displacement between
+	settlements. Population also needs to displace in the territory to access health centers, doctors and hospitals. Since such
+	settlements occupy public lands, the land tenure and land use are restricted by specific rules. Cattle ranching and agriculture are
+	mainly for subsistence and they take place in small areas of forest regrowth. Cassava flour production, handcraft, and fishery are
+	the main activities for income generation.</P>
+						
+						<P>In places where the population has other sources of income, either from official social benefits or activities
+	like handcraft and tourism, flour production is lower. Handcraft work produces mainly manioc processing tools, and its sustainability
+	dependents on the market and trade activity established. Fishery is more important for subsistence than for income generation, and
+	its production varies seasonally: when it diminishes during wintertime, riverine population has to look after other protein sources.
+	Extractive products from vegetal and animal origins have great importance for inhabitants&#39; consumption, low value for income generation
+	and it is carried out without any forest management.</P>
+						
+						<P>Welfare indicators varies from regular to satisfactory, and the interviewees declared positive perception of security,
+	housing, participation in the decision-making, leisure activities, festivities, solidarity and equitable division of tasks between men and women.
+	The most frequent demands are for health and education services, water supply, followed by access to electric energy, telephony, Internet, and
+	institutional support to implement new activities for income generation. After this preliminary report, the collected data will be organized in a
+	geographical database to analyze settlements networks.Integrating these data with information collected from previous fieldworks will contribute to
+	better understand the role of settlement networks as part of urban tissue in the southwest of Pará state.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-ending" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-ending"> The riverine settlements at Arapiuns (PA)</h2>
+						<p class="text-muted">By Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-ending">
+						<P>This report presents the methodology and the initial results obtained at the fieldwork along riverine
+	settlements at Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
+	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the infrastructure
+	and network relations of riverine human settlements.</P>
+						
+						<P>The main objective was to characterize the organization and interdependence between settlements concerning to:
+	infrastructure, health and education services, land use, ecosystem services provision and perception of welfare. We covered
+	approximately 300 km, navigating in a motor boat along the riverbanks of Arapiuns River and its tributaries Aruã and Maró Rivers.</P>
+						
+						<P>Based on a semi-structured questionnaire, we interviewed key informants in 49 localities. Riverine settlements
+	corresponded to Indian tribes, villages, and communities that are inserted into public lands: Terra Indígena do Maró, Resex Tapajós-Arapiuns,
+	Projeto de Assentamento Extrativista Lago Grande and Gleba Nova Olinda.</P>
+						
+						<P>In general, the settlements lack basic infrastructure and depend on the city of Santarém for urban services.
+	There are primary schools in most of the localities, but only a few secondary schools, requiring population displacement between
+	settlements. Population also needs to displace in the territory to access health centers, doctors and hospitals. Since such
+	settlements occupy public lands, the land tenure and land use are restricted by specific rules. Cattle ranching and agriculture are
+	mainly for subsistence and they take place in small areas of forest regrowth. Cassava flour production, handcraft, and fishery are
+	the main activities for income generation.</P>
+						
+						<P>In places where the population has other sources of income, either from official social benefits or activities
+	like handcraft and tourism, flour production is lower. Handcraft work produces mainly manioc processing tools, and its sustainability
+	dependents on the market and trade activity established. Fishery is more important for subsistence than for income generation, and
+	its production varies seasonally: when it diminishes during wintertime, riverine population has to look after other protein sources.
+	Extractive products from vegetal and animal origins have great importance for inhabitants&#39; consumption, low value for income generation
+	and it is carried out without any forest management.</P>
+						
+						<P>Welfare indicators varies from regular to satisfactory, and the interviewees declared positive perception of security,
+	housing, participation in the decision-making, leisure activities, festivities, solidarity and equitable division of tasks between men and women.
+	The most frequent demands are for health and education services, water supply, followed by access to electric energy, telephony, Internet, and
+	institutional support to implement new activities for income generation. After this preliminary report, the collected data will be organized in a
+	geographical database to analyze settlements networks.Integrating these data with information collected from previous fieldworks will contribute to
+	better understand the role of settlement networks as part of urban tissue in the southwest of Pará state.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-beginning" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-beginning"> The riverine settlements at Arapiuns (PA)</h2>
+						<p class="text-muted">By Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-beginning">
+						<P>This report presents the methodology and the initial results obtained at the fieldwork along riverine
+	settlements at Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
+	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the infrastructure
+	and network relations of riverine human settlements.</P>
+						
+						<P>The main objective was to characterize the organization and interdependence between settlements concerning to:
+	infrastructure, health and education services, land use, ecosystem services provision and perception of welfare. We covered
+	approximately 300 km, navigating in a motor boat along the riverbanks of Arapiuns River and its tributaries Aruã and Maró Rivers.</P>
+						
+						<P>Based on a semi-structured questionnaire, we interviewed key informants in 49 localities. Riverine settlements
+	corresponded to Indian tribes, villages, and communities that are inserted into public lands: Terra Indígena do Maró, Resex Tapajós-Arapiuns,
+	Projeto de Assentamento Extrativista Lago Grande and Gleba Nova Olinda.</P>
+						
+						<P>In general, the settlements lack basic infrastructure and depend on the city of Santarém for urban services.
+	There are primary schools in most of the localities, but only a few secondary schools, requiring population displacement between
+	settlements. Population also needs to displace in the territory to access health centers, doctors and hospitals. Since such
+	settlements occupy public lands, the land tenure and land use are restricted by specific rules. Cattle ranching and agriculture are
+	mainly for subsistence and they take place in small areas of forest regrowth. Cassava flour production, handcraft, and fishery are
+	the main activities for income generation.</P>
+						
+						<P>In places where the population has other sources of income, either from official social benefits or activities
+	like handcraft and tourism, flour production is lower. Handcraft work produces mainly manioc processing tools, and its sustainability
+	dependents on the market and trade activity established. Fishery is more important for subsistence than for income generation, and
+	its production varies seasonally: when it diminishes during wintertime, riverine population has to look after other protein sources.
+	Extractive products from vegetal and animal origins have great importance for inhabitants&#39; consumption, low value for income generation
+	and it is carried out without any forest management.</P>
+						
+						<P>Welfare indicators varies from regular to satisfactory, and the interviewees declared positive perception of security,
+	housing, participation in the decision-making, leisure activities, festivities, solidarity and equitable division of tasks between men and women.
+	The most frequent demands are for health and education services, water supply, followed by access to electric energy, telephony, Internet, and
+	institutional support to implement new activities for income generation. After this preliminary report, the collected data will be organized in a
+	geographical database to analyze settlements networks.Integrating these data with information collected from previous fieldworks will contribute to
+	better understand the role of settlement networks as part of urban tissue in the southwest of Pará state.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="./config.js"></script>
+		<script type="text/javascript" src="./assets/publish.min.js"></script>
+	</body>
+</html>

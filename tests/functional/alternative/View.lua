@@ -75,17 +75,22 @@ return {
 		unitTest:assertError(error_func, defaultValueMsg("width", 1))
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = 1}
+			View{value = {1, 2, 3}, color = {"red", "orange", "yellow"}}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+
+		error_func = function()
+			View{value = {0, 1, 2}, color = 1, select = "river"}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string or table", 1))
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = {}}
+			View{value = {0, 1, 2}, color = {}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = "mcolor"}
+			View{value = {0, 1, 2}, color = "mcolor", select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (mcolor) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
 
@@ -95,9 +100,9 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("visible", "boolean", 1))
 
 		error_func = function()
-			View{visible = false}
+			View{visible = true}
 		end
-		unitTest:assertError(error_func, defaultValueMsg("visible", false))
+		unitTest:assertError(error_func, defaultValueMsg("visible", true))
 
 		error_func = function()
 			View{select = 1}
@@ -105,7 +110,7 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string", 1))
 
 		error_func = function()
-			View{value = "mvalue"}
+			View{value = "mvalue", select = "river"}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("value", "table", "mvalue"))
 
@@ -120,22 +125,22 @@ return {
 		unitTest:assertError(error_func, "Argument 'border' (PuBu) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = "red", value = {}}
+			View{color = "red", value = {}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'value' must be a table with size greater than 0, got 0.")
 
 		error_func = function()
-			View{color = {"#afafah", "#afafah", "#afafah"}, value = {1, 2, 3}}
+			View{color = {"#afafah", "#afafah", "#afafah"}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = "Redss", value = {1, 2, 3}}
+			View{color = "Redss", value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (Redss) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = {"Reds", "Blues", "PuRd"}, value = {1, 2, 3}}
+			View{color = {"Reds", "Blues", "PuRd"}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (Reds) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
@@ -145,27 +150,27 @@ return {
 		unitTest:assertError(error_func, "Argument 'color' (Reds) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = {true, true, true}, value = {1, 2, 3}}
+			View{color = {true, true, true}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' has an invalid description for color in position '#1'. It should be a string, number or table, got boolean.")
 
 		error_func = function()
-			View{color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}, value = {1, 2, 3}}
+			View{color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got -1.")
 
 		error_func = function()
-			View{color = {{0, 0, 0}, {1, 1, 1}, {255, 255, 255, 2}}, value = {1, 2, 3}}
+			View{color = {{0, 0, 0}, {1, 1, 1}, {255, 255, 255, 2}}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 2.")
 
 		error_func = function()
-			View{color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}, value = {1, 2, 3}}
+			View{color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 1.00001.")
 
 		error_func = function()
-			View{color = {"red", "blue"}, value = {1}}
+			View{color = {"red", "blue"}, value = {1}, select = "river"}
 		end
 		unitTest:assertError(error_func, "The number of colors (2) must be equal to number of data classes (1).")
 

@@ -79,7 +79,6 @@ return {
 				border = "blue",
 				color = "goldenrod",
 				width = 2,
-				visible = true,
 				layer = filePath("Limit_pol.shp", "terralib")
 			},
 			cells = View{
@@ -88,7 +87,8 @@ return {
 				color = "PuBu",
 				width = 0,
 				value = {0, 1, 2},
-				layer = filePath("accumulation_Nov94May00.tif", "terralib")
+				layer = filePath("accumulation_Nov94May00.tif", "terralib"),
+				visible = false
 			}
 		}
 
@@ -104,7 +104,7 @@ return {
 		unitTest:assertEquals(app.view.river.width, 1)
 		unitTest:assertEquals(app.view.limit.width, 2)
 
-		unitTest:assertEquals(app.view.river.visible, false)
+		unitTest:assertEquals(app.view.cells.visible, false)
 		unitTest:assertEquals(app.view.limit.visible, true)
 
 		unitTest:assertType(app.view.cells.color, "table")
@@ -226,23 +226,22 @@ return {
 		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.")
 
 		app = Application{
-			project = filePath("urbis.tview", "publish"),
+			project = filePath("caragua.tview", "publish"),
 			clean = true,
 			output = caraguaDir,
 			report = report,
 			limit = View{
 				description = "Bounding box of Caraguatatuba",
-				color = "goldenrod",
-				visible = true
+				color = "goldenrod"
 			},
 			real = View{
 				title = "Social Classes 2010 Real",
 				description = "This is the main endogenous variable of the model. It was obtained from a classification that"
 							.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
 				width = 0,
+				visible = false,
 				select = "classe",
-				color = {"red", "orange", "yellow"},
-				value = {1, 2, 3}
+				color = {"red", "orange", "yellow"}
 			}
 		}
 
@@ -259,17 +258,20 @@ return {
 		unitTest:assertEquals(#app.report.reports, 2)
 		unitTest:assertNil(app.report.layer)
 
+		unitTest:assertEquals(app.view.real.color["1"], "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(app.view.real.color["2"], "rgba(255, 165, 0, 1)")
+		unitTest:assertEquals(app.view.real.color["3"], "rgba(255, 255, 0, 1)")
+
 		local reportUse = Report{title = "Occupational Classes"}
 		reportUse:addText("The percentage of houses and apartments inside such areas that is typically used in summer vacations and holidays.")
 
 		app = Application{
-			project = filePath("urbis.tview", "publish"),
+			project = filePath("caragua.tview", "publish"),
 			clean = true,
 			output = caraguaDir,
 			limit = View{
 				description = "Bounding box of Caraguatatuba",
 				color = "goldenrod",
-				visible = true,
 				report = report
 			},
 			real = View{
