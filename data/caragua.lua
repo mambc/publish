@@ -22,7 +22,7 @@
 --
 -------------------------------------------------------------------------------------------
 
--- @example Creates a database that can be used by urbisapp.
+-- @example Creates a database that can be used by caraguaapp.
 -- The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: Um Modelo
 -- de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.
 
@@ -33,7 +33,7 @@ project = Project{
 	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
 				.."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	author = "Carneiro, H.",
-	file = "urbis.tview",
+	file = "caragua.tview",
 	clean = true,
 	limit = filePath("caragua.shp", "publish"),
 	regions = filePath("regions.shp", "publish"),

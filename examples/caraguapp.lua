@@ -22,14 +22,14 @@
 --
 -------------------------------------------------------------------------------------------
 
--- @example Implementation of a simple Application using URBIS.
+-- @example Implementation of a simple Application using URBIS-Caraguá.
 -- The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: Um Modelo
 -- de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.
 
 import("publish")
 
 Application{
-	project = filePath("urbis.tview", "publish"),
+	project = filePath("caragua.tview", "publish"),
 	clean = true,
 	output = "CaraguaWebMap",
 	limit = View{

@@ -226,7 +226,7 @@ return {
 		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuiçãoo ao debate das mudanças climáticas e ambientais.")
 
 		app = Application{
-			project = filePath("urbis.tview", "publish"),
+			project = filePath("caragua.tview", "publish"),
 			clean = true,
 			output = caraguaDir,
 			report = report,
@@ -266,7 +266,7 @@ return {
 		reportUse:addText("The percentage of houses and apartments inside such areas that is typically used in summer vacations and holidays.")
 
 		app = Application{
-			project = filePath("urbis.tview", "publish"),
+			project = filePath("caragua.tview", "publish"),
 			clean = true,
 			output = caraguaDir,
 			limit = View{
