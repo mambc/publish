@@ -56,6 +56,7 @@ metaTableView_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
+-- @arg data.label An option table of strings that describes the labels to be shown in the Legend.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -76,12 +77,13 @@ function View(data)
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
 	optionalTableArgument(data, "report", "Report")
+	optionalTableArgument(data, "label", "table")
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
 	defaultTableValue(data, "visible", true)
 
-	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency"})
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency", "label"})
 
 	if data.transparency < 0 or data.transparency > 1 then
 		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
@@ -93,7 +95,7 @@ function View(data)
 			mandatoryTableArgument(data, "select", "string")
 
 			local classes = #data.value
-			if classes <= 0 then
+			if classes == 0 then
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
 
@@ -114,7 +116,36 @@ function View(data)
 				colors[tostring(data.value[i])] = mcolor[i]
 			end
 
+			local label = {}
+			if data.label then
+				local labels = #data.label
+				if labels == 0 then
+					customError("Argument 'label' must be a table of strings with size greater than 0, got "..labels..".")
+				end
+
+				if classes ~= labels then
+					customError("The number of labels ("..labels..") must be equal to number of data classes ("..classes..").")
+				end
+
+				forEachElement(data.label, function(k, v, mtype)
+					if mtype ~= "string" then
+						customError("Argument 'label' must be a table of strings, element "..k.." ("..tostring(v)..") got "..mtype..".")
+					end
+				end)
+
+				local i = 1
+				forEachOrderedElement(colors, function(_, color)
+					label[data.label[i]] = tostring(color)
+					i = i + 1
+				end)
+			else
+				forEachElement(colors, function(value, color)
+					label[data.select.. " "..value] = tostring(color)
+				end)
+			end
+
 			data.color = colors
+			data.label = label
 		else
 			if data.select then
 				local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",

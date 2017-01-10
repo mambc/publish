@@ -90,6 +90,21 @@ return {
 		unitTest:assertError(error_func, "Argument 'color' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
+			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {}}
+		end
+		unitTest:assertError(error_func, "Argument 'label' must be a table of strings with size greater than 0, got 0.")
+
+		error_func = function()
+			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {1}}
+		end
+		unitTest:assertError(error_func, "The number of labels (1) must be equal to number of data classes (3).")
+
+		error_func = function()
+			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {"Condition C", true, 2}}
+		end
+		unitTest:assertError(error_func, "Argument 'label' must be a table of strings, element 2 (true) got boolean.")
+
+		error_func = function()
 			View{value = {0, 1, 2}, color = "mcolor", select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (mcolor) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")

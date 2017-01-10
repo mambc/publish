@@ -152,6 +152,7 @@ return {
 			select = "classe",
 			color = {"#088da5", "#0b7b47", "#7b0b3f"},
 			value = {1, 2, 3},
+			label = {"Condition C", "Condition B", "Condition A"},
 			report = report
 		}
 
@@ -159,6 +160,11 @@ return {
 		unitTest:assertEquals(view.color["1"], "#088da5")
 		unitTest:assertEquals(view.color["2"], "#0b7b47")
 		unitTest:assertEquals(view.color["3"], "#7b0b3f")
+		unitTest:assertNotNil(view.label)
+		unitTest:assertType(view.label, "table")
+		unitTest:assertEquals(view.label["Condition C"], "#088da5")
+		unitTest:assertEquals(view.label["Condition B"], "#0b7b47")
+		unitTest:assertEquals(view.label["Condition A"], "#7b0b3f")
 
 		unitTest:assertType(view.report, "Report")
 		unitTest:assertEquals(view.report.title, "URBIS-Caraguá")
@@ -180,6 +186,7 @@ return {
 
 		unitTest:assertEquals(tostring(view), [[border        string [rgba(0, 0, 255, 1)]
 color         named table of size 3
+label         named table of size 3
 select        string [river]
 title         string [Emas National Park]
 transparency  number [0]
