@@ -56,7 +56,12 @@ metaTableView_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
--- @arg data.label An option table of strings that describes the labels to be shown in the Legend.
+-- @arg data.label An optional table of strings that describes the labels to be shown in the Legend.
+-- @arg data.icon An optional table or string. A table with the icon properties, such as path, color and transparency. The propertie path
+-- uses SVG notation (see https://www.w3.org/TR/SVG/paths.html). A string with the name of marker icon. The markers available are:
+-- airport, animal, bigcity, bus, car, caution, cycling, database, desert, diving, fillingstation, finish, fire, firstaid, fishing,
+-- flag, forest, harbor, helicopter, home, horseriding, hospital, lake, motorbike, mountains, radio, restaurant, river, road,
+--shipwreck and thunderstorm.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -83,7 +88,7 @@ function View(data)
 	defaultTableValue(data, "transparency", 0)
 	defaultTableValue(data, "visible", true)
 
-	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency", "label"})
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency", "label", "icon"})
 
 	if data.transparency < 0 or data.transparency > 1 then
 		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
@@ -175,6 +180,69 @@ function View(data)
 		end
 
 		mandatoryTableArgument(data, "layer", "File")
+	end
+
+	if data.icon then
+		local itype = type(data.icon)
+		if itype == "string" then
+			local icons = {
+				airport = true,
+				animal = true,
+				bigcity = true,
+				bus = true,
+				car = true,
+				caution = true,
+				cycling = true,
+				database = true,
+				desert = true,
+				diving = true,
+				fillingstation = true,
+				finish = true,
+				fire = true,
+				firstaid = true,
+				fishing = true,
+				flag = true,
+				forest = true,
+				harbor = true,
+				helicopter = true,
+				home = true,
+				horseriding = true,
+				hospital = true,
+				lake = true,
+				motorbike = true,
+				mountains = true,
+				radio = true,
+				restaurant = true,
+				river = true,
+				road = true,
+				shipwreck = true,
+				thunderstorm = true
+			}
+
+			if not icons[data.icon] then
+				switchInvalidArgument("icon", data.icon, icons)
+			end
+
+			data.icon = data.icon..".png"
+		elseif itype == "table" then
+			mandatoryTableArgument(data.icon, "path", "string")
+			defaultTableValue(data.icon, "color", "black")
+			defaultTableValue(data.icon, "transparency", 0)
+
+			verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency"})
+
+			if not data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") then
+				customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+			end
+
+			if data.icon.transparency < 0 or data.icon.transparency > 1 then
+				customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
+			end
+
+			data.icon.color = color{color = data.icon.color}
+		else
+			incompatibleTypeError("icon", "string or table", data.icon)
+		end
 	end
 
 	setmetatable(data, metaTableView_)

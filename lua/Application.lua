@@ -342,6 +342,22 @@ local function createApplicationProjects(data, proj)
 			label = _Gtme.stringToLabel(name)
 		end
 
+		if value.icon then
+			if type(value.icon) == "string" then
+				os.execute("cp \""..templateDir.."markers/"..value.icon.."\" \""..data.assets.."\"")
+				value.icon = "./assets/"..value.icon
+			else
+				local icon = {
+					path = value.icon.path,
+					fillColor = value.icon.color,
+					fillOpacity = value.icon.transparency,
+					strokeWeight = 0
+				}
+
+				value.icon = icon
+			end
+		end
+
 		table.insert(layers, {
 			order = value.order,
 			layer = name,
