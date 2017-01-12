@@ -132,7 +132,7 @@ return {
 		error_func = function()
 			View{report = "myreport"}
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("report", "Report", "myreport"))
+		unitTest:assertError(error_func, incompatibleTypeMsg("report", "Report or function", "myreport"))
 
 		error_func = function()
 			View{border = "PuBu"}

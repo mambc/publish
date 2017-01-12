@@ -77,6 +77,31 @@ local function registerApplicationModel(data)
 	table.insert(ViewModel, data)
 end
 
+local function exportReportImages(data, report)
+	local reports = report:get()
+	forEachElement(reports, function(_, rp)
+		if rp.image then
+			local img = rp.image:name()
+
+			if not data.images then
+				data.images = Directory(data.output.."images")
+				if not data.images:exists() then
+					data.images:create()
+				end
+			end
+
+			if not isFile(data.images..img) then
+				printNormal("Copying image '"..img.."'")
+				os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+			end
+
+			rp.image = img
+		end
+	end)
+
+	return reports
+end
+
 local function createDirectoryStructure(data)
 	printInfo("Creating directory structure")
 	if data.clean == true and data.output:exists() then
@@ -108,26 +133,7 @@ local function createDirectoryStructure(data)
 	end)
 
 	if data.report then
-		local reports = data.report:get()
-		forEachElement(reports, function(_, rp)
-			if rp.image then
-				local img = rp.image:name()
-
-				if not data.images then
-					data.images = Directory(data.output.."images")
-					if not data.images:exists() then
-						data.images:create()
-					end
-				end
-
-				printNormal("Copying image '"..img.."'")
-				os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
-
-				rp.image = img
-			end
-		end)
-
-		data.report = {title = data.report.title, author = data.report.author, reports = reports}
+		data.report = {title = data.report.title, author = data.report.author, reports = exportReportImages(data, data.report)}
 	end
 end
 
@@ -365,28 +371,38 @@ local function createApplicationProjects(data, proj)
 		})
 
 		if value.report then
-			local mreports = value.report:get()
-			forEachElement(mreports, function(_, rp)
-				if rp.image then
-					local img = rp.image:name()
-
-					if not data.images then
-						data.images = Directory(data.output.."images")
-						if not data.images:exists() then
-							data.images:create()
+			if type(value.report) == "Report" then
+				table.insert(reports, {title = value.report.title, author = value.report.author, layer = value.report.layer, reports = exportReportImages(data, value.report)})
+			else
+				do
+					local tlib = terralib.TerraLib{}
+					local dset = tlib:getDataSet(data.project, name)
+					for i = 0, #dset do
+						local cell = Cell(dset[i])
+						if not value.geom then
+							local geom = cell["OGR_GEOMETRY"] or cell["geom"]
+							if geom then
+								do
+									local subType = tlib:castGeomToSubtype(geom)
+									value.geom = subType:getGeometryType()
+								end
+							end
 						end
-					end
 
-					if not isFile(data.images..img) then
-						printNormal("Copying image '"..img.."'")
-						os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
-					end
+						local report = value.report(cell)
+						if type(report) ~= "Report" then
+							customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
+						end
 
-					rp.image = img
+						local select = cell[value.select]
+						if select and type(select) == "string" then
+							select = select:gsub(" ", "-")
+						end
+
+						table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
+					end
 				end
-			end)
-
-			table.insert(reports, {title = value.report.title, author = value.report.author, layer = value.report.layer, reports = mreports})
+			end
 		elseif data.report then
 			local report = clone(data.report)
 			report.layer = name

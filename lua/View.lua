@@ -62,6 +62,7 @@ metaTableView_ = {
 -- airport, animal, bigcity, bus, car, caution, cycling, database, desert, diving, fillingstation, finish, fire, firstaid, fishing,
 -- flag, forest, harbor, helicopter, home, horseriding, hospital, lake, motorbike, mountains, radio, restaurant, river, road,
 --shipwreck and thunderstorm.
+-- @arg data.report An optional Report or user-defined function that creates a report for each spatial object of that view.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -81,7 +82,6 @@ function View(data)
 	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
-	optionalTableArgument(data, "report", "Report")
 	optionalTableArgument(data, "label", "table")
 
 	defaultTableValue(data, "width", 1)
@@ -89,6 +89,17 @@ function View(data)
 	defaultTableValue(data, "visible", true)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency", "label", "icon"})
+
+	if data.report then
+		local rtype = type(data.report)
+		if not (rtype == "Report" or rtype == "function") then
+			incompatibleTypeError("report", "Report or function", data.report)
+		end
+
+		if rtype == "function" and not data.select then
+			customError(mandatoryArgumentMsg("select"))
+		end
+	end
 
 	if data.transparency < 0 or data.transparency > 1 then
 		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
