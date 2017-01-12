@@ -93,17 +93,17 @@
 		</div>
 		{{/description}}
 		{{#report}}
-		<div class="modal fade" id="modal-report-{{layer}}" role="dialog">
+		<div class="modal fade" id="modal-report-{{layer}}{{select}}" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-{{layer}}"> {{title}}</h2>
+						<h2 class="modal-title" id="modal-report-label-{{layer}}{{select}}"> {{title}}</h2>
 						{{#author}}
 						<p class="text-muted">By {{author}}</p>
 						{{/author}}
 					</div>
-					<div class="modal-body" id="modal-report-text-{{layer}}">
+					<div class="modal-body" id="modal-report-text-{{layer}}{{select}}">
 					{{#reports}}
 						{{#heading}}
 						<h4><strong>{{heading}}</strong></h4>
