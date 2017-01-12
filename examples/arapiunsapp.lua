@@ -88,5 +88,15 @@ Application{
 	},
 	villages = View{
 		description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+		icon = "home",
+		select = "CMM",
+		report = function(cell)
+			local mreport = Report{title = cell.CMM}
+
+			mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.CMM..".jpg")
+			mreport:addText("This community has the ID "..cell.ID..".")
+
+			return mreport
+		end
 	}
 }
