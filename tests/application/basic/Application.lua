@@ -391,18 +391,15 @@ return {
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-				select = "CMM",
+				select = "Nome",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					color = "red",
 					transparency = 0.6
 				},
 				report = function(cell)
-					local mreport = Report{title = cell.CMM}
-
-					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.CMM..".jpg")
-					mreport:addText("This community has the ID "..cell.ID..".")
-
+					local mreport = Report{title = cell.Nome}
+					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
 					return mreport
 				end
 			}
@@ -422,7 +419,7 @@ return {
 		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
 		unitTest:assertEquals(view.icon.fillColor, "rgba(255, 0, 0, 1)")
 		unitTest:assertEquals(view.icon.fillOpacity, 0.6)
-		unitTest:assertEquals(view.select, "CMM")
+		unitTest:assertEquals(view.select, "Nome")
 		unitTest:assertType(view.report, "function")
 		unitTest:assertType(view.geom, "string")
 		unitTest:assertEquals(view.geom, "MultiPoint")

@@ -135,3 +135,44 @@ data{
 	}
 }
 
+data{
+	file = "AllCmmTab_210316OK.shp",
+	summary = "The riverine settlements at Arapiuns (PA)",
+	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.",
+	attributes = {
+		Nome = "Name of riverine settlements at Arapiuns.",
+		CMM2 = "Name of riverine settlements at Arapiuns.",
+		UC = "",
+		IDDCM = "",
+		NPES = "",
+		BFAM = "",
+		SALE = "",
+		INST = "",
+		NASSOC = "",
+		ENERGIA = "",
+		AGUA = "",
+		LIXO = "",
+		ORELHAO = "",
+		CFUT = "",
+		IGREJAS = "",
+		PSAU = "Health center of riverine settlements at Arapiuns.",
+		ENSINF = "The schools of riverine settlements at Arapiuns.",
+		ENSFUND2 = "The schools of riverine settlements at Arapiuns.",
+		MERENDA = "",
+		EJA = "The schools of riverine settlements at Arapiuns.",
+		ARROZ = "",
+		MAND = "",
+		FRUTAS = "",
+		CASTANHA = "",
+		ACAI = "",
+		PESCA = "",
+		CACA = "",
+		GADO = "",
+		MINERACAO = "",
+		MANT = "",
+		TEMPO = "",
+		CODLig1 = "",
+		CodLig2 = ""
+	}
+}
+
