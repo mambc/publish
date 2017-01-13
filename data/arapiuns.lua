@@ -37,6 +37,6 @@ project = Project{
 	clean = true,
 	beginning = filePath("Traj_IDA_lin.shp", "publish"),
 	ending = filePath("Traj_VOLTA_lin.shp", "publish"),
-	villages = filePath("Cmm_Arap2012_pt.shp", "publish")
+	villages = filePath("AllCmmTab_210316OK.shp", "publish")
 }
 
