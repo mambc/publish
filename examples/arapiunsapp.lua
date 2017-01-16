@@ -57,6 +57,7 @@ Application{
 		border = "red"
 	},
 	villages = View{
+		download = true,
 		description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
 		icon = "home",
 		select = "Nome",
