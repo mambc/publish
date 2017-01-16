@@ -52,10 +52,6 @@ body{
 	cursor: pointer;
 }
 
-.highlight{
-	color: #C5C6C7;
-}
-
 .legend-color-box{
 	height:20px;
 	width:20px;
@@ -100,6 +96,10 @@ body{
 		width: auto;
 		max-width: 90%;
 	}
+}
+
+input[type="checkbox"] {
+	transform:scale(1.4, 1.4);
 }
 
 #map{
