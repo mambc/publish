@@ -391,6 +391,7 @@ return {
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+				download = true,
 				select = "Nome",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
@@ -423,6 +424,8 @@ return {
 		unitTest:assertType(view.report, "function")
 		unitTest:assertType(view.geom, "string")
 		unitTest:assertEquals(view.geom, "MultiPoint")
+		unitTest:assertEquals(view.download, true)
+		unitTest:assert(isFile(arapiunsDir.."data/villages.zip"))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

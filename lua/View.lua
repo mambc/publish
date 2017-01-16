@@ -63,6 +63,7 @@ metaTableView_ = {
 -- flag, forest, harbor, helicopter, home, horseriding, hospital, lake, motorbike, mountains, radio, restaurant, river, road,
 --shipwreck and thunderstorm.
 -- @arg data.report An optional Report or user-defined function that creates a report for each spatial object of that view.
+-- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Defaults to false.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -87,8 +88,10 @@ function View(data)
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
 	defaultTableValue(data, "visible", true)
+	defaultTableValue(data, "download", false)
 
-	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency", "label", "icon"})
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
+		"value", "layer", "report", "transparency", "label", "icon", "download"})
 
 	if data.report then
 		local rtype = type(data.report)

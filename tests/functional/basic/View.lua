@@ -184,9 +184,11 @@ return {
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
 		unitTest:assertType(view.icon, "string")
 		unitTest:assertEquals(view.icon, "home.png")
+		unitTest:assertEquals(view.download, false)
 
 		view = View{
 			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+			download = true,
 			icon = {
 				path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 				color = "red",
@@ -201,6 +203,7 @@ return {
 		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
 		unitTest:assertEquals(view.icon.color, "rgba(255, 0, 0, 1)")
 		unitTest:assertEquals(view.icon.transparency, 0.6)
+		unitTest:assertEquals(view.download, true)
 	end,
 	__tostring = function(unitTest)
 		local view = View{
@@ -214,6 +217,7 @@ return {
 
 		unitTest:assertEquals(tostring(view), [[border        string [rgba(0, 0, 255, 1)]
 color         named table of size 3
+download      boolean [false]
 label         named table of size 3
 select        string [river]
 title         string [Emas National Park]

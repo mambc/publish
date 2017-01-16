@@ -247,7 +247,7 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Incompatible types. Argument 'transparency' expected number, got string.")
+		unitTest:assertError(error_func, incompatibleTypeMsg("transparency", "number", "a"))
 
 		error_func = function()
 			View{
@@ -260,6 +260,11 @@ return {
 		unitTest:assertError(error_func, "The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 2.")
 
 		error_func = function()
+			View{report = function() end}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+
+		error_func = function()
 			View{
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
@@ -267,7 +272,7 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'transparency' could be removed as it is the default value (0).")
+		unitTest:assertError(error_func, defaultValueMsg("transparency", 0))
 
 		error_func = function()
 			View{
@@ -277,6 +282,16 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'color' could be removed as it is the default value ('black').")
+		unitTest:assertError(error_func, defaultValueMsg("color", "black"))
+
+		error_func = function()
+			View{download = 1}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("download", "boolean", 1))
+
+		error_func = function()
+			View{download = false}
+		end
+		unitTest:assertError(error_func, defaultValueMsg("download", false))
 	end
 }

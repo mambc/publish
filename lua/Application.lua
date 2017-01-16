@@ -250,7 +250,8 @@ local function loadLayers(data)
 
 	forEachElement(data.view, function(name, view)
 		if view.color and not view.value and view.select then
-			local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true, report = true})
+			local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
+				report = true, download = true})
 			mview.value = {}
 			mview.report = view.report
 
@@ -264,6 +265,10 @@ local function loadLayers(data)
 
 			if view.visible == false then
 				mview.visible = false
+			end
+
+			if view.download == true then
+				mview.download = true
 			end
 
 			do
@@ -407,6 +412,29 @@ local function createApplicationProjects(data, proj)
 			local report = clone(data.report)
 			report.layer = name
 			table.insert(reports, report)
+		end
+
+		if value.download then
+			local layer = terralib.Layer{project = data.project, name = name}
+			local source = layer.source
+			if isValidSource(source) then
+				local tmp = Directory(name)
+				local file = File(layer.file)
+				local _, filename = file:split()
+				local zip = File(name..".zip")
+
+				tmp:create()
+				layer:export{file = tmp..filename..".shp", overwrite = true }
+				os.execute("zip -qr \""..zip.."\" "..tmp:name())
+				if tmp:exists() then tmp:delete() end
+
+				if zip:exists() then
+					printNormal("Data '"..filename.."' successfully zipped")
+					os.execute("cp \""..zip.."\" \""..data.datasource.."\"")
+				end
+
+				zip:deleteIfExists()
+			end
 		end
 	end
 
