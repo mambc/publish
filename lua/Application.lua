@@ -80,23 +80,22 @@ end
 local function exportReportImages(data, report)
 	local reports = report:get()
 	forEachElement(reports, function(_, rp)
-		if rp.image then
-			local img = rp.image:name()
+		if not rp.image then return end
 
-			if not data.images then
-				data.images = Directory(data.output.."images")
-				if not data.images:exists() then
-					data.images:create()
-				end
+		local img = rp.image:name()
+		if not data.images then
+			data.images = Directory(data.output.."images")
+			if not data.images:exists() then
+				data.images:create()
 			end
-
-			if not isFile(data.images..img) then
-				printNormal("Copying image '"..img.."'")
-				os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
-			end
-
-			rp.image = img
 		end
+
+		if not isFile(data.images..img) then
+			printNormal("Copying image '"..img.."'")
+			os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+		end
+
+		rp.image = img
 	end)
 
 	return reports

@@ -34,7 +34,10 @@ local description = [[
 	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the
 	infrastructure and network relations of riverine human settlements. The main objective was to characterize the
 	organization and interdependence between settlements concerning to:infrastructure, health and education services,
-	land use, ecosystem services provision and perception of welfare. Escada et. al (2013).
+	land use, ecosystem services provision and perception of welfare.
+	Source: Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA.
+	Relatório Técnico de Atividade de Campo - Projeto UrbisAmazônia e Projeto Cenários para a Amazônia: Uso da terra,
+	Biodiversidade e Clima, INPE.
 ]]
 
 Application{
@@ -43,12 +46,12 @@ Application{
 	base = "roadmap",
 	clean = true,
 	output = "ArapiunsWebMap",
-	template = {navbar = "#00587A", title = "#FFFFFF"},
+	template = {navbar = "darkblue", title = "white"},
 	beginning = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		color = "mediumblue",
-		border = "mediumblue"
+		color = "blue",
+		border = "blue"
 	},
 	ending = View{
 		description = "Route on the Arapiuns River.",
@@ -69,35 +72,16 @@ Application{
 
 			mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
 
-			local has = "has"
-			local hasnt = "hasn't"
 			local health, water
-			if cell.PSAU > 0 then
-				health = has
-			else
-				health = hasnt
-			end
-
-			if cell.AGUA > 0 then
-				water = has
-			else
-				water = hasnt
-			end
+			if cell.PSAU > 0 then health = "has" else health = "hasn't" end
+			if cell.AGUA > 0 then water  = "has" else water  = "hasn't" end
 
 			mreport:addText(string.format("The community %s health center and %s access to water.", health, water))
 
 			local school = {}
-			if cell.ENSINF > 0 then
-				table.insert(school, "Early Childhood Education")
-			end
-
-			if cell.ENSFUND2 > 0 then
-				table.insert(school, "Elementary School")
-			end
-
-			if cell.EJA > 0 then
-				table.insert(school, "Education of Young and Adults")
-			end
+			if cell.ENSINF > 0   then table.insert(school, "Early Childhood Education")     end
+			if cell.ENSFUND2 > 0 then table.insert(school, "Elementary School")             end
+			if cell.EJA > 0      then table.insert(school, "Education of Young and Adults") end
 
 			if #school > 0 then
 				mreport:addText(string.format("The schools offers %s.", table.concat(school, ", ")))

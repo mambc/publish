@@ -57,13 +57,13 @@ metaTableView_ = {
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
 -- @arg data.label An optional table of strings that describes the labels to be shown in the Legend.
--- @arg data.icon An optional table or string. A table with the icon properties, such as path, color and transparency. The propertie path
+-- @arg data.icon An optional table or string. A table with the icon properties, such as path, color and transparency. The property path
 -- uses SVG notation (see https://www.w3.org/TR/SVG/paths.html). A string with the name of marker icon. The markers available are:
--- airport, animal, bigcity, bus, car, caution, cycling, database, desert, diving, fillingstation, finish, fire, firstaid, fishing,
--- flag, forest, harbor, helicopter, home, horseriding, hospital, lake, motorbike, mountains, radio, restaurant, river, road,
---shipwreck and thunderstorm.
+-- "airport", "animal", "bigcity", "bus", "car", "caution", "cycling", "database", "desert", "diving", "fillingstation", "finish", "fire", "firstaid", "fishing",
+-- "flag", "forest", "harbor", "helicopter", "home", "horseriding", "hospital", "lake", "motorbike", "mountains", "radio", "restaurant", "river", "road",
+--"shipwreck" and "thunderstorm".
 -- @arg data.report An optional Report or user-defined function that creates a report for each spatial object of that view.
--- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Defaults to false.
+-- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
 -- @usage import("publish")
 --
 -- local view = View{
