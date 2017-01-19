@@ -36,7 +36,9 @@
 						<div id="layers" class="panel-collapse collapse in">
 							<div class="panel-body list-group">
 								{{#layers}}
-									<button id="{{layer}}" type="button" class="list-group-item"><i class="fa fa-globe highlight"></i> {{label}}</button>
+									<button id="{{layer}}" type="button" class="list-group-item">
+										<input name="{{layer}}" type="checkbox"> {{label}}
+									</button>
 								{{/layers}}
 							</div>
 						</div>
@@ -61,6 +63,13 @@
 						</div>
 						<div id="legends" class="panel-collapse collapse">
 							<div id="legend" class="panel-body"></div>
+						</div>
+					</div>
+					<div id="panel-download" class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<i class="fa fa-download"></i><a id="download-title"> Download</a>
+							</h4>
 						</div>
 					</div>
 				</div>
@@ -93,17 +102,17 @@
 		</div>
 		{{/description}}
 		{{#report}}
-		<div class="modal fade" id="modal-report-{{layer}}" role="dialog">
+		<div class="modal fade" id="modal-report-{{layer}}{{select}}" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-{{layer}}"> {{title}}</h2>
+						<h2 class="modal-title" id="modal-report-label-{{layer}}{{select}}"> {{title}}</h2>
 						{{#author}}
-						<p class="text-muted">By {{author}}</p>
+						<p class="text-muted">{{author}}</p>
 						{{/author}}
 					</div>
-					<div class="modal-body" id="modal-report-text-{{layer}}">
+					<div class="modal-body" id="modal-report-text-{{layer}}{{select}}">
 					{{#reports}}
 						{{#heading}}
 						<h4><strong>{{heading}}</strong></h4>

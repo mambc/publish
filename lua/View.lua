@@ -56,6 +56,14 @@ metaTableView_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
+-- @arg data.label An optional table of strings that describes the labels to be shown in the Legend.
+-- @arg data.icon An optional table or string. A table with the icon properties, such as path, color and transparency. The property path
+-- uses SVG notation (see https://www.w3.org/TR/SVG/paths.html). A string with the name of marker icon. The markers available are:
+-- "airport", "animal", "bigcity", "bus", "car", "caution", "cycling", "database", "desert", "diving", "fillingstation", "finish", "fire", "firstaid", "fishing",
+-- "flag", "forest", "harbor", "helicopter", "home", "horseriding", "hospital", "lake", "motorbike", "mountains", "radio", "restaurant", "river", "road",
+--"shipwreck" and "thunderstorm".
+-- @arg data.report An optional Report or user-defined function that creates a report for each spatial object of that view.
+-- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -75,13 +83,26 @@ function View(data)
 	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
-	optionalTableArgument(data, "report", "Report")
+	optionalTableArgument(data, "label", "table")
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
 	defaultTableValue(data, "visible", true)
+	defaultTableValue(data, "download", false)
 
-	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select", "value", "layer", "report", "transparency"})
+	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
+		"value", "layer", "report", "transparency", "label", "icon", "download"})
+
+	if data.report then
+		local rtype = type(data.report)
+		if not (rtype == "Report" or rtype == "function") then
+			incompatibleTypeError("report", "Report or function", data.report)
+		end
+
+		if rtype == "function" and not data.select then
+			customError(mandatoryArgumentMsg("select"))
+		end
+	end
 
 	if data.transparency < 0 or data.transparency > 1 then
 		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
@@ -93,7 +114,7 @@ function View(data)
 			mandatoryTableArgument(data, "select", "string")
 
 			local classes = #data.value
-			if classes <= 0 then
+			if classes == 0 then
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
 
@@ -114,7 +135,36 @@ function View(data)
 				colors[tostring(data.value[i])] = mcolor[i]
 			end
 
+			local label = {}
+			if data.label then
+				local labels = #data.label
+				if labels == 0 then
+					customError("Argument 'label' must be a table of strings with size greater than 0, got "..labels..".")
+				end
+
+				if classes ~= labels then
+					customError("The number of labels ("..labels..") must be equal to number of data classes ("..classes..").")
+				end
+
+				forEachElement(data.label, function(k, v, mtype)
+					if mtype ~= "string" then
+						customError("Argument 'label' must be a table of strings, element "..k.." ("..tostring(v)..") got "..mtype..".")
+					end
+				end)
+
+				local i = 1
+				forEachOrderedElement(colors, function(_, color)
+					label[data.label[i]] = tostring(color)
+					i = i + 1
+				end)
+			else
+				forEachElement(colors, function(value, color)
+					label[data.select.. " "..value] = tostring(color)
+				end)
+			end
+
 			data.color = colors
+			data.label = label
 		else
 			if data.select then
 				local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
@@ -144,6 +194,69 @@ function View(data)
 		end
 
 		mandatoryTableArgument(data, "layer", "File")
+	end
+
+	if data.icon then
+		local itype = type(data.icon)
+		if itype == "string" then
+			local icons = {
+				airport = true,
+				animal = true,
+				bigcity = true,
+				bus = true,
+				car = true,
+				caution = true,
+				cycling = true,
+				database = true,
+				desert = true,
+				diving = true,
+				fillingstation = true,
+				finish = true,
+				fire = true,
+				firstaid = true,
+				fishing = true,
+				flag = true,
+				forest = true,
+				harbor = true,
+				helicopter = true,
+				home = true,
+				horseriding = true,
+				hospital = true,
+				lake = true,
+				motorbike = true,
+				mountains = true,
+				radio = true,
+				restaurant = true,
+				river = true,
+				road = true,
+				shipwreck = true,
+				thunderstorm = true
+			}
+
+			if not icons[data.icon] then
+				switchInvalidArgument("icon", data.icon, icons)
+			end
+
+			data.icon = data.icon..".png"
+		elseif itype == "table" then
+			mandatoryTableArgument(data.icon, "path", "string")
+			defaultTableValue(data.icon, "color", "black")
+			defaultTableValue(data.icon, "transparency", 0)
+
+			verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency"})
+
+			if not data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") then
+				customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+			end
+
+			if data.icon.transparency < 0 or data.icon.transparency > 1 then
+				customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
+			end
+
+			data.icon.color = color{color = data.icon.color}
+		else
+			incompatibleTypeError("icon", "string or table", data.icon)
+		end
 	end
 
 	setmetatable(data, metaTableView_)

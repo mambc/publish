@@ -90,6 +90,21 @@ return {
 		unitTest:assertError(error_func, "Argument 'color' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
+			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {}}
+		end
+		unitTest:assertError(error_func, "Argument 'label' must be a table of strings with size greater than 0, got 0.")
+
+		error_func = function()
+			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {1}}
+		end
+		unitTest:assertError(error_func, "The number of labels (1) must be equal to number of data classes (3).")
+
+		error_func = function()
+			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {"Condition C", true, 2}}
+		end
+		unitTest:assertError(error_func, "Argument 'label' must be a table of strings, element 2 (true) got boolean.")
+
+		error_func = function()
 			View{value = {0, 1, 2}, color = "mcolor", select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (mcolor) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
@@ -117,7 +132,7 @@ return {
 		error_func = function()
 			View{report = "myreport"}
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("report", "Report", "myreport"))
+		unitTest:assertError(error_func, incompatibleTypeMsg("report", "Report or function", "myreport"))
 
 		error_func = function()
 			View{border = "PuBu"}
@@ -193,5 +208,90 @@ return {
 			View{color = "red", transparency = 1.1}
 		end
 		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 1.1.")
+
+		error_func = function()
+			View{icon = "hom"}
+		end
+		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
+
+		error_func = function()
+			View{icon = 1}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("icon", "string or table", 1))
+
+		error_func = function()
+			View{icon = {path = "K7Y"}}
+		end
+		unitTest:assertError(error_func, "The icon path 'K7Y' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+
+		error_func = function()
+			View{icon = {color = "red"}}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("path"))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					color = 1
+				}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string", 1))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					transparency = "a"
+				}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("transparency", "number", "a"))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					transparency = 2
+				}
+			}
+		end
+		unitTest:assertError(error_func, "The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 2.")
+
+		error_func = function()
+			View{report = function() end}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					transparency = 0
+				}
+			}
+		end
+		unitTest:assertError(error_func, defaultValueMsg("transparency", 0))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					color = "black"
+				}
+			}
+		end
+		unitTest:assertError(error_func, defaultValueMsg("color", "black"))
+
+		error_func = function()
+			View{download = 1}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("download", "boolean", 1))
+
+		error_func = function()
+			View{download = false}
+		end
+		unitTest:assertError(error_func, defaultValueMsg("download", false))
 	end
 }

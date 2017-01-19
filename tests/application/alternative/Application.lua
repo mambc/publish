@@ -111,5 +111,49 @@ return {
 		end
 		unitTest:assertError(error_func, "View 'cove' in argument 'order' (1) does not exist.")
 		if emasDir:exists() then emasDir:delete() end
+
+		local arapiunsDir = Directory("ArapiunsWebMap")
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					icon = {
+						path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+						color = "red",
+						transparency = 0.6
+					},
+					report = function() return 1 end
+				}
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					select = "CMM",
+					icon = {
+						path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+						color = "red",
+						transparency = 0.6
+					},
+					report = function() return 1 end
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument report of View 'villages' must be a function that returns a Report, got number.")
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end
 }

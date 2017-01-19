@@ -77,6 +77,30 @@ local function registerApplicationModel(data)
 	table.insert(ViewModel, data)
 end
 
+local function exportReportImages(data, report)
+	local reports = report:get()
+	forEachElement(reports, function(_, rp)
+		if not rp.image then return end
+
+		local img = rp.image:name()
+		if not data.images then
+			data.images = Directory(data.output.."images")
+			if not data.images:exists() then
+				data.images:create()
+			end
+		end
+
+		if not isFile(data.images..img) then
+			printNormal("Copying image '"..img.."'")
+			os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+		end
+
+		rp.image = img
+	end)
+
+	return reports
+end
+
 local function createDirectoryStructure(data)
 	printInfo("Creating directory structure")
 	if data.clean == true and data.output:exists() then
@@ -108,26 +132,7 @@ local function createDirectoryStructure(data)
 	end)
 
 	if data.report then
-		local reports = data.report:get()
-		forEachElement(reports, function(_, rp)
-			if rp.image then
-				local img = rp.image:name()
-
-				if not data.images then
-					data.images = Directory(data.output.."images")
-					if not data.images:exists() then
-						data.images:create()
-					end
-				end
-
-				printNormal("Copying image '"..img.."'")
-				os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
-
-				rp.image = img
-			end
-		end)
-
-		data.report = {title = data.report.title, author = data.report.author, reports = reports}
+		data.report = {title = data.report.title, author = data.report.author, reports = exportReportImages(data, data.report)}
 	end
 end
 
@@ -244,7 +249,8 @@ local function loadLayers(data)
 
 	forEachElement(data.view, function(name, view)
 		if view.color and not view.value and view.select then
-			local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true, report = true})
+			local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
+				report = true, download = true})
 			mview.value = {}
 			mview.report = view.report
 
@@ -258,6 +264,10 @@ local function loadLayers(data)
 
 			if view.visible == false then
 				mview.visible = false
+			end
+
+			if view.download == true then
+				mview.download = true
 			end
 
 			do
@@ -342,6 +352,22 @@ local function createApplicationProjects(data, proj)
 			label = _Gtme.stringToLabel(name)
 		end
 
+		if value.icon then
+			if type(value.icon) == "string" then
+				os.execute("cp \""..templateDir.."markers/"..value.icon.."\" \""..data.assets.."\"")
+				value.icon = "./assets/"..value.icon
+			else
+				local icon = {
+					path = value.icon.path,
+					fillColor = value.icon.color,
+					fillOpacity = value.icon.transparency,
+					strokeWeight = 0
+				}
+
+				value.icon = icon
+			end
+		end
+
 		table.insert(layers, {
 			order = value.order,
 			layer = name,
@@ -349,32 +375,65 @@ local function createApplicationProjects(data, proj)
 		})
 
 		if value.report then
-			local mreports = value.report:get()
-			forEachElement(mreports, function(_, rp)
-				if rp.image then
-					local img = rp.image:name()
-
-					if not data.images then
-						data.images = Directory(data.output.."images")
-						if not data.images:exists() then
-							data.images:create()
+			if type(value.report) == "Report" then
+				table.insert(reports, {title = value.report.title, author = value.report.author, layer = value.report.layer, reports = exportReportImages(data, value.report)})
+			else
+				do
+					local tlib = terralib.TerraLib{}
+					local dset = tlib:getDataSet(data.project, name)
+					for i = 0, #dset do
+						local cell = Cell(dset[i])
+						if not value.geom then
+							local geom = cell["OGR_GEOMETRY"] or cell["geom"]
+							if geom then
+								do
+									local subType = tlib:castGeomToSubtype(geom)
+									value.geom = subType:getGeometryType()
+								end
+							end
 						end
-					end
 
-					if not isFile(data.images..img) then
-						printNormal("Copying image '"..img.."'")
-						os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
-					end
+						local report = value.report(cell)
+						if type(report) ~= "Report" then
+							customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
+						end
 
-					rp.image = img
+						local select = cell[value.select]
+						if select and type(select) == "string" then
+							select = select:gsub(" ", "-")
+						end
+
+						table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
+					end
 				end
-			end)
-
-			table.insert(reports, {title = value.report.title, author = value.report.author, layer = value.report.layer, reports = mreports})
+			end
 		elseif data.report then
 			local report = clone(data.report)
 			report.layer = name
 			table.insert(reports, report)
+		end
+
+		if value.download then
+			local layer = terralib.Layer{project = data.project, name = name}
+			local source = layer.source
+			if isValidSource(source) then
+				local tmp = Directory(name)
+				local file = File(layer.file)
+				local _, filename = file:split()
+				local zip = File(name..".zip")
+
+				tmp:create()
+				layer:export{file = tmp..filename..".shp", overwrite = true }
+				os.execute("zip -qr \""..zip.."\" "..tmp:name())
+				if tmp:exists() then tmp:delete() end
+
+				if zip:exists() then
+					printNormal("Data '"..filename.."' successfully zipped")
+					os.execute("cp \""..zip.."\" \""..data.datasource.."\"")
+				end
+
+				zip:deleteIfExists()
+			end
 		end
 	end
 

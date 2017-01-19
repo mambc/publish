@@ -28,65 +28,66 @@
 
 import("publish")
 
-local report = Report{
-	title = "The riverine settlements at Arapiuns (PA)",
-	author = "Escada et. al (2013)"
-}
-
-report:addText([[This report presents the methodology and the initial results obtained at the fieldwork along riverine
-	settlements at Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
-	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the infrastructure
-	and network relations of riverine human settlements.]])
-
-report:addText([[The main objective was to characterize the organization and interdependence between settlements concerning to:
-	infrastructure, health and education services, land use, ecosystem services provision and perception of welfare. We covered
-	approximately 300 km, navigating in a motor boat along the riverbanks of Arapiuns River and its tributaries Aruã and Maró Rivers.]])
-
-report:addText([[Based on a semi-structured questionnaire, we interviewed key informants in 49 localities. Riverine settlements
-	corresponded to Indian tribes, villages, and communities that are inserted into public lands: Terra Indígena do Maró, Resex Tapajós-Arapiuns,
-	Projeto de Assentamento Extrativista Lago Grande and Gleba Nova Olinda.]])
-
-report:addText([[In general, the settlements lack basic infrastructure and depend on the city of Santarém for urban services.
-	There are primary schools in most of the localities, but only a few secondary schools, requiring population displacement between
-	settlements. Population also needs to displace in the territory to access health centers, doctors and hospitals. Since such
-	settlements occupy public lands, the land tenure and land use are restricted by specific rules. Cattle ranching and agriculture are
-	mainly for subsistence and they take place in small areas of forest regrowth. Cassava flour production, handcraft, and fishery are
-	the main activities for income generation.]])
-
-report:addText([[In places where the population has other sources of income, either from official social benefits or activities
-	like handcraft and tourism, flour production is lower. Handcraft work produces mainly manioc processing tools, and its sustainability
-	dependents on the market and trade activity established. Fishery is more important for subsistence than for income generation, and
-	its production varies seasonally: when it diminishes during wintertime, riverine population has to look after other protein sources.
-	Extractive products from vegetal and animal origins have great importance for inhabitants' consumption, low value for income generation
-	and it is carried out without any forest management.]])
-
-report:addText([[Welfare indicators varies from regular to satisfactory, and the interviewees declared positive perception of security,
-	housing, participation in the decision-making, leisure activities, festivities, solidarity and equitable division of tasks between men and women.
-	The most frequent demands are for health and education services, water supply, followed by access to electric energy, telephony, Internet, and
-	institutional support to implement new activities for income generation. After this preliminary report, the collected data will be organized in a
-	geographical database to analyze settlements networks.Integrating these data with information collected from previous fieldworks will contribute to
-	better understand the role of settlement networks as part of urban tissue in the southwest of Pará state.]])
+local description = [[
+	This report presents the methodology and the initial results obtained at the fieldwork along riverine settlements at
+	Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
+	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the
+	infrastructure and network relations of riverine human settlements. The main objective was to characterize the
+	organization and interdependence between settlements concerning to:infrastructure, health and education services,
+	land use, ecosystem services provision and perception of welfare.
+	Source: Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA.
+	Relatório Técnico de Atividade de Campo - Projeto UrbisAmazônia e Projeto Cenários para a Amazônia: Uso da terra,
+	Biodiversidade e Clima, INPE.
+]]
 
 Application{
 	project = filePath("arapiuns.tview", "publish"),
+	description = description,
 	base = "roadmap",
 	clean = true,
 	output = "ArapiunsWebMap",
-	report = report,
-	template = {navbar = "#00587A", title = "#FFFFFF"},
+	template = {navbar = "darkblue", title = "white"},
 	beginning = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		color = "orange",
-		border = "orange"
+		color = "blue",
+		border = "blue"
 	},
 	ending = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		color = "orange",
-		border = "orange"
+		color = "red",
+		border = "red"
 	},
 	villages = View{
+		download = true,
 		description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+		icon = "home",
+		select = "Nome",
+		report = function(cell)
+			local mreport = Report{
+				title = cell.Nome,
+				author = "Escada et. al (2013)"
+			}
+
+			mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+
+			local health, water
+			if cell.PSAU > 0 then health = "has" else health = "hasn't" end
+			if cell.AGUA > 0 then water  = "has" else water  = "hasn't" end
+
+			mreport:addText(string.format("The community %s health center and %s access to water.", health, water))
+
+			local school = {}
+			if cell.ENSINF > 0   then table.insert(school, "Early Childhood Education")     end
+			if cell.ENSFUND2 > 0 then table.insert(school, "Elementary School")             end
+			if cell.EJA > 0      then table.insert(school, "Education of Young and Adults") end
+
+			if #school > 0 then
+				mreport:addText(string.format("The schools offers %s.", table.concat(school, ", ")))
+			end
+
+			return mreport
+		end
 	}
 }

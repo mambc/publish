@@ -354,5 +354,79 @@ return {
 		assertFiles(app.images, appImages)
 
 		if caraguaDir:exists() then caraguaDir:delete() end
+
+		local arapiunsDir = Directory("ArapiunsWebMap")
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		app = Application{
+			project = filePath("arapiuns.tview", "publish"),
+			base = "roadmap",
+			clean = true,
+			output = arapiunsDir,
+			villages = View{
+				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+				icon = "home"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertNil(app.report)
+
+		view = app.view.villages
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.description, "string")
+		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
+		unitTest:assertEquals(view.icon, "./assets/home.png")
+		unitTest:assert(File(app.output..view.icon):exists())
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		app = Application{
+			project = filePath("arapiuns.tview", "publish"),
+			base = "roadmap",
+			clean = true,
+			output = arapiunsDir,
+			villages = View{
+				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+				download = true,
+				select = "Nome",
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					color = "red",
+					transparency = 0.6
+				},
+				report = function(cell)
+					local mreport = Report{title = cell.Nome}
+					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+					return mreport
+				end
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertNil(app.report)
+
+		view = app.view.villages
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.description, "string")
+		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
+		unitTest:assertEquals(view.icon.fillColor, "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(view.icon.fillOpacity, 0.6)
+		unitTest:assertEquals(view.select, "Nome")
+		unitTest:assertType(view.report, "function")
+		unitTest:assertType(view.geom, "string")
+		unitTest:assertEquals(view.geom, "MultiPoint")
+		unitTest:assertEquals(view.download, true)
+		unitTest:assert(isFile(arapiunsDir.."data/villages.zip"))
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end
 }
