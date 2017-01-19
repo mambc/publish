@@ -192,7 +192,8 @@ return {
 			icon = {
 				path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 				color = "red",
-				transparency = 0.6
+				transparency = 0.6,
+				time = 10
 			}
 		}
 
@@ -203,6 +204,26 @@ return {
 		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
 		unitTest:assertEquals(view.icon.color, "rgba(255, 0, 0, 1)")
 		unitTest:assertEquals(view.icon.transparency, 0.6)
+		unitTest:assertEquals(view.icon.time, 10)
+		unitTest:assertEquals(view.download, true)
+
+		view = View{
+			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+			download = true,
+			icon = {
+				path = "home",
+				time = 10
+			}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertEquals(view.icon.path, "home.png")
+		unitTest:assertNil(view.icon.color)
+		unitTest:assertNil(view.icon.transparency)
+		unitTest:assertEquals(view.icon.time, 10)
 		unitTest:assertEquals(view.download, true)
 	end,
 	__tostring = function(unitTest)

@@ -234,6 +234,8 @@ local function loadLayers(data)
 				return found
 			end)
 		else
+			mandatoryTableArgument(data, "title", "string")
+
 			printInfo("Loading layers from path")
 			local mproj = {
 				file = data.title..".tview",
@@ -242,9 +244,12 @@ local function loadLayers(data)
 
 			local nLayers = 0
 			forEachElement(data.view, function(name, view)
-				if view.layer then
-					if view.layer:exists() and isValidSource(view.layer:extension()) then
+				if view.layer and view.layer:exists() then
+					if isValidSource(view.layer:extension()) then
 						mproj[name] = tostring(view.layer)
+					else
+						data.view[name] = nil
+						customWarning("Publish cannot export yet raster layer '"..name.."'.")
 					end
 
 					nLayers = nLayers + 1
@@ -258,8 +263,6 @@ local function loadLayers(data)
 
 			data.project = terralib.Project(mproj)
 			exportLayers(data)
-
-			data.project.file:deleteIfExists()
 		end
 	else
 		if data.project then
@@ -346,35 +349,38 @@ local function processingView(data, layers, reports, name, view)
 		label = label
 	})
 
+	local dset
+	do
+		local tlib = terralib.TerraLib{}
+		dset = tlib:getDataSet(data.project, name)
+		for i = 0, #dset do
+			if view.geom then break end
+
+			local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
+			if geom then
+				local subType = tlib:castGeomToSubtype(geom)
+				view.geom = subType:getGeometryType()
+			end
+		end
+	end
+
 	if view.report then
 		if type(view.report) == "Report" then
 			table.insert(reports, {title = view.report.title, author = view.report.author, layer = view.report.layer, reports = exportReportImages(data, view.report)})
 		else
-			do
-				local tlib = terralib.TerraLib{}
-				local dset = tlib:getDataSet(data.project, name)
-				for i = 0, #dset do
-					local cell = Cell(dset[i])
-					if not view.geom then
-						local geom = cell["OGR_GEOMETRY"] or cell["geom"]
-						if geom then
-							local subType = tlib:castGeomToSubtype(geom)
-							view.geom = subType:getGeometryType()
-						end
-					end
-
-					local report = view.report(cell)
-					if type(report) ~= "Report" then
-						customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
-					end
-
-					local select = cell[view.select]
-					if select and type(select) == "string" then
-						select = select:gsub(" ", "-")
-					end
-
-					table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
+			for i = 0, #dset do
+				local cell = Cell(dset[i])
+				local report = view.report(cell)
+				if type(report) ~= "Report" then
+					customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
 				end
+
+				local select = cell[view.select]
+				if select and type(select) == "string" then
+					select = select:gsub(" ", "-")
+				end
+
+				table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
 			end
 		end
 	elseif data.report then
@@ -385,9 +391,18 @@ local function processingView(data, layers, reports, name, view)
 
 	if view.icon then
 		if type(view.icon) == "string" then
-			os.execute("cp \""..templateDir.."markers/".. view.icon.."\" \""..data.assets.."\"")
-			view.icon = "./assets/".. view.icon
+			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
+			view.icon = "./assets/"..view.icon
 		else
+			if not view.icon.path:match("[0-9]") then
+				os.execute("cp \""..templateDir.."markers/".. view.icon.path.."\" \""..data.assets.."\"")
+				view.icon.path = "./assets/"..view.icon.path
+			end
+
+			if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
+				customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
+			end
+
 			view.icon = {
 				path = view.icon.path,
 				fillColor = view.icon.color,

@@ -142,7 +142,7 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					select = "CMM",
+					select = "Nome",
 					icon = {
 						path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 						color = "red",
@@ -155,5 +155,20 @@ return {
 		unitTest:assertError(error_func, "Argument report of View 'villages' must be a function that returns a Report, got number.")
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		error_func = function()
+			Application{
+				project = filePath("emas.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = emasDir,
+				limit = View{
+					icon = {path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
+
+		if emasDir:exists() then emasDir:delete() end
 	end
 }

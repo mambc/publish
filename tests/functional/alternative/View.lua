@@ -260,6 +260,16 @@ return {
 		unitTest:assertError(error_func, "The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 2.")
 
 		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					time = "a"
+				}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("time", "number", "a"))
+
+		error_func = function()
 			View{report = function() end}
 		end
 		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
@@ -283,6 +293,40 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, defaultValueMsg("color", "black"))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "home",
+					transparency = 0.5
+				}
+			}
+		end
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("transparency"))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "home",
+					color = "red"
+				}
+			}
+		end
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("color"))
+
+		error_func = function()
+			View{
+				icon = {path = "hom"}
+			}
+		end
+		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
+
+		error_func = function()
+			View{
+				icon = {path = "1234"}
+			}
+		end
+		unitTest:assertError(error_func, "The icon path '1234' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
 
 		error_func = function()
 			View{download = 1}

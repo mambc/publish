@@ -66,7 +66,7 @@ return {
 			clean = true,
 			progress = false,
 			output = emasDir,
-			order = {"cells", "river", "firebreak", "limit"},
+			order = {"river", "firebreak", "limit"},
 			river = View{
 				color = "blue",
 				layer = filePath("River_lin.shp", "terralib")
@@ -80,15 +80,6 @@ return {
 				color = "goldenrod",
 				width = 2,
 				layer = filePath("Limit_pol.shp", "terralib")
-			},
-			cells = View{
-				title = "Emas National Park",
-				select = "cover",
-				color = "PuBu",
-				width = 0,
-				value = {0, 1, 2},
-				layer = filePath("accumulation_Nov94May00.tif", "terralib"),
-				visible = false
 			}
 		}
 
@@ -98,23 +89,13 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(getn(app.view), getn(app.project.layers) + 1) -- TODO #14. Raster layers are not counted.
-		unitTest:assertEquals(getn(app.view), getn(appData) + 1) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), getn(appData)) -- TODO #14. Raster layers are not counted.
 
 		unitTest:assertEquals(app.view.river.width, 1)
 		unitTest:assertEquals(app.view.limit.width, 2)
-
-		unitTest:assertEquals(app.view.cells.visible, false)
 		unitTest:assertEquals(app.view.limit.visible, true)
 
-		unitTest:assertType(app.view.cells.color, "table")
-		unitTest:assertEquals(app.view.cells.select, "cover")
-		unitTest:assertEquals(app.view.cells.title, "Emas National Park")
-		unitTest:assertEquals(app.view.cells.color["0"], "rgba(236, 231, 242, 1)")
-		unitTest:assertEquals(app.view.cells.color["1"], "rgba(166, 189, 219, 1)")
-		unitTest:assertEquals(app.view.cells.color["2"], "rgba(43, 140, 190, 1)")
-
-		unitTest:assertEquals(app.view.cells.order, 4)
 		unitTest:assertEquals(app.view.river.order, 3)
 		unitTest:assertEquals(app.view.firebreak.order, 2)
 		unitTest:assertEquals(app.view.limit.order, 1)
@@ -123,6 +104,7 @@ return {
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
 
+		File("app.tview"):deleteIfExists()
 		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = Project, view = {firebreak, river} and package = nil.
@@ -426,6 +408,40 @@ return {
 		unitTest:assertEquals(view.geom, "MultiPoint")
 		unitTest:assertEquals(view.download, true)
 		unitTest:assert(isFile(arapiunsDir.."data/villages.zip"))
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		app = Application{
+			project = filePath("arapiuns.tview", "publish"),
+			base = "roadmap",
+			clean = true,
+			output = arapiunsDir,
+			villages = View{
+				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+				download = true,
+				select = "Nome",
+				icon = {
+					path = "home",
+					time = 10
+				},
+				report = function(cell)
+					local mreport = Report{title = cell.Nome}
+					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+					return mreport
+				end
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertNil(app.report)
+
+		view = app.view.villages
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.icon.path, "./assets/home.png")
+		unitTest:assert(File(app.output..view.icon.path):exists())
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

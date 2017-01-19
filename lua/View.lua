@@ -197,42 +197,42 @@ function View(data)
 	end
 
 	if data.icon then
+		local icons = {
+			airport = true,
+			animal = true,
+			bigcity = true,
+			bus = true,
+			car = true,
+			caution = true,
+			cycling = true,
+			database = true,
+			desert = true,
+			diving = true,
+			fillingstation = true,
+			finish = true,
+			fire = true,
+			firstaid = true,
+			fishing = true,
+			flag = true,
+			forest = true,
+			harbor = true,
+			helicopter = true,
+			home = true,
+			horseriding = true,
+			hospital = true,
+			lake = true,
+			motorbike = true,
+			mountains = true,
+			radio = true,
+			restaurant = true,
+			river = true,
+			road = true,
+			shipwreck = true,
+			thunderstorm = true
+		}
+
 		local itype = type(data.icon)
 		if itype == "string" then
-			local icons = {
-				airport = true,
-				animal = true,
-				bigcity = true,
-				bus = true,
-				car = true,
-				caution = true,
-				cycling = true,
-				database = true,
-				desert = true,
-				diving = true,
-				fillingstation = true,
-				finish = true,
-				fire = true,
-				firstaid = true,
-				fishing = true,
-				flag = true,
-				forest = true,
-				harbor = true,
-				helicopter = true,
-				home = true,
-				horseriding = true,
-				hospital = true,
-				lake = true,
-				motorbike = true,
-				mountains = true,
-				radio = true,
-				restaurant = true,
-				river = true,
-				road = true,
-				shipwreck = true,
-				thunderstorm = true
-			}
-
 			if not icons[data.icon] then
 				switchInvalidArgument("icon", data.icon, icons)
 			end
@@ -240,20 +240,30 @@ function View(data)
 			data.icon = data.icon..".png"
 		elseif itype == "table" then
 			mandatoryTableArgument(data.icon, "path", "string")
-			defaultTableValue(data.icon, "color", "black")
-			defaultTableValue(data.icon, "transparency", 0)
+			optionalTableArgument(data.icon, "time", "number")
 
-			verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency"})
+			if data.icon.path:match("[0-9]") then
+				verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency", "time"})
+				defaultTableValue(data.icon, "color", "black")
+				defaultTableValue(data.icon, "transparency", 0)
 
-			if not data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") then
-				customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+				if not data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") then
+					customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+				end
+
+				if data.icon.transparency < 0 or data.icon.transparency > 1 then
+					customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
+				end
+
+				data.icon.color = color{color = data.icon.color}
+			else
+				verifyUnnecessaryArguments(data.icon, {"path", "time"})
+				if not icons[data.icon.path] then
+					switchInvalidArgument("icon", data.icon.path, icons)
+				end
+
+				data.icon.path = data.icon.path..".png"
 			end
-
-			if data.icon.transparency < 0 or data.icon.transparency > 1 then
-				customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
-			end
-
-			data.icon.color = color{color = data.icon.color}
 		else
 			incompatibleTypeError("icon", "string or table", data.icon)
 		end
