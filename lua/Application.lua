@@ -155,6 +155,49 @@ local function exportLayers(data, sof)
 	end)
 end
 
+local function loadViewValue(data, name, view)
+	local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
+		report = true, download = true})
+	mview.value = {}
+	mview.report = view.report
+
+	if view.width ~= 1 then
+		mview.width = view.width
+	end
+
+	if view.transparency ~= 0 then
+		mview.transparency = view.transparency
+	end
+
+	if view.visible == false then
+		mview.visible = false
+	end
+
+	if view.download == true then
+		mview.download = true
+	end
+
+	do
+		local set = {}
+		local tlib = terralib.TerraLib{}
+		local dset = tlib:getDataSet(data.project, name)
+		for i = 0, #dset do
+			for k, v in pairs(dset[i]) do
+				if k == view.select and not set[v] then
+					set[v] = true
+				end
+			end
+		end
+
+		for v in pairs(set) do
+			table.insert(mview.value, v)
+		end
+	end
+
+	table.sort(mview.value)
+	data.view[name] = View(mview)
+end
+
 local function loadLayers(data)
 	data.view = {}
 	local nView = 0
@@ -248,48 +291,8 @@ local function loadLayers(data)
 	end
 
 	forEachElement(data.view, function(name, view)
-		if view.color and not view.value and view.select then
-			local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
-				report = true, download = true})
-			mview.value = {}
-			mview.report = view.report
-
-			if view.width ~= 1 then
-				mview.width = view.width
-			end
-
-			if view.transparency ~= 0 then
-				mview.transparency = view.transparency
-			end
-
-			if view.visible == false then
-				mview.visible = false
-			end
-
-			if view.download == true then
-				mview.download = true
-			end
-
-			do
-				local set = {}
-				local tlib = terralib.TerraLib{}
-				local dset = tlib:getDataSet(data.project, name)
-				for i = 0, #dset do
-					for k, v in pairs(dset[i]) do
-						if k == view.select and not set[v] then
-							set[v] = true
-						end
-					end
-				end
-
-				for v in pairs(set) do
-					table.insert(mview.value, v)
-				end
-			end
-
-			table.sort(mview.value)
-			data.view[name] = View(mview)
-		end
+		if not (view.color and not view.value and view.select) then return end
+		loadViewValue(data, name, view)
 	end)
 
 	if data.order then
@@ -331,12 +334,98 @@ local function loadLayers(data)
 	end
 end
 
+local function processingView(data, layers, reports, name, view)
+	local label = view.title
+	if label == nil or label == "" then
+		label = _Gtme.stringToLabel(name)
+	end
+
+	table.insert(layers, {
+		order = view.order,
+		layer = name,
+		label = label
+	})
+
+	if view.report then
+		if type(view.report) == "Report" then
+			table.insert(reports, {title = view.report.title, author = view.report.author, layer = view.report.layer, reports = exportReportImages(data, view.report)})
+		else
+			do
+				local tlib = terralib.TerraLib{}
+				local dset = tlib:getDataSet(data.project, name)
+				for i = 0, #dset do
+					local cell = Cell(dset[i])
+					if not view.geom then
+						local geom = cell["OGR_GEOMETRY"] or cell["geom"]
+						if geom then
+							local subType = tlib:castGeomToSubtype(geom)
+							view.geom = subType:getGeometryType()
+						end
+					end
+
+					local report = view.report(cell)
+					if type(report) ~= "Report" then
+						customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
+					end
+
+					local select = cell[view.select]
+					if select and type(select) == "string" then
+						select = select:gsub(" ", "-")
+					end
+
+					table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
+				end
+			end
+		end
+	elseif data.report then
+		local report = clone(data.report)
+		report.layer = name
+		table.insert(reports, report)
+	end
+
+	if view.icon then
+		if type(view.icon) == "string" then
+			os.execute("cp \""..templateDir.."markers/".. view.icon.."\" \""..data.assets.."\"")
+			view.icon = "./assets/".. view.icon
+		else
+			view.icon = {
+				path = view.icon.path,
+				fillColor = view.icon.color,
+				fillOpacity = view.icon.transparency,
+				strokeWeight = 0
+			}
+		end
+	end
+
+	if view.download then
+		local layer = terralib.Layer{project = data.project, name = name}
+		local source = layer.source
+		if isValidSource(source) then
+			local tmp = Directory(name)
+			local file = File(layer.file)
+			local _, filename = file:split()
+			local zip = File(name..".zip")
+
+			tmp:create()
+			layer:export{file = tmp..filename..".shp", overwrite = true }
+			os.execute("zip -qr \""..zip.."\" "..tmp:name())
+			if tmp:exists() then tmp:delete() end
+
+			if zip:exists() then
+				printNormal("Data '"..filename.."' successfully zipped")
+				os.execute("cp \""..zip.."\" \""..data.datasource.."\"")
+			end
+
+			zip:deleteIfExists()
+		end
+	end
+end
+
 local function createApplicationProjects(data, proj)
 	printInfo("Loading Template")
 	local path = "./data/"
 	local index = "index.html"
 	local config = "config.js"
-	local view = data.view
 
 	if proj then
 		index = proj..".html"
@@ -346,102 +435,13 @@ local function createApplicationProjects(data, proj)
 
 	local layers = {}
 	local reports = {}
-	for name, value in pairs(view) do
-		local label = value.title
-		if label == nil or label == "" then
-			label = _Gtme.stringToLabel(name)
-		end
-
-		if value.icon then
-			if type(value.icon) == "string" then
-				os.execute("cp \""..templateDir.."markers/"..value.icon.."\" \""..data.assets.."\"")
-				value.icon = "./assets/"..value.icon
-			else
-				local icon = {
-					path = value.icon.path,
-					fillColor = value.icon.color,
-					fillOpacity = value.icon.transparency,
-					strokeWeight = 0
-				}
-
-				value.icon = icon
-			end
-		end
-
-		table.insert(layers, {
-			order = value.order,
-			layer = name,
-			label = label
-		})
-
-		if value.report then
-			if type(value.report) == "Report" then
-				table.insert(reports, {title = value.report.title, author = value.report.author, layer = value.report.layer, reports = exportReportImages(data, value.report)})
-			else
-				do
-					local tlib = terralib.TerraLib{}
-					local dset = tlib:getDataSet(data.project, name)
-					for i = 0, #dset do
-						local cell = Cell(dset[i])
-						if not value.geom then
-							local geom = cell["OGR_GEOMETRY"] or cell["geom"]
-							if geom then
-								do
-									local subType = tlib:castGeomToSubtype(geom)
-									value.geom = subType:getGeometryType()
-								end
-							end
-						end
-
-						local report = value.report(cell)
-						if type(report) ~= "Report" then
-							customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
-						end
-
-						local select = cell[value.select]
-						if select and type(select) == "string" then
-							select = select:gsub(" ", "-")
-						end
-
-						table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
-					end
-				end
-			end
-		elseif data.report then
-			local report = clone(data.report)
-			report.layer = name
-			table.insert(reports, report)
-		end
-
-		if value.download then
-			local layer = terralib.Layer{project = data.project, name = name}
-			local source = layer.source
-			if isValidSource(source) then
-				local tmp = Directory(name)
-				local file = File(layer.file)
-				local _, filename = file:split()
-				local zip = File(name..".zip")
-
-				tmp:create()
-				layer:export{file = tmp..filename..".shp", overwrite = true }
-				os.execute("zip -qr \""..zip.."\" "..tmp:name())
-				if tmp:exists() then tmp:delete() end
-
-				if zip:exists() then
-					printNormal("Data '"..filename.."' successfully zipped")
-					os.execute("cp \""..zip.."\" \""..data.datasource.."\"")
-				end
-
-				zip:deleteIfExists()
-			end
-		end
+	for name, value in pairs(data.view) do
+		processingView(data, layers, reports, name, value)
 	end
 
 	table.sort (layers, function(k1, k2)
 		return k1.order > k2.order
 	end)
-
-	view = clone(data.view, {type_ = true, value = true})
 
 	registerApplicationModel {
 		output = config,
@@ -452,7 +452,7 @@ local function createApplicationProjects(data, proj)
 			maxZoom = data.maxZoom,
 			mapTypeId = data.base:upper(),
 			legend = data.legend,
-			data = view,
+			data = clone(data.view, {type_ = true, value = true}),
 			path = path
 		}
 	}
