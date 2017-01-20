@@ -104,7 +104,7 @@ return {
 		assertFiles(app.assets, appAssets)
 		assertFiles(app.datasource, appData)
 
-		File("app.tview"):deleteIfExists()
+		unitTest:assert(not isFile(app.title..".tview"))
 		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = Project, view = {firebreak, river} and package = nil.
@@ -292,6 +292,7 @@ return {
 		unitTest:assertType(view.report, "Report")
 
 		unitTest:assertEquals(view.color, "rgba(218, 165, 32, 1)")
+		unitTest:assertEquals(view.transparency, 1)
 		unitTest:assertEquals(view.report.title, "URBIS-Caraguá")
 
 		local reports = view.report:get()
@@ -307,6 +308,7 @@ return {
 		unitTest:assertEquals(view.color["1"], "rgba(255, 0, 0, 0.9)")
 		unitTest:assertEquals(view.color["2"], "rgba(255, 165, 0, 0.9)")
 		unitTest:assertEquals(view.color["3"], "rgba(255, 255, 0, 0.9)")
+		unitTest:assertEquals(view.transparency, 0.9)
 		unitTest:assertEquals(view.report.title, "URBIS-Caraguá")
 
 		reports = view.report:get()
@@ -324,6 +326,7 @@ return {
 		unitTest:assertEquals(view.color["3"], "rgba(230, 117, 228, 0.4)")
 		unitTest:assertEquals(view.color["4"], "rgba(214, 71, 212, 0.4)")
 		unitTest:assertEquals(view.color["5"], "rgba(199, 0, 199, 0.4)")
+		unitTest:assertEquals(view.transparency, 0.4)
 		unitTest:assertEquals(view.report.title, "Occupational Classes")
 
 		reports = view.report:get()
@@ -361,8 +364,8 @@ return {
 		unitTest:assertType(view, "View")
 		unitTest:assertType(view.description, "string")
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
-		unitTest:assertEquals(view.icon, "./assets/home.png")
-		unitTest:assert(File(app.output..view.icon):exists())
+		unitTest:assertEquals(view.icon.options, "./assets/home.png")
+		unitTest:assert(File(app.output..view.icon.options):exists())
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 
@@ -399,9 +402,10 @@ return {
 		unitTest:assertType(view.description, "string")
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
 		unitTest:assertType(view.icon, "table")
-		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
-		unitTest:assertEquals(view.icon.fillColor, "rgba(255, 0, 0, 1)")
-		unitTest:assertEquals(view.icon.fillOpacity, 0.6)
+		unitTest:assertType(view.icon.options, "table")
+		unitTest:assertEquals(view.icon.options.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
+		unitTest:assertEquals(view.icon.options.fillColor, "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(view.icon.options.fillOpacity, 0.6)
 		unitTest:assertEquals(view.select, "Nome")
 		unitTest:assertType(view.report, "function")
 		unitTest:assertType(view.geom, "string")
@@ -440,8 +444,8 @@ return {
 
 		view = app.view.villages
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.icon.path, "./assets/home.png")
-		unitTest:assert(File(app.output..view.icon.path):exists())
+		unitTest:assertEquals(view.icon.options, "./assets/home.png")
+		unitTest:assert(File(app.output..view.icon.options):exists())
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

@@ -237,8 +237,9 @@ local function loadLayers(data)
 			mandatoryTableArgument(data, "title", "string")
 
 			printInfo("Loading layers from path")
+			local tmpDir = Directory{tmp = true}
 			local mproj = {
-				file = data.title..".tview",
+				file = tmpDir..data.title..".tview",
 				clean = true
 			}
 
@@ -338,6 +339,8 @@ local function loadLayers(data)
 end
 
 local function processingView(data, layers, reports, name, view)
+	view.id = name
+	view.transparency = 1 - view.transparency
 	local label = view.title
 	if label == nil or label == "" then
 		label = _Gtme.stringToLabel(name)
@@ -390,26 +393,31 @@ local function processingView(data, layers, reports, name, view)
 	end
 
 	if view.icon then
+		if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
+			customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
+		end
+
+		local icon = {}
 		if type(view.icon) == "string" then
 			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
-			view.icon = "./assets/"..view.icon
+			icon.options = "./assets/"..view.icon
 		else
 			if not view.icon.path:match("[0-9]") then
-				os.execute("cp \""..templateDir.."markers/".. view.icon.path.."\" \""..data.assets.."\"")
-				view.icon.path = "./assets/"..view.icon.path
+				os.execute("cp \""..templateDir.."markers/"..view.icon.path.."\" \""..data.assets.."\"")
+				icon.options = "./assets/"..view.icon.path
+			else
+				icon.options = {
+					path = view.icon.path,
+					fillColor = view.icon.color,
+					fillOpacity = view.icon.transparency,
+					strokeWeight = 0
+				}
 			end
 
-			if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
-				customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
-			end
-
-			view.icon = {
-				path = view.icon.path,
-				fillColor = view.icon.color,
-				fillOpacity = view.icon.transparency,
-				strokeWeight = 0
-			}
+			icon.time = view.icon.time
 		end
+
+		view.icon = icon
 	end
 
 	if view.download then
