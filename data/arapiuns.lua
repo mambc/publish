@@ -30,8 +30,6 @@ import("terralib")
 
 project = Project{
 	title = "The riverine settlements at Arapiuns (PA)",
-	description = "This Application characterize the organization and interdependence between settlements concerning to: "
-				.."infrastructure, health and education services, land use, ecosystem services provision and perception of welfare.",
 	author = "Carneiro, H.",
 	file = "arapiuns.tview",
 	clean = true,

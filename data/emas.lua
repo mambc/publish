@@ -28,7 +28,6 @@ import("terralib")
 
 project = Project{
 	title = "Emas database",
-	description = "A small example related to a fire spread model.",
 	file = "emas.tview",
 	clean = true,
 	author = "Almeida, R.",

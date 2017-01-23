@@ -381,7 +381,7 @@ return {
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					color = "red",
-					transparency = 0.6,
+					transparency = 0.4,
 					time = 40
 				},
 				report = function(cell)

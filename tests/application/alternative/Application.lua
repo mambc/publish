@@ -192,5 +192,19 @@ return {
 		unitTest:assertError(error_func, "Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
 
 		if emasDir:exists() then emasDir:delete() end
+
+		error_func = function()
+			Application{
+				title = "app",
+				progress = false,
+				output = emasDir,
+				accumulation = View{
+					layer = filePath("accumulation_Nov94May00.tif", "terralib"),
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'accumulation'.")
+
+		if emasDir:exists() then emasDir:delete() end
 	end
 }

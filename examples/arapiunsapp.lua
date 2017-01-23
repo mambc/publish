@@ -41,6 +41,7 @@ local description = [[
 ]]
 
 Application{
+	key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 	project = filePath("arapiuns.tview", "publish"),
 	description = description,
 	base = "roadmap",
@@ -51,13 +52,21 @@ Application{
 		description = "Route on the Arapiuns River.",
 		width = 3,
 		color = "blue",
-		border = "blue"
+		border = "blue",
+		icon = {
+			path = "M150 0 L75 200 L225 200 Z",
+			time = 10
+		}
 	},
 	ending = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
 		color = "red",
-		border = "red"
+		border = "red",
+		icon = {
+			path = "M150 0 L75 200 L225 200 Z",
+			time = 10
+		}
 	},
 	villages = View{
 		download = true,

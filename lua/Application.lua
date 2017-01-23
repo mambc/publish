@@ -406,11 +406,12 @@ local function processingView(data, layers, reports, name, view)
 				os.execute("cp \""..templateDir.."markers/"..view.icon.path.."\" \""..data.assets.."\"")
 				icon.options = "./assets/"..view.icon.path
 			else
+				view.icon.transparency = 1 - view.icon.transparency
 				icon.options = {
 					path = view.icon.path,
 					fillColor = view.icon.color,
 					fillOpacity = view.icon.transparency,
-					strokeWeight = 0
+					strokeWeight = 2
 				}
 			end
 
@@ -582,7 +583,6 @@ metaTableApplication_ = {
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
 -- If Application is created from terralib::Project the default value is project title.
 -- @arg data.description An optional string with the application's description. It will be shown as a box that is shown in the beginning of the application and can be closed.
--- If Application is created from terralib::Project the default value is project description.
 -- @arg data.base An optional string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is satellite.
 -- @arg data.zoom An optional number with the initial zoom, ranging from 0 to 20. The default value is the center of the bounding box containing all geometries.
 -- @arg data.minZoom An optional number with the minimum zoom allowed. The default value is 0.
@@ -835,11 +835,7 @@ function Application(data)
 		loadLayers(data)
 
 		defaultTableValue(data, "title", data.project.title)
-
-		local description = data.project.description
-		if description ~= nil and description ~= "" then
-			defaultTableValue(data, "description", description) -- SKIP TODO Terrame/#1534
-		end
+		defaultTableValue(data, "description", "")
 
 		createApplicationProjects(data)
 		exportTemplates(data)
