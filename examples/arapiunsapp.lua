@@ -41,7 +41,6 @@ local description = [[
 ]]
 
 Application{
-	key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 	project = filePath("arapiuns.tview", "publish"),
 	description = description,
 	base = "roadmap",
