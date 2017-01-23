@@ -240,7 +240,11 @@ function View(data)
 			data.icon = data.icon..".png"
 		elseif itype == "table" then
 			mandatoryTableArgument(data.icon, "path", "string")
-			optionalTableArgument(data.icon, "time", "number")
+			defaultTableValue(data.icon, "time", 5)
+
+			if data.icon.time <= 0 then
+				customError("Argument 'time' of icon must be a number greater than 0, got "..data.icon.time..".")
+			end
 
 			if data.icon.path:match("[0-9]") then
 				verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency", "time"})

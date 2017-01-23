@@ -158,6 +158,28 @@ return {
 
 		error_func = function()
 			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					select = "Nome",
+					icon = {
+						path = "home",
+						color = "red",
+						transparency = 0.6,
+						time = 0
+					}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' of icon must be a number greater than 0, got 0.")
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		error_func = function()
+			Application{
 				project = filePath("emas.tview", "publish"),
 				base = "roadmap",
 				clean = true,

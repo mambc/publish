@@ -381,7 +381,8 @@ return {
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					color = "red",
-					transparency = 0.6
+					transparency = 0.6,
+					time = 40
 				},
 				report = function(cell)
 					local mreport = Report{title = cell.Nome}
@@ -406,6 +407,7 @@ return {
 		unitTest:assertEquals(view.icon.options.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
 		unitTest:assertEquals(view.icon.options.fillColor, "rgba(255, 0, 0, 1)")
 		unitTest:assertEquals(view.icon.options.fillOpacity, 0.6)
+		unitTest:assertEquals(view.icon.time, 200)
 		unitTest:assertEquals(view.select, "Nome")
 		unitTest:assertType(view.report, "function")
 		unitTest:assertType(view.geom, "string")
@@ -446,6 +448,7 @@ return {
 		unitTest:assertType(view, "View")
 		unitTest:assertEquals(view.icon.options, "./assets/home.png")
 		unitTest:assert(File(app.output..view.icon.options):exists())
+		unitTest:assertEquals(view.icon.time, 50)
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

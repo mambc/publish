@@ -270,6 +270,36 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("time", "number", "a"))
 
 		error_func = function()
+			View{
+				icon = {
+					path = "home",
+					time = 0
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' of icon must be a number greater than 0, got 0.")
+
+		error_func = function()
+			View{
+				icon = {
+					path = "home",
+					time = -1
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' of icon must be a number greater than 0, got -1.")
+
+		error_func = function()
+			View{
+				icon = {
+					path = "home",
+					time = 5
+				}
+			}
+		end
+		unitTest:assertError(error_func, defaultValueMsg("time", 5))
+
+		error_func = function()
 			View{report = function() end}
 		end
 		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))

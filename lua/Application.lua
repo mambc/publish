@@ -414,7 +414,7 @@ local function processingView(data, layers, reports, name, view)
 				}
 			end
 
-			icon.time = view.icon.time
+			icon.time = 1000 / (200 / view.icon.time)
 		end
 
 		view.icon = icon
