@@ -84,6 +84,8 @@ function View(data)
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
 	optionalTableArgument(data, "label", "table")
+	optionalTableArgument(data, "report", {"Report", "function"})
+	optionalTableArgument(data, "icon", {"string", "table"})
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
@@ -93,15 +95,8 @@ function View(data)
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 		"value", "layer", "report", "transparency", "label", "icon", "download"})
 
-	if data.report then
-		local rtype = type(data.report)
-		if not (rtype == "Report" or rtype == "function") then
-			incompatibleTypeError("report", "Report or function", data.report)
-		end
-
-		if rtype == "function" and not data.select then
-			customError(mandatoryArgumentMsg("select"))
-		end
+	if data.report and type(data.report) == "function" and not data.select then
+		customError(mandatoryArgumentMsg("select"))
 	end
 
 	if data.transparency < 0 or data.transparency > 1 then
@@ -233,43 +228,39 @@ function View(data)
 
 		local itype = type(data.icon)
 		if itype == "string" then
-			if not icons[data.icon] then
-				switchInvalidArgument("icon", data.icon, icons)
-			end
+			if data.icon:find("[0-9]") then
+				data.icon = {path = data.icon}
+				itype = "table"
+			else
+				if not icons[data.icon] then
+					switchInvalidArgument("icon", data.icon, icons)
+				end
 
-			data.icon = data.icon..".png"
-		elseif itype == "table" then
+				data.icon = data.icon..".png"
+			end
+		end
+
+		if itype == "table" then
 			mandatoryTableArgument(data.icon, "path", "string")
 			defaultTableValue(data.icon, "time", 5)
+			defaultTableValue(data.icon, "color", "black")
+			defaultTableValue(data.icon, "transparency", 0)
+
+			verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency", "time"})
+
+			if not (data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon.path:find("[0-9]")) then
+				customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+			end
+
+			if data.icon.transparency < 0 or data.icon.transparency > 1 then
+				customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
+			end
+
+			data.icon.color = color{color = data.icon.color}
 
 			if data.icon.time <= 0 then
 				customError("Argument 'time' of icon must be a number greater than 0, got "..data.icon.time..".")
 			end
-
-			if data.icon.path:match("[0-9]") then
-				verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency", "time"})
-				defaultTableValue(data.icon, "color", "black")
-				defaultTableValue(data.icon, "transparency", 0)
-
-				if not data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") then
-					customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
-				end
-
-				if data.icon.transparency < 0 or data.icon.transparency > 1 then
-					customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
-				end
-
-				data.icon.color = color{color = data.icon.color}
-			else
-				verifyUnnecessaryArguments(data.icon, {"path", "time"})
-				if not icons[data.icon.path] then
-					switchInvalidArgument("icon", data.icon.path, icons)
-				end
-
-				data.icon.path = data.icon.path..".png"
-			end
-		else
-			incompatibleTypeError("icon", "string or table", data.icon)
 		end
 	end
 

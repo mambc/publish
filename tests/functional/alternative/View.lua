@@ -272,7 +272,7 @@ return {
 		error_func = function()
 			View{
 				icon = {
-					path = "home",
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = 0
 				}
 			}
@@ -282,7 +282,7 @@ return {
 		error_func = function()
 			View{
 				icon = {
-					path = "home",
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = -1
 				}
 			}
@@ -292,7 +292,7 @@ return {
 		error_func = function()
 			View{
 				icon = {
-					path = "home",
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = 5
 				}
 			}
@@ -323,33 +323,6 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, defaultValueMsg("color", "black"))
-
-		error_func = function()
-			View{
-				icon = {
-					path = "home",
-					transparency = 0.5
-				}
-			}
-		end
-		unitTest:assertError(error_func, unnecessaryArgumentMsg("transparency"))
-
-		error_func = function()
-			View{
-				icon = {
-					path = "home",
-					color = "red"
-				}
-			}
-		end
-		unitTest:assertError(error_func, unnecessaryArgumentMsg("color"))
-
-		error_func = function()
-			View{
-				icon = {path = "hom"}
-			}
-		end
-		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
 
 		error_func = function()
 			View{

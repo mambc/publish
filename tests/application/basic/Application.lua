@@ -426,10 +426,7 @@ return {
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
 				download = true,
 				select = "Nome",
-				icon = {
-					path = "home",
-					time = 10
-				},
+				icon = "home",
 				report = function(cell)
 					local mreport = Report{title = cell.Nome}
 					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
@@ -448,7 +445,61 @@ return {
 		unitTest:assertType(view, "View")
 		unitTest:assertEquals(view.icon.options, "./assets/home.png")
 		unitTest:assert(File(app.output..view.icon.options):exists())
-		unitTest:assertEquals(view.icon.time, 50)
+		unitTest:assertNil(view.icon.time)
+
+		app = Application{
+			project = filePath("arapiuns.tview", "publish"),
+			base = "roadmap",
+			clean = true,
+			output = arapiunsDir,
+			beginning = View{
+				description = "Route on the Arapiuns River.",
+				width = 3,
+				border = "blue",
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertNil(app.report)
+
+		view = app.view.beginning
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.icon.options.path, "M150 0 L75 200 L225 200 Z")
+		unitTest:assertEquals(view.icon.options.fillColor, "rgba(0, 0, 0, 1)")
+		unitTest:assertEquals(view.icon.options.fillOpacity, 0.8)
+		unitTest:assertEquals(view.icon.options.strokeWeight, 2)
+		unitTest:assertEquals(view.icon.time, 25)
+
+
+		app = Application{
+			project = filePath("arapiuns.tview", "publish"),
+			base = "roadmap",
+			clean = true,
+			output = arapiunsDir,
+			beginning = View{
+				description = "Route on the Arapiuns River.",
+				width = 3,
+				border = "blue",
+				icon = "M150 0 L75 200 L225 200 Z"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertNil(app.report)
+
+		view = app.view.beginning
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.icon.options.path, "M150 0 L75 200 L225 200 Z")
+		unitTest:assertEquals(view.icon.options.fillColor, "rgba(0, 0, 0, 1)")
+		unitTest:assertEquals(view.icon.options.fillOpacity, 1)
+		unitTest:assertEquals(view.icon.options.strokeWeight, 2)
+		unitTest:assertEquals(view.icon.time, 25)
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

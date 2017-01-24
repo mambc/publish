@@ -399,26 +399,35 @@ local function processingView(data, layers, reports, name, view)
 
 		local icon = {}
 		if type(view.icon) == "string" then
+			if not view.icon:match("[0-9]") and view.geom == "LineString" or view.geom == "MultiLineString" then
+				customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+			end
+
 			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
 			icon.options = "./assets/"..view.icon
 		else
-			if not view.icon.path:match("[0-9]") then
-				os.execute("cp \""..templateDir.."markers/"..view.icon.path.."\" \""..data.assets.."\"")
-				icon.options = "./assets/"..view.icon.path
-			else
-				view.icon.transparency = 1 - view.icon.transparency
-				icon.options = {
-					path = view.icon.path,
-					fillColor = view.icon.color,
-					fillOpacity = view.icon.transparency,
-					strokeWeight = 2
-				}
-			end
+			view.icon.transparency = 1 - view.icon.transparency
+			icon.options = {
+				path = view.icon.path,
+				fillColor = view.icon.color,
+				fillOpacity = view.icon.transparency,
+				strokeWeight = 2
+			}
 
 			icon.time = 1000 / (200 / view.icon.time)
 		end
 
 		view.icon = icon
+	elseif view.geom == "LineString" or view.geom == "MultiLineString" then
+		view.icon = {}
+		view.icon.options = {
+			path = "M150 0 L75 200 L225 200 Z",
+			fillColor = "rgba(0, 0, 0, 1)",
+			fillOpacity = 0.8,
+			strokeWeight = 2
+		}
+
+		view.icon.time = 25
 	end
 
 	if view.download then

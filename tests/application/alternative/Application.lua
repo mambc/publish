@@ -166,7 +166,7 @@ return {
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
 					select = "Nome",
 					icon = {
-						path = "home",
+						path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 						color = "red",
 						transparency = 0.6,
 						time = 0
@@ -206,5 +206,23 @@ return {
 		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'accumulation'.")
 
 		if emasDir:exists() then emasDir:delete() end
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				beginning = View{
+					description = "Route on the Arapiuns River.",
+					width = 3,
+					border = "blue",
+					icon = "home"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end
 }

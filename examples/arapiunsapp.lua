@@ -50,22 +50,12 @@ Application{
 	beginning = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		color = "blue",
-		border = "blue",
-		icon = {
-			path = "M150 0 L75 200 L225 200 Z",
-			time = 10
-		}
+		border = "blue"
 	},
 	ending = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		color = "red",
-		border = "red",
-		icon = {
-			path = "M150 0 L75 200 L225 200 Z",
-			time = 10
-		}
+		border = "red"
 	},
 	villages = View{
 		download = true,
