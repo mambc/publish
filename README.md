@@ -131,13 +131,11 @@ Application{
     beginning = View{
         description = "Route on the Arapiuns River.",
         width = 3,
-        color = "blue",
         border = "blue"
     },
     ending = View{
         description = "Route on the Arapiuns River.",
         width = 3,
-        color = "red",
         border = "red"
     },
     villages = View{
