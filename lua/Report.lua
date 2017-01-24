@@ -62,7 +62,18 @@ Report_ = {
 				customError("'"..extension.."' is an invalid extension for argument 'image'. Valid extensions ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'].")
 			end
 		else
-			resourceNotFoundError("image", tostring(image))
+			local msg = "File '"..image.."' does not exist."
+			if package then
+				msg = "File '"..image:name().."' does not exist in package '"..package.."'."
+			end
+
+			local dir = image:path()
+			local suggest = suggestion(image:name(), Directory(dir):list())
+			local suggestMsg = suggestionMsg(suggest)
+
+			msg = msg..suggestMsg
+
+			customError(msg)
 		end
 	end,
 	--- Add a line in the Report.

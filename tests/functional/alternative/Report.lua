@@ -77,7 +77,23 @@ return {
 		error_func = function()
 			report:addImage(image)
 		end
-		unitTest:assertError(error_func, resourceNotFoundMsg("image", tostring(image)))
+		unitTest:assertError(error_func, "File '"..image.."' does not exist.")
+
+		error_func = function()
+			report:addImage("my_image", "publish")
+		end
+		unitTest:assertError(error_func, "File 'my_image' does not exist in package 'publish'.")
+
+		error_func = function()
+			report:addImage("urbis_2010_real", "publish")
+		end
+		unitTest:assertError(error_func, "File 'urbis_2010_real' does not exist in package 'publish'. Do you mean 'urbis_2010_real.PNG'?")
+
+		image = File(packageInfo("publish").path.."images/urbis_2010_real")
+		error_func = function()
+			report:addImage(image)
+		end
+		unitTest:assertError(error_func, "File '"..image.."' does not exist. Do you mean 'urbis_2010_real.PNG'?")
 
 		image = filePath("agents.csv")
 		error_func = function()
