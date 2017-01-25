@@ -47,15 +47,15 @@ Application{
 	clean = true,
 	output = "ArapiunsWebMap",
 	template = {navbar = "darkblue", title = "white"},
-	beginning = View{
+	trajectory = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		border = "blue"
-	},
-	ending = View{
-		description = "Route on the Arapiuns River.",
-		width = 3,
-		border = "red"
+		border = "red",
+		icon = {
+			path = "M150 0 L75 200 L225 200 Z",
+			transparency = 0.2,
+			time = 20
+		}
 	},
 	villages = View{
 		download = true,

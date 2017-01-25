@@ -213,7 +213,7 @@ return {
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
-				beginning = View{
+				trajectory = View{
 					description = "Route on the Arapiuns River.",
 					width = 3,
 					border = "blue",

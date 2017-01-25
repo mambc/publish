@@ -452,7 +452,7 @@ return {
 			base = "roadmap",
 			clean = true,
 			output = arapiunsDir,
-			beginning = View{
+			trajectory = View{
 				description = "Route on the Arapiuns River.",
 				width = 3,
 				border = "blue",
@@ -465,7 +465,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertNil(app.report)
 
-		view = app.view.beginning
+		view = app.view.trajectory
 		unitTest:assertType(view, "View")
 		unitTest:assertEquals(view.icon.options.path, "M150 0 L75 200 L225 200 Z")
 		unitTest:assertEquals(view.icon.options.fillColor, "rgba(0, 0, 0, 1)")
@@ -479,7 +479,7 @@ return {
 			base = "roadmap",
 			clean = true,
 			output = arapiunsDir,
-			beginning = View{
+			trajectory = View{
 				description = "Route on the Arapiuns River.",
 				width = 3,
 				border = "blue",
@@ -493,7 +493,7 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assertNil(app.report)
 
-		view = app.view.beginning
+		view = app.view.trajectory
 		unitTest:assertType(view, "View")
 		unitTest:assertEquals(view.icon.options.path, "M150 0 L75 200 L225 200 Z")
 		unitTest:assertEquals(view.icon.options.fillColor, "rgba(0, 0, 0, 1)")

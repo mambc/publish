@@ -33,8 +33,7 @@ project = Project{
 	author = "Carneiro, H.",
 	file = "arapiuns.tview",
 	clean = true,
-	beginning = filePath("Traj_IDA_lin.shp", "publish"),
-	ending = filePath("Traj_VOLTA_lin.shp", "publish"),
+	trajectory = filePath("arapiuns_traj.shp", "publish"),
 	villages = filePath("AllCmmTab_210316OK.shp", "publish")
 }
 
