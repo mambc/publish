@@ -164,7 +164,6 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					select = "Nome",
 					icon = {
 						path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 						color = "red",
@@ -222,6 +221,85 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					icon = "VOID"
+				}
+			}
+		end
+
+		local icons = {
+			airport = true,
+			animal = true,
+			bigcity = true,
+			bus = true,
+			car = true,
+			caution = true,
+			cycling = true,
+			database = true,
+			desert = true,
+			diving = true,
+			fillingstation = true,
+			finish = true,
+			fire = true,
+			firstaid = true,
+			fishing = true,
+			flag = true,
+			forest = true,
+			harbor = true,
+			helicopter = true,
+			home = true,
+			horseriding = true,
+			hospital = true,
+			lake = true,
+			motorbike = true,
+			mountains = true,
+			radio = true,
+			restaurant = true,
+			river = true,
+			road = true,
+			shipwreck = true,
+			thunderstorm = true
+		}
+
+		unitTest:assertError(error_func, switchInvalidArgumentMsg("VOID", "icon", icons))
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					icon = "UC"
+				}
+			}
+		end
+
+		unitTest:assertError(error_func, "Field 'ICON' of View 'villages' must be a string, got 'number'.")
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					icon = "Nome"
+				}
+			}
+		end
+
+		unitTest:assertError(error_func, switchInvalidArgumentMsg("Franca", "icon", icons))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

@@ -192,52 +192,10 @@ function View(data)
 	end
 
 	if data.icon then
-		local icons = {
-			airport = true,
-			animal = true,
-			bigcity = true,
-			bus = true,
-			car = true,
-			caution = true,
-			cycling = true,
-			database = true,
-			desert = true,
-			diving = true,
-			fillingstation = true,
-			finish = true,
-			fire = true,
-			firstaid = true,
-			fishing = true,
-			flag = true,
-			forest = true,
-			harbor = true,
-			helicopter = true,
-			home = true,
-			horseriding = true,
-			hospital = true,
-			lake = true,
-			motorbike = true,
-			mountains = true,
-			radio = true,
-			restaurant = true,
-			river = true,
-			road = true,
-			shipwreck = true,
-			thunderstorm = true
-		}
-
 		local itype = type(data.icon)
-		if itype == "string" then
-			if data.icon:find("[0-9]") then
-				data.icon = {path = data.icon}
-				itype = "table"
-			else
-				if not icons[data.icon] then
-					switchInvalidArgument("icon", data.icon, icons)
-				end
-
-				data.icon = data.icon..".png"
-			end
+		if itype == "string" and (data.icon:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon:find("[0-9]")) then
+			data.icon = {path = data.icon}
+			itype = "table"
 		end
 
 		if itype == "table" then

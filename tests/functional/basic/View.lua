@@ -183,7 +183,7 @@ return {
 		unitTest:assertNil(view.color)
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
 		unitTest:assertType(view.icon, "string")
-		unitTest:assertEquals(view.icon, "home.png")
+		unitTest:assertEquals(view.icon, "home")
 		unitTest:assertEquals(view.download, false)
 
 		view = View{

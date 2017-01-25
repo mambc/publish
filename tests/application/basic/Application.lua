@@ -364,8 +364,8 @@ return {
 		unitTest:assertType(view, "View")
 		unitTest:assertType(view.description, "string")
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
-		unitTest:assertEquals(view.icon.options, "./assets/home.png")
-		unitTest:assert(File(app.output..view.icon.options):exists())
+		unitTest:assertEquals(view.icon.path, "./assets/home.png")
+		unitTest:assert(File(app.output..view.icon.path):exists())
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 
@@ -443,8 +443,8 @@ return {
 
 		view = app.view.villages
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.icon.options, "./assets/home.png")
-		unitTest:assert(File(app.output..view.icon.options):exists())
+		unitTest:assertEquals(view.icon.path, "./assets/home.png")
+		unitTest:assert(File(app.output..view.icon.path):exists())
 		unitTest:assertNil(view.icon.time)
 
 		app = Application{
@@ -500,6 +500,32 @@ return {
 		unitTest:assertEquals(view.icon.options.fillOpacity, 1)
 		unitTest:assertEquals(view.icon.options.strokeWeight, 2)
 		unitTest:assertEquals(view.icon.time, 25)
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		app = Application{
+			project = filePath("arapiuns.tview", "publish"),
+			base = "roadmap",
+			clean = true,
+			output = arapiunsDir,
+			villages = View{
+				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+				download = true,
+				icon = "ICON"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertNil(app.report)
+
+		view = app.view.villages
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.icon.property, "ICON")
+		unitTest:assertNil(view.icon.path)
+		unitTest:assertNil(view.icon.time)
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

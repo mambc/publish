@@ -136,7 +136,8 @@ data{
 		MANT = "",
 		TEMPO = "",
 		CODLig1 = "",
-		CodLig2 = ""
+		CodLig2 = "",
+		ICON = "The name of marker icon."
 	}
 }
 

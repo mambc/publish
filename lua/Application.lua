@@ -398,13 +398,77 @@ local function processingView(data, layers, reports, name, view)
 		end
 
 		local icon = {}
-		if type(view.icon) == "string" then
-			if not view.icon:match("[0-9]") and view.geom == "LineString" or view.geom == "MultiLineString" then
+		local itype = type(view.icon)
+
+		if itype == "string" then
+			if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
 				customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
 			end
 
-			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
-			icon.options = "./assets/"..view.icon
+			local ics = {
+				airport = true,
+				animal = true,
+				bigcity = true,
+				bus = true,
+				car = true,
+				caution = true,
+				cycling = true,
+				database = true,
+				desert = true,
+				diving = true,
+				fillingstation = true,
+				finish = true,
+				fire = true,
+				firstaid = true,
+				fishing = true,
+				flag = true,
+				forest = true,
+				harbor = true,
+				helicopter = true,
+				home = true,
+				horseriding = true,
+				hospital = true,
+				lake = true,
+				motorbike = true,
+				mountains = true,
+				radio = true,
+				restaurant = true,
+				river = true,
+				road = true,
+				shipwreck = true,
+				thunderstorm = true
+			}
+
+			if not ics[view.icon] then
+				local col = dset[0][view.icon]
+				if not col then
+					switchInvalidArgument("icon", view.icon, ics)
+				end
+
+				local copy = {}
+				for i = 0, #dset do
+					local ic =  dset[i][view.icon]
+					if type(ic) ~= "string" then
+						customError("Field 'ICON' of View '"..name.."' must be a string, got '"..type(ic).."'.")
+					end
+
+					if not ics[ic] then
+						switchInvalidArgument("icon", ic, ics)
+					end
+
+					copy[ic..".png"] = true
+				end
+
+				for el in pairs(copy) do
+					os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
+				end
+
+				icon.property = view.icon
+			else
+				view.icon = view.icon..".png"
+				icon.path = "./assets/"..view.icon
+				os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
+			end
 		else
 			view.icon.transparency = 1 - view.icon.transparency
 			icon.options = {

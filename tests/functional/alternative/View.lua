@@ -210,11 +210,6 @@ return {
 		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 1.1.")
 
 		error_func = function()
-			View{icon = "hom"}
-		end
-		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
-
-		error_func = function()
 			View{icon = 1}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("icon", "string or table", 1))

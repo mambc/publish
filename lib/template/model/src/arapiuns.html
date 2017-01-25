@@ -1,1216 +1,1213 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
-	<title>The riverine settlements at Arapiuns (PA)</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-	<link rel="stylesheet" href="./css/publish.css"/>
-</head>
-<body>
-<div class="container">
-	<nav class="navbar navbar-fixed-top navbar-light" style="background-color: #00587A;" role="navigation">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" style="color: #FFFFFF;">The riverine settlements at Arapiuns (PA)</a>
-			</div>
-		</div>
-	</nav>
-</div>
-<div class="navbar-offset"></div>
-<div id="map-canvas">
-	<div id="map"></div>
-</div>
-<div class="row main-row">
-	<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
-		<div class="panel-group sidebar-body" id="accordion-left">
-			<div class="panel panel-default">
-				<div class="panel-heading" >
-					<h4 class="panel-title">
-						<i class="fa fa-list-alt"></i><a data-toggle="collapse" href="#layers"> Layers</a>
-						<span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span>
-					</h4>
+	<head>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+		<title>The riverine settlements at Arapiuns (PA)</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+		<link rel="stylesheet" href="./css/publish.css"/>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: rgba(0, 0, 139, 1);" role="navigation">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand" style="color: rgba(255, 255, 255, 1);">The riverine settlements at Arapiuns (PA)</a>
+					</div>
 				</div>
-				<div id="layers" class="panel-collapse collapse in">
-					<div class="panel-body list-group">
-						<button id="beginning" type="button" class="list-group-item">
-							<input name="beginning" type="checkbox"> Beginning
-						</button>
-						<button id="ending" type="button" class="list-group-item">
-							<input name="ending" type="checkbox"> Ending
-						</button>
-						<button id="villages" type="button" class="list-group-item">
-							<input name="villages" type="checkbox"> Villages
-						</button>
+			</nav>
+		</div>
+		<div class="navbar-offset"></div>
+		<div id="map-canvas">
+			<div id="map"></div>
+		</div>
+		<div class="row main-row">
+			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
+				<div class="panel-group sidebar-body" id="accordion-left">
+					<div class="panel panel-default">
+						<div class="panel-heading" >
+							<h4 class="panel-title">
+								<i class="fa fa-list-alt"></i><a data-toggle="collapse" href="#layers"> Layers</a>
+								<span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span>
+							</h4>
+						</div>
+						<div id="layers" class="panel-collapse collapse in">
+							<div class="panel-body list-group">
+									<button id="trajectory" type="button" class="list-group-item">
+										<input name="trajectory" type="checkbox"> Trajectory
+									</button>
+									<button id="villages" type="button" class="list-group-item">
+										<input name="villages" type="checkbox"> Villages
+									</button>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<i class="fa fa-list-alt"></i><a id="description-title" data-toggle="collapse" href="#properties"> Description</a>
+							</h4>
+						</div>
+						<div id="properties" class="panel-collapse collapse">
+							<div class="panel-body">
+								<p id="layer-description"></p>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<i class="fa fa-list-alt"></i><a id="legend-title" data-toggle="collapse" href="#legends"> Legend</a>
+							</h4>
+						</div>
+						<div id="legends" class="panel-collapse collapse">
+							<div id="legend" class="panel-body"></div>
+						</div>
+					</div>
+					<div id="panel-download" class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<i class="fa fa-download"></i><a id="download-title"> Download</a>
+							</h4>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<i class="fa fa-list-alt"></i><a id="description-title" data-toggle="collapse" href="#properties"> Description</a>
-					</h4>
-				</div>
-				<div id="properties" class="panel-collapse collapse">
-					<div class="panel-body">
-						<p id="layer-description"></p>
+		</div>
+		<div class="mini-submenu mini-submenu-left pull-left">
+			<i class="fa fa-list-alt"></i>
+		</div>
+		<img id="loader" src="./assets/default.gif" hidden="hidden"/>
+		<footer class="navbar-default navbar-fixed-bottom">
+			<div id="footer" class="container-fluid">
+				<p>© 2016 Powered by package <a href="https://github.com/TerraME/publish">publish</a> of <a href="http://www.terrame.org">TerraME</a>.</p>
+			</div>
+		</footer>
+		<div class="modal fade" id="modal-app-description" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">The riverine settlements at Arapiuns (PA)</h4>
+					</div>
+					<div class="modal-body">
+						<p>	This report presents the methodology and the initial results obtained at the fieldwork along riverine settlements at
+	Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
+	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the
+	infrastructure and network relations of riverine human settlements. The main objective was to characterize the
+	organization and interdependence between settlements concerning to:infrastructure, health and education services,
+	land use, ecosystem services provision and perception of welfare.
+	Source: Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA.
+	Relatório Técnico de Atividade de Campo - Projeto UrbisAmazônia e Projeto Cenários para a Amazônia: Uso da terra,
+	Biodiversidade e Clima, INPE.
+</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<i class="fa fa-list-alt"></i><a id="legend-title" data-toggle="collapse" href="#legends"> Legend</a>
-					</h4>
+		</div>
+		<div class="modal fade" id="modal-report-villagesFranca" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesFranca"> Franca</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesFranca">
+						<img class="report-img" src="./images/Franca.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
 				</div>
-				<div id="legends" class="panel-collapse collapse">
-					<div id="legend" class="panel-body"></div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAningalsinho" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesAningalsinho"> Aningalsinho</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAningalsinho">
+						<img class="report-img" src="./images/Aningalsinho.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
 				</div>
 			</div>
-			<div id="panel-download" class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<i class="fa fa-download"></i><a id="download-title"> Download</a>
-					</h4>
+		</div>
+		<div class="modal fade" id="modal-report-villagesGurupa" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesGurupa"> Gurupa</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesGurupa">
+						<img class="report-img" src="./images/Gurupa.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="mini-submenu mini-submenu-left pull-left">
-	<i class="fa fa-list-alt"></i>
-</div>
-<img id="loader" src="./assets/default.gif" hidden="hidden"/>
-<footer class="navbar-default navbar-fixed-bottom">
-	<div id="footer" class="container-fluid">
-		<p>© 2016 Powered by package <a href="https://github.com/TerraME/publish">publish</a> of <a href="http://www.terrame.org">TerraME</a>.</p>
-	</div>
-</footer>
-<div class="modal fade" id="modal-app-description" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title">The riverine settlements at Arapiuns (PA)</h4>
-			</div>
-			<div class="modal-body">
-				<p>		This report presents the methodology and the initial results obtained at the fieldwork along riverine settlements at
-					Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
-					This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the
-					infrastructure and network relations of riverine human settlements. The main objective was to characterize the
-					organization and interdependence between settlements concerning to:infrastructure, health and education services,
-					land use, ecosystem services provision and perception of welfare.
-				</p>
-				<p>
-					Source: Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório Técnico de Atividade de Campo - Projeto UrbisAmazônia e Projeto Cenários para a Amazônia: Uso da terra, Biodiversidade e Clima, INPE.
-				</p>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
+		<div class="modal fade" id="modal-report-villagesSao-Francisco" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSao-Francisco"> Sao Francisco</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSao-Francisco">
+						<img class="report-img" src="./images/Sao Francisco.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesFranca" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesFranca"> Franca</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesFranca">
-				<img class="report-img" src="./images/Franca.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesAningalsinho" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesAningalsinho"> Aningalsinho</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesAningalsinho">
-				<img class="report-img" src="./images/Aningalsinho.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesAtrocal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesAtrocal"> Atrocal</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAtrocal">
+						<img class="report-img" src="./images/Atrocal.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesGurupa" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesGurupa"> Gurupa</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesGurupa">
-				<img class="report-img" src="./images/Gurupa.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSao-Francisco" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSao-Francisco"> Sao Francisco</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSao-Francisco">
-				<img class="report-img" src="./images/Sao Francisco.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesSao-Jose-I" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSao-Jose-I"> Sao Jose I</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSao-Jose-I">
+						<img class="report-img" src="./images/Sao Jose I.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesAtrocal" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesAtrocal"> Atrocal</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesAtrocal">
-				<img class="report-img" src="./images/Atrocal.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSao-Jose-I" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSao-Jose-I"> Sao Jose I</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSao-Jose-I">
-				<img class="report-img" src="./images/Sao Jose I.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesBom-Futuro" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesBom-Futuro"> Bom Futuro</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesBom-Futuro">
+						<img class="report-img" src="./images/Bom Futuro.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesBom-Futuro" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesBom-Futuro"> Bom Futuro</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesBom-Futuro">
-				<img class="report-img" src="./images/Bom Futuro.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesCutile" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesCutile"> Cutile</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesCutile">
-				<img class="report-img" src="./images/Cutile.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesCutile" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesCutile"> Cutile</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCutile">
+						<img class="report-img" src="./images/Cutile.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSao-Joao-da-Pira" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSao-Joao-da-Pira"> Sao Joao da Pira</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSao-Joao-da-Pira">
-				<img class="report-img" src="./images/Sao Joao da Pira.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesCamara" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesCamara"> Camara</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesCamara">
-				<img class="report-img" src="./images/Camara.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesSao-Joao-da-Pira" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSao-Joao-da-Pira"> Sao Joao da Pira</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSao-Joao-da-Pira">
+						<img class="report-img" src="./images/Sao Joao da Pira.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesPascoal" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesPascoal"> Pascoal</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesPascoal">
-				<img class="report-img" src="./images/Pascoal.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesAna" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesAna"> Ana</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesAna">
-				<img class="report-img" src="./images/Ana.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesCamara" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesCamara"> Camara</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCamara">
+						<img class="report-img" src="./images/Camara.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesNovo-Horizonte" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesNovo-Horizonte"> Novo Horizonte</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesNovo-Horizonte">
-				<img class="report-img" src="./images/Novo Horizonte.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSao-Jose-II" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSao-Jose-II"> Sao Jose II</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSao-Jose-II">
-				<img class="report-img" src="./images/Sao Jose II.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesPascoal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesPascoal"> Pascoal</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesPascoal">
+						<img class="report-img" src="./images/Pascoal.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesMonte-Siao" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesMonte-Siao"> Monte Siao</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesMonte-Siao">
-				<img class="report-img" src="./images/Monte Siao.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesMentai" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesMentai"> Mentai</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesMentai">
-				<img class="report-img" src="./images/Mentai.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesAna" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesAna"> Ana</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAna">
+						<img class="report-img" src="./images/Ana.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSao-Jose-III" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSao-Jose-III"> Sao Jose III</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSao-Jose-III">
-				<img class="report-img" src="./images/Sao Jose III.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesNovo-Horizonte" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesNovo-Horizonte"> Novo Horizonte</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovo-Horizonte">
+						<img class="report-img" src="./images/Novo Horizonte.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesCachoeira-do-Arua" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesCachoeira-do-Arua"> Cachoeira do Arua</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesCachoeira-do-Arua">
-				<img class="report-img" src="./images/Cachoeira do Arua.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesSao-Jose-II" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSao-Jose-II"> Sao Jose II</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSao-Jose-II">
+						<img class="report-img" src="./images/Sao Jose II.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSociedade-dos-Parentes" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSociedade-dos-Parentes"> Sociedade dos Parentes</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSociedade-dos-Parentes">
-				<img class="report-img" src="./images/Sociedade dos Parentes.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesCachoeira-do-Maro" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesCachoeira-do-Maro"> Cachoeira do Maro</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesCachoeira-do-Maro">
-				<img class="report-img" src="./images/Cachoeira do Maro.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesMonte-Siao" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesMonte-Siao"> Monte Siao</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesMonte-Siao">
+						<img class="report-img" src="./images/Monte Siao.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesFe-em-Deus" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesFe-em-Deus"> Fe em Deus</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesFe-em-Deus">
-				<img class="report-img" src="./images/Fe em Deus.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesNovo-Lugar" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesNovo-Lugar"> Novo Lugar</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesNovo-Lugar">
-				<img class="report-img" src="./images/Novo Lugar.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesMentai" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesMentai"> Mentai</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesMentai">
+						<img class="report-img" src="./images/Mentai.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesRaposa" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesRaposa"> Raposa</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesRaposa">
-				<img class="report-img" src="./images/Raposa.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSao-Pedro" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSao-Pedro"> Sao Pedro</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSao-Pedro">
-				<img class="report-img" src="./images/Sao Pedro.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesSao-Jose-III" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSao-Jose-III"> Sao Jose III</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSao-Jose-III">
+						<img class="report-img" src="./images/Sao Jose III.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesCuri" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesCuri"> Curi</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesCuri">
-				<img class="report-img" src="./images/Curi.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesNova-Vista" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesNova-Vista"> Nova Vista</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesNova-Vista">
-				<img class="report-img" src="./images/Nova Vista.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesCachoeira-do-Arua" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesCachoeira-do-Arua"> Cachoeira do Arua</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCachoeira-do-Arua">
+						<img class="report-img" src="./images/Cachoeira do Arua.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesBacuri" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesBacuri"> Bacuri</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesBacuri">
-				<img class="report-img" src="./images/Bacuri.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesVila-Gorete" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesVila-Gorete"> Vila Gorete</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesVila-Gorete">
-				<img class="report-img" src="./images/Vila Gorete.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesSociedade-dos-Parentes" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSociedade-dos-Parentes"> Sociedade dos Parentes</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSociedade-dos-Parentes">
+						<img class="report-img" src="./images/Sociedade dos Parentes.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSantissima-Trindade" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSantissima-Trindade"> Santissima Trindade</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSantissima-Trindade">
-				<img class="report-img" src="./images/Santissima Trindade.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesVila-Brasil" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesVila-Brasil"> Vila Brasil</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesVila-Brasil">
-				<img class="report-img" src="./images/Vila Brasil.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesCachoeira-do-Maro" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesCachoeira-do-Maro"> Cachoeira do Maro</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCachoeira-do-Maro">
+						<img class="report-img" src="./images/Cachoeira do Maro.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesCoroca" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesCoroca"> Coroca</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesCoroca">
-				<img class="report-img" src="./images/Coroca.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSao-Miguel" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSao-Miguel"> Sao Miguel</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSao-Miguel">
-				<img class="report-img" src="./images/Sao Miguel.jpg"/>
-				<br/>
-
-				<P>The community has health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesFe-em-Deus" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesFe-em-Deus"> Fe em Deus</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesFe-em-Deus">
+						<img class="report-img" src="./images/Fe em Deus.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesArimum" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesArimum"> Arimum</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesArimum">
-				<img class="report-img" src="./images/Arimum.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesNova-Sociedade-do-Tucuma" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesNova-Sociedade-do-Tucuma"> Nova Sociedade do Tucuma</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesNova-Sociedade-do-Tucuma">
-				<img class="report-img" src="./images/Nova Sociedade do Tucuma.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesNovo-Lugar" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesNovo-Lugar"> Novo Lugar</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovo-Lugar">
+						<img class="report-img" src="./images/Novo Lugar.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesLagoa-da-Praia" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesLagoa-da-Praia"> Lagoa da Praia</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesLagoa-da-Praia">
-				<img class="report-img" src="./images/Lagoa da Praia.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesRaposa" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesRaposa"> Raposa</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesRaposa">
+						<img class="report-img" src="./images/Raposa.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesLago-Central" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesLago-Central"> Lago Central</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesLago-Central">
-				<img class="report-img" src="./images/Lago Central.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesMaica" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesMaica"> Maica</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesMaica">
-				<img class="report-img" src="./images/Maica.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesSao-Pedro" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSao-Pedro"> Sao Pedro</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSao-Pedro">
+						<img class="report-img" src="./images/Sao Pedro.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesSanta-Luzia" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesSanta-Luzia"> Santa Luzia</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesSanta-Luzia">
-				<img class="report-img" src="./images/Santa Luzia.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesAmari" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesAmari"> Amari</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesAmari">
-				<img class="report-img" src="./images/Amari.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesCuri" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesCuri"> Curi</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCuri">
+						<img class="report-img" src="./images/Curi.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesCuipiranga" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesCuipiranga"> Cuipiranga</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesCuipiranga">
-				<img class="report-img" src="./images/Cuipiranga.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesUrucurea" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesUrucurea"> Urucurea</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesUrucurea">
-				<img class="report-img" src="./images/Urucurea.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesNova-Vista" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesNova-Vista"> Nova Vista</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNova-Vista">
+						<img class="report-img" src="./images/Nova Vista.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesNova-Sociedade" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesNova-Sociedade"> Nova Sociedade</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesNova-Sociedade">
-				<img class="report-img" src="./images/Nova Sociedade.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesAtodi" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesAtodi"> Atodi</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesAtodi">
-				<img class="report-img" src="./images/Atodi.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesBacuri" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesBacuri"> Bacuri</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesBacuri">
+						<img class="report-img" src="./images/Bacuri.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesPiaui" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesPiaui"> Piaui</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesPiaui">
-				<img class="report-img" src="./images/Piaui.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesTucuma" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesTucuma"> Tucuma</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesTucuma">
-				<img class="report-img" src="./images/Tucuma.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesVila-Gorete" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesVila-Gorete"> Vila Gorete</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesVila-Gorete">
+						<img class="report-img" src="./images/Vila Gorete.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesNova-Pedreira" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesNova-Pedreira"> Nova Pedreira</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesNova-Pedreira">
-				<img class="report-img" src="./images/Nova Pedreira.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesSantissima-Trindade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSantissima-Trindade"> Santissima Trindade</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSantissima-Trindade">
+						<img class="report-img" src="./images/Santissima Trindade.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesVista-Alegre" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesVista-Alegre"> Vista Alegre</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesVista-Alegre">
-				<img class="report-img" src="./images/Vista Alegre.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesArapiranga" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesArapiranga"> Arapiranga</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesArapiranga">
-				<img class="report-img" src="./images/Arapiranga.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
-
-				<P>The schools offers Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesVila-Brasil" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesVila-Brasil"> Vila Brasil</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesVila-Brasil">
+						<img class="report-img" src="./images/Vila Brasil.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<div class="modal fade" id="modal-report-villagesAmina" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<h2 class="modal-title" id="modal-report-label-villagesAmina"> Amina</h2>
-				<p class="text-muted">Escada et. al (2013)</p>
-			</div>
-			<div class="modal-body" id="modal-report-text-villagesAmina">
-				<img class="report-img" src="./images/Amina.jpg"/>
-				<br/>
-
-				<P>The community hasn&#39;t health center and has access to water.</P>
-
-				<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
-
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		<div class="modal fade" id="modal-report-villagesCoroca" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesCoroca"> Coroca</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCoroca">
+						<img class="report-img" src="./images/Coroca.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
-</div>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
-<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
-<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<script type="text/javascript" src="./arapiuns.js"></script>
-<script type="text/javascript" src="./js/publish.js"></script>
-</body>
+		<div class="modal fade" id="modal-report-villagesSao-Miguel" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSao-Miguel"> Sao Miguel</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSao-Miguel">
+						<img class="report-img" src="./images/Sao Miguel.jpg"/>
+						<br/>
+						
+						<P>The community has health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesArimum" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesArimum"> Arimum</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesArimum">
+						<img class="report-img" src="./images/Arimum.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNova-Sociedade-do-Tucuma" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesNova-Sociedade-do-Tucuma"> Nova Sociedade do Tucuma</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNova-Sociedade-do-Tucuma">
+						<img class="report-img" src="./images/Nova Sociedade do Tucuma.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesLagoa-da-Praia" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesLagoa-da-Praia"> Lagoa da Praia</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesLagoa-da-Praia">
+						<img class="report-img" src="./images/Lagoa da Praia.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesLago-Central" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesLago-Central"> Lago Central</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesLago-Central">
+						<img class="report-img" src="./images/Lago Central.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesMaica" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesMaica"> Maica</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesMaica">
+						<img class="report-img" src="./images/Maica.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSanta-Luzia" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesSanta-Luzia"> Santa Luzia</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSanta-Luzia">
+						<img class="report-img" src="./images/Santa Luzia.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAmari" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesAmari"> Amari</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAmari">
+						<img class="report-img" src="./images/Amari.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCuipiranga" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesCuipiranga"> Cuipiranga</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCuipiranga">
+						<img class="report-img" src="./images/Cuipiranga.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesUrucurea" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesUrucurea"> Urucurea</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesUrucurea">
+						<img class="report-img" src="./images/Urucurea.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNova-Sociedade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesNova-Sociedade"> Nova Sociedade</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNova-Sociedade">
+						<img class="report-img" src="./images/Nova Sociedade.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAtodi" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesAtodi"> Atodi</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAtodi">
+						<img class="report-img" src="./images/Atodi.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesPiaui" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesPiaui"> Piaui</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesPiaui">
+						<img class="report-img" src="./images/Piaui.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesTucuma" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesTucuma"> Tucuma</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesTucuma">
+						<img class="report-img" src="./images/Tucuma.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNova-Pedreira" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesNova-Pedreira"> Nova Pedreira</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNova-Pedreira">
+						<img class="report-img" src="./images/Nova Pedreira.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesVista-Alegre" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesVista-Alegre"> Vista Alegre</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesVista-Alegre">
+						<img class="report-img" src="./images/Vista Alegre.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesArapiranga" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesArapiranga"> Arapiranga</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesArapiranga">
+						<img class="report-img" src="./images/Arapiranga.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and hasn&#39;t access to water.</P>
+						
+						<P>The schools offers Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAmina" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title" id="modal-report-label-villagesAmina"> Amina</h2>
+						<p class="text-muted">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAmina">
+						<img class="report-img" src="./images/Amina.jpg"/>
+						<br/>
+						
+						<P>The community hasn&#39;t health center and has access to water.</P>
+						
+						<P>The schools offers Early Childhood Education, Elementary School, Education of Young and Adults.</P>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
+		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="./arapiuns.js"></script>
+		<script type="text/javascript" src="./js/publish.js"></script>
+	</body>
 </html>
