@@ -50,7 +50,7 @@ Application{
 	trajectory = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		border = "red",
+		border = "blue",
 		icon = {
 			path = "M150 0 L75 200 L225 200 Z",
 			transparency = 0.2,
@@ -60,7 +60,7 @@ Application{
 	villages = View{
 		download = true,
 		description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-		icon = "home",
+		icon = "ICON",
 		select = "Nome",
 		report = function(cell)
 			local mreport = Report{
