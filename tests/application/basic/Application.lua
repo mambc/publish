@@ -511,7 +511,10 @@ return {
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
 				download = true,
-				icon = "ICON"
+				icon = {
+					column = "UC",
+					marker = {"home", "forest"}
+				}
 			}
 		}
 
@@ -523,9 +526,59 @@ return {
 
 		view = app.view.villages
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.icon.property, "ICON")
 		unitTest:assertNil(view.icon.path)
 		unitTest:assertNil(view.icon.time)
+
+		unitTest:assertEquals(view.icon.column, "UC")
+		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
+		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+
+		unitTest:assertEquals(view.label["UC 0"], "./assets/home.png")
+		unitTest:assertEquals(view.label["UC 1"], "./assets/forest.png")
+
+		unitTest:assert(isFile(app.output..view.icon.options["0"]))
+		unitTest:assert(isFile(app.output..view.icon.options["1"]))
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		app = Application{
+			project = filePath("arapiuns.tview", "publish"),
+			base = "roadmap",
+			clean = true,
+			output = arapiunsDir,
+			villages = View{
+				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+				download = true,
+				icon = {
+					column = "UC",
+					marker = {
+						home = "Absence of Conservation Unit",
+						forest = "Presence of Conservation Unit"
+					}
+				}
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+		unitTest:assertType(app.output, "Directory")
+		unitTest:assert(app.output:exists())
+		unitTest:assertNil(app.report)
+
+		view = app.view.villages
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.icon.path)
+		unitTest:assertNil(view.icon.time)
+
+		unitTest:assertEquals(view.icon.column, "UC")
+		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
+		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+
+		unitTest:assertEquals(view.label["Absence of Conservation Unit"], "./assets/home.png")
+		unitTest:assertEquals(view.label["Presence of Conservation Unit"], "./assets/forest.png")
+
+		unitTest:assert(isFile(app.output..view.icon.options["0"]))
+		unitTest:assert(isFile(app.output..view.icon.options["1"]))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

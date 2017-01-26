@@ -193,31 +193,76 @@ function View(data)
 
 	if data.icon then
 		local itype = type(data.icon)
-		if itype == "string" and (data.icon:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon:find("[0-9]")) then
-			data.icon = {path = data.icon}
-			itype = "table"
+		if itype == "string" then
+			if data.icon:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon:find("[0-9]") then
+				data.icon = {path = data.icon}
+				itype = "table"
+			else
+				local ics = {
+					airport = true,
+					animal = true,
+					bigcity = true,
+					bus = true,
+					car = true,
+					caution = true,
+					cycling = true,
+					database = true,
+					desert = true,
+					diving = true,
+					fillingstation = true,
+					finish = true,
+					fire = true,
+					firstaid = true,
+					fishing = true,
+					flag = true,
+					forest = true,
+					harbor = true,
+					helicopter = true,
+					home = true,
+					horseriding = true,
+					hospital = true,
+					lake = true,
+					motorbike = true,
+					mountains = true,
+					radio = true,
+					restaurant = true,
+					river = true,
+					road = true,
+					shipwreck = true,
+					thunderstorm = true
+				}
+
+				if not ics[data.icon] then
+					switchInvalidArgument("icon", data.icon, ics)
+				end
+			end
 		end
 
 		if itype == "table" then
-			mandatoryTableArgument(data.icon, "path", "string")
-			defaultTableValue(data.icon, "time", 5)
-			defaultTableValue(data.icon, "color", "black")
-			defaultTableValue(data.icon, "transparency", 0)
+			if data.icon.column or data.icon.marker then
+				mandatoryTableArgument(data.icon, "column", "string")
+				mandatoryTableArgument(data.icon, "marker", "table")
+			else
+				mandatoryTableArgument(data.icon, "path", "string")
+				defaultTableValue(data.icon, "time", 5)
+				defaultTableValue(data.icon, "color", "black")
+				defaultTableValue(data.icon, "transparency", 0)
 
-			verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency", "time"})
+				verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency", "time"})
 
-			if not (data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon.path:find("[0-9]")) then
-				customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
-			end
+				if not (data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon.path:find("[0-9]")) then
+					customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+				end
 
-			if data.icon.transparency < 0 or data.icon.transparency > 1 then
-				customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
-			end
+				if data.icon.transparency < 0 or data.icon.transparency > 1 then
+					customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
+				end
 
-			data.icon.color = color{color = data.icon.color}
+				data.icon.color = color{color = data.icon.color}
 
-			if data.icon.time <= 0 then
-				customError("Argument 'time' of icon must be a number greater than 0, got "..data.icon.time..".")
+				if data.icon.time <= 0 then
+					customError("Argument 'time' of icon must be a number greater than 0, got "..data.icon.time..".")
+				end
 			end
 		end
 	end

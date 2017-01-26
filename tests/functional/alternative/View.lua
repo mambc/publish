@@ -335,5 +335,82 @@ return {
 			View{download = false}
 		end
 		unitTest:assertError(error_func, defaultValueMsg("download", false))
+
+		error_func = function()
+			View{
+				icon = {column = "UC"}
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("marker"))
+
+		error_func = function()
+			View{
+				icon = {marker = {"forest"}}
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("column"))
+
+
+		error_func = function()
+			View{
+				icon = {column = 1, marker = {"forest"}}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("column", "string", 1))
+
+		error_func = function()
+			View{
+				icon = {column = "UC", marker = 1}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("marker", "table", 1))
+
+		local icons = {
+			airport = true,
+			animal = true,
+			bigcity = true,
+			bus = true,
+			car = true,
+			caution = true,
+			cycling = true,
+			database = true,
+			desert = true,
+			diving = true,
+			fillingstation = true,
+			finish = true,
+			fire = true,
+			firstaid = true,
+			fishing = true,
+			flag = true,
+			forest = true,
+			harbor = true,
+			helicopter = true,
+			home = true,
+			horseriding = true,
+			hospital = true,
+			lake = true,
+			motorbike = true,
+			mountains = true,
+			radio = true,
+			restaurant = true,
+			river = true,
+			road = true,
+			shipwreck = true,
+			thunderstorm = true
+		}
+
+		error_func = function()
+			View{
+				icon = "VOID"
+			}
+		end
+		unitTest:assertError(error_func, switchInvalidArgumentMsg("VOID", "icon", icons))
+
+		error_func = function()
+			View{
+				icon = "hom"
+			}
+		end
+		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
 	end
 }

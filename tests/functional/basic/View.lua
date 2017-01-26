@@ -222,6 +222,43 @@ return {
 		unitTest:assertNotNil(view.icon.transparency)
 		unitTest:assertEquals(view.icon.time, 5)
 		unitTest:assertEquals(view.download, true)
+
+		view = View{
+			icon = {
+				column = "UC",
+				marker = {"home", "forest"}
+			}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.icon.column, "string")
+		unitTest:assertType(view.icon.marker, "table")
+		unitTest:assertEquals(view.icon.column, "UC")
+		unitTest:assertEquals(view.icon.marker[1], "home")
+		unitTest:assertEquals(view.icon.marker[2], "forest")
+
+		view = View{
+			icon = {
+				column = "UC",
+				marker = {
+					home = "Absence of Conservation Unit",
+					forest = "Presence of Conservation Unit"
+				}
+			}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.icon.column, "string")
+		unitTest:assertType(view.icon.marker, "table")
+		unitTest:assertEquals(view.icon.column, "UC")
+		unitTest:assertEquals(view.icon.marker.home, "Absence of Conservation Unit")
+		unitTest:assertEquals(view.icon.marker.forest, "Presence of Conservation Unit")
 	end,
 	__tostring = function(unitTest)
 		local view = View{

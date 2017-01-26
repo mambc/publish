@@ -230,12 +230,33 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					icon = "VOID"
+					icon = {
+						column = "VOID",
+						marker = {"home", "forest"}
+					}
 				}
 			}
 		end
+		unitTest:assertError(error_func, "Column 'VOID' does not exist in View 'villages'.")
 
-		local icons = {
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					icon = {
+						column = "UC",
+						marker = {"home"}
+					}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "The number of 'icon:makers' (1) must be equal to number of unique values in property 'UC' (2) in View 'villages'.")
+
+		local ics = {
 			airport = true,
 			animal = true,
 			bigcity = true,
@@ -269,8 +290,6 @@ return {
 			thunderstorm = true
 		}
 
-		unitTest:assertError(error_func, switchInvalidArgumentMsg("VOID", "icon", icons))
-
 		error_func = function()
 			Application{
 				project = filePath("arapiuns.tview", "publish"),
@@ -279,27 +298,14 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					icon = "UC"
+					icon = {
+						column = "UC",
+						marker = {"home", "fores"}
+					}
 				}
 			}
 		end
-
-		unitTest:assertError(error_func, "Field 'ICON' of View 'villages' must be a string, got 'number'.")
-
-		error_func = function()
-			Application{
-				project = filePath("arapiuns.tview", "publish"),
-				base = "roadmap",
-				clean = true,
-				output = arapiunsDir,
-				villages = View{
-					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					icon = "Nome"
-				}
-			}
-		end
-
-		unitTest:assertError(error_func, switchInvalidArgumentMsg("Franca", "icon", icons))
+		unitTest:assertError(error_func, "'fores' is an invalid value for argument 'icon:marker'. Do you mean 'forest'?")
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

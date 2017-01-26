@@ -399,86 +399,131 @@ local function processingView(data, layers, reports, name, view)
 
 		local icon = {}
 		local itype = type(view.icon)
-
 		if itype == "string" then
 			if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
 				customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
 			end
 
-			local ics = {
-				airport = true,
-				animal = true,
-				bigcity = true,
-				bus = true,
-				car = true,
-				caution = true,
-				cycling = true,
-				database = true,
-				desert = true,
-				diving = true,
-				fillingstation = true,
-				finish = true,
-				fire = true,
-				firstaid = true,
-				fishing = true,
-				flag = true,
-				forest = true,
-				harbor = true,
-				helicopter = true,
-				home = true,
-				horseriding = true,
-				hospital = true,
-				lake = true,
-				motorbike = true,
-				mountains = true,
-				radio = true,
-				restaurant = true,
-				river = true,
-				road = true,
-				shipwreck = true,
-				thunderstorm = true
-			}
+			view.icon = view.icon..".png"
+			icon.path = "./assets/"..view.icon
+			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
+		else
+			if view.icon.column and view.icon.marker then
+				local nProp = 0
+				local set = {}
+				local label = {}
+				icon.options = {}
+				local col = view.icon.column
+				for i = 0, #dset do
+					local prop = dset[i][col]
+					if not prop then
+						customError("Column '"..col.."' does not exist in View '"..name.."'.")
+					end
 
-			if not ics[view.icon] then
-				local col = dset[0][view.icon]
-				if not col then
-					switchInvalidArgument("icon", view.icon, ics)
+					if not set[prop] then
+						set[prop] = true
+						nProp = nProp + 1
+					end
 				end
 
+				local markers = view.icon.marker
+				local nMarkers = #markers
+				if nMarkers == 0 then
+					local mtmp = {}
+					for marker, lbl in pairs(markers) do
+						table.insert(label, lbl)
+						table.insert(mtmp, marker)
+						nMarkers = nMarkers + 1
+					end
+
+					markers = mtmp
+				end
+
+				if nProp ~= nMarkers then
+					customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
+				end
+
+				local ics = {
+					airport = true,
+					animal = true,
+					bigcity = true,
+					bus = true,
+					car = true,
+					caution = true,
+					cycling = true,
+					database = true,
+					desert = true,
+					diving = true,
+					fillingstation = true,
+					finish = true,
+					fire = true,
+					firstaid = true,
+					fishing = true,
+					flag = true,
+					forest = true,
+					harbor = true,
+					helicopter = true,
+					home = true,
+					horseriding = true,
+					hospital = true,
+					lake = true,
+					motorbike = true,
+					mountains = true,
+					radio = true,
+					restaurant = true,
+					river = true,
+					road = true,
+					shipwreck = true,
+					thunderstorm = true
+				}
+
+				local properties = {}
+				for prop in pairs(set) do
+					table.insert(properties, prop)
+				end
+
+				table.sort(properties)
+
+				local ltmp = {}
 				local copy = {}
-				for i = 0, #dset do
-					local ic =  dset[i][view.icon]
-					if type(ic) ~= "string" then
-						customError("Field 'ICON' of View '"..name.."' must be a string, got '"..type(ic).."'.")
+				for i, prop in pairs(properties) do
+					local strprop = tostring(prop)
+					local marker = tostring(markers[i])
+
+					if not ics[marker] then
+						switchInvalidArgument("icon:marker", marker, ics)
 					end
 
-					if not ics[ic] then
-						switchInvalidArgument("icon", ic, ics)
+					local mlabel = label[i]
+					if not mlabel then
+						mlabel = col.." "..strprop
 					end
 
-					copy[ic..".png"] = true
+					marker = marker..".png"
+					copy[marker] = true
+
+					marker = "./assets/"..marker
+					ltmp[mlabel] = marker
+					icon.options[strprop] = marker
 				end
 
 				for el in pairs(copy) do
 					os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
 				end
 
-				icon.property = view.icon
+				icon.column = col
+				view.label = ltmp
 			else
-				view.icon = view.icon..".png"
-				icon.path = "./assets/"..view.icon
-				os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
-			end
-		else
-			view.icon.transparency = 1 - view.icon.transparency
-			icon.options = {
-				path = view.icon.path,
-				fillColor = view.icon.color,
-				fillOpacity = view.icon.transparency,
-				strokeWeight = 2
-			}
+				view.icon.transparency = 1 - view.icon.transparency
+				icon.options = {
+					path = view.icon.path,
+					fillColor = view.icon.color,
+					fillOpacity = view.icon.transparency,
+					strokeWeight = 2
+				}
 
-			icon.time = 1000 / (200 / view.icon.time)
+				icon.time = 1000 / (200 / view.icon.time)
+			end
 		end
 
 		view.icon = icon
