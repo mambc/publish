@@ -82,7 +82,7 @@ function View(data)
 	optionalTableArgument(data, "title", "string")
 	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
-	optionalTableArgument(data, "select", "string")
+	optionalTableArgument(data, "select", {"string", "table"})
 	optionalTableArgument(data, "label", "table")
 	optionalTableArgument(data, "report", {"Report", "function"})
 	optionalTableArgument(data, "icon", {"string", "table"})
@@ -95,8 +95,16 @@ function View(data)
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 		"value", "layer", "report", "transparency", "label", "icon", "download"})
 
-	if data.report and type(data.report) == "function" and not data.select then
-		customError(mandatoryArgumentMsg("select"))
+	if data.report and type(data.report) == "function" then
+		mandatoryTableArgument(data, "select")
+
+		if data.select and type(data.select) == "table" then -- TODO TerraME/terrame#1644
+			if data.color or data.icon then
+				if #data.select ~= 2 then
+					customError("Argument 'select' must be a table with size equals to 2, got "..#data.select..".")
+				end
+			end
+		end
 	end
 
 	if data.transparency < 0 or data.transparency > 1 then
@@ -104,6 +112,9 @@ function View(data)
 	end
 
 	if data.color then
+		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
+			"value", "layer", "report", "transparency", "label", "download"})
+
 		local realTransparency = 1 - data.transparency
 		if data.value then
 			mandatoryTableArgument(data, "select", "string")
@@ -239,9 +250,13 @@ function View(data)
 		end
 
 		if itype == "table" then
-			if data.icon.column or data.icon.marker then
-				mandatoryTableArgument(data.icon, "column", "string")
-				mandatoryTableArgument(data.icon, "marker", "table")
+			if #data.icon > 0 then
+				mandatoryTableArgument(data, "select")
+				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report", "transparency", "label", "icon", "download"})
+
+				if data.label and (#data.icon ~= #data.label)then
+					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")
+				end
 			else
 				mandatoryTableArgument(data.icon, "path", "string")
 				defaultTableValue(data.icon, "time", 5)

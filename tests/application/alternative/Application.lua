@@ -230,10 +230,8 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					icon = {
-						column = "VOID",
-						marker = {"home", "forest"}
-					}
+					select = "VOID",
+					icon = {"home", "forest"}
 				}
 			}
 		end
@@ -247,48 +245,12 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					icon = {
-						column = "UC",
-						marker = {"home"}
-					}
+					select = "UC",
+					icon = {"home"}
 				}
 			}
 		end
 		unitTest:assertError(error_func, "The number of 'icon:makers' (1) must be equal to number of unique values in property 'UC' (2) in View 'villages'.")
-
-		local ics = {
-			airport = true,
-			animal = true,
-			bigcity = true,
-			bus = true,
-			car = true,
-			caution = true,
-			cycling = true,
-			database = true,
-			desert = true,
-			diving = true,
-			fillingstation = true,
-			finish = true,
-			fire = true,
-			firstaid = true,
-			fishing = true,
-			flag = true,
-			forest = true,
-			harbor = true,
-			helicopter = true,
-			home = true,
-			horseriding = true,
-			hospital = true,
-			lake = true,
-			motorbike = true,
-			mountains = true,
-			radio = true,
-			restaurant = true,
-			river = true,
-			road = true,
-			shipwreck = true,
-			thunderstorm = true
-		}
 
 		error_func = function()
 			Application{
@@ -298,10 +260,8 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					icon = {
-						column = "UC",
-						marker = {"home", "fores"}
-					}
+					select = "UC",
+					icon = {"home", "fores"}
 				}
 			}
 		end

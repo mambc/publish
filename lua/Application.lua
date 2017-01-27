@@ -177,13 +177,15 @@ local function loadViewValue(data, name, view)
 		mview.download = true
 	end
 
+	local select = view.select[2] or view.select
+
 	do
 		local set = {}
 		local tlib = terralib.TerraLib{}
 		local dset = tlib:getDataSet(data.project, name)
 		for i = 0, #dset do
 			for k, v in pairs(dset[i]) do
-				if k == view.select and not set[v] then
+				if k == select and not set[v] then
 					set[v] = true
 				end
 			end
@@ -341,15 +343,15 @@ end
 local function processingView(data, layers, reports, name, view)
 	view.id = name
 	view.transparency = 1 - view.transparency
-	local label = view.title
-	if label == nil or label == "" then
-		label = _Gtme.stringToLabel(name)
+	local viewLabel = view.title
+	if viewLabel == nil or viewLabel == "" then
+		viewLabel = _Gtme.stringToLabel(name)
 	end
 
 	table.insert(layers, {
 		order = view.order,
 		layer = name,
-		label = label
+		label = viewLabel
 	})
 
 	local dset
@@ -378,7 +380,7 @@ local function processingView(data, layers, reports, name, view)
 					customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
 				end
 
-				local select = cell[view.select]
+				local select = cell[view.select[1] or view.select]
 				if select and type(select) == "string" then
 					select = select:gsub(" ", "-")
 				end
@@ -408,12 +410,12 @@ local function processingView(data, layers, reports, name, view)
 			icon.path = "./assets/"..view.icon
 			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
 		else
-			if view.icon.column and view.icon.marker then
-				local nProp = 0
-				local set = {}
-				local label = {}
+			if #view.icon > 0 then
 				icon.options = {}
-				local col = view.icon.column
+				local set = {}
+				local label = view.label or {}
+				local col = view.select[2] or view.select
+				local nProp = 0
 				for i = 0, #dset do
 					local prop = dset[i][col]
 					if not prop then
@@ -426,19 +428,8 @@ local function processingView(data, layers, reports, name, view)
 					end
 				end
 
-				local markers = view.icon.marker
+				local markers = view.icon
 				local nMarkers = #markers
-				if nMarkers == 0 then
-					local mtmp = {}
-					for marker, lbl in pairs(markers) do
-						table.insert(label, lbl)
-						table.insert(mtmp, marker)
-						nMarkers = nMarkers + 1
-					end
-
-					markers = mtmp
-				end
-
 				if nProp ~= nMarkers then
 					customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
 				end
@@ -497,6 +488,8 @@ local function processingView(data, layers, reports, name, view)
 					local mlabel = label[i]
 					if not mlabel then
 						mlabel = col.." "..strprop
+					elseif type(mlabel) ~= "string" then
+						incompatibleTypeError("label", "string", mlabel)
 					end
 
 					marker = marker..".png"
@@ -511,7 +504,6 @@ local function processingView(data, layers, reports, name, view)
 					os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
 				end
 
-				icon.column = col
 				view.label = ltmp
 			else
 				view.icon.transparency = 1 - view.icon.transparency

@@ -60,8 +60,9 @@ Application{
 	villages = View{
 		download = true,
 		description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-		icon = "ICON",
-		select = "Nome",
+		select = {"Nome", "UC"},
+		icon = {"home", "forest"},
+		label = {"Absence Cons. Unit.", "Presence Cons. Unit."},
 		report = function(cell)
 			local mreport = Report{
 				title = cell.Nome,

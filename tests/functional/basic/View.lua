@@ -224,41 +224,58 @@ return {
 		unitTest:assertEquals(view.download, true)
 
 		view = View{
-			icon = {
-				column = "UC",
-				marker = {"home", "forest"}
-			}
+			select = "UC",
+			icon = {"home", "forest"}
 		}
 
 		unitTest:assertType(view, "View")
 		unitTest:assertNil(view.color)
 		unitTest:assertNil(view.description)
 		unitTest:assertType(view.icon, "table")
-		unitTest:assertType(view.icon.column, "string")
-		unitTest:assertType(view.icon.marker, "table")
-		unitTest:assertEquals(view.icon.column, "UC")
-		unitTest:assertEquals(view.icon.marker[1], "home")
-		unitTest:assertEquals(view.icon.marker[2], "forest")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
 
 		view = View{
-			icon = {
-				column = "UC",
-				marker = {
-					home = "Absence of Conservation Unit",
-					forest = "Presence of Conservation Unit"
-				}
-			}
+			select = "UC",
+			icon = {"home", "forest"},
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
 		}
 
 		unitTest:assertType(view, "View")
 		unitTest:assertNil(view.color)
 		unitTest:assertNil(view.description)
 		unitTest:assertType(view.icon, "table")
-		unitTest:assertType(view.icon.column, "string")
-		unitTest:assertType(view.icon.marker, "table")
-		unitTest:assertEquals(view.icon.column, "UC")
-		unitTest:assertEquals(view.icon.marker.home, "Absence of Conservation Unit")
-		unitTest:assertEquals(view.icon.marker.forest, "Presence of Conservation Unit")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
+		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
+
+		view = View{
+			select = {"Nome", "UC"},
+			icon = {"home", "forest"},
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"},
+			report = function(cell)
+				local mreport = Report{title = cell.Nome}
+				mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+				return mreport
+			end
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.select, "table")
+		unitTest:assertEquals(view.select[1], "Nome")
+		unitTest:assertEquals(view.select[2], "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
+		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
 	end,
 	__tostring = function(unitTest)
 		local view = View{

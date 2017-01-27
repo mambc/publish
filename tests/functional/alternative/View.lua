@@ -122,7 +122,7 @@ return {
 		error_func = function()
 			View{select = 1}
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string", 1))
+		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string or table", 1))
 
 		error_func = function()
 			View{value = "mvalue", select = "river"}
@@ -338,32 +338,46 @@ return {
 
 		error_func = function()
 			View{
-				icon = {column = "UC"}
+				icon = {"forest"}
 			}
 		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("marker"))
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
 
 		error_func = function()
 			View{
-				icon = {marker = {"forest"}}
+				select = "UC",
+				icon = {"forest"},
+				border = "red"
 			}
 		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("column"))
-
-
-		error_func = function()
-			View{
-				icon = {column = 1, marker = {"forest"}}
-			}
-		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("column", "string", 1))
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("border"))
 
 		error_func = function()
 			View{
-				icon = {column = "UC", marker = 1}
+				select = "UC",
+				icon = {"forest"},
+				value = {1, 2, 3}
 			}
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("marker", "table", 1))
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("value"))
+
+		error_func = function()
+			View{
+				select = "UC",
+				icon = {"forest"},
+				label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
+			}
+		end
+		unitTest:assertError(error_func, "The number of icons (1) must be equal to number of labels (2).")
+
+		error_func = function()
+			View{
+				select = "UC",
+				icon = {"forest"},
+				color = "PuBu"
+			}
+		end
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("icon"))
 
 		local icons = {
 			airport = true,
@@ -412,5 +426,31 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
+
+		error_func = function()
+			View{
+				select = {"Nome"},
+				icon = {"home", "forest"},
+				report = function(cell)
+					local mreport = Report{title = cell.Nome}
+					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+					return mreport
+				end
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' must be a table with size equals to 2, got 1.")
+
+		error_func = function()
+			View{
+				select = {"Nome"},
+				color = {"red", "blue"},
+				report = function(cell)
+					local mreport = Report{title = cell.Nome}
+					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+					return mreport
+				end
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' must be a table with size equals to 2, got 1.")
 	end
 }
