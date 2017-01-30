@@ -56,36 +56,42 @@ Application{
 	clean = true,
 	output = "CaraguaWebMap",
 	report = report,
-	limit = View{
-		description = "Bounding box of Caraguatatuba.",
-		color = "goldenrod"
+	Limit = List{
+		limit = View{
+			description = "Bounding box of Caraguatatuba.",
+			color = "goldenrod"
+		},
+		regions = View{
+			description = "Regions of Caraguatatuba.",
+			select = "name",
+			color = "Set2"
+		}
 	},
-	regions = View{
-		description = "Regions of Caraguatatuba.",
-		select = "name",
-		color = "Set2"
+	SocialClasses = List{
+		real = View{
+			title = "Social Classes 2010",
+			description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+					.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+			width = 0,
+			select = "classe",
+			color = {"red", "orange", "yellow"}
+		},
+		baseline = View{
+			title = "Social Classes 2025",
+			description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+			width = 0,
+			select = "classe",
+			color = {"red", "orange", "yellow"}
+		}
 	},
-	real = View{
-		title = "Social Classes 2010",
-		description = "This is the main endogenous variable of the model. It was obtained from a classification that "
-				.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
-		width = 0,
-		select = "classe",
-		color = {"red", "orange", "yellow"}
-	},
-	use = View{
-		title = "Occupational Classes 2010",
-		description = "The occupational class describes the percentage of houses and apartments inside such areas that "
-				.."have occasional use. The dwelling is typically used in summer vacations and holidays.",
-		width = 0,
-		select = "uso",
-		color = "RdPu"
-	},
-	baseline = View{
-		title = "Social Classes 2025",
-		description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
-		width = 0,
-		select = "classe",
-		color = {"red", "orange", "yellow"}
+	OccupationalClasses = List{
+		use = View{
+			title = "Occupational Classes 2010",
+			description = "The occupational class describes the percentage of houses and apartments inside such areas that "
+					.."have occasional use. The dwelling is typically used in summer vacations and holidays.",
+			width = 0,
+			select = "uso",
+			color = "RdPu"
+		}
 	}
 }
