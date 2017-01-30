@@ -600,6 +600,31 @@ local function createApplicationProjects(data, proj)
 		return k1.order > k2.order
 	end)
 
+	local groups = {}
+	if data.group then
+		forEachElement(data.group, function(gp, views)
+			local mlayers = {}
+			forEachElement(layers, function(_, el)
+				if belong(el.layer, views) then
+					table.insert(mlayers, el)
+				end
+			end)
+
+			table.insert(groups, {group = gp, lblGroup = _Gtme.stringToLabel(gp), layers = mlayers})
+		end)
+
+		table.sort (groups, function(k1, k2)
+			return k1.group < k2.group
+		end)
+
+		local active = data.group[groups[1].group]
+		forEachElement(data.view, function(name, view)
+			if not belong(name, active) then
+				view.visible = false
+			end
+		end)
+	end
+
 	registerApplicationModel {
 		output = config,
 		model = {
@@ -627,7 +652,8 @@ local function createApplicationProjects(data, proj)
 			report = reports,
 			key = data.key,
 			navbarColor = data.template.navbar,
-			titleColor = data.template.title
+			titleColor = data.template.title,
+			groups = groups
 		}
 	}
 end

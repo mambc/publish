@@ -34,22 +34,49 @@
 							</h4>
 						</div>
 						<div id="layers" class="panel-collapse collapse in">
-							<div class="panel-body list-group">
-									<button id="baseline" type="button" class="list-group-item">
-										<input name="baseline" type="checkbox"> Social Classes 2025
-									</button>
-									<button id="limit" type="button" class="list-group-item">
-										<input name="limit" type="checkbox"> Limit
-									</button>
-									<button id="real" type="button" class="list-group-item">
-										<input name="real" type="checkbox"> Social Classes 2010
-									</button>
-									<button id="regions" type="button" class="list-group-item">
-										<input name="regions" type="checkbox"> Regions
-									</button>
-									<button id="use" type="button" class="list-group-item">
-										<input name="use" type="checkbox"> Occupational Classes 2010
-									</button>
+							<div class="panel">
+								<div class="panel-heading">
+									<a id="group-Limit" class="panel-title" data-toggle="collapse" href="#panel-element-Limit"> Limit</a>
+								</div>
+								<div id="panel-element-Limit" class="panel-collapse collapse">
+									<div class="panel-body list-group">
+										<button id="limit" type="button" class="list-group-item">
+											<input name="limit" type="checkbox"> Limit
+										</button>
+										<button id="regions" type="button" class="list-group-item">
+											<input name="regions" type="checkbox"> Regions
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="panel" style="border-radius: 0 !important;">
+								<div class="panel-heading">
+									<a id="group-OccupationalClasses" class="panel-title" data-toggle="collapse" href="#panel-element-OccupationalClasses"> Occupational Classes</a>
+								</div>
+								<div id="panel-element-OccupationalClasses" class="panel-collapse collapse">
+									<div class="panel-body list-group">
+										<button id="use" type="button" class="list-group-item">
+											<input name="use" type="checkbox"> Occupational Classes 2010
+										</button>
+									</div>
+								</div>
+							</div>
+
+							<div class="panel" style="border-radius: 0 !important;">
+								<div class="panel-heading">
+									<a id="group-SocialClasses" class="panel-title" data-toggle="collapse" href="#panel-element-SocialClasses"> Social Classes</a>
+								</div>
+								<div id="panel-element-SocialClasses" class="panel-collapse collapse">
+									<div class="panel-body list-group">
+										<button id="baseline" type="button" class="list-group-item">
+											<input name="baseline" type="checkbox"> Social Classes 2025
+										</button>
+										<button id="real" type="button" class="list-group-item">
+											<input name="real" type="checkbox"> Social Classes 2010
+										</button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -319,7 +346,7 @@
 				</div>
 			</div>
 		</div>
-		<<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
 		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="./urbis.js"></script>
