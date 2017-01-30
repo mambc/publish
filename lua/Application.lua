@@ -200,20 +200,43 @@ local function loadViewValue(data, name, view)
 	data.view[name] = View(mview)
 end
 
-local function loadLayers(data)
-	data.view = {}
-	local nView = 0
+local function loadViews(data)
+	local views = {}
+	local groups = {}
+	local nViews = 0
+	local nGroups = 0
 	forEachElement(data, function(idx, mview, mtype)
 		if mtype == "View" then
-			data.view[idx] = mview
-			nView = nView + 1
+			views[idx] = mview
+			nViews = nViews + 1
 			data[idx] = nil
+		elseif mtype == "List" then
+			groups[idx] = {}
+			nGroups = nGroups + 1
+
+			forEachOrderedElement(mview.views, function(vname, iview)
+				table.insert(groups[idx], vname)
+				views[vname] = iview
+				nViews = nViews + 1
+				data[idx] = nil
+			end)
 		end
 	end)
 
+	if nGroups > 0 then
+		data.group = groups
+	end
+
+	data.view = views
+	return nViews
+end
+
+local function loadLayers(data)
+	local nView = loadViews(data)
+
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
-		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images"})
+		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group"})
 
 	if nView > 0 then
 		if data.project then
@@ -587,7 +610,8 @@ local function createApplicationProjects(data, proj)
 			mapTypeId = data.base:upper(),
 			legend = data.legend,
 			data = clone(data.view, {type_ = true, value = true}),
-			path = path
+			path = path,
+			group = data.group
 		}
 	}
 
@@ -945,7 +969,6 @@ function Application(data)
 		loadLayers(data)
 
 		defaultTableValue(data, "title", data.project.title)
-		defaultTableValue(data, "description", "")
 
 		createApplicationProjects(data)
 		exportTemplates(data)

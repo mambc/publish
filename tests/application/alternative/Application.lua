@@ -267,6 +267,22 @@ return {
 		end
 		unitTest:assertError(error_func, "'fores' is an invalid value for argument 'icon:marker'. Do you mean 'forest'?")
 
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					select = "UC",
+					icon = {"home", "fores" },
+					label = {1, 2}
+				}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("label", "string", 1))
+
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end
 }
