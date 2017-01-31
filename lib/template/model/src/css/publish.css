@@ -99,6 +99,13 @@ body{
 	height: auto;
 }
 
+.list-group-item {
+	float: left;
+	border: 0 !important;
+	margin: 0;
+	padding: 3px 0;
+}
+
 @media (min-width: 768px){
 	.modal-dialog {
 		width: auto;
