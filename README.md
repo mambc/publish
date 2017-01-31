@@ -79,7 +79,8 @@ Application{
         regions = View{
             description = "Regions of Caraguatatuba.",
             select = "name",
-            color = "Set2"
+            color = "Set2",
+            label = {"North", "Central", "South"}
         }
     },
     SocialClasses = List{
@@ -89,14 +90,16 @@ Application{
                     .."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
             width = 0,
             select = "classe",
-            color = {"red", "orange", "yellow"}
+            color = {"red", "orange", "yellow"},
+            label = {"Condition C", "Condition B", "Condition A"}
         },
         baseline = View{
             title = "Social Classes 2025",
             description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
             width = 0,
             select = "classe",
-            color = {"red", "orange", "yellow"}
+            color = {"red", "orange", "yellow"},
+            label = {"Condition C", "Condition B", "Condition A"}
         }
     },
     OccupationalClasses = List{
@@ -106,7 +109,8 @@ Application{
                     .."have occasional use. The dwelling is typically used in summer vacations and holidays.",
             width = 0,
             select = "uso",
-            color = "RdPu"
+            color = "RdPu",
+            label = {"0.000000 - 0.200000", "0.200001 - 0.350000", "0.350001 - 0.500000", "0.500001 - 0.700000", "0.700001 - 0.930000"}
         }
     }
 }
