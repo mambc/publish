@@ -122,7 +122,7 @@ return {
 		error_func = function()
 			View{select = 1}
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string", 1))
+		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string or table", 1))
 
 		error_func = function()
 			View{value = "mvalue", select = "river"}
@@ -210,11 +210,6 @@ return {
 		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 1.1.")
 
 		error_func = function()
-			View{icon = "hom"}
-		end
-		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
-
-		error_func = function()
 			View{icon = 1}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("icon", "string or table", 1))
@@ -260,6 +255,46 @@ return {
 		unitTest:assertError(error_func, "The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 2.")
 
 		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					time = "a"
+				}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("time", "number", "a"))
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					time = 0
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' of icon must be a number greater than 0, got 0.")
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					time = -1
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' of icon must be a number greater than 0, got -1.")
+
+		error_func = function()
+			View{
+				icon = {
+					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+					time = 5
+				}
+			}
+		end
+		unitTest:assertError(error_func, defaultValueMsg("time", 5))
+
+		error_func = function()
 			View{report = function() end}
 		end
 		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
@@ -285,6 +320,13 @@ return {
 		unitTest:assertError(error_func, defaultValueMsg("color", "black"))
 
 		error_func = function()
+			View{
+				icon = {path = "1234"}
+			}
+		end
+		unitTest:assertError(error_func, "The icon path '1234' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+
+		error_func = function()
 			View{download = 1}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("download", "boolean", 1))
@@ -293,5 +335,122 @@ return {
 			View{download = false}
 		end
 		unitTest:assertError(error_func, defaultValueMsg("download", false))
+
+		error_func = function()
+			View{
+				icon = {"forest"}
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+
+		error_func = function()
+			View{
+				select = "UC",
+				icon = {"forest"},
+				border = "red"
+			}
+		end
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("border"))
+
+		error_func = function()
+			View{
+				select = "UC",
+				icon = {"forest"},
+				value = {1, 2, 3}
+			}
+		end
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("value"))
+
+		error_func = function()
+			View{
+				select = "UC",
+				icon = {"forest"},
+				label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
+			}
+		end
+		unitTest:assertError(error_func, "The number of icons (1) must be equal to number of labels (2).")
+
+		error_func = function()
+			View{
+				select = "UC",
+				icon = {"forest"},
+				color = "PuBu"
+			}
+		end
+		unitTest:assertError(error_func, unnecessaryArgumentMsg("icon"))
+
+		local icons = {
+			airport = true,
+			animal = true,
+			bigcity = true,
+			bus = true,
+			car = true,
+			caution = true,
+			cycling = true,
+			database = true,
+			desert = true,
+			diving = true,
+			fillingstation = true,
+			finish = true,
+			fire = true,
+			firstaid = true,
+			fishing = true,
+			flag = true,
+			forest = true,
+			harbor = true,
+			helicopter = true,
+			home = true,
+			horseriding = true,
+			hospital = true,
+			lake = true,
+			motorbike = true,
+			mountains = true,
+			radio = true,
+			restaurant = true,
+			river = true,
+			road = true,
+			shipwreck = true,
+			thunderstorm = true
+		}
+
+		error_func = function()
+			View{
+				icon = "VOID"
+			}
+		end
+		unitTest:assertError(error_func, switchInvalidArgumentMsg("VOID", "icon", icons))
+
+		error_func = function()
+			View{
+				icon = "hom"
+			}
+		end
+		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
+
+		error_func = function()
+			View{
+				select = {"Nome"},
+				icon = {"home", "forest"},
+				report = function(cell)
+					local mreport = Report{title = cell.Nome}
+					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+					return mreport
+				end
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' must be a table with size equals to 2, got 1.")
+
+		error_func = function()
+			View{
+				select = {"Nome"},
+				color = {"red", "blue"},
+				report = function(cell)
+					local mreport = Report{title = cell.Nome}
+					mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+					return mreport
+				end
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' must be a table with size equals to 2, got 1.")
 	end
 }

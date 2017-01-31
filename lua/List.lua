@@ -22,18 +22,58 @@
 --
 -------------------------------------------------------------------------------------------
 
--- @example Creates a database that can be used by arapiunsapp.
--- The data of this application were extracted from Escada et. al (2013) Infraestrutura,
--- Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.
-
-import("terralib")
-
-project = Project{
-	title = "The riverine settlements at Arapiuns (PA)",
-	author = "Carneiro, H.",
-	file = "arapiuns.tview",
-	clean = true,
-	trajectory = filePath("arapiuns_traj.shp", "publish"),
-	villages = filePath("AllCmmTab_210316OK.shp", "publish")
+List_ = {
+	type_ = "List"
 }
 
+metaTableList_ = {
+	__index = List_,
+	__tostring = _Gtme.tostring,
+	__len = function(self)
+		return self.size
+	end
+}
+
+--- A list of View objects.
+-- @arg data A table with the views.
+-- @usage import("publish")
+-- local list = List{
+--     limit = View{
+--          description = "Bounding box of Caraguatatuba.",
+--          color = "goldenrod"
+--     },
+--     regions = View{
+--          description = "Regions of Caraguatatuba.",
+--          select = "name",
+--          color = "Set2"
+--     }
+-- }
+--
+-- print(list)
+-- print(#list)
+function List(data)
+	mandatoryArgument(1, "table", data)
+	verifyNamedTable(data)
+
+	local mdata = {
+		size = 0,
+		views = {}
+	}
+
+	setmetatable(mdata, metaTableList_)
+
+	forEachOrderedElement(data, function(idx, value, mtype)
+		if mtype == "View" then
+			mdata.views[idx] = value
+			mdata.size = mdata.size + 1
+		else
+			incompatibleTypeError(idx, "View", value)
+		end
+	end)
+
+	if #mdata == 0 then
+		customError("List is empty. A List must be initialized with Views elements.")
+	end
+
+	return mdata
+end

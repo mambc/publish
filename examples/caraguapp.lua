@@ -51,39 +51,51 @@ report:addText("The base scenario considers the zoning proposed by the new maste
 
 Application{
 	project = filePath("caragua.tview", "publish"),
+	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+			.."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	clean = true,
 	output = "CaraguaWebMap",
 	report = report,
-	limit = View{
-		description = "Bounding box of Caraguatatuba.",
-		color = "goldenrod"
+	Border = List{
+		limit = View{
+			description = "Bounding box of Caraguatatuba.",
+			color = "goldenrod"
+		},
+		regions = View{
+			description = "Regions of Caraguatatuba.",
+			select = "name",
+			color = "Set2",
+			label = {"North", "Central", "South"}
+		}
 	},
-	regions = View{
-		description = "Regions of Caraguatatuba.",
-		select = "name",
-		color = "Set2"
+	SocialClasses = List{
+		real = View{
+			title = "Social Classes 2010",
+			description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+					.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+			width = 0,
+			select = "classe",
+			color = {"red", "orange", "yellow"},
+			label = {"Condition C", "Condition B", "Condition A"}
+		},
+		baseline = View{
+			title = "Social Classes 2025",
+			description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+			width = 0,
+			select = "classe",
+			color = {"red", "orange", "yellow"},
+			label = {"Condition C", "Condition B", "Condition A"}
+		}
 	},
-	real = View{
-		title = "Social Classes 2010",
-		description = "This is the main endogenous variable of the model. It was obtained from a classification that "
-				.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
-		width = 0,
-		select = "classe",
-		color = {"red", "orange", "yellow"}
-	},
-	use = View{
-		title = "Occupational Classes 2010",
-		description = "The occupational class describes the percentage of houses and apartments inside such areas that "
-				.."have occasional use. The dwelling is typically used in summer vacations and holidays.",
-		width = 0,
-		select = "uso",
-		color = "RdPu"
-	},
-	baseline = View{
-		title = "Social Classes 2025",
-		description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
-		width = 0,
-		select = "classe",
-		color = {"red", "orange", "yellow"}
+	OccupationalClasses = List{
+		use = View{
+			title = "Occupational Classes 2010",
+			description = "The occupational class describes the percentage of houses and apartments inside such areas that "
+					.."have occasional use. The dwelling is typically used in summer vacations and holidays.",
+			width = 0,
+			select = "uso",
+			color = "RdPu",
+			label = {"0.000000 - 0.200000", "0.200001 - 0.350000", "0.350001 - 0.500000", "0.500001 - 0.700000", "0.700001 - 0.930000"}
+		}
 	}
 }

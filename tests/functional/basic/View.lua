@@ -183,7 +183,7 @@ return {
 		unitTest:assertNil(view.color)
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
 		unitTest:assertType(view.icon, "string")
-		unitTest:assertEquals(view.icon, "home.png")
+		unitTest:assertEquals(view.icon, "home")
 		unitTest:assertEquals(view.download, false)
 
 		view = View{
@@ -192,7 +192,8 @@ return {
 			icon = {
 				path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 				color = "red",
-				transparency = 0.6
+				transparency = 0.6,
+				time = 10
 			}
 		}
 
@@ -203,7 +204,78 @@ return {
 		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
 		unitTest:assertEquals(view.icon.color, "rgba(255, 0, 0, 1)")
 		unitTest:assertEquals(view.icon.transparency, 0.6)
+		unitTest:assertEquals(view.icon.time, 10)
 		unitTest:assertEquals(view.download, true)
+
+		view = View{
+			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+			download = true,
+			icon = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
+		unitTest:assertNotNil(view.icon.color)
+		unitTest:assertNotNil(view.icon.transparency)
+		unitTest:assertEquals(view.icon.time, 5)
+		unitTest:assertEquals(view.download, true)
+
+		view = View{
+			select = "UC",
+			icon = {"home", "forest"}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+
+		view = View{
+			select = "UC",
+			icon = {"home", "forest"},
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
+		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
+
+		view = View{
+			select = {"Nome", "UC"},
+			icon = {"home", "forest"},
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"},
+			report = function(cell)
+				local mreport = Report{title = cell.Nome}
+				mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+				return mreport
+			end
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.select, "table")
+		unitTest:assertEquals(view.select[1], "Nome")
+		unitTest:assertEquals(view.select[2], "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
+		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
 	end,
 	__tostring = function(unitTest)
 		local view = View{

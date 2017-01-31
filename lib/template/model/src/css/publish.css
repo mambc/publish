@@ -61,6 +61,14 @@ body{
 	margin-right:6px;
 }
 
+.legend-img-box{
+	height:25px;
+	width:32px;
+	border-radius:3px;
+	float:left;
+	margin-right:6px;
+}
+
 .report-img{
 	display: block;
 	margin: 0 auto;
@@ -89,6 +97,13 @@ body{
 .modal-body{
 	text-align: justify;
 	height: auto;
+}
+
+.list-group-item {
+	float: left;
+	border: 0 !important;
+	margin: 0;
+	padding: 3px 6px;
 }
 
 @media (min-width: 768px){

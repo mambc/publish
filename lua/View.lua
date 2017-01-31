@@ -82,8 +82,10 @@ function View(data)
 	optionalTableArgument(data, "title", "string")
 	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
-	optionalTableArgument(data, "select", "string")
+	optionalTableArgument(data, "select", {"string", "table"})
 	optionalTableArgument(data, "label", "table")
+	optionalTableArgument(data, "report", {"Report", "function"})
+	optionalTableArgument(data, "icon", {"string", "table"})
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
@@ -91,16 +93,17 @@ function View(data)
 	defaultTableValue(data, "download", false)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-		"value", "layer", "report", "transparency", "label", "icon", "download"})
+		"value", "layer", "report", "transparency", "label", "icon", "download", "group"})
 
-	if data.report then
-		local rtype = type(data.report)
-		if not (rtype == "Report" or rtype == "function") then
-			incompatibleTypeError("report", "Report or function", data.report)
-		end
+	if data.report and type(data.report) == "function" then
+		mandatoryTableArgument(data, "select")
 
-		if rtype == "function" and not data.select then
-			customError(mandatoryArgumentMsg("select"))
+		if data.select and type(data.select) == "table" then -- TODO TerraME/terrame#1644
+			if data.color or data.icon then
+				if #data.select ~= 2 then
+					customError("Argument 'select' must be a table with size equals to 2, got "..#data.select..".")
+				end
+			end
 		end
 	end
 
@@ -109,6 +112,9 @@ function View(data)
 	end
 
 	if data.color then
+		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
+			"value", "layer", "report", "transparency", "label", "download", "group"})
+
 		local realTransparency = 1 - data.transparency
 		if data.value then
 			mandatoryTableArgument(data, "select", "string")
@@ -199,63 +205,81 @@ function View(data)
 	if data.icon then
 		local itype = type(data.icon)
 		if itype == "string" then
-			local icons = {
-				airport = true,
-				animal = true,
-				bigcity = true,
-				bus = true,
-				car = true,
-				caution = true,
-				cycling = true,
-				database = true,
-				desert = true,
-				diving = true,
-				fillingstation = true,
-				finish = true,
-				fire = true,
-				firstaid = true,
-				fishing = true,
-				flag = true,
-				forest = true,
-				harbor = true,
-				helicopter = true,
-				home = true,
-				horseriding = true,
-				hospital = true,
-				lake = true,
-				motorbike = true,
-				mountains = true,
-				radio = true,
-				restaurant = true,
-				river = true,
-				road = true,
-				shipwreck = true,
-				thunderstorm = true
-			}
+			if data.icon:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon:find("[0-9]") then
+				data.icon = {path = data.icon}
+				itype = "table"
+			else
+				local ics = {
+					airport = true,
+					animal = true,
+					bigcity = true,
+					bus = true,
+					car = true,
+					caution = true,
+					cycling = true,
+					database = true,
+					desert = true,
+					diving = true,
+					fillingstation = true,
+					finish = true,
+					fire = true,
+					firstaid = true,
+					fishing = true,
+					flag = true,
+					forest = true,
+					harbor = true,
+					helicopter = true,
+					home = true,
+					horseriding = true,
+					hospital = true,
+					lake = true,
+					motorbike = true,
+					mountains = true,
+					radio = true,
+					restaurant = true,
+					river = true,
+					road = true,
+					shipwreck = true,
+					thunderstorm = true
+				}
 
-			if not icons[data.icon] then
-				switchInvalidArgument("icon", data.icon, icons)
+				if not ics[data.icon] then
+					switchInvalidArgument("icon", data.icon, ics)
+				end
 			end
+		end
 
-			data.icon = data.icon..".png"
-		elseif itype == "table" then
-			mandatoryTableArgument(data.icon, "path", "string")
-			defaultTableValue(data.icon, "color", "black")
-			defaultTableValue(data.icon, "transparency", 0)
+		if itype == "table" then
+			if #data.icon > 0 then
+				mandatoryTableArgument(data, "select")
+				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report",
+					"transparency", "label", "icon", "download", "group"})
 
-			verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency"})
+				if data.label and (#data.icon ~= #data.label)then
+					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")
+				end
+			else
+				mandatoryTableArgument(data.icon, "path", "string")
+				defaultTableValue(data.icon, "time", 5)
+				defaultTableValue(data.icon, "color", "black")
+				defaultTableValue(data.icon, "transparency", 0)
 
-			if not data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") then
-				customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+				verifyUnnecessaryArguments(data.icon, {"path", "color", "transparency", "time"})
+
+				if not (data.icon.path:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon.path:find("[0-9]")) then
+					customError("The icon path '"..data.icon.path.."' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
+				end
+
+				if data.icon.transparency < 0 or data.icon.transparency > 1 then
+					customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
+				end
+
+				data.icon.color = color{color = data.icon.color}
+
+				if data.icon.time <= 0 then
+					customError("Argument 'time' of icon must be a number greater than 0, got "..data.icon.time..".")
+				end
 			end
-
-			if data.icon.transparency < 0 or data.icon.transparency > 1 then
-				customError("The icon transparency is a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.icon.transparency..".")
-			end
-
-			data.icon.color = color{color = data.icon.color}
-		else
-			incompatibleTypeError("icon", "string or table", data.icon)
 		end
 	end
 

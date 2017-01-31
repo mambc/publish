@@ -40,7 +40,6 @@ return {
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assertEquals(app.title, "Emas database")
-		-- unitTest:assertEquals(app.description, "A small example related to a fire spread model.") -- SKIP TODO Terrame/#1534
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertNil(app.key)
@@ -63,6 +62,76 @@ return {
 		unitTest:assertEquals(app.key, "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA")
 
 		if emasDir:exists() then emasDir:delete() end
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		app = Application{
+			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
+			project = filePath("caragua.tview", "publish"),
+			clean = true,
+			output = caraguaDir,
+			Limit = List{
+				limit = View{
+					color = "goldenrod",
+				},
+				regions = View{
+					select = "name",
+					color = "Set2"
+				}
+			},
+			SocialClasses = List{
+				real = View{
+					title = "Social Classes 2010",
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"}
+				},
+				baseline = View{
+					title = "Social Classes 2025",
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"}
+				}
+			},
+			OccupationalClasses = List{
+				use = View{
+					title = "Occupational Classes 2010",
+					select = "uso",
+					color = "RdPu"
+				}
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertNotNil(app.key)
+		unitTest:assertEquals(app.key, "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA")
+
+		local group = app.group
+		unitTest:assertNotNil(group)
+		unitTest:assertType(group, "table")
+		unitTest:assertType(group.Limit, "string")
+		unitTest:assertEquals(group.Limit, "limit")
+
+		unitTest:assertType(group.SocialClasses, "string")
+		unitTest:assertEquals(group.SocialClasses, "baseline")
+
+		unitTest:assertType(group.OccupationalClasses, "string")
+		unitTest:assertEquals(group.OccupationalClasses, "use")
+
+		local view = app.view.limit
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.group, "Limit")
+
+		view = app.view.real
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.group, "SocialClasses")
+
+		view = app.view.use
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.group, "OccupationalClasses")
+
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end,
 	__tostring = function(unitTest)
 		local emas = filePath("emas.tview", "publish")

@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------------------
 -- TerraME - a software platform for multiple scale spatially-explicit dynamic modeling.
--- Copyright (C) 2001-2016 INPE and TerraLAB/UFOP -- www.terrame.org
+-- Copyright (C) 2001-2017 INPE and TerraLAB/UFOP -- www.terrame.org
 
 -- This code is part of the TerraME framework.
 -- This framework is free software; you can redistribute it and/or
@@ -22,18 +22,31 @@
 --
 -------------------------------------------------------------------------------------------
 
--- @example Creates a database that can be used by arapiunsapp.
--- The data of this application were extracted from Escada et. al (2013) Infraestrutura,
--- Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.
+return {
+	List = function(unitTest)
+		local error_func = function()
+			List()
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg(1))
 
-import("terralib")
+		error_func = function()
+			List(1)
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg(1, "table", 1))
 
-project = Project{
-	title = "The riverine settlements at Arapiuns (PA)",
-	author = "Carneiro, H.",
-	file = "arapiuns.tview",
-	clean = true,
-	trajectory = filePath("arapiuns_traj.shp", "publish"),
-	villages = filePath("AllCmmTab_210316OK.shp", "publish")
+		error_func = function()
+			List{}
+		end
+		unitTest:assertError(error_func, "List is empty. A List must be initialized with Views elements.")
+
+		error_func = function()
+			List{1, 2, 3}
+		end
+		unitTest:assertError(error_func, "All elements of the argument must be named.")
+
+		error_func = function()
+			List{arg = "void"}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("arg", "View", "void"))
+	end
 }
-

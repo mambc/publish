@@ -196,5 +196,34 @@ return {
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
 
 		if emasDir:exists() then emasDir:delete() end
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		error_func = function()
+			Application{
+				project = filePath("caragua.tview", "publish"),
+				clean = true,
+				output = caraguaDir,
+				Limit = List{
+					limit = View{
+						color = "goldenrod",
+					},
+					regions = View{
+						select = "name",
+						color = "Set2"
+					}
+				},
+				real = View{
+					title = "Social Classes 2010",
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "The application must be created using only 'List', got 1 View(s).")
+
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }

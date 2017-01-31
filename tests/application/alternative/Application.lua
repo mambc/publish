@@ -142,7 +142,7 @@ return {
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					select = "CMM",
+					select = "Nome",
 					icon = {
 						path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 						color = "red",
@@ -153,6 +153,135 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "Argument report of View 'villages' must be a function that returns a Report, got number.")
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					icon = {
+						path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+						color = "red",
+						transparency = 0.6,
+						time = 0
+					}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' of icon must be a number greater than 0, got 0.")
+
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		error_func = function()
+			Application{
+				project = filePath("emas.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = emasDir,
+				limit = View{
+					icon = {path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
+
+		if emasDir:exists() then emasDir:delete() end
+
+		error_func = function()
+			Application{
+				title = "app",
+				progress = false,
+				output = emasDir,
+				accumulation = View{
+					layer = filePath("accumulation_Nov94May00.tif", "terralib"),
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'accumulation'.")
+
+		if emasDir:exists() then emasDir:delete() end
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				trajectory = View{
+					description = "Route on the Arapiuns River.",
+					width = 3,
+					border = "blue",
+					icon = "home"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					select = "VOID",
+					icon = {"home", "forest"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Column 'VOID' does not exist in View 'villages'.")
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					select = "UC",
+					icon = {"home"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "The number of 'icon:makers' (1) must be equal to number of unique values in property 'UC' (2) in View 'villages'.")
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					select = "UC",
+					icon = {"home", "fores"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "'fores' is an invalid value for argument 'icon:marker'. Do you mean 'forest'?")
+
+		error_func = function()
+			Application{
+				project = filePath("arapiuns.tview", "publish"),
+				base = "roadmap",
+				clean = true,
+				output = arapiunsDir,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+					select = "UC",
+					icon = {"home", "fores" },
+					label = {1, 2}
+				}
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("label", "string", 1))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 	end

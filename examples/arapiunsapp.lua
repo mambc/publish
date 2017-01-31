@@ -47,23 +47,22 @@ Application{
 	clean = true,
 	output = "ArapiunsWebMap",
 	template = {navbar = "darkblue", title = "white"},
-	beginning = View{
+	trajectory = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
-		color = "blue",
-		border = "blue"
-	},
-	ending = View{
-		description = "Route on the Arapiuns River.",
-		width = 3,
-		color = "red",
-		border = "red"
+		border = "blue",
+		icon = {
+			path = "M150 0 L75 200 L225 200 Z",
+			transparency = 0.2,
+			time = 35
+		}
 	},
 	villages = View{
 		download = true,
 		description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-		icon = "home",
-		select = "Nome",
+		select = {"Nome", "UC"},
+		icon = {"home", "forest"},
+		label = {"Absence Cons. Unit.", "Presence Cons. Unit."},
 		report = function(cell)
 			local mreport = Report{
 				title = cell.Nome,

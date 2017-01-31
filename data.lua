@@ -91,47 +91,11 @@ data{
 }
 
 data{
-	file = "Traj_IDA_lin.shp",
+	file = "arapiuns_traj.shp",
 	summary = "Route on the Arapiuns River.",
 	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.",
 	attributes = {
-		FID = "",
-		ESTRADA = "",
-		SPRNOME = "",
-		SPRNOME_1 = "",
-		SPRPERIMET = "",
-		SPRPERIM_1 = "",
-		SPRROTULO = "",
-		SPRROTULO_ = ""
-	}
-}
-
-data{
-	file = "Traj_VOLTA_lin.shp",
-	summary = "Route on the Arapiuns River.",
-	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.",
-	attributes = {
-		FID = "",
-		ESTRADA = "Road network.",
-		SPRNOME = "",
-		SPRNOME_1 = "",
-		SPRPERIMET = "",
-		SPRPERIM_1 = "",
-		SPRROTULO = "",
-		SPRROTULO_ = ""
-	}
-}
-
-
-data{
-	file = "Cmm_Arap2012_pt.shp",
-	summary = "The riverine settlements at Arapiuns (PA)",
-	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.",
-	attributes = {
-		FID = "",
-		CMM = "Name of riverine settlements at Arapiuns.",
-		ID = "",
-		objet_id_8 = ""
+		value = ""
 	}
 }
 
@@ -172,7 +136,8 @@ data{
 		MANT = "",
 		TEMPO = "",
 		CODLig1 = "",
-		CodLig2 = ""
+		CodLig2 = "",
+		ICON = "The name of marker icon."
 	}
 }
 
