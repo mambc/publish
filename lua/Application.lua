@@ -205,26 +205,38 @@ local function loadViews(data)
 	local groups = {}
 	local nViews = 0
 	local nGroups = 0
+	local nGroupViews = 0
 	forEachElement(data, function(idx, mview, mtype)
 		if mtype == "View" then
 			views[idx] = mview
 			nViews = nViews + 1
 			data[idx] = nil
 		elseif mtype == "List" then
-			groups[idx] = {}
 			nGroups = nGroups + 1
 
 			forEachOrderedElement(mview.views, function(vname, iview)
-				table.insert(groups[idx], vname)
+				iview.group = idx
+				if not groups[idx] then
+					groups[idx] = vname
+				else
+					iview.visible = false
+				end
+
 				views[vname] = iview
-				nViews = nViews + 1
+				nGroupViews = nGroupViews + 1
 				data[idx] = nil
 			end)
 		end
 	end)
 
+	if nGroups > 0 and nViews > 0 then
+		if data.output:exists() then data.output:delete() end
+		customError("The application must be created using only 'List', got "..nViews.." View(s).")
+	end
+
 	if nGroups > 0 then
 		data.group = groups
+		nViews = nGroupViews
 	end
 
 	data.view = views
@@ -400,6 +412,7 @@ local function processingView(data, layers, reports, name, view)
 				local cell = Cell(dset[i])
 				local report = view.report(cell)
 				if type(report) ~= "Report" then
+					if data.output:exists() then data.output:delete() end
 					customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
 				end
 
@@ -419,6 +432,7 @@ local function processingView(data, layers, reports, name, view)
 
 	if view.icon then
 		if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
+			if data.output:exists() then data.output:delete() end
 			customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
 		end
 
@@ -426,6 +440,7 @@ local function processingView(data, layers, reports, name, view)
 		local itype = type(view.icon)
 		if itype == "string" then
 			if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
+				if data.output:exists() then data.output:delete() end
 				customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
 			end
 
@@ -442,6 +457,7 @@ local function processingView(data, layers, reports, name, view)
 				for i = 0, #dset do
 					local prop = dset[i][col]
 					if not prop then
+						if data.output:exists() then data.output:delete() end
 						customError("Column '"..col.."' does not exist in View '"..name.."'.")
 					end
 
@@ -454,6 +470,7 @@ local function processingView(data, layers, reports, name, view)
 				local markers = view.icon
 				local nMarkers = #markers
 				if nProp ~= nMarkers then
+					if data.output:exists() then data.output:delete() end
 					customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
 				end
 
@@ -578,6 +595,26 @@ local function processingView(data, layers, reports, name, view)
 	end
 end
 
+local function createApplicationGroup(data, groups, layers)
+	local mgroups = {}
+	forEachElement(layers, function(_, el)
+		local view = data.view[el.layer]
+		if not mgroups[view.group] then
+			mgroups[view.group] = {}
+		end
+
+		table.insert(mgroups[view.group], el)
+	end)
+
+	forEachElement(mgroups, function(gp, mlayers)
+		table.insert(groups, {group = gp, lblGroup = _Gtme.stringToLabel(gp), layers = mlayers})
+	end)
+
+	table.sort (groups, function(k1, k2)
+		return k1.group < k2.group
+	end)
+end
+
 local function createApplicationProjects(data, proj)
 	printInfo("Loading Template")
 	local path = "./data/"
@@ -602,27 +639,7 @@ local function createApplicationProjects(data, proj)
 
 	local groups = {}
 	if data.group then
-		forEachElement(data.group, function(gp, views)
-			local mlayers = {}
-			forEachElement(layers, function(_, el)
-				if belong(el.layer, views) then
-					table.insert(mlayers, el)
-				end
-			end)
-
-			table.insert(groups, {group = gp, lblGroup = _Gtme.stringToLabel(gp), layers = mlayers})
-		end)
-
-		table.sort (groups, function(k1, k2)
-			return k1.group < k2.group
-		end)
-
-		local active = data.group[groups[1].group]
-		forEachElement(data.view, function(name, view)
-			if not belong(name, active) then
-				view.visible = false
-			end
-		end)
+		createApplicationGroup(data, groups, layers)
 	end
 
 	registerApplicationModel {

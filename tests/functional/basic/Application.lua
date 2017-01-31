@@ -110,16 +110,26 @@ return {
 		local group = app.group
 		unitTest:assertNotNil(group)
 		unitTest:assertType(group, "table")
-		unitTest:assertEquals(#group.Limit, 2)
-		unitTest:assertEquals(group.Limit[1], "limit")
-		unitTest:assertEquals(group.Limit[2], "regions")
+		unitTest:assertType(group.Limit, "string")
+		unitTest:assertEquals(group.Limit, "limit")
 
-		unitTest:assertEquals(#group.SocialClasses, 2)
-		unitTest:assertEquals(group.SocialClasses[1], "baseline")
-		unitTest:assertEquals(group.SocialClasses[2], "real")
+		unitTest:assertType(group.SocialClasses, "string")
+		unitTest:assertEquals(group.SocialClasses, "baseline")
 
-		unitTest:assertEquals(#group.OccupationalClasses, 1)
-		unitTest:assertEquals(group.OccupationalClasses[1], "use")
+		unitTest:assertType(group.OccupationalClasses, "string")
+		unitTest:assertEquals(group.OccupationalClasses, "use")
+
+		local view = app.view.limit
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.group, "Limit")
+
+		view = app.view.real
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.group, "SocialClasses")
+
+		view = app.view.use
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.group, "OccupationalClasses")
 
 		if caraguaDir:exists() then caraguaDir:delete() end
 	end,

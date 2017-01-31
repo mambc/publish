@@ -93,7 +93,7 @@ function View(data)
 	defaultTableValue(data, "download", false)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-		"value", "layer", "report", "transparency", "label", "icon", "download"})
+		"value", "layer", "report", "transparency", "label", "icon", "download", "group"})
 
 	if data.report and type(data.report) == "function" then
 		mandatoryTableArgument(data, "select")
@@ -113,7 +113,7 @@ function View(data)
 
 	if data.color then
 		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-			"value", "layer", "report", "transparency", "label", "download"})
+			"value", "layer", "report", "transparency", "label", "download", "group"})
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
@@ -252,7 +252,8 @@ function View(data)
 		if itype == "table" then
 			if #data.icon > 0 then
 				mandatoryTableArgument(data, "select")
-				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report", "transparency", "label", "icon", "download"})
+				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report",
+					"transparency", "label", "icon", "download", "group"})
 
 				if data.label and (#data.icon ~= #data.label)then
 					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")
