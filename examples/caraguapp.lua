@@ -56,7 +56,7 @@ Application{
 	clean = true,
 	output = "CaraguaWebMap",
 	report = report,
-	Limit = List{
+	Border = List{
 		limit = View{
 			description = "Bounding box of Caraguatatuba.",
 			color = "goldenrod"
