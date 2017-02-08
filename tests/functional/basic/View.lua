@@ -74,7 +74,7 @@ return {
 
 		view = View{
 			color = "blue",
-			layer = tostring(filePath("Limit_pol.shp", "terralib"))
+			layer = tostring(filePath("emas-limit.shp", "terralib"))
 		}
 
 		unitTest:assertType(view, "View")

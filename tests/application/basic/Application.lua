@@ -69,18 +69,18 @@ return {
 			order = {"cells", "river", "firebreak", "limit"},
 			river = View{
 				color = "blue",
-				layer = filePath("River_lin.shp", "terralib")
+				layer = filePath("emas-river.shp", "terralib")
 			},
 			firebreak = View{
 				color = "black",
-				layer = filePath("firebreak_lin.shp", "terralib")
+				layer = filePath("emas-firebreak.shp", "terralib")
 			},
 			limit = View{
 				border = "blue",
 				color = "goldenrod",
 				width = 2,
 				visible = true,
-				layer = filePath("Limit_pol.shp", "terralib")
+				layer = filePath("emas-limit.shp", "terralib")
 			},
 			cells = View{
 				title = "Emas National Park",
@@ -88,7 +88,7 @@ return {
 				color = "PuBu",
 				width = 0,
 				value = {0, 1, 2},
-				layer = filePath("accumulation_Nov94May00.tif", "terralib")
+				layer = filePath("emas-accumulation.tif", "terralib")
 			}
 		}
 

@@ -1,7 +1,7 @@
 data{
 	file = "caragua.shp",
-	summary = "",
-	source = "",
+	summary = "Caragua municipality, in Sao Paulo State, Brazil.",
+	source = "IBGE",
 	attributes = {
 		population = "Population of Caraguatatuba.",
 		pib = "Gross Domestic Product (GDP) of Caraguatatuba.",
@@ -12,8 +12,8 @@ data{
 
 data{
 	file = "regions.shp",
-	summary = "",
-	source = "",
+	summary = "Caragua municipality divided into three regions.",
+	source = "H. Guerra and P. Andrade",
 	attributes = {
 		name = "Regions of Caraguatatuba.",
 	}
@@ -21,8 +21,8 @@ data{
 
 data{
 	file = "caragua_classes2010_regioes.shp",
-	summary = "",
-	source = "",
+	summary = "Social classes in 2010.",
+	source = "Feitosa et. al (2014)",
 	attributes = {
 		classe = "Social Classe 2010 Real.",
 	}
@@ -30,8 +30,8 @@ data{
 
 data{
 	file = "occupational2010.shp",
-	summary = "",
-	source = "",
+	summary = "Ocupational classes in 2010.",
+	source = "Feitosa et. al (2014)",
 	attributes = {
 		uso = "Occupational Classes (IBGE, 2010).",
 	}
@@ -39,8 +39,8 @@ data{
 
 data{
 	file = "simulation2025_baseline.shp",
-	summary = "",
-	source = "",
+	summary = "Baseline simulation for 2025.",
+	source = "Feitosa et. al (2014)",
 	attributes = {
 		classe = "Social Classes 2025 Simulated.",
 	}
@@ -48,8 +48,8 @@ data{
 
 data{
 	file = "simulation2025_lessgrowth.shp",
-	summary = "",
-	source = "",
+	summary = "Less growth simulation in 2025.",
+	source = "Feitosa et. al (2014)",
 	attributes = {
 		classe = "Urban Population Lessgrowth 2025.",
 	}
@@ -57,8 +57,8 @@ data{
 
 data{
 	file = "simulation2025_plusgrowth.shp",
-	summary = "",
-	source = "",
+	summary = "Plus growth simulation in 2025.",
+	source = "Feitosa et. al (2014)",
 	attributes = {
 		classe = "Urban Population Plusgrowth 2025.",
 	}
@@ -66,8 +66,8 @@ data{
 
 data{
 	file = "simulation2025_poorer.shp",
-	summary = "",
-	source = "",
+	summary = "Poorer people in Caragua in 2025.",
+	source = "Feitosa et. al (2014)",
 	attributes = {
 		classe = "Socioeconomic Status Poorer 2025.",
 	}
@@ -75,8 +75,8 @@ data{
 
 data{
 	file = "simulation2025_richer_final.shp",
-	summary = "",
-	source = "",
+	summary = "Richer people in Caragua in 2025.",
+	source = "Feitosa et. al (2014)",
 	attributes = {
 		classe = "Socioeconomic Status Richer 2025.",
 	}

@@ -31,8 +31,6 @@ import("terralib")
 
 project = Project{
 	title = "URBIS-Caraguá",
-	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá:"
-				.."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	author = "Carneiro, H.",
 	file = "urbis.tview",
 	clean = true,
