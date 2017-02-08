@@ -38,92 +38,154 @@ Application{
     }
 }
 ```
-You can see the result in [Emas](https://rawgit.com/hguerra/publish/master/examples/EmasWebMap/index.html).
+You can see the result in [Emas](https://rawgit.com/TerraME/publish/master/examples/EmasWebMap/index.html).
 
 ```lua
 import("publish")
 
+local report = Report{
+    title = "URBIS-Caraguá",
+    author = "Feitosa et. al (2014)"
+}
+
+report:addHeading("Social Classes 2010")
+report:addImage("urbis_2010_real.PNG", "publish")
+report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.")
+
+report:addSeparator()
+
+report:addHeading("Occupational Classes (IBGE, 2010)")
+report:addImage("urbis_uso_2010.PNG", "publish")
+report:addText("The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.")
+
+report:addSeparator()
+
+report:addHeading("Social Classes 2025")
+report:addImage("urbis_simulation_2025_baseline.PNG", "publish")
+report:addText("The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.")
+
 Application{
     project = filePath("caragua.tview", "publish"),
+    description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+            .."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
     clean = true,
     output = "CaraguaWebMap",
-    order = {"richer", "poorer", "plus", "less", "baseline", "uso", "real", "regions", "limit"},
-    limit = View{
-        description = "Bounding box of Caraguatatuba",
-        color = "goldenrod",
-        visible = true
+    report = report,
+    Border = List{
+        limit = View{
+            description = "Bounding box of Caraguatatuba.",
+            color = "goldenrod"
+        },
+        regions = View{
+            description = "Regions of Caraguatatuba.",
+            select = "name",
+            color = "Set2",
+            label = {"North", "Central", "South"}
+        }
     },
-    regions = View{
-        title = "Regions",
-        description = "Regions of Caraguatatuba",
-        select = "name",
-        color = "Set2",
-        value = {1, 2, 3}
-    },
-    real = View{
-        title = "Social Classes 2010 Real",
-        description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+    SocialClasses = List{
+        real = View{
+            title = "Social Classes 2010",
+            description = "This is the main endogenous variable of the model. It was obtained from a classification that "
                     .."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
-        width = 0,
-        select = "classe",
-        color = {"red", "orange", "yellow"},
-        value = {1, 2, 3}
+            width = 0,
+            select = "classe",
+            color = {"red", "orange", "yellow"},
+            label = {"Condition C", "Condition B", "Condition A"}
+        },
+        baseline = View{
+            title = "Social Classes 2025",
+            description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
+            width = 0,
+            select = "classe",
+            color = {"red", "orange", "yellow"},
+            label = {"Condition C", "Condition B", "Condition A"}
+        }
     },
-    uso = View{
-        title = "Occupational Classes (IBGE, 2010)",
-        description = "The occupational class describes the percentage of houses and apartments inside such areas that "
+    OccupationalClasses = List{
+        use = View{
+            title = "Occupational Classes 2010",
+            description = "The occupational class describes the percentage of houses and apartments inside such areas that "
                     .."have occasional use. The dwelling is typically used in summer vacations and holidays.",
-        width = 0,
-        select = "uso",
-        color = {{255, 204, 255}, {242, 160, 241}, {230, 117, 228}, {214, 71, 212}, {199, 0, 199}},
-        value = {1, 2, 3, 4, 5}
-    },
-    baseline = View{
-        title = "Social Classes 2025 Simulated",
-        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
-        width = 0,
-        select = "classe",
-        color = {"red", "orange", "yellow"},
-        value = {1, 2, 3}
-    },
-    less = View{
-        title = "Urban Population Lessgrowth 2025",
-        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
-        width = 0,
-        select = "classe",
-        color = {"red", "orange", "yellow"},
-        value = {1, 2, 3}
-    },
-    plus = View{
-        title = "Urban Population Plusgrowth 2025",
-        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
-        width = 0,
-        select = "classe",
-        color = {"red", "orange", "yellow"},
-        value = {1, 2, 3}
-    },
-    poorer = View{
-        title = "Socioeconomic Status Poorer 2025",
-        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
-        width = 0,
-        select = "classe",
-        color = {"red", "orange", "yellow"},
-        value = {1, 2, 3}
-    },
-    richer = View{
-        title = "Socioeconomic Status Richer 2025",
-        description = "The base scenario considers the zoning proposed by the new master plan of Caraguatatuba.",
-        width = 0,
-        select = "classe",
-        color = {"red", "orange", "yellow"},
-        value = {1, 2, 3}
+            width = 0,
+            select = "uso",
+            color = "RdPu",
+            label = {"0.000000 - 0.200000", "0.200001 - 0.350000", "0.350001 - 0.500000", "0.500001 - 0.700000", "0.700001 - 0.930000"}
+        }
     }
 }
 ```
-You can see the result in [URBIS-Caraguá](https://rawgit.com/hguerra/publish/master/examples/CaraguaWebMap/index.html).
+You can see the result in [Caragua](https://rawgit.com/TerraME/publish/master/examples/CaraguaWebMap/index.html).
+
+```lua
+import("publish")
+
+local description = [[
+    This report presents the methodology and the initial results obtained at the fieldwork along riverine settlements at
+    Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
+    This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the
+    infrastructure and network relations of riverine human settlements. The main objective was to characterize the
+    organization and interdependence between settlements concerning to:infrastructure, health and education services,
+    land use, ecosystem services provision and perception of welfare.
+    Source: Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA.
+    Relatório Técnico de Atividade de Campo - Projeto UrbisAmazônia e Projeto Cenários para a Amazônia: Uso da terra,
+    Biodiversidade e Clima, INPE.
+]]
+
+Application{
+    project = filePath("arapiuns.tview", "publish"),
+    description = description,
+    base = "roadmap",
+    clean = true,
+    output = "ArapiunsWebMap",
+    template = {navbar = "darkblue", title = "white"},
+    trajectory = View{
+        description = "Route on the Arapiuns River.",
+        width = 3,
+        border = "blue",
+        icon = {
+            path = "M150 0 L75 200 L225 200 Z",
+            transparency = 0.2,
+            time = 35
+        }
+    },
+    villages = View{
+        download = true,
+        description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+        icon = "ICON",
+        select = "Nome",
+        report = function(cell)
+            local mreport = Report{
+                title = cell.Nome,
+                author = "Escada et. al (2013)"
+            }
+
+            mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+
+            local health, water
+            if cell.PSAU > 0 then health = "has" else health = "hasn't" end
+            if cell.AGUA > 0 then water  = "has" else water  = "hasn't" end
+
+            mreport:addText(string.format("The community %s health center and %s access to water.", health, water))
+
+            local school = {}
+            if cell.ENSINF > 0   then table.insert(school, "Early Childhood Education")     end
+            if cell.ENSFUND2 > 0 then table.insert(school, "Elementary School")             end
+            if cell.EJA > 0      then table.insert(school, "Education of Young and Adults") end
+
+            if #school > 0 then
+                mreport:addText(string.format("The schools offers %s.", table.concat(school, ", ")))
+            end
+
+            return mreport
+        end
+    }
+}
+```
+You can see the result in [Arapiuns](https://rawgit.com/TerraME/publish/master/examples/ArapiunsWebMap/index.html).
 
 ## Reporting Bugs
-If you have found a bug, open an entry in the [issues](https://github.com/pedro-andrade-inpe/publish/issues).
+If you have found a bug, open an entry in the [issues](https://github.com/TerraME/publish/issues).
 
 ## Code Status
 <b> Current status of Publish package </b>

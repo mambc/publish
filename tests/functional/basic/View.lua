@@ -30,7 +30,6 @@ return {
 			border = "blue",
 			width = 2,
 			color = "PuBu",
-			visible = true,
 			select = "river",
 			value = {0, 1, 2}
 		}
@@ -49,6 +48,7 @@ return {
 
 		unitTest:assertType(view.color, "table")
 		unitTest:assertEquals(getn(view.color), 3)
+		unitTest:assertEquals(view.transparency, 0)
 		unitTest:assertEquals(view.color[tostring(view.value[1])], "rgba(236, 231, 242, 1)")
 		unitTest:assertEquals(view.color[tostring(view.value[2])], "rgba(166, 189, 219, 1)")
 		unitTest:assertEquals(view.color[tostring(view.value[3])], "rgba(43, 140, 190, 1)")
@@ -59,7 +59,8 @@ return {
 			border = "red",
 			width = 2,
 			color = "blue",
-			visible = true,
+			transparency = 0.7,
+			visible = false,
 			select = "river"
 		}
 
@@ -67,18 +68,21 @@ return {
 		unitTest:assertEquals(view.title, "Emas National Park")
 		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
 		unitTest:assertEquals(view.width, 2)
-		unitTest:assertEquals(view.visible, true)
+		unitTest:assertEquals(view.visible, false)
 		unitTest:assertEquals(view.select, "river")
+		unitTest:assertEquals(view.transparency, 0.7)
 		unitTest:assertEquals(view.border, "rgba(255, 0, 0, 1)")
-		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
+		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 0.3)")
 
 		view = View{
 			color = "blue",
-			layer = tostring(filePath("emas-limit.shp", "terralib"))
+			layer = tostring(filePath("emas-limit.shp", "terralib")),
+			transparency = 0.95,
 		}
 
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 1)")
+		unitTest:assertEquals(view.transparency, 0.95)
+		unitTest:assertEquals(view.color, "rgba(0, 0, 255, 0.05)")
 		unitTest:assertType(view.layer, "File")
 		unitTest:assert(view.layer:exists())
 
@@ -89,20 +93,189 @@ return {
 		}
 
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.color["1"], "red")
-		unitTest:assertEquals(view.color["2"], "orange")
-		unitTest:assertEquals(view.color["3"], "yellow")
+		unitTest:assertEquals(view.color["1"], "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(view.color["2"], "rgba(255, 165, 0, 1)")
+		unitTest:assertEquals(view.color["3"], "rgba(255, 255, 0, 1)")
+
+		view = View{
+			select = "classe",
+			color = "Blues"
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "string")
+		unitTest:assertEquals(view.color, "Blues")
+
+		view = View{
+			select = "classe",
+			color = {"red", "orange", "yellow"}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+		unitTest:assertEquals(view.color[1], "red")
+		unitTest:assertEquals(view.color[2], "orange")
+		unitTest:assertEquals(view.color[3], "yellow")
+
+		view = View{
+			select = "classe",
+			color = {{10, 10, 10}, {11, 11, 11}, {12, 12, 12}}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+		unitTest:assertType(view.color[1], "table")
+		unitTest:assertType(view.color[2], "table")
+		unitTest:assertType(view.color[3], "table")
+
+		unitTest:assertEquals(view.color[1][1], 10)
+		unitTest:assertEquals(view.color[1][2], 10)
+		unitTest:assertEquals(view.color[1][3], 10)
+
+		unitTest:assertEquals(view.color[2][1], 11)
+		unitTest:assertEquals(view.color[2][2], 11)
+		unitTest:assertEquals(view.color[2][3], 11)
+
+		unitTest:assertEquals(view.color[3][1], 12)
+		unitTest:assertEquals(view.color[3][2], 12)
+		unitTest:assertEquals(view.color[3][3], 12)
+
+		local report = Report{
+			title = "URBIS-Caraguá",
+			author = "Feitosa et. al (2014)"
+		}
+
+		report:addImage("urbis_2010_real.PNG", "publish")
+		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.")
 
 		view = View{
 			select = "classe",
 			color = {"#088da5", "#0b7b47", "#7b0b3f"},
-			value = {1, 2, 3}
+			value = {1, 2, 3},
+			label = {"Condition C", "Condition B", "Condition A"},
+			report = report
 		}
 
 		unitTest:assertType(view, "View")
 		unitTest:assertEquals(view.color["1"], "#088da5")
 		unitTest:assertEquals(view.color["2"], "#0b7b47")
 		unitTest:assertEquals(view.color["3"], "#7b0b3f")
+		unitTest:assertNotNil(view.label)
+		unitTest:assertType(view.label, "table")
+		unitTest:assertEquals(view.label["Condition C"], "#088da5")
+		unitTest:assertEquals(view.label["Condition B"], "#0b7b47")
+		unitTest:assertEquals(view.label["Condition A"], "#7b0b3f")
+
+		unitTest:assertType(view.report, "Report")
+		unitTest:assertEquals(view.report.title, "URBIS-Caraguá")
+		unitTest:assertEquals(view.report.author, "Feitosa et. al (2014)")
+
+		local reports = view.report:get()
+		unitTest:assertType(reports, "table")
+		unitTest:assertEquals(#reports, 2)
+
+		view = View{
+			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+			icon = "home"
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
+		unitTest:assertType(view.icon, "string")
+		unitTest:assertEquals(view.icon, "home")
+		unitTest:assertEquals(view.download, false)
+
+		view = View{
+			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+			download = true,
+			icon = {
+				path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
+				color = "red",
+				transparency = 0.6,
+				time = 10
+			}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
+		unitTest:assertEquals(view.icon.color, "rgba(255, 0, 0, 1)")
+		unitTest:assertEquals(view.icon.transparency, 0.6)
+		unitTest:assertEquals(view.icon.time, 10)
+		unitTest:assertEquals(view.download, true)
+
+		view = View{
+			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+			download = true,
+			icon = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertEquals(view.icon.path, "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0")
+		unitTest:assertNotNil(view.icon.color)
+		unitTest:assertNotNil(view.icon.transparency)
+		unitTest:assertEquals(view.icon.time, 5)
+		unitTest:assertEquals(view.download, true)
+
+		view = View{
+			select = "UC",
+			icon = {"home", "forest"}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+
+		view = View{
+			select = "UC",
+			icon = {"home", "forest"},
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
+		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
+
+		view = View{
+			select = {"Nome", "UC"},
+			icon = {"home", "forest"},
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"},
+			report = function(cell)
+				local mreport = Report{title = cell.Nome}
+				mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
+				return mreport
+			end
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertNil(view.color)
+		unitTest:assertNil(view.description)
+		unitTest:assertType(view.icon, "table")
+		unitTest:assertType(view.select, "table")
+		unitTest:assertEquals(view.select[1], "Nome")
+		unitTest:assertEquals(view.select[2], "UC")
+		unitTest:assertEquals(view.icon[1], "home")
+		unitTest:assertEquals(view.icon[2], "forest")
+		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
+		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
 	end,
 	__tostring = function(unitTest)
 		local view = View{
@@ -110,18 +283,20 @@ return {
 			border = "blue",
 			width = 2,
 			color = "PuBu",
-			visible = true,
 			select = "river",
 			value = {0, 1, 2}
 		}
 
-		unitTest:assertEquals(tostring(view), [[border   string [rgba(0, 0, 255, 1)]
-color    named table of size 3
-select   string [river]
-title    string [Emas National Park]
-value    vector of size 3
-visible  boolean [true]
-width    number [2]
+		unitTest:assertEquals(tostring(view), [[border        string [rgba(0, 0, 255, 1)]
+color         named table of size 3
+download      boolean [false]
+label         named table of size 3
+select        string [river]
+title         string [Emas National Park]
+transparency  number [0]
+value         vector of size 3
+visible       boolean [true]
+width         number [2]
 ]])
 	end
 }

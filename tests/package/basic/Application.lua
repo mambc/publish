@@ -24,10 +24,14 @@
 
 return {
 	Application = function(unitTest)
-		local urbis = filePath("urbis.tview", "publish")
-		local tmpdir = Directory{tmp = true}
-		os.execute("mv \"".. urbis .."\" \""..tmpdir.."\"")
-		urbis = File(tmpdir.. urbis:name())
+		local caragua = filePath("caragua.tview", "publish")
+		local arapiuns = filePath("arapiuns.tview", "publish")
+		local tmpdir = Directory{tmp = true }
+
+		os.execute("mv \"".. caragua .."\" \""..tmpdir.."\"")
+		os.execute("mv \"".. arapiuns .."\" \""..tmpdir.."\"")
+		caragua = File(tmpdir.. caragua:name())
+		arapiuns = File(tmpdir.. arapiuns:name())
 
 		local emasDir = Directory("package-basic-app-onetview")
 		if emasDir:exists() then emasDir:delete() end
@@ -181,7 +185,8 @@ return {
 		if emasDir:exists() then emasDir:delete() end
 		customWarning = mcustomWarning
 
-		os.execute("mv \"".. urbis .."\" \""..packageInfo("publish").data.."\"")
+		os.execute("mv \"".. caragua .."\" \""..packageInfo("publish").data.."\"")
+		os.execute("mv \"".. arapiuns .."\" \""..packageInfo("publish").data.."\"")
 		tmpdir:delete()
 	end
 }

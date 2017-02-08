@@ -31,6 +31,7 @@ import("publish")
 
 Application{
 	project = filePath("emas.tview", "publish"),
+	description = "A small example related to a fire spread model.",
 	clean = true,
 	output = "EmasWebMap",
 	order = {"cells", "river", "firebreak", "limit"},
@@ -44,8 +45,7 @@ Application{
 		description = "Bounding box of Emas National Park",
 		border = "blue",
 		color = "goldenrod",
-		width = 2,
-		visible = true
+		width = 2
 	},
 	cells = View{
 		title = "Emas National Park",
@@ -53,6 +53,7 @@ Application{
 		select = "river",
 		color = "PuBu",
 		width = 0,
-		value = {0, 1, 2}
+		value = {0, 1, 2},
+		visible = false
 	}
 }

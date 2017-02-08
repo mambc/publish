@@ -76,6 +76,62 @@ return {
 		unitTest:assertEquals(app.maxZoom, 17)
 		unitTest:assertEquals(app.center.lat, -23.179017)
 		unitTest:assertEquals(app.center.long, -45.889188)
+		unitTest:assertEquals(app.template.navbar, "#1ea789")
+		unitTest:assertEquals(app.template.title, "white")
+
+		if emasDir:exists() then emasDir:delete() end
+
+		app = Application{
+			project = filePath("emas.tview", "publish"),
+			output = emasDir,
+			template = {navbar = "#034871", title = "#F63B4C"},
+			clean = true,
+			select = "river",
+			color = "BuGn",
+			value = {0, 1, 2},
+			progress = false
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.template, "table")
+		unitTest:assertEquals(app.template.navbar, "#034871")
+		unitTest:assertEquals(app.template.title, "#F63B4C")
+
+		if emasDir:exists() then emasDir:delete() end
+
+		app = Application{
+			project = filePath("emas.tview", "publish"),
+			output = emasDir,
+			template = {navbar = {3, 72, 113}, title = {246, 59, 76}},
+			clean = true,
+			select = "river",
+			color = "BuGn",
+			value = {0, 1, 2},
+			progress = false
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.template, "table")
+		unitTest:assertEquals(app.template.navbar, "rgba(3, 72, 113, 1)")
+		unitTest:assertEquals(app.template.title, "rgba(246, 59, 76, 1)")
+
+		if emasDir:exists() then emasDir:delete() end
+
+		app = Application{
+			project = filePath("emas.tview", "publish"),
+			output = emasDir,
+			template = {navbar = "dodgerblue", title = "brown"},
+			clean = true,
+			select = "river",
+			color = "BuGn",
+			value = {0, 1, 2},
+			progress = false
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.template, "table")
+		unitTest:assertEquals(app.template.navbar, "rgba(30, 144, 255, 1)")
+		unitTest:assertEquals(app.template.title, "rgba(165, 42, 42, 1)")
 
 		if emasDir:exists() then emasDir:delete() end
 	end

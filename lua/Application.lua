@@ -77,6 +77,30 @@ local function registerApplicationModel(data)
 	table.insert(ViewModel, data)
 end
 
+local function exportReportImages(data, report)
+	local reports = report:get()
+	forEachElement(reports, function(_, rp)
+		if not rp.image then return end
+
+		local img = rp.image:name()
+		if not data.images then
+			data.images = Directory(data.output.."images")
+			if not data.images:exists() then
+				data.images:create()
+			end
+		end
+
+		if not isFile(data.images..img) then
+			printNormal("Copying image '"..img.."'")
+			os.execute("cp \""..tostring(rp.image).."\" \""..data.images.."\"")
+		end
+
+		rp.image = img
+	end)
+
+	return reports
+end
+
 local function createDirectoryStructure(data)
 	printInfo("Creating directory structure")
 	if data.clean == true and data.output:exists() then
@@ -106,6 +130,10 @@ local function createDirectoryStructure(data)
 		printNormal("Copying dependency '"..file.."'")
 		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")
 	end)
+
+	if data.report then
+		data.report = {title = data.report.title, author = data.report.author, reports = exportReportImages(data, data.report)}
+	end
 end
 
 local function isValidSource(source)
@@ -127,20 +155,100 @@ local function exportLayers(data, sof)
 	end)
 end
 
-local function loadLayers(data)
-	data.view = {}
-	local nView = 0
-	forEachElement(data, function(idx, mview)
-		if type(mview) == "View" then
-			data.view[idx] = mview
-			nView = nView + 1
+local function loadViewValue(data, name, view)
+	local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
+		report = true, download = true})
+	mview.value = {}
+	mview.report = view.report
+
+	if view.width ~= 1 then
+		mview.width = view.width
+	end
+
+	if view.transparency ~= 0 then
+		mview.transparency = view.transparency
+	end
+
+	if view.visible == false then
+		mview.visible = false
+	end
+
+	if view.download == true then
+		mview.download = true
+	end
+
+	local select = view.select[2] or view.select
+
+	do
+		local set = {}
+		local tlib = terralib.TerraLib{}
+		local dset = tlib:getDataSet(data.project, name)
+		for i = 0, #dset do
+			for k, v in pairs(dset[i]) do
+				if k == select and not set[v] then
+					set[v] = true
+				end
+			end
+		end
+
+		for v in pairs(set) do
+			table.insert(mview.value, v)
+		end
+	end
+
+	table.sort(mview.value)
+	data.view[name] = View(mview)
+end
+
+local function loadViews(data)
+	local views = {}
+	local groups = {}
+	local nViews = 0
+	local nGroups = 0
+	local nGroupViews = 0
+	forEachElement(data, function(idx, mview, mtype)
+		if mtype == "View" then
+			views[idx] = mview
+			nViews = nViews + 1
 			data[idx] = nil
+		elseif mtype == "List" then
+			nGroups = nGroups + 1
+
+			forEachOrderedElement(mview.views, function(vname, iview)
+				iview.group = idx
+				if not groups[idx] then
+					groups[idx] = vname
+				else
+					iview.visible = false
+				end
+
+				views[vname] = iview
+				nGroupViews = nGroupViews + 1
+				data[idx] = nil
+			end)
 		end
 	end)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading",
-		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view",
-		"border", "color", "description", "select", "value", "visible", "width", "order"})
+	if nGroups > 0 and nViews > 0 then
+		if data.output:exists() then data.output:delete() end
+		customError("The application must be created using only 'List', got "..nViews.." View(s).")
+	end
+
+	if nGroups > 0 then
+		data.group = groups
+		nViews = nGroupViews
+	end
+
+	data.view = views
+	return nViews
+end
+
+local function loadLayers(data)
+	local nView = loadViews(data)
+
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
+		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
+		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group"})
 
 	if nView > 0 then
 		if data.project then
@@ -163,17 +271,23 @@ local function loadLayers(data)
 				return found
 			end)
 		else
+			mandatoryTableArgument(data, "title", "string")
+
 			printInfo("Loading layers from path")
+			local tmpDir = Directory{tmp = true}
 			local mproj = {
-				file = data.title..".tview",
+				file = tmpDir..data.title..".tview",
 				clean = true
 			}
 
 			local nLayers = 0
 			forEachElement(data.view, function(name, view)
-				if view.layer then
-					if view.layer:exists() and isValidSource(view.layer:extension()) then
+				if view.layer and view.layer:exists() then
+					if isValidSource(view.layer:extension()) then
 						mproj[name] = tostring(view.layer)
+					else
+						data.view[name] = nil
+						customWarning("Publish cannot export yet raster layer '"..name.."'.")
 					end
 
 					nLayers = nLayers + 1
@@ -187,8 +301,6 @@ local function loadLayers(data)
 
 			data.project = terralib.Project(mproj)
 			exportLayers(data)
-
-			data.project.file:deleteIfExists()
 		end
 	else
 		if data.project then
@@ -218,6 +330,11 @@ local function loadLayers(data)
 			customError("Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
 		end
 	end
+
+	forEachElement(data.view, function(name, view)
+		if not (view.color and not view.value and view.select) then return end
+		loadViewValue(data, name, view)
+	end)
 
 	if data.order then
 		local orderSize = #data.order
@@ -258,12 +375,251 @@ local function loadLayers(data)
 	end
 end
 
+local function processingView(data, layers, reports, name, view)
+	view.id = name
+	view.transparency = 1 - view.transparency
+	local viewLabel = view.title
+	if viewLabel == nil or viewLabel == "" then
+		viewLabel = _Gtme.stringToLabel(name)
+	end
+
+	table.insert(layers, {
+		order = view.order,
+		layer = name,
+		label = viewLabel
+	})
+
+	local dset
+	do
+		local tlib = terralib.TerraLib{}
+		dset = tlib:getDataSet(data.project, name)
+		for i = 0, #dset do
+			if view.geom then break end
+
+			local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
+			if geom then
+				local subType = tlib:castGeomToSubtype(geom)
+				view.geom = subType:getGeometryType()
+			end
+		end
+	end
+
+	if view.report then
+		if type(view.report) == "Report" then
+			table.insert(reports, {title = view.report.title, author = view.report.author, layer = view.report.layer, reports = exportReportImages(data, view.report)})
+		else
+			for i = 0, #dset do
+				local cell = Cell(dset[i])
+				local report = view.report(cell)
+				if type(report) ~= "Report" then
+					if data.output:exists() then data.output:delete() end
+					customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
+				end
+
+				local select = cell[view.select[1] or view.select]
+				if select and type(select) == "string" then
+					select = select:gsub(" ", "-")
+				end
+
+				table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
+			end
+		end
+	elseif data.report then
+		local report = clone(data.report)
+		report.layer = name
+		table.insert(reports, report)
+	end
+
+	if view.icon then
+		if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
+			if data.output:exists() then data.output:delete() end
+			customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
+		end
+
+		local icon = {}
+		local itype = type(view.icon)
+		if itype == "string" then
+			if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
+				if data.output:exists() then data.output:delete() end
+				customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+			end
+
+			view.icon = view.icon..".png"
+			icon.path = "./assets/"..view.icon
+			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
+		else
+			if #view.icon > 0 then
+				icon.options = {}
+				local set = {}
+				local label = view.label or {}
+				local col = view.select[2] or view.select
+				local nProp = 0
+				for i = 0, #dset do
+					local prop = dset[i][col]
+					if not prop then
+						if data.output:exists() then data.output:delete() end
+						customError("Column '"..col.."' does not exist in View '"..name.."'.")
+					end
+
+					if not set[prop] then
+						set[prop] = true
+						nProp = nProp + 1
+					end
+				end
+
+				local markers = view.icon
+				local nMarkers = #markers
+				if nProp ~= nMarkers then
+					if data.output:exists() then data.output:delete() end
+					customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
+				end
+
+				local ics = {
+					airport = true,
+					animal = true,
+					bigcity = true,
+					bus = true,
+					car = true,
+					caution = true,
+					cycling = true,
+					database = true,
+					desert = true,
+					diving = true,
+					fillingstation = true,
+					finish = true,
+					fire = true,
+					firstaid = true,
+					fishing = true,
+					flag = true,
+					forest = true,
+					harbor = true,
+					helicopter = true,
+					home = true,
+					horseriding = true,
+					hospital = true,
+					lake = true,
+					motorbike = true,
+					mountains = true,
+					radio = true,
+					restaurant = true,
+					river = true,
+					road = true,
+					shipwreck = true,
+					thunderstorm = true
+				}
+
+				local properties = {}
+				for prop in pairs(set) do
+					table.insert(properties, prop)
+				end
+
+				table.sort(properties)
+
+				local ltmp = {}
+				local copy = {}
+				for i, prop in pairs(properties) do
+					local strprop = tostring(prop)
+					local marker = tostring(markers[i])
+
+					if not ics[marker] then
+						switchInvalidArgument("icon:marker", marker, ics)
+					end
+
+					local mlabel = label[i]
+					if not mlabel then
+						mlabel = col.." "..strprop
+					elseif type(mlabel) ~= "string" then
+						incompatibleTypeError("label", "string", mlabel)
+					end
+
+					marker = marker..".png"
+					copy[marker] = true
+
+					marker = "./assets/"..marker
+					ltmp[mlabel] = marker
+					icon.options[strprop] = marker
+				end
+
+				for el in pairs(copy) do
+					os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
+				end
+
+				view.label = ltmp
+			else
+				view.icon.transparency = 1 - view.icon.transparency
+				icon.options = {
+					path = view.icon.path,
+					fillColor = view.icon.color,
+					fillOpacity = view.icon.transparency,
+					strokeWeight = 2
+				}
+
+				icon.time = 1000 / (200 / view.icon.time)
+			end
+		end
+
+		view.icon = icon
+	elseif view.geom == "LineString" or view.geom == "MultiLineString" then
+		view.icon = {}
+		view.icon.options = {
+			path = "M150 0 L75 200 L225 200 Z",
+			fillColor = "rgba(0, 0, 0, 1)",
+			fillOpacity = 0.8,
+			strokeWeight = 2
+		}
+
+		view.icon.time = 25
+	end
+
+	if view.download then
+		local layer = terralib.Layer{project = data.project, name = name}
+		local source = layer.source
+		if isValidSource(source) then
+			local tmp = Directory(name)
+			local file = File(layer.file)
+			local _, filename = file:split()
+			local zip = File(name..".zip")
+
+			tmp:create()
+			layer:export{file = tmp..filename..".shp", overwrite = true }
+			os.execute("zip -qr \""..zip.."\" "..tmp:name())
+			if tmp:exists() then tmp:delete() end
+
+			if zip:exists() then
+				printNormal("Data '"..filename.."' successfully zipped")
+				os.execute("cp \""..zip.."\" \""..data.datasource.."\"")
+			end
+
+			zip:deleteIfExists()
+		end
+	end
+end
+
+local function createApplicationGroup(data, groups, layers)
+	local mgroups = {}
+	forEachElement(layers, function(_, el)
+		local view = data.view[el.layer]
+		if not mgroups[view.group] then
+			mgroups[view.group] = {}
+		end
+
+		table.insert(mgroups[view.group], el)
+	end)
+
+	forEachElement(mgroups, function(gp, mlayers)
+		table.insert(groups, {group = gp, lblGroup = _Gtme.stringToLabel(gp), layers = mlayers})
+	end)
+
+	table.sort (groups, function(k1, k2)
+		return k1.group < k2.group
+	end)
+end
+
 local function createApplicationProjects(data, proj)
 	printInfo("Loading Template")
 	local path = "./data/"
 	local index = "index.html"
 	local config = "config.js"
-	local view = clone(data.view, {type_ = true, value = true})
 
 	if proj then
 		index = proj..".html"
@@ -272,22 +628,19 @@ local function createApplicationProjects(data, proj)
 	end
 
 	local layers = {}
-	for name, value in pairs(view) do
-		local label = value.title
-		if label == nil or label == "" then
-			label = _Gtme.stringToLabel(name)
-		end
-
-		table.insert(layers, {
-			order = value.order,
-			layer = name,
-			label = label
-		})
+	local reports = {}
+	for name, value in pairs(data.view) do
+		processingView(data, layers, reports, name, value)
 	end
 
 	table.sort (layers, function(k1, k2)
 		return k1.order > k2.order
 	end)
+
+	local groups = {}
+	if data.group then
+		createApplicationGroup(data, groups, layers)
+	end
 
 	registerApplicationModel {
 		output = config,
@@ -298,8 +651,9 @@ local function createApplicationProjects(data, proj)
 			maxZoom = data.maxZoom,
 			mapTypeId = data.base:upper(),
 			legend = data.legend,
-			data = view,
-			path = path
+			data = clone(data.view, {type_ = true, value = true}),
+			path = path,
+			group = data.group
 		}
 	}
 
@@ -311,7 +665,12 @@ local function createApplicationProjects(data, proj)
 			title = data.title,
 			description = data.description,
 			layers = layers,
-			loading = data.loading
+			loading = data.loading,
+			report = reports,
+			key = data.key,
+			navbarColor = data.template.navbar,
+			titleColor = data.template.title,
+			groups = groups
 		}
 	}
 end
@@ -347,7 +706,10 @@ local function createApplicationHome(data)
 			package = data.package.package,
 			description = data.package.content,
 			projects = data.project,
-			loading = data.loading
+			loading = data.loading,
+			key = data.key,
+			navbarColor = data.template.navbar,
+			titleColor = data.template.title
 		}
 	}
 end
@@ -394,10 +756,10 @@ metaTableApplication_ = {
 -- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.project An optional terralib::Project or string with the path to a .tview file.
+-- @arg data.report An option Report with data information.
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
 -- If Application is created from terralib::Project the default value is project title.
 -- @arg data.description An optional string with the application's description. It will be shown as a box that is shown in the beginning of the application and can be closed.
--- If Application is created from terralib::Project the default value is project description.
 -- @arg data.base An optional string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is satellite.
 -- @arg data.zoom An optional number with the initial zoom, ranging from 0 to 20. The default value is the center of the bounding box containing all geometries.
 -- @arg data.minZoom An optional number with the minimum zoom allowed. The default value is 0.
@@ -407,6 +769,11 @@ metaTableApplication_ = {
 -- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
+-- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
+-- The Google Maps API key monitors your Application's usage in the Google API Console.
+-- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
+-- @arg data.template An optional named table with two string elements called navbar and
+-- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
 -- @usage import("publish")
 --
 -- local emas = filePath("emas.tview", "terralib")
@@ -429,10 +796,12 @@ function Application(data)
 
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", "string")
-	optionalTableArgument(data, "layers", "table")
 	optionalTableArgument(data, "center", "table")
 	optionalTableArgument(data, "zoom", "number")
 	optionalTableArgument(data, "order", "table")
+	optionalTableArgument(data, "report", "Report")
+	optionalTableArgument(data, "key", "string")
+	optionalTableArgument(data, "template", "table")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -506,6 +875,32 @@ function Application(data)
 	end
 
 	data.loading = data.loading..".gif"
+
+	if data.key then
+		local len = data.key:len()
+		if len ~= 39 then
+			customError("Argument 'key' must be a string with size equals to 39, got "..len..".")
+		end
+	end
+
+	if data.template then
+		verifyNamedTable(data.template)
+		verifyUnnecessaryArguments(data.template, {"navbar", "title"})
+
+		if data.template.navbar then
+			data.template.navbar = color{navbar = data.template.navbar}
+		else
+			customError("Argument 'template' should contain the field 'navbar'.")
+		end
+
+		if data.template.title then
+			data.template.title = color{title = data.template.title}
+		else
+			customError("Argument 'template' should contain the field 'title'.")
+		end
+	else
+		data.template = {navbar = "#1ea789", title = "white"}
+	end
 
 	if not data.progress then
 		printNormal = function() end
@@ -617,11 +1012,6 @@ function Application(data)
 		loadLayers(data)
 
 		defaultTableValue(data, "title", data.project.title)
-
-		local description = data.project.description
-		if description ~= nil and description ~= "" then
-			defaultTableValue(data, "description", description) -- SKIP TODO Terrame/#1534
-		end
 
 		createApplicationProjects(data)
 		exportTemplates(data)

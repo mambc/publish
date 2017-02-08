@@ -182,6 +182,61 @@ return {
 		end
 		unitTest:assertError(error_func, "Center 'long' must be a number >= -180 and <= 180, got '181'.")
 
+		data.center = {lat = 90, long = 180}
+		data.template = 1
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("template", "table", 1))
+
+		data.template = {1, 2, 3}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "All elements of the argument must be named.")
+
+		data.template = {navbar = 1}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Incompatible types. Argument 'navbar' expected string or table, got number.")
+
+		data.template = {navbar = "dodgerblue"}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'template' should contain the field 'title'.")
+
+		data.template = {title = "dodgerblue"}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'template' should contain the field 'navbar'.")
+
+		data.template = {navbar = "dodgerblue", title = 1}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Incompatible types. Argument 'title' expected string or table, got number.")
+
+		data.template = {navbar = 1, title = "dodgerblue"}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Incompatible types. Argument 'navbar' expected string or table, got number.")
+
+		data.template = {navbar = "#afafah", title = "dodgerblue"}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Argument 'navbar' (#afafah) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
+
+		data.template = {navbar = "dodgerblue", title = {256, 256, 256}}
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got 256.")
+
 		if emasDir:exists() then emasDir:delete() end
 	end
 }
