@@ -108,8 +108,8 @@ return {
 			["cabecadeboi.js"] = true,
 			["emas.html"] = true,
 			["emas.js"] = true,
-			["fillCellExample.html"] = true,
-			["fillCellExample.js"] = true
+			["amazonia-postgis.html"] = true,
+			["amazonia-postgis.js"] = true
 		}
 
 		appData = {
@@ -123,10 +123,11 @@ return {
 				["limit.geojson"] = true,
 				["river.geojson"] = true
 			},
-			["fillCellExample"] = {
-				["Localidades.geojson"] = true,
-				["Rodovias.geojson"] = true,
-				["Setores.geojson"] = true
+			["amazonia-postgis"] = {
+				["ports.geojson"] = true,
+				["roads.geojson"] = true,
+				["protected.geojson"] = true,
+				["limit.geojson"] = true
 			}
 		}
 
@@ -135,7 +136,7 @@ return {
 
 		app = Application{
 			package = "terralib",
-			project = {cabecadeboi = "box", emas = "limit", fillCellExample = "Setores"},
+			project = {cabecadeboi = "box", emas = "limit", ["amazonia-postgis"] = "limit"},
 			clean = true,
 			select = "river",
 			color = "BuGn",
@@ -155,12 +156,12 @@ return {
 
 		unitTest:assertType(app.project, "table")
 		unitTest:assertEquals(getn(app.project), 3)
-		unitTest:assertEquals(app.project[1].project, "cabecadeboi")
-		unitTest:assertEquals(app.project[2].project, "emas")
-		unitTest:assertEquals(app.project[3].project, "fillCellExample")
-		unitTest:assertEquals(app.project[1].layer, "box")
-		unitTest:assertEquals(app.project[2].layer, "limit")
-		unitTest:assertEquals(app.project[3].layer, "Setores")
+		unitTest:assertEquals(app.project[1].project, "amazonia-postgis")
+		unitTest:assertEquals(app.project[2].project, "cabecadeboi")
+		unitTest:assertEquals(app.project[3].project, "emas")
+		unitTest:assertEquals(app.project[1].layer, "limit")
+		unitTest:assertEquals(app.project[2].layer, "box")
+		unitTest:assertEquals(app.project[3].layer, "limit")
 
 		assertFiles(app.output, appRoot)
 		assertFiles(app.assets, appAssets)
@@ -179,7 +180,7 @@ return {
 		end)
 
 		unitTest:assertEquals(countDir, 3)
-		unitTest:assertEquals(countFile, 9)
+		unitTest:assertEquals(countFile, 10)
 
 		if emasDir:exists() then emasDir:delete() end
 		customWarning = mcustomWarning

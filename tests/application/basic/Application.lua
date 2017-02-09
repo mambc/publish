@@ -69,17 +69,17 @@ return {
 			order = {"river", "firebreak", "limit"},
 			river = View{
 				color = "blue",
-				layer = filePath("River_lin.shp", "terralib")
+				layer = filePath("emas-river.shp", "terralib")
 			},
 			firebreak = View{
 				color = "black",
-				layer = filePath("firebreak_lin.shp", "terralib")
+				layer = filePath("emas-firebreak.shp", "terralib")
 			},
 			limit = View{
 				border = "blue",
 				color = "goldenrod",
 				width = 2,
-				layer = filePath("Limit_pol.shp", "terralib")
+				layer = filePath("emas-limit.shp", "terralib")
 			}
 		}
 

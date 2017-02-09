@@ -27,13 +27,13 @@
 import("terralib")
 
 project = Project{
-	title = "Emas database",
 	file = "emas.tview",
 	clean = true,
 	author = "Almeida, R.",
-	firebreak = filePath("firebreak_lin.shp", "terralib"),
-	river = filePath("River_lin.shp", "terralib"),
-	limit = filePath("Limit_pol.shp", "terralib")
+	title = "Emas database",
+	firebreak = filePath("emas-firebreak.shp", "terralib"),
+	river = filePath("emas-river.shp", "terralib"),
+	limit = filePath("emas-limit.shp", "terralib")
 }
 
 cl = Layer{
@@ -42,7 +42,7 @@ cl = Layer{
 	clean = true,
 	input = "limit",
 	name = "cells",
-	resolution = 1500
+	resolution = 500
 }
 
 cl:fill{
@@ -66,13 +66,15 @@ Map{
 	target = cs,
 	select = "firebreak",
 	value = {0, 1},
-	color = {"white", "black"}
+	color = {"darkGreen", "black"},
+	label = {"forest", "firebreak"}
 }
 
 Map{
 	target = cs,
 	select = "river",
 	value = {0, 1},
-	color = {"white", "black"}
+	color = {"darkGreen", "darkBlue"},
+	label = {"forest", "river"}
 }
 

@@ -62,7 +62,7 @@ Application{
 		description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
 		select = {"Nome", "UC"},
 		icon = {"home", "forest"},
-		label = {"Absence Cons. Unit.", "Presence Cons. Unit."},
+		label = {"PAE Lago Grande", "Conservation Unit"},
 		report = function(cell)
 			local mreport = Report{
 				title = cell.Nome,
@@ -71,11 +71,50 @@ Application{
 
 			mreport:addImage(packageInfo("publish").data.."arapiuns/"..cell.Nome..".jpg")
 
+			local age = math.ceil(130 * cell.IDDCM / 0.77)
+			local pop = math.ceil(350 * cell.NPES / 0.8)
+
+			local text = "The community "..cell.Nome.." was founded "..age.." years ago and has around "..pop.." inhabitants."
+
+			if cell.UC == 1 then
+				text = text.." It belongs to a Conservation Unit."
+			else
+				text = text.." It belongs to PAE Lago Grande."
+			end
+
 			local health, water
 			if cell.PSAU > 0 then health = "has" else health = "hasn't" end
 			if cell.AGUA > 0 then water  = "has" else water  = "hasn't" end
 
-			mreport:addText(string.format("The community %s health center and %s access to water.", health, water))
+			text = text..string.format(" The community %s health center and %s access to water.", health, water)
+
+			if cell.BFAM == 0 then
+				text = text.." It has no Bolsa Familia."
+			elseif cell.BFAM <= 0.3 then
+				text = text.." Few of its inhabitants have Bolsa Familia."
+			elseif cell.BFAM <= 0.6 then
+				text = text.." Many of its inhabitants have Bolsa Familia."
+			elseif cell.BFAM <= 0.8 then
+				text = text.." Most of its inhabitants have Bolsa Familia."
+			else
+				text = text.." All inhabitants have Bolsa Familia."
+			end
+
+			mreport:addText(text)
+
+			local infrastructure = {}
+
+			if cell.IGREJAS > 0 then
+				if cell.IGREJAS > 0.6 then
+					table.insert(infrastructure, "churches")
+				else
+					table.insert(infrastructure, "church")
+				end
+			end
+
+			if cell.CFUT    == 1 then table.insert(infrastructure, "soccer field")     end
+			if cell.ORELHAO == 1 then table.insert(infrastructure, "public telephone") end
+			if cell.ENERGIA  > 0 then table.insert(infrastructure, "oil generator")    end
 
 			local school = {}
 			if cell.ENSINF > 0   then table.insert(school, "Early Childhood Education")     end
@@ -83,7 +122,30 @@ Application{
 			if cell.EJA > 0      then table.insert(school, "Education of Young and Adults") end
 
 			if #school > 0 then
-				mreport:addText(string.format("The schools offers %s.", table.concat(school, ", ")))
+				table.insert(infrastructure, "school")
+			end
+
+			if #infrastructure > 0 then
+				text = string.format(cell.Nome.." has the following infrastructure: %s.", table.concat(infrastructure, ", "))
+
+				if #school > 0 then
+					text = text..string.format(" The school offers %s.", table.concat(school, ", "))
+				end
+
+				mreport:addText(text)
+			end
+
+			production = {}
+
+			if cell.ACAI     == 1 then table.insert(production, "acai")     end
+			if cell.GADO     == 1 then table.insert(production, "cattle")   end
+			if cell.CASTANHA == 1 then table.insert(production, "chestnut") end
+			if cell.FRUTAS   == 1 then table.insert(production, "fruits")   end
+			if cell.MAND     == 1 then table.insert(production, "mandioc")  end
+			if cell.ARROZ    == 1 then table.insert(production, "rice")     end
+
+			if #production > 0 then
+				mreport:addText(string.format("The community produces the following commodities: %s.", table.concat(production, ", ")))
 			end
 
 			return mreport

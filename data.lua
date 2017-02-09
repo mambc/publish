@@ -1,6 +1,6 @@
 data{
 	file = "caragua.shp",
-	summary = "Caraguatatuba statistical information.",
+	summary = "Caragua municipality, in Sao Paulo State, Brazil.",
 	source = "IBGE (http://www.ibge.gov.br)",
 	attributes = {
 		population = "Population of Caraguatatuba.",
@@ -12,8 +12,8 @@ data{
 
 data{
 	file = "regions.shp",
-	summary = "Regions of Caraguatatuba.",
-	source = "IBGE (http://www.ibge.gov.br)",
+	summary = "Caragua municipality divided into three regions.",
+	source = "H. Guerra and P. Andrade",
 	image = "urbis_regions.png",
 	attributes = {
 		name = "Regions of Caraguatatuba, North (1), Central (2) and South (3).",
@@ -42,7 +42,7 @@ data{
 
 data{
 	file = "simulation2025_baseline.shp",
-	summary = "Social Classes 2025 Simulated.",
+	summary = "Baseline simulation for 2025.",
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_baseline.PNG",
 	attributes = {
@@ -52,7 +52,7 @@ data{
 
 data{
 	file = "simulation2025_lessgrowth.shp",
-	summary = "Urban Population Lessgrowth 2025.",
+	summary = "Less growth simulation in 2025.",
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_lessgrowth.PNG",
 	attributes = {
@@ -62,7 +62,7 @@ data{
 
 data{
 	file = "simulation2025_plusgrowth.shp",
-	summary = "Urban Population Plusgrowth 2025.",
+	summary = "Plus growth simulation in 2025.",
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_plusgrowth.PNG",
 	attributes = {
@@ -72,7 +72,7 @@ data{
 
 data{
 	file = "simulation2025_poorer.shp",
-	summary = "Socioeconomic Status Poorer 2025.",
+	summary = "Poorer people in Caragua in 2025.",
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_poorer.PNG",
 	attributes = {
@@ -82,7 +82,7 @@ data{
 
 data{
 	file = "simulation2025_richer_final.shp",
-	summary = "Socioeconomic Status Richer 2025.",
+	summary = "Richer people in Caragua in 2025.",
 	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 	image = "urbis_simulation_2025_richer.PNG",
 	attributes = {
@@ -93,50 +93,44 @@ data{
 data{
 	file = "arapiuns_traj.shp",
 	summary = "Route on the Arapiuns River.",
-	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.",
-	attributes = {
-		value = ""
-	}
+	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Technical report, INPE."
 }
 
 data{
 	file = "AllCmmTab_210316OK.shp",
-	summary = "The riverine settlements at Arapiuns (PA)",
-	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.",
+	summary = "The riverine communities at Arapiuns (PA).",
+	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Technical report, INPE.",
 	attributes = {
-		Nome = "Name of riverine settlements at Arapiuns.",
-		CMM2 = "Name of riverine settlements at Arapiuns.",
-		UC = "",
-		IDDCM = "",
-		NPES = "",
-		BFAM = "",
-		SALE = "",
-		INST = "",
-		NASSOC = "",
-		ENERGIA = "",
-		AGUA = "",
-		LIXO = "",
-		ORELHAO = "",
-		CFUT = "",
-		IGREJAS = "",
+		Nome = "Name of riverine community.",
+		CMM2 = "Name of riverine community.",
+		UC = "Conservation Unit.",
+		IDDCM = "Age of the community.",
+		NPES = "Population of the community.",
+		BFAM = "Bolsa Familia.",
+		SALE = "Saude e Alegria NGO.",
+		INST = "Governmental institutions.",
+		NASSOC = "Local institutions.",
+		ENERGIA = "Energy.",
+		AGUA = "Water.",
+		LIXO = "Garbage collection.",
+		ORELHAO = "Telephone.",
+		CFUT = "Soccer field.",
+		IGREJAS = "Church.",
 		PSAU = "Health center of riverine settlements at Arapiuns.",
 		ENSINF = "The schools of riverine settlements at Arapiuns.",
 		ENSFUND2 = "The schools of riverine settlements at Arapiuns.",
-		MERENDA = "",
+		MERENDA = "Lunch at schools.",
 		EJA = "The schools of riverine settlements at Arapiuns.",
-		ARROZ = "",
-		MAND = "",
-		FRUTAS = "",
-		CASTANHA = "",
-		ACAI = "",
-		PESCA = "",
-		CACA = "",
-		GADO = "",
-		MINERACAO = "",
-		MANT = "",
-		TEMPO = "",
-		CODLig1 = "",
-		CodLig2 = "",
+		ARROZ = "Rice.",
+		MAND = "Manioc.",
+		FRUTAS = "Fruits.",
+		CASTANHA = "Chestnut.",
+		ACAI = "Acai.",
+		PESCA = "Fischery.",
+		CACA = "Hunting.",
+		GADO = "Cattle.",
+		MINERACAO = "Mining.",
+		MANT = "Where people usually buy food.",
 		ICON = "The name of marker icon."
 	}
 }

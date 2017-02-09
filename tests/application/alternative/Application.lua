@@ -198,7 +198,7 @@ return {
 				progress = false,
 				output = emasDir,
 				accumulation = View{
-					layer = filePath("accumulation_Nov94May00.tif", "terralib"),
+					layer = filePath("emas-accumulation.tif", "terralib"),
 				}
 			}
 		end
