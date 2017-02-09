@@ -82,6 +82,12 @@ Application{
 				text = text.." It belongs to PAE Lago Grande."
 			end
 
+			local health, water
+			if cell.PSAU > 0 then health = "has" else health = "hasn't" end
+			if cell.AGUA > 0 then water  = "has" else water  = "hasn't" end
+
+			text = text..string.format(" The community %s health center and %s access to water.", health, water)
+
 			if cell.BFAM == 0 then
 				text = text.." It has no Bolsa Familia."
 			elseif cell.BFAM <= 0.3 then
@@ -95,12 +101,6 @@ Application{
 			end
 
 			mreport:addText(text)
-
-			local health, water
-			if cell.PSAU > 0 then health = "has" else health = "hasn't" end
-			if cell.AGUA > 0 then water  = "has" else water  = "hasn't" end
-
-			text = text..string.format(" The community %s health center and %s access to water.", health, water)
 
 			local infrastructure = {}
 
@@ -122,7 +122,7 @@ Application{
 			if cell.EJA > 0      then table.insert(school, "Education of Young and Adults") end
 
 			if #school > 0 then
-				table.insert(infrastructure, "school") 
+				table.insert(infrastructure, "school")
 			end
 
 			if #infrastructure > 0 then
