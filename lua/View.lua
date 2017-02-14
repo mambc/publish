@@ -165,7 +165,7 @@ function View(data)
 				end)
 			else
 				forEachElement(colors, function(value, color)
-					label[data.select.. " "..value] = tostring(color)
+					label[value] = tostring(color)
 				end)
 			end
 
