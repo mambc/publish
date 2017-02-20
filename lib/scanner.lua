@@ -19,14 +19,12 @@ function scanner:scan(pattern)
 
     return match
   end
-
 end
 
 -- Skips all text until the given regular expression can be matched. Returns
 -- the skipped string, which is the entire tail of this scanner if no match
 -- can be made.
 function scanner:scan_until(pattern)
-
   local match
   local pos = string_find(self.tail, pattern)
 
