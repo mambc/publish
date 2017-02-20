@@ -149,7 +149,7 @@ local function exportLayers(data, sof)
 		printNormal("Exporting layer '"..layer.name.."'")
 		layer:export{
 			file = data.datasource..layer.name..".geojson",
-			srid = 4326,
+			epsg = 4326,
 			overwrite = true
 		}
 	end)
@@ -735,7 +735,7 @@ local function exportTemplates(data)
 			model = "var Publish = "..json.encode(mfile.model)..";"
 		end
 
-		fwrite:write(model)
+		fwrite:writeLine(model)
 		fwrite:close()
 	end)
 end

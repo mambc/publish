@@ -54,6 +54,7 @@ Application{
 		color = "PuBu",
 		width = 0,
 		value = {0, 1, 2},
+		label = {"Small", "Medium", "Large"},
 		visible = false
 	}
 }
