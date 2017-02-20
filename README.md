@@ -6,7 +6,7 @@ This is a [TerraME](http://terrame.org) package that allows one to export the ou
 Publish is distributed under the GNU Lesser General Public License as published by the Free Software Foundation. See [publish-license-lgpl-3.0.txt](https://github.com/pedro-andrade-inpe/publish/blob/master/license.txt) for details.
 
 ## Instructions
-Publish currently supports only shapefiles in the <b>“EPSG:4326”</b> projection (i.e. GCS_WGS_1984). Make sure it all your data are in this format.
+Publish automatically reprojects data to the <b>“EPSG:4326”</b> projection (i.e. GCS_WGS_1984). If the final visualization does not work, please reproject the input data to this projection before creating the application.
 
 ## Example
 ```lua
