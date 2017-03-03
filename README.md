@@ -8,37 +8,28 @@ Publish is distributed under the GNU Lesser General Public License as published 
 ## Instructions
 Publish automatically reprojects data to the <b>“EPSG:4326”</b> projection (i.e. GCS_WGS_1984). If the final visualization does not work, please reproject the input data to this projection before creating the application.
 
-## Example
+## Examples
 ```lua
 import("publish")
 
 Application{
-    project = filePath("emas.tview", "publish"),
+    project = filePath("brazil.tview", "publish"),
+    title = "Brazil Application",
+    description = "Small application with some data related to Brazil.",
     clean = true,
-    output = "EmasWebMap",
-    order = {"limit", "river"},
-    river = View{
-        color = "blue"
+    output = "BrazilWebMap",
+    biomes = View{
+        select = "name",
+        color = "Set2",
+        description = "Brazilian Biomes, from IBGE."
     },
-    firebreak = View{
-        color = "black"
-    },
-    limit = View{
-        border = "blue",
-        color = "goldenrod",
-        width = 2,
-        visible = true
-    },
-    cells = View{
-        title = "Emas National Park",
-        select = "river",
-        color = "PuBu",
-        width = 0,
-        value = {0, 1, 2}
+    states  = View{
+        color = "yellow",
+        description = "Brazilian states."
     }
 }
 ```
-You can see the result in [Emas](https://rawgit.com/TerraME/publish/master/examples/EmasWebMap/index.html).
+You can see the result in [Brazil](https://rawgit.com/TerraME/publish/master/examples/BrazilWebMap/index.html).
 
 ```lua
 import("publish")

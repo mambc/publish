@@ -135,3 +135,22 @@ data{
 	}
 }
 
+data{
+	file = "br_biomes.shp",
+	summary = "Brazilian biomes.",
+	source = "IBGE",
+	attributes = {
+		name = "Name of the biome.",
+	}
+}
+
+data{
+	file = "br_states.shp",
+	summary = "Brazilian states.",
+	source = "IBGE",
+	attributes = {
+		NOMEUF2 = "Name of the state.",
+		SIGLAUF3 = "An acronym for the state.",
+	}
+}
+
