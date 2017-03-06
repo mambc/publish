@@ -642,6 +642,15 @@ local function createApplicationProjects(data, proj)
 		createApplicationGroup(data, groups, layers)
 	end
 
+	local mview = clone(data.view, {type_ = true, value = true})
+	forEachElement(mview, function(_, mdata)
+		if mdata.report then
+			mdata.report = type(mdata.report)return
+		elseif data.report then
+			mdata.report = type(data.report)
+		end
+	end)
+
 	registerApplicationModel {
 		output = config,
 		model = {
@@ -651,7 +660,7 @@ local function createApplicationProjects(data, proj)
 			maxZoom = data.maxZoom,
 			mapTypeId = data.base:upper(),
 			legend = data.legend,
-			data = clone(data.view, {type_ = true, value = true}),
+			data = mview,
 			path = path,
 			group = data.group
 		}
