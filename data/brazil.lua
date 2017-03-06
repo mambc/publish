@@ -4,6 +4,6 @@ import("terralib")
 project = Project{
 	file = "brazil.tview",
 	clean = true,
-	biomes = "br_biomes.shp",
-	states = "br_states.shp"
+	biomes = filePath("br_biomes.shp", "publish"),
+	states = filePath("br_states.shp", "publish")
 }
