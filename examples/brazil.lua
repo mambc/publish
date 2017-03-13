@@ -35,7 +35,15 @@ Application{
 	biomes = View{
 		select = "name",
 		color = "Set2",
-		description = "Brazilian Biomes, from IBGE."
+		description = "Brazilian Biomes, from IBGE.",
+		report = function(cell)
+			local mreport = Report{
+				title = cell.name,
+				author = "IBGE"
+			}
+
+			return mreport
+		end
 	},
 	states  = View{
 		color = "yellow",
