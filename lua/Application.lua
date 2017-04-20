@@ -182,7 +182,7 @@ local function loadViewValue(data, name, view)
 	do
 		local set = {}
 		local tlib = terralib.TerraLib{}
-		local dset = tlib:getDataSet(data.project, name)
+		local dset = tlib.getDataSet(data.project, name)
 		for i = 0, #dset do
 			for k, v in pairs(dset[i]) do
 				if k == select and not set[v] then
@@ -392,13 +392,13 @@ local function processingView(data, layers, reports, name, view)
 	local dset
 	do
 		local tlib = terralib.TerraLib{}
-		dset = tlib:getDataSet(data.project, name)
+		dset = tlib.getDataSet(data.project, name)
 		for i = 0, #dset do
 			if view.geom then break end
 
 			local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
 			if geom then
-				local subType = tlib:castGeomToSubtype(geom)
+				local subType = tlib.castGeomToSubtype(geom)
 				view.geom = subType:getGeometryType()
 			end
 		end
