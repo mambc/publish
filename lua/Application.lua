@@ -769,7 +769,7 @@ metaTableApplication_ = {
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
 -- If Application is created from terralib::Project the default value is project title.
 -- @arg data.description An optional string with the application's description. It will be shown as a box that is shown in the beginning of the application and can be closed.
--- @arg data.base An optional string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is satellite.
+-- @arg data.base An optional string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is "satellite".
 -- @arg data.zoom An optional number with the initial zoom, ranging from 0 to 20. The default value is the center of the bounding box containing all geometries.
 -- @arg data.minZoom An optional number with the minimum zoom allowed. The default value is 0.
 -- @arg data.maxZoom An optional number with the maximum zoom allowed. The default value is 20.
@@ -777,7 +777,7 @@ metaTableApplication_ = {
 -- describing the initial central point of the application.
 -- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
--- "squares", "triangle", "wheel" (see http://loading.io/). The default value is 'default'.
+-- "squares", "triangle", "wheel" (see http://loading.io/). The default value is "default".
 -- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
 -- The Google Maps API key monitors your Application's usage in the Google API Console.
 -- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
