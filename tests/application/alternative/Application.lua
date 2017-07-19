@@ -33,7 +33,7 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "terralib"),
+				project = filePath("emas.tview", "gis"),
 				clean = true,
 				output = emasDir,
 				cover = View{
@@ -49,7 +49,7 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "terralib"),
+				project = filePath("emas.tview", "gis"),
 				clean = true,
 				output = emasDir,
 				order = 1,
@@ -198,7 +198,7 @@ return {
 				progress = false,
 				output = emasDir,
 				accumulation = View{
-					layer = filePath("emas-accumulation.tif", "terralib"),
+					layer = filePath("emas-accumulation.tif", "gis"),
 				}
 			}
 		end

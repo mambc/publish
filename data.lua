@@ -154,3 +154,15 @@ data{
 	}
 }
 
+directory{
+	name = "arapiuns",
+	summary = "Photos of several riverine settlements.",
+	source = "Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Technical report, INPE.",
+}
+
+directory{
+	name = "biomes",
+	summary = "A set of images related to Brazilian biomes collected from the Internet.",
+	source = "Google and Wikipedia",
+}
+

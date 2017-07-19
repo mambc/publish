@@ -24,7 +24,7 @@
 
 return {
 	Application = function(unitTest)
-		local terralib = getPackage("terralib")
+		local gis = getPackage("gis")
 		local emas = filePath("emas.tview", "publish")
 		local emasDir = Directory("project-basic-app")
 
@@ -94,14 +94,14 @@ return {
 			["river.geojson"] = true
 		}
 
-		emas = terralib.Project{
+		emas = gis.Project{
 			file = tostring(fname),
 			clean = true,
 			author = "Carneiro, H.",
 			title = "Emas database",
-			firebreak = filePath("emas-firebreak.shp", "terralib"),
-			river = filePath("emas-river.shp", "terralib"),
-			limit = filePath("emas-limit.shp", "terralib")
+			firebreak = filePath("emas-firebreak.shp", "gis"),
+			river = filePath("emas-river.shp", "gis"),
+			limit = filePath("emas-limit.shp", "gis")
 		}
 
 		emasDir = "project-basic-app-stroutput"

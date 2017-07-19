@@ -26,7 +26,7 @@
 -- The data of this application were extracted from Escada et. al (2013) Infraestrutura,
 -- Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.
 
-import("terralib")
+import("gis")
 
 project = Project{
 	title = "The riverine settlements at Arapiuns (PA)",

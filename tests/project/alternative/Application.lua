@@ -28,6 +28,7 @@ return {
 		local proj = File("myproject.tview")
 
 		if emasDir:exists() then emasDir:delete() end
+		proj:deleteIfExists()
 
 		local error_func = function()
 			Application{
@@ -57,7 +58,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("emas.tview", "terralib"),
+				project = filePath("emas.tview", "gis"),
 				clean = true,
 				select = "river",
 				color = "BuGn",

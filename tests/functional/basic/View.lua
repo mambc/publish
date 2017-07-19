@@ -76,7 +76,7 @@ return {
 
 		view = View{
 			color = "blue",
-			layer = tostring(filePath("emas-limit.shp", "terralib")),
+			layer = tostring(filePath("emas-limit.shp", "gis")),
 			transparency = 0.95,
 		}
 
