@@ -103,17 +103,6 @@ return {
 		emasDir = Directory("package-basic-app-manytview")
 		if emasDir:exists() then emasDir:delete() end
 
-		appRoot = {
-			["index.html"] = true,
-			["config.js"] = true,
-			["cabecadeboi.html"] = true,
-			["cabecadeboi.js"] = true,
-			["emas.html"] = true,
-			["emas.js"] = true,
-			["amazonia.html"] = true,
-			["amazonia.js"] = true
-		}
-
 		appData = {
 			["cabecadeboi"] = {
 				["box.geojson"] = true,

@@ -24,6 +24,6 @@
 
 return {
 	link = function(unitTest)
-		unitTest:assertEquals(link("a", "b"), "<a href=\"a\">b</a>")
+		unitTest:assertEquals(link("a", "b"), "<a target=\"_blank\" href=\"http://a\">b</a>")
 	end
 }
