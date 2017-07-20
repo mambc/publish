@@ -84,7 +84,7 @@ local function exportReportImages(data, report)
 
 		local img = rp.image:name()
 		if not data.images then
-			data.images = Directory(data.output.."images")
+			data.images = data.output -- Directory(data.output.."images")
 			if not data.images:exists() then
 				data.images:create()
 			end
@@ -111,12 +111,12 @@ local function createDirectoryStructure(data)
 		data.output:create()
 	end
 
-	data.datasource = Directory(data.output.."data")
+	data.datasource = data.output -- Directory(data.output.."data")
 	if not data.datasource:exists() then
 		data.datasource:create()
 	end
 
-	data.assets = Directory(data.output.."assets")
+	data.assets = data.output -- Directory(data.output.."assets")
 	if not data.assets:exists() then
 		data.assets:create()
 	end
@@ -445,7 +445,7 @@ local function processingView(data, layers, reports, name, view)
 			end
 
 			view.icon = view.icon..".png"
-			icon.path = "./assets/"..view.icon
+			icon.path = view.icon
 			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
 		else
 			if #view.icon > 0 then
@@ -535,7 +535,6 @@ local function processingView(data, layers, reports, name, view)
 					marker = marker..".png"
 					copy[marker] = true
 
-					marker = "./assets/"..marker
 					ltmp[mlabel] = marker
 					icon.options[strprop] = marker
 				end
@@ -617,7 +616,7 @@ end
 
 local function createApplicationProjects(data, proj)
 	printInfo("Loading Template")
-	local path = "./data/"
+	local path = "./"
 	local index = "index.html"
 	local config = "config.js"
 

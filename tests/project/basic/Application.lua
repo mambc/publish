@@ -28,31 +28,6 @@ return {
 		local emas = filePath("emas.tview", "publish")
 		local emasDir = Directory("project-basic-app")
 
-		local appAssets = {
-			["jquery-3.1.1.min.js"] = true,
-			["publish.min.css"] = true,
-			["publish.min.js"] = true,
-			["default.gif"] = true
-		}
-
-		local appData = {
-			["cells.geojson"] = true,
-			["firebreak.geojson"] = true,
-			["limit.geojson"] = true,
-			["river.geojson"] = true
-		}
-
-		local function assertFiles(dir, files)
-			local count = 0
-			forEachFile(dir, function(file)
-				unitTest:assert(files[file:name()])
-
-				count = count + 1
-			end)
-
-			unitTest:assertEquals(count, getn(files))
-		end
-
 		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = tview, package = nil.
@@ -77,22 +52,12 @@ return {
 		unitTest:assertEquals(app.title, "Emas database")
 		-- unitTest:assertEquals(app.description, "A small example related to a fire spread model.") -- SKIP TODO Terrame/#1534
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
-		unitTest:assertEquals(getn(app.view), getn(appData))
-
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
 
 		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = Project, package = nil.
 		local fname = File("emas-test.tview")
 		fname:deleteIfExists()
-
-		appData = {
-			["firebreak.geojson"] = true,
-			["limit.geojson"] = true,
-			["river.geojson"] = true
-		}
 
 		emas = gis.Project{
 			file = tostring(fname),
@@ -128,10 +93,6 @@ return {
 		unitTest:assertEquals(app.title, "Emas")
 		unitTest:assertEquals(app.description, "Creates a database that can be used by the example fire-spread of base package.")
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
-		unitTest:assertEquals(getn(app.view), getn(appData))
-
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
 
 		fname:deleteIfExists()
 		emasDir = Directory(emasDir)

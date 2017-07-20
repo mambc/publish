@@ -7,7 +7,7 @@
 		<title>{{title}}</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-		<link rel="stylesheet" href="./assets/publish.min.css"/>
+		<link rel="stylesheet" href="./publish.min.css"/>
 	</head>
 	<body>
 		<div class="container">
@@ -96,10 +96,10 @@
 		<div class="mini-submenu mini-submenu-left pull-left">
 			<i class="fa fa-list-alt"></i>
 		</div>
-		<img id="loader" src="./assets/{{loading}}" hidden="hidden"/>
+		<img id="loader" src="./{{loading}}" hidden="hidden"/>
 		<footer class="navbar-default navbar-fixed-bottom">
 			<div id="footer" class="container-fluid">
-				<p>© 2016 Powered by package <a href="https://github.com/TerraME/publish" target="_blank">publish</a> of <a href="http://www.terrame.org" target="_blank">TerraME</a>.</p>
+				<p>Powered by package <a href="https://github.com/TerraME/publish" target="_blank">publish</a> of <a href="http://www.terrame.org" target="_blank">TerraME</a>.</p>
 			</div>
 		</footer>
 		{{#description}}
@@ -137,7 +137,7 @@
 						<br/>
 						{{/heading}}
 						{{#image}}
-						<img class="report-img" src="./images/{{image}}"/>
+						<img class="report-img" src="{{image}}"/>
 						<br/>
 						{{/image}}
 						{{#text}}
@@ -154,9 +154,9 @@
 		</div>
 		{{/report}}
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?{{#key}}key={{key}}&{{/key}}sensor=false"></script>
-		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="./jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="./{{config}}"></script>
-		<script type="text/javascript" src="./assets/publish.min.js"></script>
+		<script type="text/javascript" src="./publish.min.js"></script>
 	</body>
 </html>

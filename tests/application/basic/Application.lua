@@ -26,24 +26,6 @@ return {
 	Application = function(unitTest)
 		local emasDir = Directory("view-basic-app")
 
-		local appRoot = {
-			["index.html"] = true,
-			["config.js"] = true
-		}
-
-		local appAssets = {
-			["jquery-3.1.1.min.js"] = true,
-			["publish.min.css"] = true,
-			["publish.min.js"] = true,
-			["default.gif"] = true
-		}
-
-		local appData = {
-			["firebreak.geojson"] = true,
-			["limit.geojson"] = true,
-			["river.geojson"] = true
-		}
-
 		local function assertFiles(dir, files)
 			local count = 0
 			forEachFile(dir, function(file)
@@ -90,7 +72,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
-		unitTest:assertEquals(getn(app.view), getn(appData)) -- TODO #14. Raster layers are not counted.
+		--unitTest:assertEquals(getn(app.view), getn(appData)) -- SKIP TODO #14. Raster layers are not counted.
 
 		unitTest:assertEquals(app.view.river.width, 1)
 		unitTest:assertEquals(app.view.limit.width, 2)
@@ -100,19 +82,27 @@ return {
 		unitTest:assertEquals(app.view.firebreak.order, 2)
 		unitTest:assertEquals(app.view.limit.order, 1)
 
+		local appRoot = {
+			["index.html"] = true,
+			["default.gif"] = true,
+			["config.js"] = true,
+			["limit.geojson"] = true,
+			["firebreak.geojson"] = true,
+			["river.geojson"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+		}
+
+
 		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
+		--assertFiles(app.assets, appAssets)
+		--assertFiles(app.datasource, appData)
 
 		unitTest:assert(not isFile(app.title..".tview"))
 		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = Project, view = {firebreak, river} and package = nil.
-		appData = {
-			["firebreak.geojson"] = true,
-			["river.geojson"] = true
-		}
-
 		app = Application{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -140,7 +130,7 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers) - 2)
-		unitTest:assertEquals(getn(app.view), getn(appData))
+		--unitTest:assertEquals(getn(app.view), getn(appData)) -- SKIP
 
 		unitTest:assertEquals(app.view.river.order, 2)
 		unitTest:assertEquals(app.view.firebreak.order, 1)
@@ -148,9 +138,20 @@ return {
 		unitTest:assertEquals(app.view.river.color, "rgba(0, 0, 255, 0.4)")
 		unitTest:assertEquals(app.view.firebreak.color, "rgba(0, 0, 0, 0.5)")
 
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["firebreak.geojson"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["river.geojson"] = true
+		}
+
 		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
+		--assertFiles(app.assets, appAssets)
+		--assertFiles(app.datasource, appData)
 
 		if emasDir:exists() then emasDir:delete() end
 
@@ -195,13 +196,6 @@ return {
 		if emasDir:exists() then emasDir:delete() end
 
 		local caraguaDir = Directory("CaraguaWebMap")
-		local appImages = {["urbis_2010_real.PNG"] = true}
-
-		appData = {
-			["real.geojson"] = true,
-			["limit.geojson"] = true,
-			["use.geojson"] = true
-		}
 
 		local report = Report{title = "URBIS-Caraguá"}
 		report:addImage("urbis_2010_real.PNG", "publish")
@@ -333,10 +327,24 @@ return {
 		unitTest:assertType(reports, "table")
 		unitTest:assertEquals(#reports, 1)
 
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["limit.geojson"] = true,
+			["real.geojson"] = true,
+			["use.geojson"] = true,
+			["urbis_2010_real.PNG"] = true
+		}
+
+
 		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
-		assertFiles(app.images, appImages)
+		--assertFiles(app.assets, appAssets)
+		--assertFiles(app.datasource, appData)
+		--assertFiles(app.images, appImages)
 
 		if caraguaDir:exists() then caraguaDir:delete() end
 
@@ -364,7 +372,7 @@ return {
 		unitTest:assertType(view, "View")
 		unitTest:assertType(view.description, "string")
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
-		unitTest:assertEquals(view.icon.path, "./assets/home.png")
+		unitTest:assertEquals(view.icon.path, "home.png")
 		unitTest:assert(File(app.output..view.icon.path):exists())
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
@@ -413,7 +421,7 @@ return {
 		unitTest:assertType(view.geom, "string")
 		unitTest:assertEquals(view.geom, "MultiPoint")
 		unitTest:assertEquals(view.download, true)
-		unitTest:assert(isFile(arapiunsDir.."data/villages.zip"))
+		unitTest:assert(isFile(arapiunsDir.."villages.zip"))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 
@@ -443,7 +451,7 @@ return {
 
 		view = app.view.villages
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.icon.path, "./assets/home.png")
+		unitTest:assertEquals(view.icon.path, "home.png")
 		unitTest:assert(File(app.output..view.icon.path):exists())
 		unitTest:assertNil(view.icon.time)
 
@@ -472,7 +480,6 @@ return {
 		unitTest:assertEquals(view.icon.options.fillOpacity, 0.8)
 		unitTest:assertEquals(view.icon.options.strokeWeight, 2)
 		unitTest:assertEquals(view.icon.time, 25)
-
 
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
@@ -528,11 +535,11 @@ return {
 		unitTest:assertNil(view.icon.time)
 
 		unitTest:assertEquals(view.select, "UC")
-		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
-		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+		unitTest:assertEquals(view.icon.options["0"], "home.png")
+		unitTest:assertEquals(view.icon.options["1"], "forest.png")
 
-		unitTest:assertEquals(view.label["UC 0"], "./assets/home.png")
-		unitTest:assertEquals(view.label["UC 1"], "./assets/forest.png")
+		unitTest:assertEquals(view.label["UC 0"], "home.png")
+		unitTest:assertEquals(view.label["UC 1"], "forest.png")
 
 		unitTest:assert(isFile(app.output..view.icon.options["0"]))
 		unitTest:assert(isFile(app.output..view.icon.options["1"]))
@@ -565,11 +572,11 @@ return {
 		unitTest:assertNil(view.icon.time)
 
 		unitTest:assertEquals(view.select, "UC")
-		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
-		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+		unitTest:assertEquals(view.icon.options["0"], "home.png")
+		unitTest:assertEquals(view.icon.options["1"], "forest.png")
 
-		unitTest:assertEquals(view.label["Absence of Conservation Unit"], "./assets/home.png")
-		unitTest:assertEquals(view.label["Presence of Conservation Unit"], "./assets/forest.png")
+		unitTest:assertEquals(view.label["Absence of Conservation Unit"], "home.png")
+		unitTest:assertEquals(view.label["Presence of Conservation Unit"], "forest.png")
 
 		unitTest:assert(isFile(app.output..view.icon.options["0"]))
 		unitTest:assert(isFile(app.output..view.icon.options["1"]))
@@ -608,11 +615,11 @@ return {
 
 		unitTest:assertEquals(view.select[1], "Nome")
 		unitTest:assertEquals(view.select[2], "UC")
-		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
-		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+		unitTest:assertEquals(view.icon.options["0"], "home.png")
+		unitTest:assertEquals(view.icon.options["1"], "forest.png")
 
-		unitTest:assertEquals(view.label["UC 0"], "./assets/home.png")
-		unitTest:assertEquals(view.label["UC 1"], "./assets/forest.png")
+		unitTest:assertEquals(view.label["UC 0"], "home.png")
+		unitTest:assertEquals(view.label["UC 1"], "forest.png")
 
 		unitTest:assert(isFile(app.output..view.icon.options["0"]))
 		unitTest:assert(isFile(app.output..view.icon.options["1"]))

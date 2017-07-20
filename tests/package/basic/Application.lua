@@ -41,18 +41,12 @@ return {
 
 		local appRoot = {
 			["index.html"] = true,
-			["config.js"] = true
-		}
-
-		local appAssets = {
+			["config.js"] = true,
 			["jquery-3.1.1.min.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["default.gif"] = true,
-			["package.min.js"] = true
-		}
-
-		local appData = {
+			["package.min.js"] = true,
 			["cells.geojson"] = true,
 			["firebreak.geojson"] = true,
 			["limit.geojson"] = true,
@@ -93,35 +87,12 @@ return {
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
-		unitTest:assertEquals(getn(app.view), getn(appData))
 
 		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = nil, package = "gis".
 		emasDir = Directory("package-basic-app-manytview")
 		if emasDir:exists() then emasDir:delete() end
-
-		appData = {
-			["cabecadeboi"] = {
-				["box.geojson"] = true,
-				["cells.geojson"] = true
-			},
-			["emas"] = {
-				["cells.geojson"] = true,
-				["firebreak.geojson"] = true,
-				["limit.geojson"] = true,
-				["river.geojson"] = true
-			},
-			["amazonia"] = {
-				["ports.geojson"] = true,
-				["cells.geojson"] = true,
-				["roads.geojson"] = true,
-				["protected.geojson"] = true,
-				["limit.geojson"] = true
-			}
-		}
 
 		local mcustomWarning = customWarning --TODO #14. Raster layers stops with an error.
 		customWarning = function() end
@@ -159,24 +130,7 @@ return {
 		--unitTest:assertEquals(app.project[3].layer, "limit") -- SKIP
 
 		--assertFiles(app.output, appRoot) -- SKIP FIXME allow running this again
-		assertFiles(app.assets, appAssets)
-
-		local countDir = 0
-		local countFile = 0
-		forEachDirectory(app.datasource, function(dir)
-			local data = appData[dir:name()]
-
-			forEachFile(dir, function(file)
-				unitTest:assert(data[file:name()]) -- SKIP FIXME it should execute
-				countFile = countFile + 1
-			end)
-
-			countDir = countDir + 1
-			unitTest:assertType(data, "table") -- SKIP FIXME it should execute
-		end)
-
-		unitTest:assertEquals(countDir, 0) -- FIXME it was 3
-		unitTest:assertEquals(countFile, 0) -- FIXME it was 11
+		assertFiles(app.assets, appRoot)
 
 		if emasDir:exists() then emasDir:delete() end
 		customWarning = mcustomWarning

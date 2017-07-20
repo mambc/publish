@@ -62,7 +62,7 @@ metaTableView_ = {
 -- "airport", "animal", "bigcity", "bus", "car", "caution", "cycling", "database", "desert", "diving", "fillingstation", "finish", "fire", "firstaid", "fishing",
 -- "flag", "forest", "harbor", "helicopter", "home", "horseriding", "hospital", "lake", "motorbike", "mountains", "radio", "restaurant", "river", "road",
 --"shipwreck" and "thunderstorm".
--- @arg data.report An optional Report or user-defined function that creates a report for each spatial object of that view.
+-- @arg data.report An optional argument that describes what happens when the user clicks in a given object of the View. It can be a Report or a user-defined function that creates a report for each spatial object of that view.
 -- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
 -- @usage import("publish")
 --
