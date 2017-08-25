@@ -43,7 +43,6 @@ return {
 		unitTest:assertEquals(app.clean, true)
 		unitTest:assertEquals(app.progress, false)
 		unitTest:assertNil(app.key)
-		unitTest:assertNil(app.key)
 
 		if app.output:exists() then app.output:delete() end
 
