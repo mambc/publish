@@ -30,7 +30,7 @@ local lustache = require "lustache"
 -- Copyright json4lua (https://github.com/craigmj/json4lua).
 local json = require "json"
 
-local terralib = getPackage("terralib")
+local gis = getPackage("gis")
 
 local templateDir = Directory(packageInfo("publish").path.."/lib/template")
 local Templates = {}
@@ -84,7 +84,7 @@ local function exportReportImages(data, report)
 
 		local img = rp.image:name()
 		if not data.images then
-			data.images = Directory(data.output.."images")
+			data.images = data.output -- Directory(data.output.."images")
 			if not data.images:exists() then
 				data.images:create()
 			end
@@ -111,12 +111,12 @@ local function createDirectoryStructure(data)
 		data.output:create()
 	end
 
-	data.datasource = Directory(data.output.."data")
+	data.datasource = data.output -- Directory(data.output.."data")
 	if not data.datasource:exists() then
 		data.datasource:create()
 	end
 
-	data.assets = Directory(data.output.."assets")
+	data.assets = data.output -- Directory(data.output.."assets")
 	if not data.assets:exists() then
 		data.assets:create()
 	end
@@ -141,7 +141,7 @@ local function isValidSource(source)
 end
 
 local function exportLayers(data, sof)
-	terralib.forEachLayer(data.project, function(layer, idx)
+	gis.forEachLayer(data.project, function(layer, idx)
 		if sof and not sof(layer, idx) then
 			return
 		end
@@ -181,8 +181,8 @@ local function loadViewValue(data, name, view)
 
 	do
 		local set = {}
-		local tlib = terralib.TerraLib{}
-		local dset = tlib:getDataSet(data.project, name)
+		local tlib = gis.TerraLib{}
+		local dset = tlib.getDataSet(data.project, name)
 		for i = 0, #dset do
 			for k, v in pairs(dset[i]) do
 				if k == select and not set[v] then
@@ -261,7 +261,7 @@ local function loadLayers(data)
 							found = true
 						else
 							data.view[name] = nil
-							customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
+							customError("Publish cannot export yet raster layer '"..layer.name.."'.")
 						end
 
 						return false
@@ -287,7 +287,7 @@ local function loadLayers(data)
 						mproj[name] = tostring(view.layer)
 					else
 						data.view[name] = nil
-						customWarning("Publish cannot export yet raster layer '"..name.."'.")
+						customError("Publish cannot export yet raster layer '"..name.."'.")
 					end
 
 					nLayers = nLayers + 1
@@ -299,7 +299,7 @@ local function loadLayers(data)
 				customError("Application 'view' does not have any Layer.")
 			end
 
-			data.project = terralib.Project(mproj)
+			data.project = gis.Project(mproj)
 			exportLayers(data)
 		end
 	else
@@ -317,7 +317,7 @@ local function loadLayers(data)
 
 			exportLayers(data, function(layer)
 				if not isValidSource(layer.source) then
-					customWarning("Publish cannot export yet raster layer '"..layer.name.."'.")
+					customError("Publish cannot export yet raster layer '"..layer.name.."'.")
 					return false
 				end
 
@@ -391,14 +391,14 @@ local function processingView(data, layers, reports, name, view)
 
 	local dset
 	do
-		local tlib = terralib.TerraLib{}
-		dset = tlib:getDataSet(data.project, name)
+		local tlib = gis.TerraLib{}
+		dset = tlib.getDataSet(data.project, name)
 		for i = 0, #dset do
 			if view.geom then break end
 
 			local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
 			if geom then
-				local subType = tlib:castGeomToSubtype(geom)
+				local subType = tlib.castGeomToSubtype(geom)
 				view.geom = subType:getGeometryType()
 			end
 		end
@@ -445,7 +445,7 @@ local function processingView(data, layers, reports, name, view)
 			end
 
 			view.icon = view.icon..".png"
-			icon.path = "./assets/"..view.icon
+			icon.path = view.icon
 			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
 		else
 			if #view.icon > 0 then
@@ -535,7 +535,6 @@ local function processingView(data, layers, reports, name, view)
 					marker = marker..".png"
 					copy[marker] = true
 
-					marker = "./assets/"..marker
 					ltmp[mlabel] = marker
 					icon.options[strprop] = marker
 				end
@@ -572,7 +571,7 @@ local function processingView(data, layers, reports, name, view)
 	end
 
 	if view.download then
-		local layer = terralib.Layer{project = data.project, name = name}
+		local layer = gis.Layer{project = data.project, name = name}
 		local source = layer.source
 		if isValidSource(source) then
 			local tmp = Directory(name)
@@ -617,14 +616,14 @@ end
 
 local function createApplicationProjects(data, proj)
 	printInfo("Loading Template")
-	local path = "./data/"
+	local path = "./"
 	local index = "index.html"
 	local config = "config.js"
 
 	if proj then
-		index = proj..".html"
-		config = proj..".js"
-		path = path..proj.."/"
+		index = proj..".html" -- SKIP
+		config = proj..".js" -- SKIP
+		path = path..proj.."/" -- SKIP
 	end
 
 	local layers = {}
@@ -691,34 +690,34 @@ local function createApplicationHome(data)
 
 	local layers = {}
 	for _, mproj in pairs(data.project) do
-		layers[mproj.project] = mproj.layer
+		layers[mproj.project] = mproj.layer -- SKIP
 	end
 
-	registerApplicationModel {
-		output = config,
-		model = {
-			center = data.center,
-			zoom = data.zoom,
-			minZoom = data.minZoom,
-			maxZoom = data.maxZoom,
-			mapTypeId = data.base:upper(),
-			legend = data.legend,
-			data = layers
+	registerApplicationModel { -- SKIP
+		output = config, -- SKIP
+		model = { -- SKIP
+			center = data.center, -- SKIP
+			zoom = data.zoom, -- SKIP
+			minZoom = data.minZoom, -- SKIP
+			maxZoom = data.maxZoom, -- SKIP
+			mapTypeId = data.base:upper(), -- SKIP
+			legend = data.legend, -- SKIP
+			data = layers -- SKIP
 		}
 	}
 
-	registerApplicationModel {
-		input = templateDir.."package.mustache",
-		output = index,
-		model = {
-			config = config,
-			package = data.package.package,
-			description = data.package.content,
-			projects = data.project,
-			loading = data.loading,
-			key = data.key,
-			navbarColor = data.template.navbar,
-			titleColor = data.template.title
+	registerApplicationModel { -- SKIP
+		input = templateDir.."package.mustache", -- SKIP
+		output = index, -- SKIP
+		model = { -- SKIP
+			config = config, -- SKIP
+			package = data.package.package, -- SKIP
+			description = data.package.content, -- SKIP
+			projects = data.project, -- SKIP
+			loading = data.loading, -- SKIP
+			key = data.key, -- SKIP
+			navbarColor = data.template.navbar, -- SKIP
+			titleColor = data.template.title -- SKIP
 		}
 	}
 end
@@ -764,10 +763,10 @@ metaTableApplication_ = {
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
 -- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
--- @arg data.project An optional terralib::Project or string with the path to a .tview file.
+-- @arg data.project An optional gis::Project or string with the path to a .tview file.
 -- @arg data.report An option Report with data information.
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
--- If Application is created from terralib::Project the default value is project title.
+-- If Application is created from gis::Project the default value is project title.
 -- @arg data.description An optional string with the application's description. It will be shown as a box that is shown in the beginning of the application and can be closed.
 -- @arg data.base An optional string with the base map, that can be "roadmap", "satellite", "hybrid", or "terrain". The default value is "satellite".
 -- @arg data.zoom An optional number with the initial zoom, ranging from 0 to 20. The default value is the center of the bounding box containing all geometries.
@@ -785,7 +784,7 @@ metaTableApplication_ = {
 -- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
 -- @usage import("publish")
 --
--- local emas = filePath("emas.tview", "terralib")
+-- local emas = filePath("emas.tview", "publish")
 -- local emasDir = Directory("EmasWebMap")
 --
 -- local app = Application{
@@ -939,12 +938,12 @@ function Application(data)
 					verify(mtype == "string", "Each element of 'project' must be a string, '"..name.."' got type '"..mtype.."'.")
 				end
 
-				proj = terralib.Project{file = file}
+				proj = gis.Project{file = file}
 				if bbox then
 					local abstractLayer = proj.layers[bbox]
 					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
 
-					local layer = terralib.Layer{project = proj, name = abstractLayer:getTitle()}
+					local layer = gis.Layer{project = proj, name = abstractLayer:getTitle()}
 					local source = layer.source
 					verify(isValidSource(source), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[source].."'.")
 
@@ -975,25 +974,25 @@ function Application(data)
 				forEachElement(projects, function(fname, proj)
 					local datasource = Directory(data.datasource..fname)
 					if not datasource:exists() then
-						datasource:create()
+						datasource:create() -- SKIP
 					end
 
 					local mdata = {project = proj, datasource = datasource}
 					forEachElement(data, function(idx, value)
-						if idx == "datasource" then
+						if idx == "datasource" then -- SKIP
 							return
 						elseif idx == "project" then
-							idx = "projects"
+							idx = "projects" -- SKIP
 						end
 
-						mdata[idx] = value
+						mdata[idx] = value -- SKIP
 					end)
 
-					loadLayers(mdata)
-					createApplicationProjects(mdata, fname)
+					loadLayers(mdata) -- SKIP
+					createApplicationProjects(mdata, fname) -- SKIP
 				end)
 
-				createApplicationHome(data)
+				createApplicationHome(data) -- SKIP
 			end
 
 			exportTemplates(data)
@@ -1008,7 +1007,7 @@ function Application(data)
 
 			if ptype == "File" then
 				if data.project:exists() then
-					data.project = terralib.Project{file = data.project}
+					data.project = gis.Project{file = data.project}
 				else
 					customError("Project '"..data.project.."' was not found.")
 				end

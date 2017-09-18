@@ -50,7 +50,9 @@ return {
 				output = emasDir
 			}
 		end
-		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
+		unitTest:assertWarning(error_func, unnecessaryArgumentMsg("arg"))
+
+		if emasDir:exists() then emasDir:delete() end
 
 		local data = {
 			clean = true,
@@ -187,11 +189,11 @@ return {
 		end
 		unitTest:assertError(error_func, "'square' is an invalid value for argument 'loading'. Do you mean 'squares'?")
 
-		data.loading = "x"
+		data.loading = "xx"
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
+		unitTest:assertError(error_func, "'xx' is an invalid value for argument 'loading'. It must be a string from the"
 			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
 

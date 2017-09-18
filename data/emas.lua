@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------------------
 -- TerraME - a software platform for multiple scale spatially-explicit dynamic modeling.
--- Copyright (C) 2001-2016 INPE and TerraLAB/UFOP -- www.terrame.org
+-- Copyright (C) 2001-2017 INPE and TerraLAB/UFOP -- www.terrame.org
 
 -- This code is part of the TerraME framework.
 -- This framework is free software; you can redistribute it and/or
@@ -24,16 +24,16 @@
 
 -- @example Creates a database that can be used by the example fire-spread of base package.
 
-import("terralib")
+import("gis")
 
 project = Project{
 	file = "emas.tview",
 	clean = true,
 	author = "Almeida, R.",
 	title = "Emas database",
-	firebreak = filePath("emas-firebreak.shp", "terralib"),
-	river = filePath("emas-river.shp", "terralib"),
-	limit = filePath("emas-limit.shp", "terralib")
+	firebreak = filePath("emas-firebreak.shp", "gis"),
+	river = filePath("emas-river.shp", "gis"),
+	limit = filePath("emas-limit.shp", "gis")
 }
 
 cl = Layer{

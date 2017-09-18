@@ -22,18 +22,8 @@
 --
 -------------------------------------------------------------------------------------------
 
--- @example Creates a database that can be used by arapiunsapp.
--- The data of this application were extracted from Escada et. al (2013) Infraestrutura,
--- Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA. Relatório técnico, INPE.
-
-import("gis")
-
-project = Project{
-	title = "The riverine settlements at Arapiuns (PA)",
-	author = "Carneiro, H.",
-	file = "arapiuns.tview",
-	clean = true,
-	trajectory = filePath("arapiuns_traj.shp", "publish"),
-	villages = filePath("AllCmmTab_210316OK.shp", "publish")
+return {
+	link = function(unitTest)
+		unitTest:assertEquals(link("a", "b"), "<a target=\"_blank\" href=\"http://a\">b</a>")
+	end
 }
-
