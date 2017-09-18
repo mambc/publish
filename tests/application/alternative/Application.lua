@@ -27,13 +27,30 @@ return {
 		local emasDir = Directory("view-alternative-app")
 		if emasDir:exists() then emasDir:delete() end
 
+		local gis = getPackage("gis")
+
+		local project = gis.Project{
+			file = "emas.tview",
+			clean = true,
+			firebreak = filePath("emas-firebreak.shp", "gis"),
+			river = filePath("emas-river.shp", "gis"),
+			limit = filePath("emas-limit.shp", "gis")
+		}
+
+		gis.Layer{
+			project = project,
+			name = "cover",
+			file = filePath("emas-accumulation.tif", "gis"),
+			epsg = 29192
+		}
+
 		local error_func = function()
 			Application{
 				title = "Emas",
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "gis"),
+				project = "emas.tview",
 				clean = true,
 				output = emasDir,
 				cover = View{
@@ -43,13 +60,21 @@ return {
 		end
 		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
 
+		project = gis.Project{
+			file = "emas.tview",
+			clean = true,
+			firebreak = filePath("emas-firebreak.shp", "gis"),
+			river = filePath("emas-river.shp", "gis"),
+			limit = filePath("emas-limit.shp", "gis")
+		}
+
 		error_func = function()
 			Application{
 				title = "Emas",
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "gis"),
+				project = "emas.tview",
 				clean = true,
 				output = emasDir,
 				order = 1,
@@ -66,7 +91,7 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				clean = true,
 				output = emasDir,
 				order = {1},
@@ -83,7 +108,7 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				clean = true,
 				output = emasDir,
 				order = {"cover", "cells"},
@@ -100,7 +125,7 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				clean = true,
 				output = emasDir,
 				order = {"cove"},
@@ -110,14 +135,23 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "View 'cove' in argument 'order' (1) does not exist.")
+
 		if emasDir:exists() then emasDir:delete() end
 
 		local arapiunsDir = Directory("ArapiunsWebMap")
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 
+		gis.Project{
+			title = "The riverine settlements at Arapiuns (PA)",
+			file = "arapiuns.tview",
+			clean = true,
+			trajectory = filePath("arapiuns_traj.shp", "publish"),
+			villages = filePath("AllCmmTab_210316OK.shp", "publish")
+		}
+
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
@@ -136,7 +170,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
@@ -158,7 +192,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
@@ -179,7 +213,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				base = "roadmap",
 				clean = true,
 				output = emasDir,
@@ -208,7 +242,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
@@ -224,7 +258,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
@@ -239,7 +273,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
@@ -254,7 +288,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
@@ -269,7 +303,7 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
 				output = arapiunsDir,
