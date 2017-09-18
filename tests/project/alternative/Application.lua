@@ -56,9 +56,26 @@ return {
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("project", "Project", 1))
 
+		local gis = getPackage("gis")
+
+		local project = gis.Project{
+			file = "emas.tview",
+			clean = true,
+			firebreak = filePath("emas-firebreak.shp", "gis"),
+			river = filePath("emas-river.shp", "gis"),
+			limit = filePath("emas-limit.shp", "gis")
+		}
+
+		gis.Layer{
+			project = project,
+			name = "cover",
+			file = filePath("emas-accumulation.tif", "gis"),
+			epsg = 29192
+		}
+
 		error_func = function()
 			Application{
-				project = filePath("emas.tview", "gis"),
+				project = "emas.tview",
 				clean = true,
 				select = "river",
 				color = "BuGn",
@@ -69,5 +86,6 @@ return {
 		end
 		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
 		if emasDir:exists() then emasDir:delete() end
+		File("emas.tview"):deleteIfExists()
 	end
 }

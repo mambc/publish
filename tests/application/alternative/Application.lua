@@ -318,5 +318,7 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("label", "string", 1))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
+		File("arapiuns.tview"):deleteIfExists()
+		File("emas.tview"):deleteIfExists()
 	end
 }
