@@ -60,7 +60,7 @@ return {
 		end
 		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
 
-		project = gis.Project{
+		gis.Project{
 			file = "emas.tview",
 			clean = true,
 			firebreak = filePath("emas-firebreak.shp", "gis"),
