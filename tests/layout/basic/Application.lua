@@ -117,6 +117,7 @@ return {
 
 		if emasDir:exists() then emasDir:delete() end
 
+		local logo = File(packageInfo("luadoc").path.."/logo/logo.png")
 		app = Application{
 			project = filePath("emas.tview", "publish"),
 			output = emasDir,
@@ -125,13 +126,16 @@ return {
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
-			progress = false
+			progress = false,
+			logo = tostring(logo)
 		}
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.template, "table")
+		unitTest:assertType(app.logo, "string")
 		unitTest:assertEquals(app.template.navbar, "rgba(30, 144, 255, 1)")
 		unitTest:assertEquals(app.template.title, "rgba(165, 42, 42, 1)")
+		unitTest:assertEquals(app.logo, logo:name())
 
 		if emasDir:exists() then emasDir:delete() end
 	end
