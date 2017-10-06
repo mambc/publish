@@ -143,8 +143,23 @@ input[type="checkbox"] {
 	position: absolute;
 	z-index: 35;
 	top: 0;
-	bottom:0;
+	bottom:75px;
 	left: 0;
 	right:0;
+	margin: auto;
+}
+
+#loader-message{
+	color: white;
+	text-align: center;
+	white-space: nowrap;
+	position: absolute;
+	z-index: 10000000;
+	width: 200px;
+	height: 100px;
+	top:0;
+	bottom: -90px;
+	left: 0;
+	right: 0;
 	margin: auto;
 }
