@@ -118,7 +118,7 @@ local function createDirectoryStructure(data)
 
 	data.assets = data.output -- Directory(data.output.."assets")
 	if not data.assets:exists() then
-		data.assets:create()
+		data.assets:create() -- SKIP
 	end
 
 	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-3.1.1.min.js", "loader/"..data.loading}
