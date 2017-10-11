@@ -15,12 +15,13 @@
 --     Returns a Lua object populated with the data encoded in the JSON string json_string.
 --
 -- REQUIREMENTS:
---   compat-5.1 if using Lua 5.0
+--   Lua 5.3
 --
 -- CHANGELOG
---   0.9.20 Introduction of local Lua functions for private functions (removed _ function prefix). 
+--   1.0.01 Removing unnecessary check of array size for field "n"(https://www.lua.org/pil/19.1.html).
+--   0.9.20 Introduction of local Lua functions for private functions (removed _ function prefix).
 --          Fixed Lua 5.1 compatibility issues.
---   		Introduced json.null to have null values in associative arrays.
+--          Introduced json.null to have null values in associative arrays.
 --          json.encode() performance improvement (more than 50%) through table.concat rather than ..
 --          Introduced decode ability to ignore /**/ comments in the JSON string.
 --   0.9.10 Fix to array encoding / decoding to correctly manage nil/null values in arrays.
@@ -167,6 +168,7 @@ end
 function decode_scanArray(s,startPos)
   local array = {}	-- The return value
   local stringLen = string.len(s)
+  local object
   assert(string.sub(s,startPos,startPos)=='[','decode_scanArray called but array does not start at position ' .. startPos .. ' in string:\n'..s )
   startPos = startPos + 1
   -- Infinite loop for array elements
@@ -233,7 +235,7 @@ function decode_scanNumber(s,startPos)
     endPos = endPos + 1
   end
   local stringValue = 'return ' .. string.sub(s,startPos, endPos-1)
-  local stringEval = loadstring(stringValue)
+  local stringEval = load(stringValue)
   assert(stringEval, 'Failed to scan number [ ' .. stringValue .. '] in JSON string at position ' .. startPos .. ' : ' .. endPos)
   return stringEval(), endPos
 end
@@ -390,8 +392,7 @@ end
 -- the second returned value is the maximum
 -- number of indexed elements in the array. 
 function isArray(t)
-  -- Next we count all the elements, ensuring that any non-indexed elements are not-encodable 
-  -- (with the possible exception of 'n')
+  -- Next we count all the elements, ensuring that any non-indexed elements are not-encodable
   if (t == json.EMPTY_ARRAY) then return true, 0 end
   if (t == json.EMPTY_OBJECT) then return false end
   
@@ -400,12 +401,8 @@ function isArray(t)
     if (type(k)=='number' and math.floor(k)==k and 1<=k) then	-- k,v is an indexed pair
       if (not isEncodable(v)) then return false end	-- All array elements must be encodable
       maxIndex = math.max(maxIndex,k)
-    else
-      if (k=='n') then
-        if v ~= (t.n or #t) then return false end  -- False if n does not hold the number of elements
-      else -- Else of (k=='n')
-        if isEncodable(v) then return false end
-      end  -- End of (k~='n')
+    elseif isEncodable(v) then
+      return false
     end -- End of k,v not an indexed pair
   end  -- End of loop across all pairs
   return true, maxIndex

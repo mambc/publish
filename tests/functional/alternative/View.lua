@@ -463,6 +463,20 @@ return {
 		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
 
 		error_func = function()
+				View{
+					decimal = "a"
+				}
+			end
+		unitTest:assertError(error_func, incompatibleTypeMsg("decimal", "number", "a"))
+
+		error_func = function()
+				View{
+					decimal = -3
+				}
+			end
+		unitTest:assertError(error_func, "Argument 'decimal' should be an integer greater than 0, got -3.")
+
+		error_func = function()
 			View{
 				select = {"Nome"},
 				icon = {"home", "forest"},

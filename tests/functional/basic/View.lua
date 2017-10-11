@@ -240,7 +240,8 @@ return {
 		view = View{
 			select = "UC",
 			icon = {"home", "forest"},
-			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"},
+			decimal = 3
 		}
 
 		unitTest:assertType(view, "View")
@@ -249,6 +250,7 @@ return {
 		unitTest:assertType(view.icon, "table")
 		unitTest:assertType(view.select, "string")
 		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.decimal, 3)
 		unitTest:assertEquals(view.icon[1], "home")
 		unitTest:assertEquals(view.icon[2], "forest")
 		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
@@ -272,6 +274,7 @@ return {
 		unitTest:assertType(view.select, "table")
 		unitTest:assertEquals(view.select[1], "Nome")
 		unitTest:assertEquals(view.select[2], "UC")
+		unitTest:assertEquals(view.decimal, 5)
 		unitTest:assertEquals(view.icon[1], "home")
 		unitTest:assertEquals(view.icon[2], "forest")
 		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
@@ -289,6 +292,7 @@ return {
 
 		unitTest:assertEquals(tostring(view), [[border        string [rgba(0, 0, 255, 1)]
 color         named table of size 3
+decimal       number [5]
 download      boolean [false]
 label         named table of size 3
 select        string [river]

@@ -47,6 +47,7 @@ Application{
 	clean = true,
 	output = "ArapiunsWebMap",
 	template = {navbar = "darkblue", title = "white"},
+	simplify = false,
 	trajectory = View{
 		description = "Route on the Arapiuns River.",
 		width = 3,
