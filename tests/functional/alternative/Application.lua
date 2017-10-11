@@ -59,7 +59,6 @@ return {
 		local data = {
 			clean = true,
 			simplify = false,
-			progress = false,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
