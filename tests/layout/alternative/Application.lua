@@ -167,14 +167,12 @@ return {
 			Application(clone(data))
 		end
 
-
 		unitTest:assertError(error_func, mandatoryArgumentMsg("lat"))
 
 		data.center = {lat = -23.179017}
 		error_func = function()
 			Application(clone(data))
 		end
-
 
 		unitTest:assertError(error_func, mandatoryArgumentMsg("long"))
 
@@ -183,14 +181,12 @@ return {
 			Application(clone(data))
 		end
 
-
 		unitTest:assertError(error_func, "Center 'lat' must be a number >= -90 and <= 90, got '-91'.")
 
 		data.center = {lat = 91, long = 91}
 		error_func = function()
 			Application(clone(data))
 		end
-
 
 		unitTest:assertError(error_func, "Center 'lat' must be a number >= -90 and <= 90, got '91'.")
 
@@ -199,14 +195,12 @@ return {
 			Application(clone(data))
 		end
 
-
 		unitTest:assertError(error_func, "Center 'long' must be a number >= -180 and <= 180, got '-181'.")
 
 		data.center = {lat = 90, long = 181}
 		error_func = function()
 			Application(clone(data))
 		end
-
 
 		unitTest:assertError(error_func, "Center 'long' must be a number >= -180 and <= 180, got '181'.")
 
@@ -216,14 +210,12 @@ return {
 			Application(clone(data))
 		end
 
-
 		unitTest:assertError(error_func, incompatibleTypeMsg("template", "table", 1))
 
 		data.template = {1, 2, 3}
 		error_func = function()
 			Application(clone(data))
 		end
-
 
 		unitTest:assertError(error_func, "All elements of the argument must be named.")
 
@@ -232,14 +224,12 @@ return {
 			Application(clone(data))
 		end
 
-
 		unitTest:assertError(error_func, "Incompatible types. Argument 'navbar' expected string or table, got number.")
 
 		data.template = {navbar = "dodgerblue"}
 		error_func = function()
 			Application(clone(data))
 		end
-
 
 		unitTest:assertError(error_func, "Argument 'template' should contain the field 'title'.")
 
@@ -277,6 +267,30 @@ return {
 		end
 
 		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got 256.")
+
+		data.template = nil
+		data.logo = 1
+		error_func = function()
+			Application(clone(data))
+		end
+
+		unitTest:assertError(error_func, incompatibleTypeMsg("logo", "string", 1))
+
+		local logo = File("logo.png")
+		data.logo = tostring(logo)
+		error_func = function()
+			Application(clone(data))
+		end
+
+		unitTest:assertError(error_func, "Logo '"..tostring(logo).."' does not exist.")
+
+		logo = tostring(emas)
+		data.logo = tostring(logo)
+		error_func = function()
+			Application(clone(data))
+		end
+
+		unitTest:assertError(error_func, "'tview' is an invalid extension for argument 'logo'. Valid extensions ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'].")
 
 		if emasDir:exists() then emasDir:delete() end
 	end

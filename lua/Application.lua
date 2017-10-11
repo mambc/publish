@@ -118,7 +118,7 @@ local function createDirectoryStructure(data)
 
 	data.assets = data.output -- Directory(data.output.."assets")
 	if not data.assets:exists() then
-		data.assets:create()
+		data.assets:create() -- SKIP
 	end
 
 	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-3.1.1.min.js", "loader/"..data.loading}
@@ -126,9 +126,18 @@ local function createDirectoryStructure(data)
 		table.insert(depends, "model/dist/package.min.js")
 	end
 
+	if data.logo then
+		table.insert(depends, data.logo)
+	end
+
 	forEachElement(depends, function(_, file)
 		printNormal("Copying dependency '"..file.."'")
-		os.execute("cp \""..templateDir..file.."\" \""..data.assets.."\"")
+		local filepath = templateDir..file
+		if type(file) == "File" then
+			filepath = file
+		end
+
+		os.execute("cp \""..filepath.."\" \""..data.assets.."\"")
 	end)
 
 	if data.report then
@@ -248,7 +257,7 @@ local function loadLayers(data)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
-		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group"})
+		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group", "logo"})
 
 	if nView > 0 then
 		if data.project then
@@ -626,6 +635,10 @@ local function createApplicationProjects(data, proj)
 		path = path..proj.."/" -- SKIP
 	end
 
+	if data.logo then
+		data.logo = data.logo:name()
+	end
+
 	local layers = {}
 	local reports = {}
 	for name, value in pairs(data.view) do
@@ -678,7 +691,8 @@ local function createApplicationProjects(data, proj)
 			key = data.key,
 			navbarColor = data.template.navbar,
 			titleColor = data.template.title,
-			groups = groups
+			groups = groups,
+			logo = data.logo
 		}
 	}
 end
@@ -774,6 +788,8 @@ metaTableApplication_ = {
 -- @arg data.maxZoom An optional number with the maximum zoom allowed. The default value is 20.
 -- @arg data.center An optional named table with two values, lat and long,
 -- describing the initial central point of the application.
+-- @arg data.logo An optional string with the logo file path. The logo is an image and the supported extensions are:
+-- 'bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'.
 -- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is "default".
@@ -810,6 +826,7 @@ function Application(data)
 	optionalTableArgument(data, "report", "Report")
 	optionalTableArgument(data, "key", "string")
 	optionalTableArgument(data, "template", "table")
+	optionalTableArgument(data, "logo", "string")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -883,6 +900,18 @@ function Application(data)
 	end
 
 	data.loading = data.loading..".gif"
+
+	if data.logo then
+		data.logo = File(data.logo)
+		if not data.logo:exists() then
+			customError("Logo '"..data.logo.."' does not exist.")
+		end
+
+		local extension = data.logo:extension():lower()
+		if not belong(extension, {"bmp", "gif", "jpeg", "jpg", "png", "svg"}) then
+			customError("'"..extension.."' is an invalid extension for argument 'logo'. Valid extensions ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'].")
+		end
+	end
 
 	if data.key then
 		local len = data.key:len()
@@ -973,7 +1002,7 @@ function Application(data)
 			else
 				forEachElement(projects, function(fname, proj)
 					local datasource = Directory(data.datasource..fname)
-					if not datasource:exists() then
+					if not datasource:exists() then -- SKIP
 						datasource:create() -- SKIP
 					end
 

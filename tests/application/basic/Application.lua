@@ -48,6 +48,7 @@ return {
 			clean = true,
 			progress = false,
 			output = emasDir,
+			logo = packageInfo("luadoc").path.."/logo/logo.png",
 			order = {"river", "firebreak", "limit"},
 			river = View{
 				color = "blue",
@@ -92,6 +93,7 @@ return {
 			["jquery-3.1.1.min.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
+			["logo.png"] = true
 		}
 
 
