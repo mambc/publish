@@ -245,7 +245,7 @@ return {
 
 		do
 			local minifiedGeoJSON = File(arapiunsDir.."villages.geojson")
-			unitTest:assertEquals(minifiedGeoJSON:exists(), true)
+			unitTest:assert(minifiedGeoJSON:exists())
 
 			local line1 = minifiedGeoJSON:readLine()
 			unitTest:assertNotNil(line1)

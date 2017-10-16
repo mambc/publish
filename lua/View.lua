@@ -87,7 +87,6 @@ function View(data)
 	optionalTableArgument(data, "label", "table")
 	optionalTableArgument(data, "report", {"Report", "function"})
 	optionalTableArgument(data, "icon", {"string", "table"})
-	optionalTableArgument(data, "properties", "table")
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
