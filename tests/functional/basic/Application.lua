@@ -40,8 +40,8 @@ return {
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assertEquals(app.title, "Emas database")
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertNil(app.key)
 
 		if app.output:exists() then app.output:delete() end
@@ -154,8 +154,8 @@ return {
 		}
 
 		unitTest:assertType(app, "Application")
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(tostring(app), [[assets       Directory
 base         string [satellite]
 center       named table of size 2

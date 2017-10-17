@@ -82,8 +82,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
@@ -114,8 +114,8 @@ return {
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.output, "Directory")
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 
 		unitTest:assertType(app.project, "Project")
 
