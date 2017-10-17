@@ -149,6 +149,104 @@ local function isValidSource(source)
 	return SourceTypeMapper[source] == "OGR" or SourceTypeMapper[source] == "POSTGIS"
 end
 
+local function getReducedNames(properties, select)
+		local map = {}
+		if select then
+			local set = {}
+			local step = 1
+			local names = getNames(properties)
+			for _, name in ipairs(names) do
+				if belong(name, select) then
+					local char = name:lower():sub(step, step)
+					local prefix = (set[char] or 0) + step
+
+					set[char] = prefix
+					if step == prefix then
+						prefix = ""
+					end
+
+					map[name] = char..prefix
+				end
+			end
+		end
+
+		return map
+end
+
+local function reduceCoordinates(coordinates, decimalFormat)
+	for idx, coordinate in ipairs(coordinates) do
+		if type(coordinate) == "table" then
+			reduceCoordinates(coordinate, decimalFormat)
+		else
+			coordinates[idx] = tonumber(string.format(decimalFormat, coordinate))
+		end
+	end
+end
+
+
+local function getPropertiesWithReducedNames(propertiesMap, properties, select)
+	local newProperties = {}
+	if select then
+		for property, value in pairs(properties) do
+			local prop = propertiesMap[property]
+			if prop then
+				newProperties[prop] = value
+			end
+		end
+	end
+
+	return newProperties
+end
+
+
+local function uglify(file, decimal, select)
+	local fopen = file:open()
+	local jsonData = json.decode(fopen:read("*all"))
+	file:close()
+
+	if select and type(select) == "string" then
+		select = {select}
+	end
+
+	local decimalFormat = "%."..string.format("%sf", decimal)
+	local propertiesMap
+	for _, feature in ipairs(jsonData.features) do
+		local properties = feature.properties
+		local coordinates = feature.geometry.coordinates
+
+		if not propertiesMap then
+			propertiesMap = getReducedNames(properties, select)
+		end
+
+		feature.properties = getPropertiesWithReducedNames(propertiesMap, properties, select)
+		reduceCoordinates(coordinates, decimalFormat)
+	end
+
+	return propertiesMap, json.encode(jsonData)
+end
+
+local function minify(strJson)
+	local empty = ""
+	local pattern = "[%s\r\n]+"
+	return strJson:gsub(pattern, empty)
+end
+
+local function simplify(jsonPath, decimal, select)
+	local file = File(jsonPath)
+	if not file:exists() then
+		resourceNotFoundError("jsonPath", tostring(file))
+	end
+
+	local properties, strJson = uglify(file, decimal, select)
+	strJson = minify(strJson)
+
+	file = File(jsonPath)
+	file:writeLine(strJson)
+	file:close()
+
+	return properties
+end
+
 local function exportLayers(data, sof)
 	gis.forEachLayer(data.project, function(layer, idx)
 		if sof and not sof(layer, idx) then
@@ -156,17 +254,25 @@ local function exportLayers(data, sof)
 		end
 
 		printNormal("Exporting layer '"..layer.name.."'")
+		local jsonPath = data.datasource..layer.name..".geojson"
 		layer:export{
-			file = data.datasource..layer.name..".geojson",
+			file = jsonPath,
 			epsg = 4326,
 			overwrite = true
 		}
+
+		if data.simplify then
+			printInfo("Simplifying layer'"..layer.name.."'")
+			local mview = data.view[layer.name]
+			local properties = simplify(jsonPath, mview.decimal, mview.select)
+			mview.properties = properties
+		end
 	end)
 end
 
 local function loadViewValue(data, name, view)
 	local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
-		report = true, download = true})
+		report = true, download = true, decimal = true})
 	mview.value = {}
 	mview.report = view.report
 
@@ -184,6 +290,10 @@ local function loadViewValue(data, name, view)
 
 	if view.download == true then
 		mview.download = true
+	end
+
+	if view.decimal ~= 5 then
+		mview.decimal = view.decimal
 	end
 
 	local select = view.select[2] or view.select
@@ -257,7 +367,7 @@ local function loadLayers(data)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
-		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group", "logo"})
+		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group", "logo", "simplify"})
 
 	if nView > 0 then
 		if data.project then
@@ -427,7 +537,7 @@ local function processingView(data, layers, reports, name, view)
 
 				local select = cell[view.select[1] or view.select]
 				if select and type(select) == "string" then
-					select = select:gsub(" ", "-")
+					select = select:gsub("%s+", "")
 				end
 
 				table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
@@ -657,9 +767,24 @@ local function createApplicationProjects(data, proj)
 	local mview = clone(data.view, {type_ = true, value = true})
 	forEachElement(mview, function(_, mdata)
 		if mdata.report then
-			mdata.report = type(mdata.report)return
+			mdata.report = type(mdata.report)
 		elseif data.report then
 			mdata.report = type(data.report)
+		end
+
+		if mdata.select and data.simplify then
+			if type(mdata.select) == "string" then
+				mdata.select = mdata.properties[mdata.select]
+			else
+				local select = {}
+				for _, property in ipairs(mdata.select) do
+					table.insert(select, mdata.properties[property])
+				end
+
+				mdata.select = select
+			end
+
+			mdata.properties = nil
 		end
 	end)
 
@@ -777,6 +902,7 @@ metaTableApplication_ = {
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
 -- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
+-- @arg data.simplify An optional boolean value indicating if the data should be simplified. The default value is true.
 -- @arg data.project An optional gis::Project or string with the path to a .tview file.
 -- @arg data.report An option Report with data information.
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
@@ -806,6 +932,7 @@ metaTableApplication_ = {
 -- local app = Application{
 --     project = emas,
 --     clean = true,
+--     simplify = false,
 --     select = "river",
 --     color = "BuGn",
 --     value = {0, 1, 2},
@@ -830,6 +957,7 @@ function Application(data)
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
+	defaultTableValue(data, "simplify", true)
 	defaultTableValue(data, "legend", "Legend")
 	defaultTableValue(data, "loading", "default")
 	defaultTableValue(data, "base", "satellite")

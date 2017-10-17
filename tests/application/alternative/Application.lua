@@ -52,6 +52,8 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				cover = View{
 					color = "green"
@@ -76,6 +78,8 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = 1,
 				cover = View{
@@ -93,6 +97,8 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = {1},
 				cover = View{
@@ -110,6 +116,8 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = {"cover", "cells"},
 				cover = View{
@@ -127,6 +135,8 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = {"cove"},
 				cover = View{
@@ -154,6 +164,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -173,6 +185,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -195,6 +209,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -216,6 +232,8 @@ return {
 				project = "emas.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				limit = View{
 					icon = {path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"}
@@ -230,6 +248,7 @@ return {
 			Application{
 				title = "app",
 				progress = false,
+				simplify = false,
 				output = emasDir,
 				accumulation = View{
 					layer = filePath("emas-accumulation.tif", "gis"),
@@ -245,6 +264,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				trajectory = View{
 					description = "Route on the Arapiuns River.",
@@ -261,6 +282,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -276,6 +299,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -291,6 +316,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -306,6 +333,8 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
