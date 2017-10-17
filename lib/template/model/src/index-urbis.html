@@ -88,6 +88,9 @@
 						<div id="properties" class="panel-collapse collapse">
 							<div class="panel-body">
 								<p id="layer-description"></p>
+								<button id="more" type="button" class="btn btn-default" style="display:none;">
+									More
+								</button>
 							</div>
 						</div>
 					</div>
@@ -135,7 +138,7 @@
 					</div>
 				</div>
 			</div>
-		</div>
+		</div>		
 		<div class="modal fade" id="modal-report-real" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -346,6 +349,22 @@
 				</div>
 			</div>
 		</div>
+		<div class="modal fade" id="modal-completed-description" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 id="modal-title-description"></h4>
+					</div>
+					<div class="modal-body">
+						<p id="info-description"></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
 		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
