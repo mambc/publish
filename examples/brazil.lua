@@ -41,6 +41,7 @@ Application{
 	description = "Small application with some data related to Brazil from "..link("www.ibge.gov.br", "IBGE")..".",
 	clean = true,
 	output = "BrazilWebMap",
+	simplify = false,
 	biomes = View{
 		select = "name",
 		color = "Set2",

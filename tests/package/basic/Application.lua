@@ -71,6 +71,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -82,8 +83,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 
 		assertFiles(app.output, appRoot)
@@ -105,6 +106,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -114,8 +116,8 @@ return {
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.output, "Directory")
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 
 		unitTest:assertType(app.project, "Project")
 

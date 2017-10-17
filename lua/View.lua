@@ -64,6 +64,7 @@ metaTableView_ = {
 --"shipwreck" and "thunderstorm".
 -- @arg data.report An optional argument that describes what happens when the user clicks in a given object of the View. It can be a Report or a user-defined function that creates a report for each spatial object of that view.
 -- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
+-- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates.  Default value is 5.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -91,9 +92,10 @@ function View(data)
 	defaultTableValue(data, "transparency", 0)
 	defaultTableValue(data, "visible", true)
 	defaultTableValue(data, "download", false)
+	defaultTableValue(data, "decimal", 5)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-		"value", "layer", "report", "transparency", "label", "icon", "download", "group"})
+		"value", "layer", "report", "transparency", "label", "icon", "download", "group", "decimal", "properties"})
 
 	if data.report and type(data.report) == "function" then
 		mandatoryTableArgument(data, "select")
@@ -113,7 +115,7 @@ function View(data)
 
 	if data.color then
 		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-			"value", "layer", "report", "transparency", "label", "download", "group"})
+			"value", "layer", "report", "transparency", "label", "download", "group", "decimal", "properties"})
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
@@ -253,7 +255,7 @@ function View(data)
 			if #data.icon > 0 then
 				mandatoryTableArgument(data, "select")
 				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report",
-					"transparency", "label", "icon", "download", "group"})
+					"transparency", "label", "icon", "download", "group", "decimal", "properties"})
 
 				if data.label and (#data.icon ~= #data.label)then
 					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")
@@ -281,6 +283,10 @@ function View(data)
 				end
 			end
 		end
+	end
+
+	if data.decimal < 0 or data.decimal ~= math.floor(data.decimal) then
+		customError("Argument 'decimal' should be an integer greater than 0, got "..data.decimal..".")
 	end
 
 	setmetatable(data, metaTableView_)

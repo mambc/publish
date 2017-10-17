@@ -34,6 +34,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			title = "Testing Application Functional",
 			description = "Basic Test"
@@ -57,6 +58,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			title = "Testing Application Functional",
 			description = "Basic Test",
@@ -89,7 +91,8 @@ return {
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
-			progress = false
+			progress = false,
+			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
@@ -107,7 +110,8 @@ return {
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
-			progress = false
+			progress = false,
+			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
@@ -127,6 +131,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			logo = tostring(logo)
 		}
 
