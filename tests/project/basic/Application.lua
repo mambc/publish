@@ -38,6 +38,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
@@ -47,8 +48,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(app.title, "Emas database")
 		-- unitTest:assertEquals(app.description, "A small example related to a fire spread model.") -- SKIP TODO Terrame/#1534
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
@@ -77,6 +78,7 @@ return {
 			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -88,8 +90,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(app.title, "Emas")
 		unitTest:assertEquals(app.description, "Creates a database that can be used by the example fire-spread of base package.")
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
