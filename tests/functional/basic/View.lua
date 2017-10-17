@@ -38,7 +38,7 @@ return {
 		unitTest:assertEquals(view.title, "Emas National Park")
 		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
 		unitTest:assertEquals(view.width, 2)
-		unitTest:assertEquals(view.visible, true)
+		unitTest:assert(view.visible)
 		unitTest:assertEquals(view.select, "river")
 		unitTest:assertEquals(view.border, "rgba(0, 0, 255, 1)")
 
@@ -68,7 +68,7 @@ return {
 		unitTest:assertEquals(view.title, "Emas National Park")
 		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
 		unitTest:assertEquals(view.width, 2)
-		unitTest:assertEquals(view.visible, false)
+		unitTest:assert(not view.visible)
 		unitTest:assertEquals(view.select, "river")
 		unitTest:assertEquals(view.transparency, 0.7)
 		unitTest:assertEquals(view.border, "rgba(255, 0, 0, 1)")
@@ -184,7 +184,7 @@ return {
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
 		unitTest:assertType(view.icon, "string")
 		unitTest:assertEquals(view.icon, "home")
-		unitTest:assertEquals(view.download, false)
+		unitTest:assert(not view.download)
 
 		view = View{
 			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -205,7 +205,7 @@ return {
 		unitTest:assertEquals(view.icon.color, "rgba(255, 0, 0, 1)")
 		unitTest:assertEquals(view.icon.transparency, 0.6)
 		unitTest:assertEquals(view.icon.time, 10)
-		unitTest:assertEquals(view.download, true)
+		unitTest:assert(view.download)
 
 		view = View{
 			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -221,7 +221,7 @@ return {
 		unitTest:assertNotNil(view.icon.color)
 		unitTest:assertNotNil(view.icon.transparency)
 		unitTest:assertEquals(view.icon.time, 5)
-		unitTest:assertEquals(view.download, true)
+		unitTest:assert(view.download)
 
 		view = View{
 			select = "UC",

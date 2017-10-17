@@ -71,14 +71,14 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
 		--unitTest:assertEquals(getn(app.view), getn(appData)) -- SKIP TODO #14. Raster layers are not counted.
 
 		unitTest:assertEquals(app.view.river.width, 1)
 		unitTest:assertEquals(app.view.limit.width, 2)
-		unitTest:assertEquals(app.view.limit.visible, true)
+		unitTest:assert(app.view.limit.visible)
 
 		unitTest:assertEquals(app.view.river.order, 3)
 		unitTest:assertEquals(app.view.firebreak.order, 2)
@@ -96,7 +96,6 @@ return {
 			["publish.min.js"] = true,
 			["logo.png"] = true
 		}
-
 
 		assertFiles(app.output, appRoot)
 		--assertFiles(app.assets, appAssets)
@@ -131,8 +130,8 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers) - 2)
 		--unitTest:assertEquals(getn(app.view), getn(appData)) -- SKIP
 
@@ -350,7 +349,6 @@ return {
 			["urbis_2010_real.PNG"] = true
 		}
 
-
 		assertFiles(app.output, appRoot)
 		--assertFiles(app.assets, appAssets)
 		--assertFiles(app.datasource, appData)
@@ -434,7 +432,7 @@ return {
 		unitTest:assertType(view.report, "function")
 		unitTest:assertType(view.geom, "string")
 		unitTest:assertEquals(view.geom, "MultiPoint")
-		unitTest:assertEquals(view.download, true)
+		unitTest:assert(view.download)
 		unitTest:assert(isFile(arapiunsDir.."villages.zip"))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end

@@ -93,7 +93,7 @@ return {
 		report:addSeparator()
 
 		unitTest:assertEquals(getn(report.separator), 1)
-		unitTest:assertEquals(report.separator[1], true)
+		unitTest:assert(report.separator[1])
 
 		report:addText("My text 1")
 		report:addText("My text 2")
@@ -101,8 +101,8 @@ return {
 
 		unitTest:assertEquals(getn(report.separator), 2)
 		unitTest:assertEquals(getn(report.text), 2)
-		unitTest:assertEquals(report.separator[1], true)
-		unitTest:assertEquals(report.separator[4], true)
+		unitTest:assert(report.separator[1])
+		unitTest:assert(report.separator[4])
 	end,
 	addText = function(unitTest)
 		local report = Report()
@@ -145,7 +145,7 @@ return {
 		report:addText("It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.")
 
 		unitTest:assertEquals(report.title, "URBIS")
-		unitTest:assertEquals(report.separator[1], true)
+		unitTest:assert(report.separator[1])
 		unitTest:assertEquals(report.heading[2], "Social Classes 2010")
 		unitTest:assertEquals(tostring(report.image[3]), packageInfo("publish").path.."images/urbis_2010_real.PNG")
 		unitTest:assertEquals(report.text[4], "This is the main endogenous variable of the model.")

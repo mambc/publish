@@ -136,7 +136,7 @@ Application{
 				mreport:addText(text)
 			end
 
-			production = {}
+			local production = {}
 
 			if cell.ACAI     == 1 then table.insert(production, "acai")     end
 			if cell.GADO     == 1 then table.insert(production, "cattle")   end
