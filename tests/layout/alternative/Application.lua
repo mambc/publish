@@ -34,6 +34,7 @@ return {
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
+			simplify = false,
 			progress = false,
 			output = emasDir,
 			title = 1,

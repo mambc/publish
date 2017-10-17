@@ -38,6 +38,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
@@ -77,6 +78,7 @@ return {
 			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",

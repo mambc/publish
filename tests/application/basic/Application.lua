@@ -46,6 +46,7 @@ return {
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778},
 			clean = true,
+			simplify = false,
 			progress = false,
 			output = emasDir,
 			logo = packageInfo("luadoc").path.."/logo/logo.png",
@@ -112,6 +113,7 @@ return {
 			project = filePath("emas.tview", "publish"),
 			clean = true,
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			order = {"river"},
 			river = View{
@@ -162,6 +164,7 @@ return {
 			project = filePath("emas.tview", "publish"),
 			clean = true,
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			river = View{
 				color = "blue"
@@ -185,6 +188,7 @@ return {
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			project = filePath("emas.tview", "publish"),
 			clean = true,
+			simplify = false,
 			progress = false,
 			output = emasDir,
 		}
@@ -205,6 +209,8 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = caraguaDir,
 			report = report,
 			limit = View{
@@ -245,6 +251,8 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = caraguaDir,
 			limit = View{
 				description = "Bounding box of Caraguatatuba",
@@ -355,6 +363,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -381,6 +391,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -429,6 +441,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -459,6 +473,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
 				description = "Route on the Arapiuns River.",
@@ -485,6 +501,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
 				description = "Route on the Arapiuns River.",
@@ -514,6 +532,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -550,6 +570,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -588,6 +610,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",

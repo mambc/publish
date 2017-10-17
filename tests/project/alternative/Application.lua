@@ -38,6 +38,7 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
+				simplify = false,
 				output = emasDir
 			}
 		end
@@ -51,6 +52,7 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
+				simplify = false,
 				output = emasDir
 			}
 		end
@@ -81,6 +83,7 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
+				simplify = false,
 				output = emasDir
 			}
 		end
