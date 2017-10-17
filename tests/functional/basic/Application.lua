@@ -171,9 +171,9 @@ return {
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertNil(app.key)
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(app.simplify, true)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
+		unitTest:assert(app.simplify)
 
 		view = app.view.regions
 		unitTest:assertType(view, "View")
@@ -229,9 +229,9 @@ return {
 		unitTest:assertType(app, "Application")
 		unitTest:assertNotNil(app.key)
 		unitTest:assertEquals(app.key, "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA")
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
-		unitTest:assertEquals(app.simplify, true)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
+		unitTest:assert(app.simplify)
 
 		view = app.view.villages
 		unitTest:assertType(view, "View")
