@@ -106,6 +106,10 @@ body{
 	padding: 3px 6px;
 }
 
+.button-selected {
+	border: 1px solid #a0bfda!important;
+}
+
 @media (min-width: 768px){
 	.modal-dialog {
 		width: auto;
