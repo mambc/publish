@@ -171,3 +171,11 @@ input[type="checkbox"] {
 	right: 0;
 	margin: auto;
 }
+
+.padding-header {
+	padding:3px 15px!important;
+}
+
+.padding-body {
+	padding: 5px!important;
+}
