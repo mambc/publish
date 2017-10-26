@@ -121,6 +121,10 @@ input[type="checkbox"] {
 	transform:scale(1.4, 1.4);
 }
 
+.overflow-y {
+	overflow-y: auto;
+}
+
 #map{
 	position: absolute;
 	top: 50px;
@@ -166,4 +170,12 @@ input[type="checkbox"] {
 	left: 0;
 	right: 0;
 	margin: auto;
+}
+
+.padding-header {
+	padding:3px 15px!important;
+}
+
+.padding-body {
+	padding: 5px!important;
 }
