@@ -247,7 +247,71 @@ local function simplify(jsonPath, decimal, select)
 	return properties
 end
 
+local function setBoundsExtent(bounds, layer)
+	local box = layer:box()
+	if box.xMax > bounds.xMax then
+		bounds.xMax = box.xMax
+	end
+
+	if box.xMin < bounds.xMin then
+		bounds.xMin = box.xMin
+	end
+
+	if box.yMax > bounds.yMax then
+		bounds.yMax = box.yMax
+	end
+
+	if box.yMin < bounds.yMin then
+		bounds.yMin = box.yMin
+	end
+end
+
+local getZoomLevelFraction = (function()
+	local pi = math.pi
+	local function latRad(lat)
+		local sin = math.sin(lat * pi / 180)
+		local radX2 = math.log((1 + sin) / (1 - sin)) / 2
+		return math.max(math.min(radX2, pi), -pi) / 2
+	end
+
+	return function(bounds)
+		local ne = {lat = bounds.yMax, lng = bounds.xMax}
+		local sw = {lat = bounds.yMin, lng = bounds.xMin}
+
+		local latFraction = (latRad(ne.lat) - latRad(sw.lat)) / pi
+		local lngFraction = (ne.lng - sw.lng) / 360
+		return {
+			xTile = 256,
+			yTile = 256,
+			latFraction = latFraction,
+			longFraction = lngFraction
+		}
+	end
+end)()
+
+local function exportBounds(data)
+	local bounds = data.bounds
+
+	if not data.center then
+		data.center = {
+			lat = (bounds.yMin + bounds.yMax) / 2,
+			long = (bounds.xMin + bounds.xMax) / 2
+		}
+	end
+
+	if not data.zoom then
+		data.zoom = getZoomLevelFraction(bounds)
+	end
+
+	data.bounds = nil
+end
+
 local function exportLayers(data, sof)
+	if not (data.center and data.zoom) then
+		local huge = math.huge
+		data.bounds = {xMax = -huge, xMin = huge, yMax = -huge, yMin = huge}
+	end
+
 	gis.forEachLayer(data.project, function(layer, idx)
 		if sof and not sof(layer, idx) then
 			return
@@ -266,6 +330,10 @@ local function exportLayers(data, sof)
 			local mview = data.view[layer.name]
 			local properties = simplify(jsonPath, mview.decimal, mview.select)
 			mview.properties = properties
+		end
+
+		if data.bounds then
+			setBoundsExtent(data.bounds, layer)
 		end
 	end)
 end
@@ -788,6 +856,10 @@ local function createApplicationProjects(data, proj)
 		end
 	end)
 
+	if data.bounds then
+		exportBounds(data)
+	end
+
 	registerApplicationModel {
 		output = config,
 		model = {
@@ -975,6 +1047,14 @@ function Application(data)
 		mandatoryTableArgument(data.center, "lat", "number")
 		mandatoryTableArgument(data.center, "long", "number")
 		verifyUnnecessaryArguments(data.center, {"lat", "long"})
+
+		if data.center.lat < -90 or data.center.lat > 90 then
+			customError("Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
+		end
+
+		if data.center.long < -180 or data.center.long > 180 then
+			customError("Center 'long' must be a number >= -180 and <= 180, got '"..data.center.long.."'.")
+		end
 	end
 
 	if not belong(data.base, {"roadmap", "satellite", "hybrid", "terrain"}) then
@@ -995,14 +1075,6 @@ function Application(data)
 
 	if data.minZoom > data.maxZoom then
 		customError("Argument 'minZoom' ("..data.minZoom..") should be less than 'maxZoom' ("..data.maxZoom..").")
-	end
-
-	if data.center and (data.center.lat < -90 or data.center.lat > 90) then
-		customError("Center 'lat' must be a number >= -90 and <= 90, got '"..data.center.lat.."'.")
-	end
-
-	if data.center and (data.center.long < -180 or data.center.long > 180) then
-		customError("Center 'long' must be a number >= -180 and <= 180, got '"..data.center.long.."'.")
 	end
 
 	local icons = {
