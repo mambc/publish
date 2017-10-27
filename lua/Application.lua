@@ -266,7 +266,7 @@ local function setBoundsExtent(bounds, layer)
 	end
 end
 
-local getZoomLevelFraction = (function()
+local function getZoomLevelFraction(bounds)
 	local pi = math.pi
 	local function latRad(lat)
 		local sin = math.sin(lat * pi / 180)
@@ -274,20 +274,18 @@ local getZoomLevelFraction = (function()
 		return math.max(math.min(radX2, pi), -pi) / 2
 	end
 
-	return function(bounds)
-		local ne = {lat = bounds.yMax, lng = bounds.xMax}
-		local sw = {lat = bounds.yMin, lng = bounds.xMin}
+	local ne = {lat = bounds.yMax, lng = bounds.xMax}
+	local sw = {lat = bounds.yMin, lng = bounds.xMin}
 
-		local latFraction = (latRad(ne.lat) - latRad(sw.lat)) / pi
-		local lngFraction = (ne.lng - sw.lng) / 360
-		return {
-			xTile = 256,
-			yTile = 256,
-			latFraction = latFraction,
-			longFraction = lngFraction
-		}
-	end
-end)()
+	local latFraction = (latRad(ne.lat) - latRad(sw.lat)) / pi
+	local lngFraction = (ne.lng - sw.lng) / 360
+	return {
+		xTile = 256,
+		yTile = 256,
+		latFraction = latFraction,
+		longFraction = lngFraction
+	}
+end
 
 local function exportBounds(data)
 	local bounds = data.bounds
