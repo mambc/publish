@@ -154,6 +154,26 @@ data{
 	}
 }
 
+data{
+	file = "sp_municipalities.shp",
+	summary = "Sao Paulo municipalities.",
+	source = "IBGE",
+	attributes = {
+		id = "Unique identifier.",
+		nome = "Name of the city.",
+		pib = "Gross Domestic Product (GDP).",
+		populacao = "Population size.",
+		estado_id = "State unique identifier.",
+		regiao_id = "region unique identifier.",
+		sigla = "States of Brazil.",
+		uf = "States of Brazil.",
+		codigo_ibg = "IBGE identifier.",
+		id_2 = "Identifier.",
+		nome_2 = "Identifier.",
+		codigo_i_1 = "Identifier."
+	}
+}
+
 directory{
 	name = "arapiuns",
 	summary = "Photos of several riverine settlements.",

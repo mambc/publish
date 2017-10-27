@@ -371,14 +371,42 @@ local function loadViewValue(data, name, view)
 		for i = 0, #dset do
 			for k, v in pairs(dset[i]) do
 				if k == select and not set[v] then
+					if mview.slices and type(v) ~= "number" then
+						customError("Selected element should be number, got "..type(v).." in row "..(i + 1)..".")
+					end
+
 					set[v] = true
 				end
 			end
 		end
 
+		local huge = math.huge
+		local min = huge
+		local max = -huge
 		for v in pairs(set) do
+			if mview.slices then
+				if mview.min == null or mview.max == null then
+					if min > v then
+						min = v
+					elseif max < v then
+						max = v
+					end
+				end
+
+				if mview.min and mview.min > v then
+					customWarning("Value "..v.." out of range [min: "..mview.min.."] and will not be drawn.")
+				end
+
+				if mview.max and mview.max < v then
+					customWarning("Value "..v.." out of range [max: "..mview.max.."] and will not be drawn.")
+				end
+			end
+
 			table.insert(mview.value, v)
 		end
+
+		if mview.slices and mview.min == null then mview.min = min end
+		if mview.slices and mview.max == null then mview.max = max end
 	end
 
 	table.sort(mview.value)

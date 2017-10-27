@@ -294,6 +294,59 @@ return {
 		unitTest:assertError(error_func, "'tview' is an invalid extension for argument 'logo'. Valid extensions ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'].")
 
 		if emasDir:exists() then emasDir:delete() end
+
+		local municipalitiesProj = File("municipalities.tview")
+		municipalitiesProj:deleteIfExists()
+
+		local municipalitiesir = Directory("municipalities")
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+
+		local gis = getPackage("gis")
+		local proj = gis.Project{
+			title = "municipalities",
+			author = "Carneiro, H.",
+			file = municipalitiesProj,
+			clean = true,
+			municipalities = filePath("sp_municipalities.shp", "publish"),
+		}
+
+		warning_func = function()
+			 Application {
+				project = proj,
+				clean = true,
+				output = municipalitiesir,
+				simplify = false,
+				progress = false,
+				municipalities = View {
+					select = "pib",
+					color = "Spectral",
+					slices = 5,
+					min = 17148
+				}
+			 }
+		end
+		unitTest:assertWarning(warning_func, "Value 17147 out of range [min: 17148] and will not be drawn.")
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+
+		warning_func = function()
+			 Application {
+				project = proj,
+				clean = true,
+				output = municipalitiesir,
+				simplify = false,
+				progress = false,
+				municipalities = View {
+					select = "pib",
+					color = "Spectral",
+					slices = 5,
+					max = 443600101
+				}
+			 }
+		end
+		unitTest:assertWarning(warning_func, "Value 443600102 out of range [max: 443600101] and will not be drawn.")
+
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+		municipalitiesProj:deleteIfExists()
 	end
 
 }
