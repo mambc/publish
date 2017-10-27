@@ -46,8 +46,8 @@ return {
 		unitTest:assertEquals(app.base, "satellite")
 		unitTest:assertEquals(app.minZoom, 0)
 		unitTest:assertEquals(app.maxZoom, 20)
-		unitTest:assertNil(app.zoom)
-		unitTest:assertNil(app.center)
+		unitTest:assertNotNil(app.zoom)
+		unitTest:assertNotNil(app.center)
 
 		if emasDir:exists() then emasDir:delete() end
 
@@ -143,5 +143,107 @@ return {
 		unitTest:assertEquals(app.logo, logo:name())
 
 		if emasDir:exists() then emasDir:delete() end
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		local function zoom(mapPx, worldPx, fraction)
+			return math.floor(math.log(mapPx / worldPx / fraction) / math.log(2));
+		end
+
+		local function applicationZoom(application)
+			local mapResolution = {width = 1241.818115234375, height = 538.1818237304688}
+			local longZoom = zoom(mapResolution.width, application.zoom.xTile, application.zoom.longFraction)
+			local latZoom = zoom(mapResolution.height, application.zoom.yTile, application.zoom.latFraction)
+
+			return math.min(latZoom, longZoom, application.maxZoom)
+		end
+
+		app = Application{
+			project = filePath("caragua.tview", "publish"),
+			output = caraguaDir,
+			clean = true,
+			progress = false,
+			simplify = false,
+			use = View{
+				title = "Occupational Classes 2010",
+				select = "uso",
+				color = "RdPu"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertNotNil(app.center)
+		unitTest:assertNotNil(app.zoom)
+		unitTest:assertType(app.center, "table")
+		unitTest:assertType(app.zoom, "table")
+		unitTest:assertEquals(getn(app.center), 2)
+		unitTest:assertEquals(app.center.lat, -23.648856395349, 0.000001)
+		unitTest:assertEquals(app.center.long, -45.369608573718, 0.000001)
+		unitTest:assertEquals(getn(app.zoom), 4)
+		unitTest:assertEquals(app.zoom.latFraction, 0.00055808444572516, 0.000001)
+		unitTest:assertEquals(app.zoom.longFraction, 0.00053538327991453, 0.000001)
+		unitTest:assertEquals(app.zoom.xTile, 256)
+		unitTest:assertEquals(app.zoom.yTile, 256)
+		unitTest:assertEquals(applicationZoom(app), 11)
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		app = Application{
+			project = filePath("caragua.tview", "publish"),
+			output = caraguaDir,
+			clean = true,
+			progress = false,
+			simplify = false,
+			center = {lat = -23.648856395349, long = -45.489454594686094},
+			use = View{
+				title = "Occupational Classes 2010",
+				select = "uso",
+				color = "RdPu"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertNotNil(app.center)
+		unitTest:assertNotNil(app.zoom)
+		unitTest:assertType(app.center, "table")
+		unitTest:assertType(app.zoom, "table")
+		unitTest:assertEquals(getn(app.center), 2)
+		unitTest:assertEquals(app.center.lat, -23.648856395349)
+		unitTest:assertEquals(app.center.long, -45.489454594686094)
+		unitTest:assertEquals(getn(app.zoom), 4)
+		unitTest:assertEquals(app.zoom.latFraction, 0.00055808444572516, 0.000001)
+		unitTest:assertEquals(app.zoom.longFraction, 0.00053538327991453, 0.000001)
+		unitTest:assertEquals(app.zoom.xTile, 256)
+		unitTest:assertEquals(app.zoom.yTile, 256)
+		unitTest:assertEquals(applicationZoom(app), 11)
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		app = Application{
+			project = filePath("caragua.tview", "publish"),
+			output = caraguaDir,
+			clean = true,
+			progress = false,
+			simplify = false,
+			zoom = 12,
+			use = View{
+				title = "Occupational Classes 2010",
+				select = "uso",
+				color = "RdPu"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertNotNil(app.center)
+		unitTest:assertNotNil(app.zoom)
+		unitTest:assertType(app.center, "table")
+		unitTest:assertType(app.zoom, "number")
+		unitTest:assertEquals(getn(app.center), 2)
+		unitTest:assertEquals(app.center.lat, -23.648856395349, 0.000001)
+		unitTest:assertEquals(app.center.long, -45.369608573718, 0.000001)
+		unitTest:assertEquals(app.zoom, 12)
+
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }
