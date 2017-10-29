@@ -385,7 +385,7 @@ local function loadViewValue(data, name, view)
 		local max = -huge
 		for v in pairs(set) do
 			if mview.slices then
-				if mview.min == null or mview.max == null then
+				if mview.min == nil or mview.max == nil then
 					if min > v then
 						min = v
 					elseif max < v then
@@ -405,8 +405,8 @@ local function loadViewValue(data, name, view)
 			table.insert(mview.value, v)
 		end
 
-		if mview.slices and mview.min == null then mview.min = min end
-		if mview.slices and mview.max == null then mview.max = max end
+		if mview.slices and mview.min == nil then mview.min = min end
+		if mview.slices and mview.max == nil then mview.max = max end
 	end
 
 	table.sort(mview.value)
@@ -461,7 +461,7 @@ local function loadLayers(data)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
-		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group", "logo", "simplify"})
+		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo", "simplify"})
 
 	if nView > 0 then
 		if data.project then
