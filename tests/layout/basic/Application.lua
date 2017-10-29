@@ -92,13 +92,15 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			simplify = false
+			simplify = false,
+			fontSize = 10
 		}
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.template, "table")
 		unitTest:assertEquals(app.template.navbar, "#034871")
 		unitTest:assertEquals(app.template.title, "#F63B4C")
+		unitTest:assertEquals(app.fontSize, 10)
 
 		if emasDir:exists() then emasDir:delete() end
 
