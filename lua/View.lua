@@ -122,8 +122,10 @@ function View(data)
 
 	if data.slices then
 		mandatoryTableArgument(data, "color")
+		integerTableArgument(data, "slices")
+		positiveTableArgument(data, "slices")
 
-		if data.slices <= 1 then
+		if data.slices == 1 then
 			customError("Argument 'slices' ("..data.slices..") should be greater than one.")
 		end
 	end
