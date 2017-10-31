@@ -27,14 +27,17 @@ return {
 		local caragua = filePath("caragua.tview", "publish")
 		local arapiuns = filePath("arapiuns.tview", "publish")
 		local brazil = filePath("brazil.tview", "publish")
+		local sp = filePath("sp.tview", "publish")
 		local tmpdir = Directory{tmp = true}
 
 		os.execute("mv \""..caragua.."\" \""..tmpdir.."\"")
 		os.execute("mv \""..arapiuns.."\" \""..tmpdir.."\"")
 		os.execute("mv \""..brazil.."\" \""..tmpdir.."\"")
+		os.execute("mv \""..sp.."\" \""..tmpdir.."\"")
 		caragua = File(tmpdir..caragua:name())
 		arapiuns = File(tmpdir..arapiuns:name())
 		brazil = File(tmpdir..brazil:name())
+		sp = File(tmpdir..sp:name())
 
 		local emasDir = Directory("package-basic-app-onetview")
 		if emasDir:exists() then emasDir:delete() end
@@ -140,6 +143,7 @@ return {
 		os.execute("mv \""..caragua.."\" \""..packageInfo("publish").data.."\"")
 		os.execute("mv \""..arapiuns.."\" \""..packageInfo("publish").data.."\"")
 		os.execute("mv \""..brazil.."\" \""..packageInfo("publish").data.."\"")
+		os.execute("mv \""..sp.."\" \""..packageInfo("publish").data.."\"")
 		tmpdir:delete()
 	end
 }

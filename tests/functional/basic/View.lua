@@ -290,9 +290,6 @@ return {
 		}
 
 		unitTest:assertType(view, "View")
-		unitTest:assertNotNil(view.slices)
-		unitTest:assertNotNil(view.min)
-		unitTest:assertNotNil(view.max)
 		unitTest:assertEquals(view.slices, 2)
 		unitTest:assertEquals(view.min, 1)
 		unitTest:assertEquals(view.max, 3)
