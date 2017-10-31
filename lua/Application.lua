@@ -371,14 +371,42 @@ local function loadViewValue(data, name, view)
 		for i = 0, #dset do
 			for k, v in pairs(dset[i]) do
 				if k == select and not set[v] then
+					if mview.slices and type(v) ~= "number" then
+						customError("Selected element should be number, got "..type(v).." in row "..(i + 1)..".")
+					end
+
 					set[v] = true
 				end
 			end
 		end
 
+		local huge = math.huge
+		local min = huge
+		local max = -huge
 		for v in pairs(set) do
+			if mview.slices then
+				if mview.min == nil or mview.max == nil then
+					if min > v then
+						min = v
+					elseif max < v then
+						max = v
+					end
+				end
+
+				if mview.min and mview.min > v then
+					customWarning("Value "..v.." out of range [min: "..mview.min.."] and will not be drawn.")
+				end
+
+				if mview.max and mview.max < v then
+					customWarning("Value "..v.." out of range [max: "..mview.max.."] and will not be drawn.")
+				end
+			end
+
 			table.insert(mview.value, v)
 		end
+
+		if mview.slices and mview.min == nil then mview.min = min end
+		if mview.slices and mview.max == nil then mview.max = max end
 	end
 
 	table.sort(mview.value)
@@ -433,7 +461,7 @@ local function loadLayers(data)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
-		"border", "color", "description", "select", "value", "visible", "width", "order", "report", "images", "group", "logo", "simplify"})
+		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo", "simplify"})
 
 	if nView > 0 then
 		if data.project then

@@ -65,6 +65,9 @@ metaTableView_ = {
 -- @arg data.report An optional argument that describes what happens when the user clicks in a given object of the View. It can be a Report or a user-defined function that creates a report for each spatial object of that view.
 -- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
 -- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates.  Default value is 5.
+-- @arg data.max The maximum value of the attribute (used only for numbers).
+-- @arg data.min The minimum value of the attribute (used only for numbers).
+-- @arg data.slices Number of colors to be used for drawing. It must be an integer number greater than one.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -87,6 +90,9 @@ function View(data)
 	optionalTableArgument(data, "label", "table")
 	optionalTableArgument(data, "report", {"Report", "function"})
 	optionalTableArgument(data, "icon", {"string", "table"})
+	optionalTableArgument(data, "min", "number")
+	optionalTableArgument(data, "max", "number")
+	optionalTableArgument(data, "slices", "number")
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
@@ -95,7 +101,8 @@ function View(data)
 	defaultTableValue(data, "decimal", 5)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-		"value", "layer", "report", "transparency", "label", "icon", "download", "group", "decimal", "properties"})
+		"value", "layer", "report", "transparency", "label", "icon", "download", "group", "decimal", "properties",
+		"min", "max", "slices"})
 
 	if data.report and type(data.report) == "function" then
 		mandatoryTableArgument(data, "select")
@@ -113,15 +120,40 @@ function View(data)
 		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
 	end
 
+	if data.slices then
+		mandatoryTableArgument(data, "color")
+		integerTableArgument(data, "slices")
+		positiveTableArgument(data, "slices")
+
+		if data.slices == 1 then
+			customError("Argument 'slices' ("..data.slices..") should be greater than one.")
+		end
+	end
+
+	if data.min or data.max then
+		mandatoryTableArgument(data, "slices", "number")
+	end
+
+	if data.min and data.max and (data.min > data.max) then
+		customError("Argument 'min' ("..data.min..") should be less than 'max' ("..data.max..").")
+	end
+
 	if data.color then
 		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-			"value", "layer", "report", "transparency", "label", "download", "group", "decimal", "properties"})
+			"value", "layer", "report", "transparency", "label", "download", "group", "decimal", "properties",
+			"min", "max", "slices"})
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
 			mandatoryTableArgument(data, "select", "string")
 
-			local classes = #data.value
+			local classes
+			if data.slices and data.min and data.max then
+				classes = data.slices
+			else
+				classes = #data.value
+			end
+
 			if classes == 0 then
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
@@ -139,8 +171,15 @@ function View(data)
 			end
 
 			local colors = {}
-			for i = 1, classes do
-				colors[tostring(data.value[i])] = mcolor[i]
+			if data.slices and data.min and data.max then
+				local step = (data.max - data.min) / (data.slices - 1)
+				for i = 1, classes do
+					colors[tostring(data.min + step * (i - 1))] = mcolor[i]
+				end
+			else
+				for i = 1, classes do
+					colors[tostring(data.value[i])] = mcolor[i]
+				end
 			end
 
 			local label = {}

@@ -245,5 +245,133 @@ return {
 		unitTest:assertEquals(app.zoom, 12)
 
 		if caraguaDir:exists() then caraguaDir:delete() end
+
+		local municipalitiesProj = File("municipalities.tview")
+		municipalitiesProj:deleteIfExists()
+
+		local municipalitiesir = Directory("municipalities")
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+
+		local gis = getPackage("gis")
+		local proj = gis.Project{
+			title = "municipalities",
+			author = "Carneiro, H.",
+			file = municipalitiesProj,
+			clean = true,
+			municipalities = filePath("sp_municipalities.shp", "publish"),
+		}
+
+		app = Application {
+			project = proj,
+			clean = true,
+			output = municipalitiesir,
+			simplify = false,
+			progress = false,
+			municipalities = View {
+				select = "pib",
+				color = "Spectral",
+				slices = 5
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		local view = app.view.municipalities
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.select, "pib")
+		unitTest:assertEquals(view.slices, 5)
+		unitTest:assertEquals(view.min, 17147)
+		unitTest:assertEquals(view.max, 443600102)
+
+		unitTest:assertType(view.color, "table")
+		unitTest:assertEquals(#view.value, 740)
+
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+
+		app = Application {
+			project = proj,
+			clean = true,
+			output = municipalitiesir,
+			simplify = false,
+			progress = false,
+			municipalities = View {
+				select = "pib",
+				color = "Spectral",
+				slices = 5,
+				min = 0,
+				max = 453600102
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.municipalities
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.select, "pib")
+		unitTest:assertEquals(view.slices, 5)
+		unitTest:assertEquals(view.min, 0)
+		unitTest:assertEquals(view.max, 453600102)
+
+		unitTest:assertType(view.color, "table")
+		unitTest:assertEquals(#view.value, 740)
+
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+
+		app = Application {
+			project = proj,
+			clean = true,
+			output = municipalitiesir,
+			simplify = false,
+			progress = false,
+			municipalities = View {
+				select = "pib",
+				color = "Spectral",
+				slices = 5,
+				min = 0
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.municipalities
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.select, "pib")
+		unitTest:assertEquals(view.slices, 5)
+		unitTest:assertEquals(view.min, 0)
+		unitTest:assertEquals(view.max, 443600102)
+
+		unitTest:assertType(view.color, "table")
+		unitTest:assertEquals(#view.value, 740)
+
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+
+		app = Application {
+			project = proj,
+			clean = true,
+			output = municipalitiesir,
+			simplify = false,
+			progress = false,
+			municipalities = View {
+				select = "pib",
+				color = "Spectral",
+				slices = 5,
+				max = 453600102
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.municipalities
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.select, "pib")
+		unitTest:assertEquals(view.slices, 5)
+		unitTest:assertEquals(view.min, 17147)
+		unitTest:assertEquals(view.max, 453600102)
+
+		unitTest:assertType(view.color, "table")
+		unitTest:assertEquals(#view.value, 740)
+
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+		municipalitiesProj:deleteIfExists()
 	end
 }

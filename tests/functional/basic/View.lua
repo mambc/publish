@@ -279,6 +279,24 @@ return {
 		unitTest:assertEquals(view.icon[2], "forest")
 		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
 		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
+
+		view = View {
+			select = "pib",
+			color = "PuBuGn",
+			slices = 2,
+			min = 1,
+			max = 3,
+			value = {0, 1, 2, 3}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.slices, 2)
+		unitTest:assertEquals(view.min, 1)
+		unitTest:assertEquals(view.max, 3)
+
+		unitTest:assertNotNil(view.color)
+		unitTest:assertEquals(view.color["1.0"], "rgba(236, 226, 240, 1)")
+		unitTest:assertEquals(view.color["3.0"], "rgba(28, 144, 153, 1)")
 	end,
 	__tostring = function(unitTest)
 		local view = View{

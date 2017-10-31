@@ -501,5 +501,79 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "Argument 'select' must be a table with size equals to 2, got 1.")
+
+		error_func = function()
+			View{
+				slices = "a",
+				color = "Spectral"
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("slices", "number", "a"))
+
+		error_func = function()
+			View{
+				slices = 5,
+				min = "a",
+				color = "Spectral"
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("min", "number", "a"))
+
+		error_func = function()
+			View{
+				slices = 5,
+				max = "a",
+				color = "Spectral"
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("max", "number", "a"))
+
+		error_func = function()
+			View{
+				min = 1
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("slices"))
+
+		error_func = function()
+			View{
+				max = 1
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("slices"))
+
+		error_func = function()
+			View{
+				slices = 5,
+				min = 2,
+				max = 1,
+				color = "Spectral"
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'min' (2) should be less than 'max' (1).")
+
+		error_func = function()
+			View{
+				slices = 1,
+				color = "Spectral"
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'slices' (1) should be greater than one.")
+
+		error_func = function()
+				View{
+					slices = -2,
+					color = "Spectral"
+				}
+			end
+			unitTest:assertError(error_func, positiveArgumentMsg("slices", -2))
+
+		error_func = function()
+			View{
+				slices = 2.1,
+				color = "Spectral"
+			}
+		end
+		unitTest:assertError(error_func, integerArgumentMsg("slices", 2.1))
 	end
 }
