@@ -29,6 +29,7 @@ import("publish")
 
 Application {
 	project = filePath("sp.tview", "publish"),
+	base = "roadmap",
 	output = "SPWebMap",
 	clean = true,
 	simplify = false,
