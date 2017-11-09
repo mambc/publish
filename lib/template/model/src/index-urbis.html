@@ -8,6 +8,29 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 		<link rel="stylesheet" href="./css/publish.css"/>
+		<link rel="stylesheet" href="./css/jquery-ui.css"/>
+		<script type="text/javascript" src="geoambientev2.js"></script>
+		
+		<style type="text/css">
+			#slider label {
+				position: absolute;
+				width: 20x;
+				margin-left: -10px;
+				text-align: center;
+				margin-top: 20px;
+			}
+	
+			/* below is not necessary, just for style */
+			#slider {
+				width: 50%;
+				margin: 2em auto;
+				
+			}
+	
+			.ui-widget {
+				font-size: 0.6em!important;
+			}
+		</style>	
 	</head>
 	<body>
 		<div class="container">
@@ -41,12 +64,18 @@
 								</div>
 								<div id="panel-element-Border" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
-											<button id="limit" type="button" class="list-group-item">
-												<input name="limit" type="checkbox"> Limit
-											</button>
-											<button id="regions" type="button" class="list-group-item">
-												<input name="regions" type="checkbox"> Regions
-											</button>
+										<button id="limit" type="button" class="list-group-item">
+											<input name="limit" type="checkbox"> Limit
+										</button>
+										<button id="regions" type="button" class="list-group-item">
+											<input name="regions" type="checkbox"> Regions
+										</button>
+										<button id="ucEstaduais" type="button" class="list-group-item">
+											<input name="ucEstaduais" type="checkbox"> UC Estadual
+										</button>
+										<button id="ucFederais" type="button" class="list-group-item">
+											<input name="ucFederais" type="checkbox"> UC Federal
+										</button>
 									</div>
 								</div>
 							</div>
@@ -56,9 +85,9 @@
 								</div>
 								<div id="panel-element-OccupationalClasses" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
-											<button id="use" type="button" class="list-group-item">
-												<input name="use" type="checkbox"> Occupational Classes 2010
-											</button>
+										<button id="use" type="button" class="list-group-item">
+											<input name="use" type="checkbox"> Occupational Classes 2010
+										</button>
 									</div>
 								</div>
 							</div>
@@ -109,6 +138,17 @@
 							<h4 class="panel-title">
 								<i class="fa fa-download"></i><a id="download-title"> Download</a>
 							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-5 sidebar" style="margin-top: 614px;margin-left: 177px;">
+					<div class="panel panel-default">
+						<div id="panel-slider" style="height: 61px;">
+							<div id="slider">
+								<span class="glyphicon glyphicon-arrow-down" id="spanSelectedYear" style="left:99%;top:-17px;"></span>
+        					</div>
 						</div>
 					</div>
 				</div>
@@ -364,9 +404,10 @@
 				</div>
 			</div>
 		</div>
-		
+			
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
-		<script type="text/javascript" src="./assets/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="./assets/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="./assets/jquery-ui.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script type="text/javascript" src="./config-urbis.js"></script>
 		<script type="text/javascript" src="./js/publish.js"></script>
