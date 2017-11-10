@@ -22,13 +22,24 @@
 	
 			/* below is not necessary, just for style */
 			#slider {
-				width: 50%;
+				width: 75%;
 				margin: 2em auto;
 				
 			}
 	
 			.ui-widget {
 				font-size: 0.6em!important;
+			}
+			
+			.bottom-align-text {
+			    position: absolute;
+			    bottom: 0;
+			    margin-left: 30%;
+			  }
+			  
+			.position {
+				margin-left: -13%;
+				margin-top: -3px;
 			}
 		</style>	
 	</head>
@@ -70,11 +81,14 @@
 										<button id="regions" type="button" class="list-group-item">
 											<input name="regions" type="checkbox"> Regions
 										</button>
+										<button id="ucFederaisShape" type="button" class="list-group-item">
+											<input name="ucFederaisShape" type="checkbox"> UC Federais Shape
+										</button>
 										<button id="ucEstaduais" type="button" class="list-group-item">
-											<input name="ucEstaduais" type="checkbox"> UC Estadual
+											<input name="ucEstaduais" type="checkbox"> UC Estadual WMS Snapshot
 										</button>
 										<button id="ucFederais" type="button" class="list-group-item">
-											<input name="ucFederais" type="checkbox"> UC Federal
+											<input name="ucFederais" type="checkbox"> UC Federal WMS Snapshot
 										</button>
 									</div>
 								</div>
@@ -142,14 +156,15 @@
 					</div>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-5 sidebar" style="margin-top: 614px;margin-left: 177px;">
-					<div class="panel panel-default">
-						<div id="panel-slider" style="height: 61px;">
-							<div id="slider">
-								<span class="glyphicon glyphicon-arrow-down" id="spanSelectedYear" style="left:99%;top:-17px;"></span>
-        					</div>
-						</div>
+		</div>
+		<div class="row">
+			<div class="col-md-5 sidebar bottom-align-text">
+				<div class="panel panel-default">
+					<div id="panel-slider" style="height: 61px;">
+						<div id="slider">
+							<span class="glyphicon glyphicon-arrow-down" id="spanSelectedYear" style="left:99%;top:-17px;"></span>
+							<button href="#" class="position" id="play"><span class="glyphicon glyphicon-play"></span></button>
+       					</div>
 					</div>
 				</div>
 			</div>
