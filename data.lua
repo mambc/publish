@@ -179,3 +179,21 @@ directory{
 	source = "Google and Wikipedia",
 }
 
+data{
+	file = "caragua_classes2010_regioes.tif",
+	summary = "Social Classe 2010 Real.",
+	source = "Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+	image = "urbis_2010_real.PNG",
+	attributes = {
+		["0"] = "Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1)."
+	}
+}
+
+data{
+	file = "vegtype_2000_5880.tif",
+	summary = "Vegetation Type 2000.",
+	source = "Inland, INPE.",
+	attributes = {
+		["0"] = "Vegetation classes."
+	}
+}
