@@ -24,10 +24,10 @@
 
 return {
 	Application = function(unitTest)
-		local emasDir = Directory("project-alternative-app")
+		local appAlternative = Directory("project-alternative-app")
 		local proj = File("myproject.tview")
 
-		if emasDir:exists() then emasDir:delete() end
+		if appAlternative:exists() then appAlternative:delete() end
 		proj:deleteIfExists()
 
 		local error_func = function()
@@ -39,7 +39,7 @@ return {
 				value = {0, 1, 2},
 				progress = false,
 				simplify = false,
-				output = emasDir
+				output = appAlternative
 			}
 		end
 		unitTest:assertError(error_func, "Project '"..proj.."' was not found.")
@@ -53,42 +53,11 @@ return {
 				value = {0, 1, 2},
 				progress = false,
 				simplify = false,
-				output = emasDir
+				output = appAlternative
 			}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("project", "Project", 1))
 
-		local gis = getPackage("gis")
-
-		local project = gis.Project{
-			file = "emas.tview",
-			clean = true,
-			firebreak = filePath("emas-firebreak.shp", "gis"),
-			river = filePath("emas-river.shp", "gis"),
-			limit = filePath("emas-limit.shp", "gis")
-		}
-
-		gis.Layer{
-			project = project,
-			name = "cover",
-			file = filePath("emas-accumulation.tif", "gis"),
-			epsg = 29192
-		}
-
-		error_func = function()
-			Application{
-				project = "emas.tview",
-				clean = true,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				progress = false,
-				simplify = false,
-				output = emasDir
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
-		if emasDir:exists() then emasDir:delete() end
-		File("emas.tview"):deleteIfExists()
+		if appAlternative:exists() then appAlternative:delete() end
 	end
 }

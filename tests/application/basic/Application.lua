@@ -355,6 +355,132 @@ return {
 		--assertFiles(app.images, appImages)
 
 		if caraguaDir:exists() then caraguaDir:delete() end
+		local projRaster = File("raster.tview")
+		projRaster:deleteIfExists()
+
+		local gis = getPackage("gis")
+		local proj = gis.Project{
+			title = "Urbis",
+			author = "Carneiro, H.",
+			file = projRaster,
+			clean = true,
+			real = filePath("caragua_classes2010_regioes.tif", "publish")
+		}
+
+		app = Application{
+			project = proj,
+			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+			output = caraguaDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			real = View {
+				title = "Social Classes 2010",
+				description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+						.. "categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+				color = "Reds",
+				slices = 3
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.real
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+
+		unitTest:assertEquals(view.slices, 3)
+		unitTest:assertEquals(getn(view.color), 3)
+		unitTest:assertEquals(view.color["1.0"], "rgba(254, 224, 210, 1)")
+		unitTest:assertEquals(view.color["2.0"], "rgba(252, 146, 114, 1)")
+		unitTest:assertEquals(view.color["3.0"], "rgba(222, 45, 38, 1)")
+
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["real.geojson"] = true
+		}
+
+		assertFiles(app.output, appRoot)
+
+		projRaster:deleteIfExists()
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		local vegDir = Directory("raster-with-no-srid")
+		proj = gis.Project{
+			title = "Vegtype",
+			author = "Carneiro, H.",
+			file = projRaster,
+			clean = true,
+			vegtype = filePath("vegtype_2000_5880.tif", "publish")
+		}
+
+		app = Application{
+			project = proj,
+			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+			output = vegDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			vegtype = View {
+				title = "Vegetation Type 2000",
+				description = "Vegetation type Inland.",
+				color = "BuGn"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.vegtype
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+
+		unitTest:assertEquals(getn(view.color), 7)
+
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["vegtype.geojson"] = true
+		}
+
+		assertFiles(app.output, appRoot)
+
+		projRaster:deleteIfExists()
+		if vegDir:exists() then vegDir:delete() end
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		app = Application{
+			project = filePath("caragua.tview", "publish"),
+			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+			output = caraguaDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			limit = View{
+				description = "Bounding box of Caraguatatuba.",
+				color = "goldenrod"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.limit
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "string")
+		unitTest:assertEquals(view.color, "rgba(218, 165, 32, 1)")
+
+		if caraguaDir:exists() then caraguaDir:delete() end
 
 		local arapiunsDir = Directory("ArapiunsWebMap")
 		if arapiunsDir:exists() then arapiunsDir:delete() end

@@ -28,40 +28,6 @@ return {
 		if emasDir:exists() then emasDir:delete() end
 
 		local gis = getPackage("gis")
-
-		local project = gis.Project{
-			file = "emas.tview",
-			clean = true,
-			firebreak = filePath("emas-firebreak.shp", "gis"),
-			river = filePath("emas-river.shp", "gis"),
-			limit = filePath("emas-limit.shp", "gis")
-		}
-
-		gis.Layer{
-			project = project,
-			name = "cover",
-			file = filePath("emas-accumulation.tif", "gis"),
-			epsg = 29192
-		}
-
-		local error_func = function()
-			Application{
-				title = "Emas",
-				description = "Creates a database that can be used by the example fire-spread of base package.",
-				zoom = 14,
-				center = {lat = -18.106389, long = -52.927778},
-				project = "emas.tview",
-				clean = true,
-				simplify = false,
-				progress = false,
-				output = emasDir,
-				cover = View{
-					color = "green"
-				}
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
-
 		gis.Project{
 			file = "emas.tview",
 			clean = true,
@@ -70,7 +36,7 @@ return {
 			limit = filePath("emas-limit.shp", "gis")
 		}
 
-		error_func = function()
+		local error_func = function()
 			Application{
 				title = "Emas",
 				description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -241,21 +207,6 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
-
-		if emasDir:exists() then emasDir:delete() end
-
-		error_func = function()
-			Application{
-				title = "app",
-				progress = false,
-				simplify = false,
-				output = emasDir,
-				accumulation = View{
-					layer = filePath("emas-accumulation.tif", "gis"),
-				}
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'accumulation'.")
 
 		if emasDir:exists() then emasDir:delete() end
 
