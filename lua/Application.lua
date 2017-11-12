@@ -521,7 +521,8 @@ local function loadLayers(data)
 
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
-		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo", "simplify"})
+		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
+		"simplify", "fontSize"})
 
 	if nView > 0 then
 		if data.project then
@@ -935,7 +936,8 @@ local function createApplicationProjects(data, proj)
 			legend = data.legend,
 			data = mview,
 			path = path,
-			group = data.group
+			group = data.group,
+			fontSize = data.fontSize
 		}
 	}
 
@@ -1060,6 +1062,7 @@ metaTableApplication_ = {
 -- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
 -- @arg data.template An optional named table with two string elements called navbar and
 -- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
+-- @arg data.fontSize An optional number with the font size.
 -- @usage import("publish")
 --
 -- local emas = filePath("emas.tview", "publish")
@@ -1090,6 +1093,7 @@ function Application(data)
 	optionalTableArgument(data, "key", "string")
 	optionalTableArgument(data, "template", "table")
 	optionalTableArgument(data, "logo", "string")
+	optionalTableArgument(data, "fontSize", "number")
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "progress", true)
@@ -1201,6 +1205,10 @@ function Application(data)
 		end
 	else
 		data.template = {navbar = "#1ea789", title = "white"}
+	end
+
+	if data.fontSize and data.fontSize <= 0 then
+		customError("Argument 'fontSize' must be a number greater than 0, got "..data.fontSize..".")
 	end
 
 	if not data.progress then

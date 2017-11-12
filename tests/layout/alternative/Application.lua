@@ -270,6 +270,28 @@ return {
 		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got 256.")
 
 		data.template = nil
+		data.fontSize = "a"
+		error_func = function()
+			Application(clone(data))
+		end
+
+		unitTest:assertError(error_func, incompatibleTypeMsg("fontSize", "number", "a"))
+
+		data.fontSize = 0
+		error_func = function()
+			Application(clone(data))
+		end
+
+		unitTest:assertError(error_func, "Argument 'fontSize' must be a number greater than 0, got 0.")
+
+		data.fontSize = -1
+		error_func = function()
+			Application(clone(data))
+		end
+
+		unitTest:assertError(error_func, "Argument 'fontSize' must be a number greater than 0, got -1.")
+
+		data.fontSize = nil
 		data.logo = 1
 		error_func = function()
 			Application(clone(data))
