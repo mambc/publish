@@ -318,10 +318,6 @@ local function layerPostProcessing(data, layer, jsonPath, isRaster)
 	local mview = data.view[layer.name]
 	if isRaster then
 		mview.select = "value"
---		if mview.colorOriginal then
---			mview.color = mview.colorOriginal
---			mview.colorOriginal = nil
---		end
 	end
 
 	if data.simplify then

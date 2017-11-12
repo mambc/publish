@@ -235,12 +235,6 @@ function View(data)
 			end
 
 			if not (isColorBrewer or isTableColors) then
---				if type(data.color) == "table" then
---					data.colorOriginal = clone(data.color) -- TODO TerraME/publish#160
---				else
---					data.colorOriginal = data.color -- TODO TerraME/publish#160
---				end
-
 				data.color = color{color = data.color, alpha = realTransparency}
 			end
 		end
