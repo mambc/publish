@@ -48,7 +48,7 @@
 			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: #1ea789;" role="navigation">
 				<div class="container-fluid">
 					<div class="navbar-header">
-						<a class="navbar-brand" style="color: white;">URBIS-Caraguá</a>
+						<a class="navbar-brand custom-font-app-title" style="color: white;">URBIS-Caraguá</a>
 					</div>
 					
 				</div>
@@ -63,7 +63,7 @@
 				<div class="panel-group sidebar-body" id="accordion-left">
 					<div class="panel panel-default">
 						<div class="panel-heading" >
-							<h4 class="panel-title">
+							<h4 class="panel-title custom-font-subtitle">
 								<i class="fa fa-list-alt"></i><a data-toggle="collapse" href="#layers"> Layers</a>
 								<span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span>
 							</h4>
@@ -71,23 +71,23 @@
 						<div id="layers" class="panel-collapse collapse in overflow-y">
 							<div class="panel" style="border-radius: 0 !important;">
 								<div class="panel-heading padding-header">
-									<a id="group-Border" class="panel-title" data-toggle="collapse" href="#panel-element-Border"> Border</a>
+									<a id="group-Border" class="panel-title custom-font-group-title" data-toggle="collapse" href="#panel-element-Border"> Border</a>
 								</div>
 								<div id="panel-element-Border" class="panel-collapse collapse in">
-									<div class="panel-body list-group padding-body">
-										<button id="limit" type="button" class="list-group-item">
+									<div class="panel-body list-group padding-body ">
+										<button id="limit" type="button" class="list-group-item custom-font-layer">
 											<input name="limit" type="checkbox"> Limit
 										</button>
-										<button id="regions" type="button" class="list-group-item">
+										<button id="regions" type="button" class="list-group-item custom-font-layer">
 											<input name="regions" type="checkbox"> Regions
 										</button>
-										<button id="ucFederaisShape" type="button" class="list-group-item">
+										<button id="ucFederaisShape" type="button" class="list-group-item custom-font-layer">
 											<input name="ucFederaisShape" type="checkbox"> UC Federais Shape
 										</button>
-										<button id="ucEstaduais" type="button" class="list-group-item">
+										<button id="ucEstaduais" type="button" class="list-group-item custom-font-layer">
 											<input name="ucEstaduais" type="checkbox"> UC Estadual WMS Snapshot
 										</button>
-										<button id="ucFederais" type="button" class="list-group-item">
+										<button id="ucFederais" type="button" class="list-group-item custom-font-layer">
 											<input name="ucFederais" type="checkbox"> UC Federal WMS Snapshot
 										</button>
 									</div>
@@ -95,11 +95,11 @@
 							</div>
 							<div class="panel" style="border-radius: 0 !important;">
 								<div class="panel-heading padding-header">
-									<a id="group-OccupationalClasses" class="panel-title" data-toggle="collapse" href="#panel-element-OccupationalClasses"> Occupational Classes</a>
+									<a id="group-OccupationalClasses" class="panel-title custom-font-group-title" data-toggle="collapse" href="#panel-element-OccupationalClasses"> Occupational Classes</a>
 								</div>
 								<div id="panel-element-OccupationalClasses" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
-										<button id="use" type="button" class="list-group-item">
+										<button id="use" type="button" class="list-group-item custom-font-layer">
 											<input name="use" type="checkbox"> Occupational Classes 2010
 										</button>
 									</div>
@@ -107,14 +107,14 @@
 							</div>
 							<div class="panel" style="border-radius: 0 !important;">
 								<div class="panel-heading padding-header" >
-									<a id="group-SocialClasses" class="panel-title" data-toggle="collapse" href="#panel-element-SocialClasses"> Social Classes</a>
+									<a id="group-SocialClasses" class="panel-title custom-font-group-title" data-toggle="collapse" href="#panel-element-SocialClasses"> Social Classes</a>
 								</div>
 								<div id="panel-element-SocialClasses" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
-											<button id="baseline" type="button" class="list-group-item">
+											<button id="baseline" type="button" class="list-group-item custom-font-layer">
 												<input name="baseline" type="checkbox"> Social Classes 2025
 											</button>
-											<button id="real" type="button" class="list-group-item">
+											<button id="real" type="button" class="list-group-item custom-font-layer">
 												<input name="real" type="checkbox"> Social Classes 2010
 											</button>
 									</div>
@@ -124,14 +124,14 @@
 					</div>
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h4 class="panel-title">
+							<h4 class="panel-title custom-font-subtitle">
 								<i class="fa fa-list-alt"></i><a id="description-title" data-toggle="collapse" href="#properties"> Description</a>
 							</h4>
 						</div>
 						<div id="properties" class="panel-collapse collapse overflow-y">
 							<div class="panel-body padding-body">
-								<p id="layer-description"></p>
-								<button id="more" type="button" class="btn btn-default" style="display:none;">
+								<p class="custom-font-body" id="layer-description"></p>
+								<button id="more" type="button" class="btn btn-default custom-font-more" style="display:none;">
 									More
 								</button>
 							</div>
@@ -139,17 +139,17 @@
 					</div>
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h4 class="panel-title">
+							<h4 class="panel-title custom-font-subtitle">
 								<i class="fa fa-list-alt"></i><a id="legend-title" data-toggle="collapse" href="#legends"> Legend</a>
 							</h4>
 						</div>
 						<div id="legends" class="panel-collapse collapse overflow-y">
-							<div id="legend" class="panel-body padding-body"></div>
+							<div id="legend" class="panel-body padding-body custom-font-legend"></div>
 						</div>
 					</div>
 					<div id="panel-download" class="panel panel-default">
 						<div class="panel-heading" style="height: 29px;">
-							<h4 class="panel-title">
+							<h4 class="panel-title custom-font-subtitle">
 								<i class="fa fa-download"></i><a id="download-title"> Download</a>
 							</h4>
 						</div>
@@ -176,17 +176,17 @@
 		<div id="loader-message"><h4 id="loader-message-text"></h4></div>
 		<footer class="navbar-default navbar-fixed-bottom">
 			<div id="footer" class="container-fluid">
-				<p>Powered by package <a href="https://github.com/TerraME/publish" target="_blank">publish</a> of <a href="http://www.terrame.org" target="_blank">TerraME</a>.</p>
+				<P class="custom-font-body">Powered by package <a href="https://github.com/TerraME/publish" target="_blank">publish</a> of <a href="http://www.terrame.org" target="_blank">TerraME</a>.</p>
 			</div>
 		</footer>
 		<div class="modal fade" id="modal-app-description" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title">URBIS-Caraguá</h4>
+						<h4 class="modal-title custom-font-subtitle">URBIS-Caraguá</h4>
 					</div>
 					<div class="modal-body">
-						<p>The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.</p>
+						<p class="custom-font-body">The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
@@ -199,35 +199,35 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-real"> URBIS-Caraguá</h2>
-						<p class="text-muted">Feitosa et. al (2014)</p>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-real"> URBIS-Caraguá</h2>
+						<p class="text-muted custom-font-body">Feitosa et. al (2014)</p>
 					</div>
 					<div class="modal-body" id="modal-report-text-real">
-						<h4><strong>Social Classes 2010</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
 						
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
+						<P class="custom-font-body">This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
 						
 						<hr>
-						<h4><strong>Occupational Classes (IBGE, 2010)</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Occupational Classes (IBGE, 2010)</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
 						
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
+						<P class="custom-font-body">The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
 						
 						<hr>
-						<h4><strong>Social Classes 2025</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2025</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
 						
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
+						<P class="custom-font-body">The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
 						
 					</div>
 					<div class="modal-footer">
@@ -241,35 +241,35 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-limit"> URBIS-Caraguá</h2>
-						<p class="text-muted">Feitosa et. al (2014)</p>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-limit"> URBIS-Caraguá</h2>
+						<p class="text-muted custom-font-body">Feitosa et. al (2014)</p>
 					</div>
 					<div class="modal-body" id="modal-report-text-limit">
-						<h4><strong>Social Classes 2010</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
 						
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
+						<P class="custom-font-body">This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
 						
 						<hr>
-						<h4><strong>Occupational Classes (IBGE, 2010)</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Occupational Classes (IBGE, 2010)</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
 						
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
+						<P class="custom-font-body">The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
 						
 						<hr>
-						<h4><strong>Social Classes 2025</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2025</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
 						
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
+						<P class="custom-font-body">The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
 						
 					</div>
 					<div class="modal-footer">
@@ -283,35 +283,35 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-use"> URBIS-Caraguá</h2>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-use"> URBIS-Caraguá</h2>
 						<p class="text-muted">Feitosa et. al (2014)</p>
 					</div>
 					<div class="modal-body" id="modal-report-text-use">
-						<h4><strong>Social Classes 2010</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
 						
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
+						<P class="custom-font-body">This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
 						
 						<hr>
-						<h4><strong>Occupational Classes (IBGE, 2010)</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Occupational Classes (IBGE, 2010)</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
 						
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
+						<P class="custom-font-body">The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
 						
 						<hr>
-						<h4><strong>Social Classes 2025</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2025</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
 						
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
+						<P class="custom-font-body">The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
 						
 					</div>
 					<div class="modal-footer">
@@ -325,35 +325,35 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-regions"> URBIS-Caraguá</h2>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-regions"> URBIS-Caraguá</h2>
 						<p class="text-muted">Feitosa et. al (2014)</p>
 					</div>
 					<div class="modal-body" id="modal-report-text-regions">
-						<h4><strong>Social Classes 2010</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
 						
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
+						<P class="custom-font-body">This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
 						
 						<hr>
-						<h4><strong>Occupational Classes (IBGE, 2010)</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Occupational Classes (IBGE, 2010)</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
 						
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
+						<P class="custom-font-body">The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
 						
 						<hr>
-						<h4><strong>Social Classes 2025</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2025</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
 						
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
+						<P class="custom-font-body">The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
 						
 					</div>
 					<div class="modal-footer">
@@ -367,35 +367,35 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title" id="modal-report-label-baseline"> URBIS-Caraguá</h2>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-baseline"> URBIS-Caraguá</h2>
 						<p class="text-muted">Feitosa et. al (2014)</p>
 					</div>
 					<div class="modal-body" id="modal-report-text-baseline">
-						<h4><strong>Social Classes 2010</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_2010_real.PNG"/>
 						<br/>
 						
-						<P>This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
+						<P class="custom-font-body">This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</P>
 						
 						<hr>
-						<h4><strong>Occupational Classes (IBGE, 2010)</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Occupational Classes (IBGE, 2010)</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_uso_2010.PNG"/>
 						<br/>
 						
-						<P>The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
+						<P class="custom-font-body">The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</P>
 						
 						<hr>
-						<h4><strong>Social Classes 2025</strong></h4>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2025</strong></h4>
 						<br/>
 						
 						<img class="report-img" src="./images/urbis_simulation_2025_baseline.PNG"/>
 						<br/>
 						
-						<P>The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
+						<P class="custom-font-body">The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</P>
 						
 					</div>
 					<div class="modal-footer">
@@ -408,10 +408,10 @@
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 id="modal-title-description"></h4>
+						<h4 class="modal-title custom-font-subtitle" id="modal-title-description"></h4>
 					</div>
 					<div class="modal-body">
-						<p id="info-description"></p>
+						<p class="custom-font-body" id="info-description"></p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
