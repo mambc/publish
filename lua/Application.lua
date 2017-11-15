@@ -42,7 +42,8 @@ local SourceTypeMapper = {
 	nc = "GDAL",
 	asc = "GDAL",
 	postgis = "POSTGIS",
-	access = "ADO"
+	access = "ADO",
+	wms = "WMS"
 }
 
 local printNormal = print
@@ -130,10 +131,10 @@ local function createDirectoryStructure(data)
 		table.insert(depends, data.logo)
 	end
 
-	forEachElement(depends, function(_, file)
+	forEachElement(depends, function(_, file, etype)
 		printNormal("Copying dependency '"..file.."'")
 		local filepath = templateDir..file
-		if type(file) == "File" then
+		if etype == "File" then
 			filepath = file
 		end
 
@@ -146,7 +147,7 @@ local function createDirectoryStructure(data)
 end
 
 local function isValidSource(source)
-	return SourceTypeMapper[source] == "OGR" or SourceTypeMapper[source] == "POSTGIS"
+	return SourceTypeMapper[source] == "OGR" or SourceTypeMapper[source] == "POSTGIS" or SourceTypeMapper[source] == "WMS"
 end
 
 local function getReducedNames(properties, select)
@@ -304,6 +305,38 @@ local function exportBounds(data)
 	data.bounds = nil
 end
 
+local function exportWMSLayer(data, layer)
+	local view = data.view[layer.name]
+	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
+		"label", "icon", "download", "group", "decimal", "properties"})
+
+	mandatoryTableArgument(view, "label", "table")
+
+	local defaultEPSG = 4326
+	if layer.epsg ~= defaultEPSG then
+		customError("Layer '"..layer.name.."' must be projected in EPSG:"..defaultEPSG..", got 'EPSG:"..layer.epsg.."'.")
+	end
+
+	local label = view.label
+	if #label > 0 or getn(label) == 0 then
+		customError("Argument 'label' of view '"..layer.name.."' must be a named table with the description and color.")
+	end
+
+	local newLabel = {}
+	forEachElement(label, function(description, strColor)
+		newLabel[tostring(description)] = color{labelColor = strColor, alpha = 1 - view.transparency}
+	end)
+
+	view.label = newLabel
+	view.name = layer.map
+	view.url = layer.service
+	view.geom = "WMS"
+	data.hasWMS = true
+
+	local tilesLib = templateDir.."model/dist/geoambientev2.min.js"
+	os.execute("cp \""..tilesLib.."\" \""..data.assets.."\"")
+end
+
 local function exportLayers(data, sof)
 	if not (data.center and data.zoom) then
 		local huge = math.huge
@@ -315,20 +348,25 @@ local function exportLayers(data, sof)
 			return
 		end
 
-		printNormal("Exporting layer '"..layer.name.."'")
-		local jsonPath = data.datasource..layer.name..".geojson"
-		layer:export{
-			file = jsonPath,
-			epsg = 4326,
-			overwrite = true
-		}
+		if SourceTypeMapper[layer.source] == "WMS" then
+			exportWMSLayer(data, layer)
+		else
+			printNormal("Exporting layer '"..layer.name.."'")
+			local jsonPath = data.datasource..layer.name..".geojson"
+			layer:export{
+				file = jsonPath,
+				epsg = 4326,
+				overwrite = true
+			}
 
-		if data.simplify then
-			printInfo("Simplifying layer'"..layer.name.."'")
-			local mview = data.view[layer.name]
-			local properties = simplify(jsonPath, mview.decimal, mview.select)
-			mview.properties = properties
+			if data.simplify then
+				printInfo("Simplifying layer'"..layer.name.."'")
+				local mview = data.view[layer.name]
+				local properties = simplify(jsonPath, mview.decimal, mview.select)
+				mview.properties = properties
+			end
 		end
+
 
 		if data.bounds then
 			setBoundsExtent(data.bounds, layer)
@@ -603,185 +641,187 @@ local function processingView(data, layers, reports, name, view)
 		label = viewLabel
 	})
 
-	local dset
-	do
-		local tlib = gis.TerraLib{}
-		dset = tlib.getDataSet(data.project, name)
-		for i = 0, #dset do
-			if view.geom then break end
-
-			local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
-			if geom then
-				local subType = tlib.castGeomToSubtype(geom)
-				view.geom = subType:getGeometryType()
-			end
-		end
-	end
-
-	if view.report then
-		if type(view.report) == "Report" then
-			table.insert(reports, {title = view.report.title, author = view.report.author, layer = view.report.layer, reports = exportReportImages(data, view.report)})
-		else
+	if view.geom ~= "WMS" then
+		local dset
+		do
+			local tlib = gis.TerraLib{}
+			dset = tlib.getDataSet(data.project, name)
 			for i = 0, #dset do
-				local cell = Cell(dset[i])
-				local report = view.report(cell)
-				if type(report) ~= "Report" then
-					if data.output:exists() then data.output:delete() end
-					customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
-				end
+				if view.geom then break end
 
-				local select = cell[view.select[1] or view.select]
-				if select and type(select) == "string" then
-					select = select:gsub("%s+", "")
+				local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
+				if geom then
+					local subType = tlib.castGeomToSubtype(geom)
+					view.geom = subType:getGeometryType()
 				end
-
-				table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
 			end
 		end
-	elseif data.report then
-		local report = clone(data.report)
-		report.layer = name
-		table.insert(reports, report)
-	end
 
-	if view.icon then
-		if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
-			if data.output:exists() then data.output:delete() end
-			customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
-		end
-
-		local icon = {}
-		local itype = type(view.icon)
-		if itype == "string" then
-			if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
-				if data.output:exists() then data.output:delete() end
-				customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
-			end
-
-			view.icon = view.icon..".png"
-			icon.path = view.icon
-			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
-		else
-			if #view.icon > 0 then
-				icon.options = {}
-				local set = {}
-				local label = view.label or {}
-				local col = view.select[2] or view.select
-				local nProp = 0
-				for i = 0, #dset do
-					local prop = dset[i][col]
-					if not prop then
-						if data.output:exists() then data.output:delete() end
-						customError("Column '"..col.."' does not exist in View '"..name.."'.")
-					end
-
-					if not set[prop] then
-						set[prop] = true
-						nProp = nProp + 1
-					end
-				end
-
-				local markers = view.icon
-				local nMarkers = #markers
-				if nProp ~= nMarkers then
-					if data.output:exists() then data.output:delete() end
-					customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
-				end
-
-				local ics = {
-					airport = true,
-					animal = true,
-					bigcity = true,
-					bus = true,
-					car = true,
-					caution = true,
-					cycling = true,
-					database = true,
-					desert = true,
-					diving = true,
-					fillingstation = true,
-					finish = true,
-					fire = true,
-					firstaid = true,
-					fishing = true,
-					flag = true,
-					forest = true,
-					harbor = true,
-					helicopter = true,
-					home = true,
-					horseriding = true,
-					hospital = true,
-					lake = true,
-					motorbike = true,
-					mountains = true,
-					radio = true,
-					restaurant = true,
-					river = true,
-					road = true,
-					shipwreck = true,
-					thunderstorm = true
-				}
-
-				local properties = {}
-				for prop in pairs(set) do
-					table.insert(properties, prop)
-				end
-
-				table.sort(properties)
-
-				local ltmp = {}
-				local copy = {}
-				for i, prop in pairs(properties) do
-					local strprop = tostring(prop)
-					local marker = tostring(markers[i])
-
-					if not ics[marker] then
-						switchInvalidArgument("icon:marker", marker, ics)
-					end
-
-					local mlabel = label[i]
-					if not mlabel then
-						mlabel = col.." "..strprop
-					elseif type(mlabel) ~= "string" then
-						incompatibleTypeError("label", "string", mlabel)
-					end
-
-					marker = marker..".png"
-					copy[marker] = true
-
-					ltmp[mlabel] = marker
-					icon.options[strprop] = marker
-				end
-
-				for el in pairs(copy) do
-					os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
-				end
-
-				view.label = ltmp
+		if view.report then
+			if type(view.report) == "Report" then
+				table.insert(reports, {title = view.report.title, author = view.report.author, layer = view.report.layer, reports = exportReportImages(data, view.report)})
 			else
-				view.icon.transparency = 1 - view.icon.transparency
-				icon.options = {
-					path = view.icon.path,
-					fillColor = view.icon.color,
-					fillOpacity = view.icon.transparency,
-					strokeWeight = 2
-				}
+				for i = 0, #dset do
+					local cell = Cell(dset[i])
+					local report = view.report(cell)
+					if type(report) ~= "Report" then
+						if data.output:exists() then data.output:delete() end
+						customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
+					end
 
-				icon.time = 1000 / (200 / view.icon.time)
+					local select = cell[view.select[1] or view.select]
+					if select and type(select) == "string" then
+						select = select:gsub("%s+", "")
+					end
+
+					table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
+				end
 			end
+		elseif data.report then
+			local report = clone(data.report)
+			report.layer = name
+			table.insert(reports, report)
 		end
 
-		view.icon = icon
-	elseif view.geom == "LineString" or view.geom == "MultiLineString" then
-		view.icon = {}
-		view.icon.options = {
-			path = "M150 0 L75 200 L225 200 Z",
-			fillColor = "rgba(0, 0, 0, 1)",
-			fillOpacity = 0.8,
-			strokeWeight = 2
-		}
+		if view.icon then
+			if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
+				if data.output:exists() then data.output:delete() end
+				customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
+			end
 
-		view.icon.time = 25
+			local icon = {}
+			local itype = type(view.icon)
+			if itype == "string" then
+				if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
+					if data.output:exists() then data.output:delete() end
+					customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+				end
+
+				view.icon = view.icon..".png"
+				icon.path = view.icon
+				os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
+			else
+				if #view.icon > 0 then
+					icon.options = {}
+					local set = {}
+					local label = view.label or {}
+					local col = view.select[2] or view.select
+					local nProp = 0
+					for i = 0, #dset do
+						local prop = dset[i][col]
+						if not prop then
+							if data.output:exists() then data.output:delete() end
+							customError("Column '"..col.."' does not exist in View '"..name.."'.")
+						end
+
+						if not set[prop] then
+							set[prop] = true
+							nProp = nProp + 1
+						end
+					end
+
+					local markers = view.icon
+					local nMarkers = #markers
+					if nProp ~= nMarkers then
+						if data.output:exists() then data.output:delete() end
+						customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
+					end
+
+					local ics = {
+						airport = true,
+						animal = true,
+						bigcity = true,
+						bus = true,
+						car = true,
+						caution = true,
+						cycling = true,
+						database = true,
+						desert = true,
+						diving = true,
+						fillingstation = true,
+						finish = true,
+						fire = true,
+						firstaid = true,
+						fishing = true,
+						flag = true,
+						forest = true,
+						harbor = true,
+						helicopter = true,
+						home = true,
+						horseriding = true,
+						hospital = true,
+						lake = true,
+						motorbike = true,
+						mountains = true,
+						radio = true,
+						restaurant = true,
+						river = true,
+						road = true,
+						shipwreck = true,
+						thunderstorm = true
+					}
+
+					local properties = {}
+					for prop in pairs(set) do
+						table.insert(properties, prop)
+					end
+
+					table.sort(properties)
+
+					local ltmp = {}
+					local copy = {}
+					for i, prop in pairs(properties) do
+						local strprop = tostring(prop)
+						local marker = tostring(markers[i])
+
+						if not ics[marker] then
+							switchInvalidArgument("icon:marker", marker, ics)
+						end
+
+						local mlabel = label[i]
+						if not mlabel then
+							mlabel = col.." "..strprop
+						elseif type(mlabel) ~= "string" then
+							incompatibleTypeError("label", "string", mlabel)
+						end
+
+						marker = marker..".png"
+						copy[marker] = true
+
+						ltmp[mlabel] = marker
+						icon.options[strprop] = marker
+					end
+
+					for el in pairs(copy) do
+						os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
+					end
+
+					view.label = ltmp
+				else
+					view.icon.transparency = 1 - view.icon.transparency
+					icon.options = {
+						path = view.icon.path,
+						fillColor = view.icon.color,
+						fillOpacity = view.icon.transparency,
+						strokeWeight = 2
+					}
+
+					icon.time = 1000 / (200 / view.icon.time)
+				end
+			end
+
+			view.icon = icon
+		elseif view.geom == "LineString" or view.geom == "MultiLineString" then
+			view.icon = {}
+			view.icon.options = {
+				path = "M150 0 L75 200 L225 200 Z",
+				fillColor = "rgba(0, 0, 0, 1)",
+				fillOpacity = 0.8,
+				strokeWeight = 2
+			}
+
+			view.icon.time = 25
+		end
 	end
 
 	if view.download then
@@ -917,7 +957,8 @@ local function createApplicationProjects(data, proj)
 			navbarColor = data.template.navbar,
 			titleColor = data.template.title,
 			groups = groups,
-			logo = data.logo
+			logo = data.logo,
+			wms = data.hasWMS
 		}
 	}
 end
