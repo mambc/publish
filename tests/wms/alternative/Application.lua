@@ -156,6 +156,25 @@ return {
 		end
 		unitTest:assertError(error_func, "Argument 'label' of view 'wmsLayer' must be a named table with the description and color.")
 
+		error_func = function()
+			Application{
+				project = proj,
+				output = wmsDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				wmsLayer = View {
+					title = "WMS",
+					description = "Loading a view from WMS.",
+					label = {
+						boundingbox = "#ffffff"
+					},
+					download = true
+				}
+			}
+		end
+		unitTest:assertError(error_func, "WMS layer 'wmsLayer' does not support download.")
+
 		projFile:deleteIfExists()
 		if wmsDir:exists() then wmsDir:delete() end
 	end

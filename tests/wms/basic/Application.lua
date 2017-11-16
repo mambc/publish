@@ -99,6 +99,60 @@ return {
 
 		assertFiles(app.output, appRoot)
 
+		if wmsDir:exists() then wmsDir:delete() end
+
+		gis.Layer{
+			project = proj,
+			name = "limit",
+			file = filePath("caragua.shp", "publish")
+		}
+
+		local report = Report{
+			title = "URBIS-Caraguá",
+			author = "Feitosa et. al (2014)"
+		}
+
+		report:addHeading("Social Classes 2010")
+		report:addImage("urbis_2010_real.PNG", "publish")
+		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.")
+
+		app = Application{
+			project = proj,
+			output = wmsDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			wmsLayer = View {
+				title = "WMS",
+				description = "Loading a view from WMS.",
+				label = {
+					boundingbox = "#ffffff"
+				}
+			},
+			limit = View{
+				description = "Bounding box of Caraguatatuba.",
+				color = "limegreen",
+				report = report
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.project, "Project")
+
+		view = app.view.wmsLayer
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.name, map)
+		unitTest:assertEquals(view.url, service)
+
+		view = app.view.limit
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.description, "Bounding box of Caraguatatuba.")
+		unitTest:assertType(view.report, "Report")
+
+		appRoot["limit.geojson"] = true
+		appRoot["urbis_2010_real.PNG"] = true
+		assertFiles(app.output, appRoot)
+
 		projFile:deleteIfExists()
 		if wmsDir:exists() then wmsDir:delete() end
 	end

@@ -312,6 +312,10 @@ local function exportWMSLayer(data, layer)
 
 	mandatoryTableArgument(view, "label", "table")
 
+	if view.download then
+		customError("WMS layer '"..layer.name.."' does not support download.")
+	end
+
 	local defaultEPSG = 4326
 	if layer.epsg ~= defaultEPSG then
 		customError("Layer '"..layer.name.."' must be projected in EPSG:"..defaultEPSG..", got 'EPSG:"..layer.epsg.."'.")
@@ -659,7 +663,7 @@ local function processingView(data, layers, reports, name, view)
 
 		if view.report then
 			if type(view.report) == "Report" then
-				table.insert(reports, {title = view.report.title, author = view.report.author, layer = view.report.layer, reports = exportReportImages(data, view.report)})
+				table.insert(reports, {title = view.report.title, author = view.report.author, layer = name, reports = exportReportImages(data, view.report)})
 			else
 				for i = 0, #dset do
 					local cell = Cell(dset[i])
