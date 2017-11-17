@@ -317,6 +317,15 @@ end
 local function layerPostProcessing(data, layer, jsonPath, isRaster)
 	local mview = data.view[layer.name]
 	if isRaster then
+		local errorMessage = "Argument '%s' for View '%s' is not valid for raster data."
+		if mview.value then
+			customError(string.format(errorMessage, "value", layer.name))
+		end
+
+		if mview.select then
+			customError(string.format(errorMessage, "select", layer.name))
+		end
+
 		mview.select = "value"
 	end
 
@@ -341,6 +350,10 @@ local function exportLayers(data, sof)
 		local name = layer.name
 		if (sof and not sof(layer, idx)) or not data.view[name] then
 			return
+		end
+
+		if not isValidSource(layer.source) then
+			customError("Layer '"..name.."' with source '"..layer.source.."' is not supported by publish.")
 		end
 
 		local filePathWithoutExtension = data.datasource..name
@@ -539,17 +552,16 @@ local function loadLayers(data)
 				if view.layer and view.layer:exists() then
 					if isValidSource(view.layer:extension()) then
 						mproj[name] = tostring(view.layer)
+						nLayers = nLayers + 1
 					else
 						data.view[name] = nil
 					end
-
-					nLayers = nLayers + 1
 				end
 			end)
 
 			if nLayers == 0 then
 				if data.output:exists() then data.output:delete() end
-				customError("Application 'view' does not have any Layer.")
+				customError("Application 'view' does not have any valid Layer.")
 			end
 
 			data.project = gis.Project(mproj)

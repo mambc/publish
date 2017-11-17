@@ -300,5 +300,58 @@ return {
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 		File("arapiuns.tview"):deleteIfExists()
 		File("emas.tview"):deleteIfExists()
+
+		local projRaster = File("raster.tview")
+		projRaster:deleteIfExists()
+		local proj = gis.Project{
+			file = projRaster,
+			clean = true,
+			vegtype = filePath("vegtype_2000_5880.tif", "publish")
+		}
+
+		local vegDir = Directory("raster-with-no-srid")
+		if vegDir:exists() then vegDir:delete() end
+		error_func = function()
+			Application {
+				project = proj,
+				description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
+				output = vegDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				title = "Vegetation scenario",
+				vegtype = View {
+					title = "Vegetation Type 2000",
+					description = "Vegetation type Inland.",
+					select = "value",
+					color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' for View 'vegtype' is not valid for raster data.")
+
+		if vegDir:exists() then vegDir:delete() end
+		error_func = function()
+			Application {
+				project = proj,
+				description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
+				output = vegDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				title = "Vegetation scenario",
+				vegtype = View {
+					title = "Vegetation Type 2000",
+					description = "Vegetation type Inland.",
+					select = "value",
+					value = {-127, 1, 2, 3, 9, 10, 12},
+					color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'value' for View 'vegtype' is not valid for raster data.")
+
+		projRaster:deleteIfExists()
+		if vegDir:exists() then vegDir:delete() end
 	end
 }
