@@ -146,8 +146,6 @@ function View(data)
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
-			mandatoryTableArgument(data, "select", "string")
-
 			local classes
 			if data.slices and data.min and data.max then
 				classes = data.slices

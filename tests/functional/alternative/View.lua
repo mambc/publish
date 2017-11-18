@@ -85,12 +85,6 @@ return {
 		unitTest:assertWarning(warning_func, defaultValueMsg("width", 1))
 
 		error_func = function()
-			View{value = {1, 2, 3}, color = {"red", "orange", "yellow"}}
-		end
-
-		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
-
-		error_func = function()
 			View{value = {0, 1, 2}, color = 1, select = "river"}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string or table", 1))

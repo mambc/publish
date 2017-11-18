@@ -43,6 +43,7 @@ app = Application {
 	vegtype = View {
 		title = "Vegetation Type 2000",
 		description = "Vegetation type Inland.",
+		value = {-127, 1, 2, 3, 9, 10, 12},
 		color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
 	}
 }

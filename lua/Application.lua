@@ -317,16 +317,15 @@ end
 local function layerPostProcessing(data, layer, jsonPath, isRaster)
 	local mview = data.view[layer.name]
 	if isRaster then
-		local errorMessage = "Argument '%s' for View '%s' is not valid for raster data."
-		if mview.value then
-			customError(string.format(errorMessage, "value", layer.name))
-		end
-
 		if mview.select then
-			customError(string.format(errorMessage, "select", layer.name))
+			customError("Argument 'select' for View '"..layer.name.."' is not valid for raster data.")
 		end
 
 		mview.select = "value"
+	end
+
+	if mview.color and mview.value then
+		mandatoryTableArgument(mview, "select", {"string", "table"})
 	end
 
 	if data.simplify then

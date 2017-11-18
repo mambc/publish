@@ -455,10 +455,35 @@ return {
 
 		assertFiles(app.output, appRoot)
 
+		if vegDir:exists() then vegDir:delete() end
+		app = Application{
+			project = proj,
+			description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
+			output = vegDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			title = "Vegetation scenario",
+			vegtype = View {
+				title = "Vegetation Type 2000",
+				description = "Vegetation type Inland.",
+				value = {-127, 1, 2, 3, 9, 10, 12},
+				color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.vegtype
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+		unitTest:assertType(view.value, "table")
+
+		unitTest:assertEquals(getn(view.value), 7)
 		projRaster:deleteIfExists()
 		if vegDir:exists() then vegDir:delete() end
-		if caraguaDir:exists() then caraguaDir:delete() end
 
+		if caraguaDir:exists() then caraguaDir:delete() end
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "

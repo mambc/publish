@@ -329,29 +329,28 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "Argument 'select' for View 'vegtype' is not valid for raster data.")
-
 		if vegDir:exists() then vegDir:delete() end
+		projRaster:deleteIfExists()
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		if caraguaDir:exists() then caraguaDir:delete() end
 		error_func = function()
 			Application {
-				project = proj,
-				description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
-				output = vegDir,
+				project = filePath("caragua.tview", "publish"),
+				output = caraguaDir,
 				clean = true,
 				simplify = false,
 				progress = false,
-				title = "Vegetation scenario",
-				vegtype = View {
-					title = "Vegetation Type 2000",
-					description = "Vegetation type Inland.",
-					select = "value",
-					value = {-127, 1, 2, 3, 9, 10, 12},
-					color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+				real = View{
+					title = "Social Classes 2010 Real",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that"
+								.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					value = {1, 2, 3},
+					color = {"red", "orange", "yellow"}
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'value' for View 'vegtype' is not valid for raster data.")
-
-		projRaster:deleteIfExists()
-		if vegDir:exists() then vegDir:delete() end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }
