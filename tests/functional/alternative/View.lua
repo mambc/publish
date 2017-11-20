@@ -85,12 +85,6 @@ return {
 		unitTest:assertWarning(warning_func, defaultValueMsg("width", 1))
 
 		error_func = function()
-			View{value = {1, 2, 3}, color = {"red", "orange", "yellow"}}
-		end
-
-		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
-
-		error_func = function()
 			View{value = {0, 1, 2}, color = 1, select = "river"}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string or table", 1))
@@ -179,7 +173,12 @@ return {
 		error_func = function()
 			View{color = {"Reds", "Blues", "PuRd"}}
 		end
-		unitTest:assertError(error_func, "Argument 'color' (Reds) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
+		unitTest:assertError(error_func, "ColorBrewer 'Reds' is not allowed to be used in a table of colors.")
+
+		error_func = function()
+			View{color = {"red", "green", 1}}
+		end
+		unitTest:assertError(error_func, "Incompatible types. Argument 'color[3]' expected string or table, got number.")
 
 		error_func = function()
 			View{color = {true, true, true}, value = {1, 2, 3}, select = "river"}

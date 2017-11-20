@@ -28,40 +28,6 @@ return {
 		if emasDir:exists() then emasDir:delete() end
 
 		local gis = getPackage("gis")
-
-		local project = gis.Project{
-			file = "emas.tview",
-			clean = true,
-			firebreak = filePath("emas-firebreak.shp", "gis"),
-			river = filePath("emas-river.shp", "gis"),
-			limit = filePath("emas-limit.shp", "gis")
-		}
-
-		gis.Layer{
-			project = project,
-			name = "cover",
-			file = filePath("emas-accumulation.tif", "gis"),
-			epsg = 29192
-		}
-
-		local error_func = function()
-			Application{
-				title = "Emas",
-				description = "Creates a database that can be used by the example fire-spread of base package.",
-				zoom = 14,
-				center = {lat = -18.106389, long = -52.927778},
-				project = "emas.tview",
-				clean = true,
-				simplify = false,
-				progress = false,
-				output = emasDir,
-				cover = View{
-					color = "green"
-				}
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
-
 		gis.Project{
 			file = "emas.tview",
 			clean = true,
@@ -70,7 +36,7 @@ return {
 			limit = filePath("emas-limit.shp", "gis")
 		}
 
-		error_func = function()
+		local error_func = function()
 			Application{
 				title = "Emas",
 				description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -246,21 +212,6 @@ return {
 
 		error_func = function()
 			Application{
-				title = "app",
-				progress = false,
-				simplify = false,
-				output = emasDir,
-				accumulation = View{
-					layer = filePath("emas-accumulation.tif", "gis"),
-				}
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'accumulation'.")
-
-		if emasDir:exists() then emasDir:delete() end
-
-		error_func = function()
-			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
@@ -349,5 +300,57 @@ return {
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 		File("arapiuns.tview"):deleteIfExists()
 		File("emas.tview"):deleteIfExists()
+
+		local projRaster = File("raster.tview")
+		projRaster:deleteIfExists()
+		local proj = gis.Project{
+			file = projRaster,
+			clean = true,
+			vegtype = filePath("vegtype_2000_5880.tif", "publish")
+		}
+
+		local vegDir = Directory("raster-with-no-srid")
+		if vegDir:exists() then vegDir:delete() end
+		error_func = function()
+			Application {
+				project = proj,
+				description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
+				output = vegDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				title = "Vegetation scenario",
+				vegtype = View {
+					title = "Vegetation Type 2000",
+					description = "Vegetation type Inland.",
+					select = "value",
+					color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' for View 'vegtype' is not valid for raster data.")
+		if vegDir:exists() then vegDir:delete() end
+		projRaster:deleteIfExists()
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		if caraguaDir:exists() then caraguaDir:delete() end
+		error_func = function()
+			Application {
+				project = filePath("caragua.tview", "publish"),
+				output = caraguaDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				real = View{
+					title = "Social Classes 2010 Real",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that"
+								.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					value = {1, 2, 3},
+					color = {"red", "orange", "yellow"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }

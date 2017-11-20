@@ -1,6 +1,6 @@
 -------------------------------------------------------------------------------------------
 -- TerraME - a software platform for multiple scale spatially-explicit dynamic modeling.
--- Copyright (C) 2001-2016 INPE and TerraLAB/UFOP -- www.terrame.org
+-- Copyright (C) 2001-2017 INPE and TerraLAB/UFOP -- www.terrame.org
 
 -- This code is part of the TerraME framework.
 -- This framework is free software; you can redistribute it and/or
@@ -22,42 +22,28 @@
 --
 -------------------------------------------------------------------------------------------
 
-return {
-	Application = function(unitTest)
-		local appAlternative = Directory("project-alternative-app")
-		local proj = File("myproject.tview")
+-- @example Implementation of a simple Application from INLAND model for Brazil.
 
-		if appAlternative:exists() then appAlternative:delete() end
-		proj:deleteIfExists()
+import("publish")
+import("gis")
 
-		local error_func = function()
-			Application{
-				project = proj,
-				clean = true,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				progress = false,
-				simplify = false,
-				output = appAlternative
-			}
-		end
-		unitTest:assertError(error_func, "Project '"..proj.."' was not found.")
+proj = Project{
+	file = "vegetation.tview",
+	clean = true,
+	vegtype = filePath("vegtype_2000_5880.tif", "publish")
+}
 
-		error_func = function()
-			Application{
-				project = 1,
-				clean = true,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				progress = false,
-				simplify = false,
-				output = appAlternative
-			}
-		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("project", "Project", 1))
-
-		if appAlternative:exists() then appAlternative:delete() end
-	end
+app = Application {
+	project = proj,
+	description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
+	output = "VegetationWebMap",
+	clean = true,
+	simplify = false,
+	title = "Vegetation scenario",
+	vegtype = View {
+		title = "Vegetation Type 2000",
+		description = "Vegetation type Inland.",
+		value = {-127, 1, 2, 3, 9, 10, 12},
+		color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+	}
 }

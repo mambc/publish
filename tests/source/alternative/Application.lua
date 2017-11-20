@@ -24,40 +24,64 @@
 
 return {
 	Application = function(unitTest)
-		local appAlternative = Directory("project-alternative-app")
-		local proj = File("myproject.tview")
+		local gis = getPackage("gis")
+		local sourceDir = Directory("SourceErrorAPP")
+		if sourceDir:exists() then sourceDir:delete() end
 
-		if appAlternative:exists() then appAlternative:delete() end
-		proj:deleteIfExists()
+		local projFile = File("source.tview")
+		projFile:deleteIfExists()
 
 		local error_func = function()
 			Application{
+				title = "Testing layer with the wrong source.",
+				output = sourceDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				wfsLayer = View {
+					title = "Wrong File",
+					description = "Loading a view from WFS.",
+					layer = filePath("biomes/Amazonia.jpg", "publish");
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Application 'view' does not have any valid Layer.")
+		if sourceDir:exists() then sourceDir:delete() end
+
+		local service = "http://terrabrasilis.info/redd-pac/wfs"
+		if gis.TerraLib().isValidWfsUrl(service) then
+			local proj = gis.Project {
+				title = "WFS",
+				author = "Carneiro, H.",
+				file = projFile,
+				clean = true
+			}
+
+			local feature = "reddpac:wfs_biomes"
+			gis.Layer{
 				project = proj,
-				clean = true,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				progress = false,
-				simplify = false,
-				output = appAlternative
+				source = "wfs",
+				name = "wfsLayer",
+				service = service,
+				feature = feature
 			}
-		end
-		unitTest:assertError(error_func, "Project '"..proj.."' was not found.")
 
-		error_func = function()
-			Application{
-				project = 1,
-				clean = true,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				progress = false,
-				simplify = false,
-				output = appAlternative
-			}
+			error_func = function()
+				Application{
+					project = proj,
+					output = sourceDir,
+					clean = true,
+					simplify = false,
+					progress = false,
+					wfsLayer = View {
+						title = "WFS",
+						description = "Loading a view from WFS."
+					}
+				}
+			end
+			unitTest:assertError(error_func, "Layer 'wfsLayer' with source 'wfs' is not supported by publish.")
+			if sourceDir:exists() then sourceDir:delete() end
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("project", "Project", 1))
-
-		if appAlternative:exists() then appAlternative:delete() end
+		projFile:deleteIfExists()
 	end
 }

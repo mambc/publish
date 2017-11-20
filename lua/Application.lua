@@ -35,20 +35,27 @@ local gis = getPackage("gis")
 local templateDir = Directory(packageInfo("publish").path.."/lib/template")
 local Templates = {}
 local ViewModel = {}
+
+local SourceType = {
+	OGR = "OGR",
+	GDAL = "GDAL",
+	POSTGIS = "POSTGIS",
+	WMS = "WMS"
+}
+
 local SourceTypeMapper = {
-	shp = "OGR",
-	geojson = "OGR",
-	tif = "GDAL",
-	nc = "GDAL",
-	asc = "GDAL",
-	postgis = "POSTGIS",
-	access = "ADO",
-	wms = "WMS"
+	shp = SourceType.OGR,
+	geojson = SourceType.OGR,
+	tif = SourceType.GDAL,
+	nc = SourceType.GDAL,
+	asc = SourceType.GDAL,
+	postgis = SourceType.POSTGIS,
+	wms = SourceType.WMS
 }
 
 local printNormal = print
 local printInfo = function (value)
-	if sessionInfo().color then
+	if sessionInfo().color then -- SKIP
 		printNormal("\027[00;34m"..tostring(value).."\027[00m")
 	else
 		printNormal(value)
@@ -87,7 +94,7 @@ local function exportReportImages(data, report)
 		if not data.images then
 			data.images = data.output -- Directory(data.output.."images")
 			if not data.images:exists() then
-				data.images:create()
+				data.images:create() -- SKIP
 			end
 		end
 
@@ -147,7 +154,8 @@ local function createDirectoryStructure(data)
 end
 
 local function isValidSource(source)
-	return SourceTypeMapper[source] == "OGR" or SourceTypeMapper[source] == "POSTGIS" or SourceTypeMapper[source] == "WMS"
+	local typeMapped = SourceTypeMapper[source]
+	return typeMapped == SourceType.OGR or typeMapped == SourceType.POSTGIS or typeMapped == SourceType.GDAL or typeMapped == SourceType.WMS
 end
 
 local function getReducedNames(properties, select)
@@ -234,10 +242,6 @@ end
 
 local function simplify(jsonPath, decimal, select)
 	local file = File(jsonPath)
-	if not file:exists() then
-		resourceNotFoundError("jsonPath", tostring(file))
-	end
-
 	local properties, strJson = uglify(file, decimal, select)
 	strJson = minify(strJson)
 
@@ -305,25 +309,51 @@ local function exportBounds(data)
 	data.bounds = nil
 end
 
-local function exportWMSLayer(data, layer)
-	local view = data.view[layer.name]
+local function exportRasterLayer(name, layer, filePathWithoutExtension, jsonPath, defaultEPSG, exportArgs)
+	local layerExported
+	if layer.epsg == defaultEPSG then
+		layer:polygonize{file = jsonPath, overwrite = true}
+		layerExported = layer
+	else
+		local vectorPath = File(filePathWithoutExtension..".shp")
+		layer:polygonize{file = vectorPath, overwrite = true}
+
+		local tempFileProj = File(filePathWithoutExtension..".tview")
+		local tempProj = gis.Project{file = tempFileProj}
+		local tmpLayer = gis.Layer{
+			project = tempProj,
+			name = name,
+			file = vectorPath
+		}
+
+		tmpLayer:export(exportArgs)
+		layerExported = tmpLayer
+
+		vectorPath:deleteIfExists()
+		tempFileProj:deleteIfExists()
+	end
+
+	return layerExported
+end
+
+local function exportWMSLayer(data, name, layer, defaultEPSG)
+	local view = data.view[name]
 	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
 		"label", "icon", "download", "group", "decimal", "properties"})
 
 	mandatoryTableArgument(view, "label", "table")
 
 	if view.download then
-		customError("WMS layer '"..layer.name.."' does not support download.")
+		customError("WMS layer '"..name.."' does not support download.")
 	end
 
-	local defaultEPSG = 4326
 	if layer.epsg ~= defaultEPSG then
-		customError("Layer '"..layer.name.."' must be projected in EPSG:"..defaultEPSG..", got 'EPSG:"..layer.epsg.."'.")
+		customError("Layer '"..name.."' must be projected in EPSG:"..defaultEPSG..", got 'EPSG:"..layer.epsg.."'.")
 	end
 
 	local label = view.label
 	if #label > 0 or getn(label) == 0 then
-		customError("Argument 'label' of view '"..layer.name.."' must be a named table with the description and color.")
+		customError("Argument 'label' of view '"..name.."' must be a named table with the description and color.")
 	end
 
 	local newLabel = {}
@@ -334,48 +364,96 @@ local function exportWMSLayer(data, layer)
 	view.label = newLabel
 	view.name = layer.map
 	view.url = layer.service
-	view.geom = "WMS"
+	view.geom = SourceType.WMS
 	data.hasWMS = true
 
 	local tilesLib = templateDir.."model/dist/geoambientev2.min.js"
 	os.execute("cp \""..tilesLib.."\" \""..data.assets.."\"")
 end
 
-local function exportLayers(data, sof)
+local function layerPreProcessing(data)
 	if not (data.center and data.zoom) then
 		local huge = math.huge
 		data.bounds = {xMax = -huge, xMin = huge, yMax = -huge, yMin = huge}
 	end
+end
 
+local function layerPostProcessing(data, layer, jsonPath, isRaster, isWMS)
+	local name = layer.name
+	local mview = data.view[name]
+	if not isWMS then
+		if isRaster then
+			if mview.select then
+				customError("Argument 'select' for View '"..name.."' is not valid for raster data.")
+			end
+
+			mview.select = "value"
+		end
+
+		if mview.color and mview.value then
+			mandatoryTableArgument(mview, "select", {"string", "table"})
+		end
+
+		if data.simplify then
+			printInfo("Simplifying layer'"..name.."'")
+			local properties = simplify(jsonPath, mview.decimal, mview.select)
+			mview.properties = properties
+		end
+	end
+
+	if data.bounds then
+		setBoundsExtent(data.bounds, layer)
+	end
+end
+
+local function exportLayers(data, sof)
+	layerPreProcessing(data)
+
+	local mproj = {}
+	local defaultEPSG = 4326
+	local hasRaster = false
 	gis.forEachLayer(data.project, function(layer, idx)
-		if sof and not sof(layer, idx) then
+		local name = layer.name
+		if (sof and not sof(layer, idx)) or not data.view[name] then
 			return
 		end
 
-		if SourceTypeMapper[layer.source] == "WMS" then
-			exportWMSLayer(data, layer)
+		local source = layer.source
+		if not isValidSource(source) then
+			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
+		end
+
+		local filePathWithoutExtension = data.datasource..name
+		local jsonPath = filePathWithoutExtension..".geojson"
+		local exportArgs = {file = jsonPath, epsg = defaultEPSG, overwrite = true}
+		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
+		local isWMS = SourceTypeMapper[source] == SourceType.WMS
+
+		printNormal("Exporting layer '"..name.."'")
+
+		local layerExported
+		if isRaster then
+			layerExported = exportRasterLayer(name, layer, filePathWithoutExtension, jsonPath, defaultEPSG, exportArgs)
+			if not hasRaster then hasRaster = true end
 		else
-			printNormal("Exporting layer '"..layer.name.."'")
-			local jsonPath = data.datasource..layer.name..".geojson"
-			layer:export{
-				file = jsonPath,
-				epsg = 4326,
-				overwrite = true
-			}
-
-			if data.simplify then
-				printInfo("Simplifying layer'"..layer.name.."'")
-				local mview = data.view[layer.name]
-				local properties = simplify(jsonPath, mview.decimal, mview.select)
-				mview.properties = properties
+			if isWMS then
+				exportWMSLayer(data, name, layer, defaultEPSG)
+			else
+				layer:export(exportArgs)
 			end
+
+			layerExported = layer
 		end
 
-
-		if data.bounds then
-			setBoundsExtent(data.bounds, layer)
-		end
+		layerPostProcessing(data, layerExported, jsonPath, isRaster, isWMS)
+		mproj[name] = jsonPath
 	end)
+
+	if hasRaster then
+		mproj.file = Directory{tmp = true}..data.project.title..".tview"
+		mproj.clean = true
+		data.project = gis.Project(mproj)
+	end
 end
 
 local function loadViewValue(data, name, view)
@@ -509,23 +587,7 @@ local function loadLayers(data)
 	if nView > 0 then
 		if data.project then
 			printInfo("Loading layers from '"..data.project.file:name().."'")
-			exportLayers(data, function(layer)
-				local found = false
-				forEachElement(data.view, function(name)
-					if name == layer.name then
-						if isValidSource(layer.source) then
-							found = true
-						else
-							data.view[name] = nil
-							customError("Publish cannot export yet raster layer '"..layer.name.."'.")
-						end
-
-						return false
-					end
-				end)
-
-				return found
-			end)
+			exportLayers(data)
 		else
 			mandatoryTableArgument(data, "title", "string")
 
@@ -541,18 +603,16 @@ local function loadLayers(data)
 				if view.layer and view.layer:exists() then
 					if isValidSource(view.layer:extension()) then
 						mproj[name] = tostring(view.layer)
+						nLayers = nLayers + 1
 					else
 						data.view[name] = nil
-						customError("Publish cannot export yet raster layer '"..name.."'.")
 					end
-
-					nLayers = nLayers + 1
 				end
 			end)
 
 			if nLayers == 0 then
 				if data.output:exists() then data.output:delete() end
-				customError("Application 'view' does not have any Layer.")
+				customError("Application 'view' does not have any valid Layer.")
 			end
 
 			data.project = gis.Project(mproj)
@@ -572,11 +632,6 @@ local function loadLayers(data)
 			end)
 
 			exportLayers(data, function(layer)
-				if not isValidSource(layer.source) then
-					customError("Publish cannot export yet raster layer '"..layer.name.."'.")
-					return false
-				end
-
 				data.view[layer.name] = View(clone(mview))
 				nView = nView + 1
 				return true
@@ -645,7 +700,7 @@ local function processingView(data, layers, reports, name, view)
 		label = viewLabel
 	})
 
-	if view.geom ~= "WMS" then
+	if view.geom ~= SourceType.WMS then
 		local dset
 		do
 			local tlib = gis.TerraLib{}
@@ -1252,8 +1307,8 @@ function Application(data)
 					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
 
 					local layer = gis.Layer{project = proj, name = abstractLayer:getTitle()}
-					local source = layer.source
-					verify(isValidSource(source), "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..SourceTypeMapper[source].."'.")
+					local typeMapped = SourceTypeMapper[layer.source]
+					verify(typeMapped == SourceType.OGR or typeMapped == SourceType.POSTGIS, "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..typeMapped.."'.")
 
 					data.project[name] = nil
 					table.insert(data.project, {project = name, layer = bbox})
