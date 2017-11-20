@@ -93,6 +93,7 @@ function View(data)
 	optionalTableArgument(data, "min", "number")
 	optionalTableArgument(data, "max", "number")
 	optionalTableArgument(data, "slices", "number")
+	optionalTableArgument(data, "color", {"string", "table"})
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
@@ -145,8 +146,6 @@ function View(data)
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
-			mandatoryTableArgument(data, "select", "string")
-
 			local classes
 			if data.slices and data.min and data.max then
 				classes = data.slices
@@ -213,19 +212,27 @@ function View(data)
 			data.color = colors
 			data.label = label
 		else
-			if data.select then
-				local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
-					"Oranges", "PRGn", "Paired", "Pastel1", "Pastel2", "PiYG", "PuBu", "PuBuGn", "PuOr", "PuRd", "Purples",
-					"RdBu", "RdGy", "RdPu", "RdYlBu", "RdYlGn", "Reds", "Set1", "Set2", "Set3", "Spectral", "YlGn", "YlGnBu",
-					"YlOrBr", "YlOrRd" }
+			local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
+				"Oranges", "PRGn", "Paired", "Pastel1", "Pastel2", "PiYG", "PuBu", "PuBuGn", "PuOr", "PuRd", "Purples",
+				"RdBu", "RdGy", "RdPu", "RdYlBu", "RdYlGn", "Reds", "Set1", "Set2", "Set3", "Spectral", "YlGn", "YlGnBu",
+				"YlOrBr", "YlOrRd" }
 
-				local isColorBrewer = type(data.color) == "string" and belong(data.color, brewerNames)
-				local isTableColors = type(data.color) == "table" and #data.color > 1 and (type(data.color[1]) == "string" or type(data.color[1]) == "table")
+			local isColorBrewer = type(data.color) == "string" and belong(data.color, brewerNames)
+			local isTableColors = type(data.color) == "table" and #data.color > 1
+			if isTableColors then
+				local allowedTypes = {"string", "table"}
+				forEachElement(data.color, function(idx, color, ctype)
+					if not belong(ctype, allowedTypes) then
+						incompatibleTypeError("color["..idx.."]", "string or table", color)
+					end
 
-				if not (isColorBrewer or isTableColors) then
-					data.color = color{color = data.color, alpha = realTransparency}
-				end
-			else
+					if ctype == "string" and belong(color, brewerNames) then
+						customError("ColorBrewer '"..color.."' is not allowed to be used in a table of colors.")
+					end
+				end)
+			end
+
+			if not (isColorBrewer or isTableColors) then
 				data.color = color{color = data.color, alpha = realTransparency}
 			end
 		end

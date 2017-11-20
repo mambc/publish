@@ -366,6 +366,23 @@ return {
 			 }
 		end
 		unitTest:assertWarning(warning_func, "Value 443600102 out of range [max: 443600101] and will not be drawn.")
+		if municipalitiesir:exists() then municipalitiesir:delete() end
+
+		error_func = function()
+			 Application {
+				project = proj,
+				clean = true,
+				output = municipalitiesir,
+				simplify = false,
+				progress = false,
+				municipalities = View {
+					select = "uf",
+					color = "Spectral",
+					slices = 5
+				}
+			 }
+		end
+		unitTest:assertError(error_func, "Selected element should be number, got string in row 1.")
 
 		if municipalitiesir:exists() then municipalitiesir:delete() end
 		municipalitiesProj:deleteIfExists()
