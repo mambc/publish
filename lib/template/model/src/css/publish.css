@@ -179,3 +179,32 @@ input[type="checkbox"] {
 .padding-body {
 	padding: 5px!important;
 }
+
+#slider label {
+	position: absolute;
+	width: 20px;
+	margin-left: -10px;
+	text-align: center;
+	margin-top: 20px;
+}
+
+#slider {
+	width: 75%;
+	margin: 2em auto;
+
+}
+
+.ui-widget {
+	font-size: 0.6em!important;
+}
+
+.bottom-align-text {
+	position: absolute;
+	bottom: 0;
+	margin-left: 30%;
+}
+
+.position {
+	margin-left: -13%;
+	margin-top: -3px;
+}
