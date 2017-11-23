@@ -577,7 +577,7 @@ return {
 
 		error_func = function()
 			View{
-				time = "snapshot"
+				time = "creation"
 			}
 		end
 		unitTest:assertError(error_func, mandatoryArgumentMsg("name"))
@@ -604,6 +604,14 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("name", "string", 1))
+
+		error_func = function()
+			View{
+				name = "anoCriacao",
+				time = "snapshot"
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' is valid only when time is equals to 'creation', got 'snapshot'.")
 
 		error_func = function()
 			View{

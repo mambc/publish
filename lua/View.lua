@@ -35,6 +35,8 @@ metaTableView_ = {
 -- One Application is composed by a set of Views.
 -- @arg data.select An optional string with the name of the attribute to be visualized.
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
+-- @arg data.name An optional string with the name of the attribute to be visualized over time. This argument is mandatory when using time equals to 'creation'.
+-- @arg data.time An optional string with the temporal mode. The possible values are: 'snapshot' and 'creation'.
 -- @arg data.visible An optional boolean whether the layer is visible. Defaults to false.
 -- @arg data.width An optional argument with the stroke width in pixels.
 -- @arg data.transparency An optional argument with the opacity of color attribute. The transparency parameter is a number between 0.0 (fully opaque) and 1.0 (fully transparent).
@@ -94,6 +96,8 @@ function View(data)
 	optionalTableArgument(data, "max", "number")
 	optionalTableArgument(data, "slices", "number")
 	optionalTableArgument(data, "color", {"string", "table"})
+	optionalTableArgument(data, "name", "string")
+	optionalTableArgument(data, "time", "string")
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
@@ -103,7 +107,7 @@ function View(data)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 		"value", "layer", "report", "transparency", "label", "icon", "download", "group", "decimal", "properties",
-		"min", "max", "slices"})
+		"min", "max", "slices", "name", "time"})
 
 	if data.report and type(data.report) == "function" then
 		mandatoryTableArgument(data, "select")
@@ -139,10 +143,28 @@ function View(data)
 		customError("Argument 'min' ("..data.min..") should be less than 'max' ("..data.max..").")
 	end
 
+	if data.name then
+		mandatoryTableArgument(data, "time", "string")
+
+		if data.time == "snapshot" then
+			customError("Argument 'name' is valid only when time is equals to 'creation', got 'snapshot'.")
+		end
+	end
+
+	if data.time then
+		if not belong(data.time, {"snapshot", "creation"}) then
+			customError("Argument 'time' must be 'snapshot' or 'creation', got '"..data.time.."'.")
+		end
+
+		if data.time == "creation" then
+			mandatoryTableArgument(data, "name", "string")
+		end
+	end
+
 	if data.color then
 		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 			"value", "layer", "report", "transparency", "label", "download", "group", "decimal", "properties",
-			"min", "max", "slices"})
+			"min", "max", "slices", "name", "time"})
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
@@ -301,7 +323,7 @@ function View(data)
 			if #data.icon > 0 then
 				mandatoryTableArgument(data, "select")
 				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report",
-					"transparency", "label", "icon", "download", "group", "decimal", "properties"})
+					"transparency", "label", "icon", "download", "group", "decimal", "properties", "name", "time"})
 
 				if data.label and (#data.icon ~= #data.label)then
 					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")

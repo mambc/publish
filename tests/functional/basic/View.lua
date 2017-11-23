@@ -299,7 +299,6 @@ return {
 		unitTest:assertEquals(view.color["3.0"], "rgba(28, 144, 153, 1)")
 
 		view = View {
-			name = "anoCriacao",
 			time = "snapshot"
 		}
 
@@ -308,10 +307,11 @@ return {
 
 		view = View {
 			name = "anoCriacao",
-			time = "snapshot"
+			time = "creation"
 		}
 
 		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.name, "anoCriacao")
 		unitTest:assertEquals(view.time, "creation")
 	end,
 	__tostring = function(unitTest)
