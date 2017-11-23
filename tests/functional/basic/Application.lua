@@ -284,6 +284,172 @@ return {
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 		file:deleteIfExists()
+
+		file = File("temporal.tview")
+		file:deleteIfExists()
+
+		local temporalDir = Directory("temporal-test")
+		if temporalDir:exists() then temporalDir:delete() end
+
+		proj = gis.Project{
+			title = "Testing temporal View",
+			author = "Carneiro, H.",
+			file = file,
+			clean = true,
+			uc_2001 = filePath("uc_federais_2016.shp", "publish"),
+			uc_2009 = filePath("uc_federais_2016.shp", "publish"),
+			uc_2016 = filePath("uc_federais_2016.shp", "publish")
+		}
+
+		app = Application{
+			base = "roadmap",
+			project = proj,
+			output = temporalDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			uc = View {
+				title = "UC",
+				description = "UC Federais.",
+				select = "anoCriacao",
+				color = "Spectral",
+				slices =  10,
+				time = "snapshot"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.uc
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertType(view.name, "table")
+		unitTest:assertType(view.timeline, "table")
+
+		unitTest:assertEquals(view.select, "anoCriacao")
+		unitTest:assertEquals(view.time, "snapshot")
+
+		unitTest:assertEquals(#view.name, 3)
+		unitTest:assertEquals(view.name[1], "uc_2001")
+		unitTest:assertEquals(view.name[1], "uc_2009")
+		unitTest:assertEquals(view.name[1], "uc_2016")
+
+		unitTest:assertEquals(#view.timeline, 3)
+		unitTest:assertEquals(view.timeline[1], 2001)
+		unitTest:assertEquals(view.timeline[1], 2009)
+		unitTest:assertEquals(view.timeline[1], 2016)
+		if temporalDir:exists() then temporalDir:delete() end
+
+		app = Application{
+			base = "roadmap",
+			project = proj,
+			output = temporalDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			uc = View {
+				title = "UC",
+				description = "UC Federais.",
+				select = "anoCriacao",
+				color = "Spectral",
+				slices =  10,
+				time = "creation"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.uc
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertType(view.name, "string")
+		unitTest:assertType(view.timeline, "table")
+
+		unitTest:assertEquals(view.select, "anoCriacao")
+		unitTest:assertEquals(view.time, "creation")
+
+		unitTest:assertEquals(view.name, "uc")
+
+		unitTest:assertEquals(#view.timeline, 28)
+		unitTest:assertEquals(view.timeline[1], 1959)
+		unitTest:assertEquals(view.timeline[#view.timeline], 2016)
+		if temporalDir:exists() then temporalDir:delete() end
+
+		file:deleteIfExists()
+		proj = gis.Project{
+			title = "Testing temporal View",
+			author = "Carneiro, H.",
+			file = file,
+			clean = true,
+			uc_2001 = filePath("uc_federais_2016.shp", "publish"),
+			uc_2009 = filePath("uc_federais_2016.shp", "publish"),
+			uc_2016 = filePath("uc_federais_2016.shp", "publish")
+		}
+
+		app = Application{
+			base = "roadmap",
+			project = proj,
+			output = temporalDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			uc_snapshot = View {
+				title = "UC",
+				description = "UC Federais.",
+				select = "anoCriacao",
+				color = "Spectral",
+				slices =  10,
+				name = "anoCriacao",
+				time = "snapshot"
+			},
+			uc_2016 = View {
+				title = "UC",
+				description = "UC Federais.",
+				select = "anoCriacao",
+				color = "Spectral",
+				slices =  10,
+				name = "anoCriacao",
+				time = "creation"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.uc_snapshot
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertType(view.name, "table")
+		unitTest:assertType(view.timeline, "table")
+
+		unitTest:assertEquals(view.select, "anoCriacao")
+		unitTest:assertEquals(view.time, "snapshot")
+
+		unitTest:assertEquals(#view.name, 3)
+		unitTest:assertEquals(view.name[1], "uc_2001")
+		unitTest:assertEquals(view.name[1], "uc_2009")
+		unitTest:assertEquals(view.name[1], "uc_2016")
+
+		unitTest:assertEquals(#view.timeline, 3)
+		unitTest:assertEquals(view.timeline[1], 2001)
+		unitTest:assertEquals(view.timeline[1], 2009)
+		unitTest:assertEquals(view.timeline[1], 2016)
+
+		view = app.view.uc_creation
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.select, "string")
+		unitTest:assertType(view.name, "string")
+		unitTest:assertType(view.timeline, "table")
+
+		unitTest:assertEquals(view.select, "anoCriacao")
+		unitTest:assertEquals(view.time, "creation")
+
+		unitTest:assertEquals(view.name, "uc")
+
+		unitTest:assertEquals(#view.timeline, 28)
+		unitTest:assertEquals(view.timeline[1], 1959)
+		unitTest:assertEquals(view.timeline[#view.timeline], 2016)
+		if temporalDir:exists() then temporalDir:delete() end
+		file:deleteIfExists()
 	end,
 	__tostring = function(unitTest)
 		local emas = filePath("emas.tview", "publish")

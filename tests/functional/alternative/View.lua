@@ -574,5 +574,42 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, integerArgumentMsg("slices", 2.1))
+
+		error_func = function()
+			View{
+				time = "snapshot"
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("name"))
+
+		error_func = function()
+			View{
+				name = "anoCriacao"
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("time"))
+
+		error_func = function()
+			View{
+				name = "anoCriacao",
+				time = 1
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("time", "string", 1))
+
+		error_func = function()
+			View{
+				name = 1,
+				time = "snapshot"
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("name", "string", 1))
+
+		error_func = function()
+			View{
+				time = "a"
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' must be 'snapshot' or 'creation', got 'a'.")
 	end
 }

@@ -269,5 +269,106 @@ return {
 		unitTest:assertWarning(warning_func, defaultValueMsg("simplify", true))
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 		file:deleteIfExists()
+
+		file = File("temporal.tview")
+		file:deleteIfExists()
+
+		local temporalDir = Directory("temporal-test")
+		if temporalDir:exists() then temporalDir:delete() end
+
+		local proj = gis.Project{
+			title = "Testing temporal View",
+			author = "Carneiro, H.",
+			file = file,
+			clean = true,
+			uc = filePath("uc_federais_2016.shp", "publish")
+		}
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "anoCriacao",
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' of View 'uc' must be a column with integers that represent years, got string in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "nome",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' of View 'uc' must be a column with integers that represent years, got string in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "areaHa",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' of View 'uc' must be a column with integers that represent years, got float in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "codUso",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' of View 'uc' with invalid pattern for year (YYYY), got 1 (Y) in row 1.")
+
+		file:deleteIfExists()
+		if temporalDir:exists() then temporalDir:delete() end
 	end
 }
