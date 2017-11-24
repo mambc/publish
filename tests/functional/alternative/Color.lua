@@ -139,10 +139,10 @@ return {
 		end
 		unitTest:assertError(error_func, "Argument 'color' (1) must be a table with 3 or 4 arguments (red, green, blue and alpha), got 6.")
 
-		error_func = function()
+		local warning_func = function()
 			color{color = {10, 10, 10}, classes = 3}
 		end
-		unitTest:assertError(error_func, unnecessaryArgumentMsg("classes"))
+		unitTest:assertWarning(warning_func, unnecessaryArgumentMsg("classes"))
 
 		error_func = function()
 			color{color = {true, true, true}}

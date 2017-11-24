@@ -62,8 +62,12 @@ metaTableView_ = {
 -- "airport", "animal", "bigcity", "bus", "car", "caution", "cycling", "database", "desert", "diving", "fillingstation", "finish", "fire", "firstaid", "fishing",
 -- "flag", "forest", "harbor", "helicopter", "home", "horseriding", "hospital", "lake", "motorbike", "mountains", "radio", "restaurant", "river", "road",
 --"shipwreck" and "thunderstorm".
--- @arg data.report An optional Report or user-defined function that creates a report for each spatial object of that view.
+-- @arg data.report An optional argument that describes what happens when the user clicks in a given object of the View. It can be a Report or a user-defined function that creates a report for each spatial object of that view.
 -- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
+-- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates.  Default value is 5.
+-- @arg data.max The maximum value of the attribute (used only for numbers).
+-- @arg data.min The minimum value of the attribute (used only for numbers).
+-- @arg data.slices Number of colors to be used for drawing. It must be an integer number greater than one.
 -- @usage import("publish")
 --
 -- local view = View{
@@ -86,14 +90,20 @@ function View(data)
 	optionalTableArgument(data, "label", "table")
 	optionalTableArgument(data, "report", {"Report", "function"})
 	optionalTableArgument(data, "icon", {"string", "table"})
+	optionalTableArgument(data, "min", "number")
+	optionalTableArgument(data, "max", "number")
+	optionalTableArgument(data, "slices", "number")
+	optionalTableArgument(data, "color", {"string", "table"})
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
 	defaultTableValue(data, "visible", true)
 	defaultTableValue(data, "download", false)
+	defaultTableValue(data, "decimal", 5)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-		"value", "layer", "report", "transparency", "label", "icon", "download", "group"})
+		"value", "layer", "report", "transparency", "label", "icon", "download", "group", "decimal", "properties",
+		"min", "max", "slices"})
 
 	if data.report and type(data.report) == "function" then
 		mandatoryTableArgument(data, "select")
@@ -111,15 +121,38 @@ function View(data)
 		customError("Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got "..data.transparency..".")
 	end
 
+	if data.slices then
+		mandatoryTableArgument(data, "color")
+		integerTableArgument(data, "slices")
+		positiveTableArgument(data, "slices")
+
+		if data.slices == 1 then
+			customError("Argument 'slices' ("..data.slices..") should be greater than one.")
+		end
+	end
+
+	if data.min or data.max then
+		mandatoryTableArgument(data, "slices", "number")
+	end
+
+	if data.min and data.max and (data.min > data.max) then
+		customError("Argument 'min' ("..data.min..") should be less than 'max' ("..data.max..").")
+	end
+
 	if data.color then
 		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
-			"value", "layer", "report", "transparency", "label", "download", "group"})
+			"value", "layer", "report", "transparency", "label", "download", "group", "decimal", "properties",
+			"min", "max", "slices"})
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
-			mandatoryTableArgument(data, "select", "string")
+			local classes
+			if data.slices and data.min and data.max then
+				classes = data.slices
+			else
+				classes = #data.value
+			end
 
-			local classes = #data.value
 			if classes == 0 then
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
@@ -137,8 +170,15 @@ function View(data)
 			end
 
 			local colors = {}
-			for i = 1, classes do
-				colors[tostring(data.value[i])] = mcolor[i]
+			if data.slices and data.min and data.max then
+				local step = (data.max - data.min) / (data.slices - 1)
+				for i = 1, classes do
+					colors[tostring(data.min + step * (i - 1))] = mcolor[i]
+				end
+			else
+				for i = 1, classes do
+					colors[tostring(data.value[i])] = mcolor[i]
+				end
 			end
 
 			local label = {}
@@ -172,19 +212,27 @@ function View(data)
 			data.color = colors
 			data.label = label
 		else
-			if data.select then
-				local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
-					"Oranges", "PRGn", "Paired", "Pastel1", "Pastel2", "PiYG", "PuBu", "PuBuGn", "PuOr", "PuRd", "Purples",
-					"RdBu", "RdGy", "RdPu", "RdYlBu", "RdYlGn", "Reds", "Set1", "Set2", "Set3", "Spectral", "YlGn", "YlGnBu",
-					"YlOrBr", "YlOrRd" }
+			local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
+				"Oranges", "PRGn", "Paired", "Pastel1", "Pastel2", "PiYG", "PuBu", "PuBuGn", "PuOr", "PuRd", "Purples",
+				"RdBu", "RdGy", "RdPu", "RdYlBu", "RdYlGn", "Reds", "Set1", "Set2", "Set3", "Spectral", "YlGn", "YlGnBu",
+				"YlOrBr", "YlOrRd" }
 
-				local isColorBrewer = type(data.color) == "string" and belong(data.color, brewerNames)
-				local isTableColors = type(data.color) == "table" and #data.color > 1 and (type(data.color[1]) == "string" or type(data.color[1]) == "table")
+			local isColorBrewer = type(data.color) == "string" and belong(data.color, brewerNames)
+			local isTableColors = type(data.color) == "table" and #data.color > 1
+			if isTableColors then
+				local allowedTypes = {"string", "table"}
+				forEachElement(data.color, function(idx, color, ctype)
+					if not belong(ctype, allowedTypes) then
+						incompatibleTypeError("color["..idx.."]", "string or table", color)
+					end
 
-				if not (isColorBrewer or isTableColors) then
-					data.color = color{color = data.color, alpha = realTransparency}
-				end
-			else
+					if ctype == "string" and belong(color, brewerNames) then
+						customError("ColorBrewer '"..color.."' is not allowed to be used in a table of colors.")
+					end
+				end)
+			end
+
+			if not (isColorBrewer or isTableColors) then
 				data.color = color{color = data.color, alpha = realTransparency}
 			end
 		end
@@ -253,7 +301,7 @@ function View(data)
 			if #data.icon > 0 then
 				mandatoryTableArgument(data, "select")
 				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report",
-					"transparency", "label", "icon", "download", "group"})
+					"transparency", "label", "icon", "download", "group", "decimal", "properties"})
 
 				if data.label and (#data.icon ~= #data.label)then
 					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")
@@ -281,6 +329,10 @@ function View(data)
 				end
 			end
 		end
+	end
+
+	if data.decimal < 0 or data.decimal ~= math.floor(data.decimal) then
+		customError("Argument 'decimal' should be an integer greater than 0, got "..data.decimal..".")
 	end
 
 	setmetatable(data, metaTableView_)

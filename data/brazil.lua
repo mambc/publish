@@ -1,5 +1,5 @@
 
-import("terralib")
+import("gis")
 
 project = Project{
 	file = "brazil.tview",

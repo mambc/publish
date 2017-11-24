@@ -24,10 +24,11 @@
 
 return {
 	Application = function(unitTest)
-		local emasDir = Directory("project-alternative-app")
+		local appAlternative = Directory("project-alternative-app")
 		local proj = File("myproject.tview")
 
-		if emasDir:exists() then emasDir:delete() end
+		if appAlternative:exists() then appAlternative:delete() end
+		proj:deleteIfExists()
 
 		local error_func = function()
 			Application{
@@ -37,7 +38,8 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
-				output = emasDir
+				simplify = false,
+				output = appAlternative
 			}
 		end
 		unitTest:assertError(error_func, "Project '"..proj.."' was not found.")
@@ -50,23 +52,12 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
-				output = emasDir
+				simplify = false,
+				output = appAlternative
 			}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("project", "Project", 1))
 
-		error_func = function()
-			Application{
-				project = filePath("emas.tview", "terralib"),
-				clean = true,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				progress = false,
-				output = emasDir
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
-		if emasDir:exists() then emasDir:delete() end
+		if appAlternative:exists() then appAlternative:delete() end
 	end
 }

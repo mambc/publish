@@ -35,6 +35,7 @@ Application{
 	clean = true,
 	output = "EmasWebMap",
 	order = {"cells", "river", "firebreak", "limit"},
+	simplify = false,
 	river = View{
 		color = "blue"
 	},

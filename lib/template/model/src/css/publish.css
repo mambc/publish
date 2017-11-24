@@ -106,6 +106,10 @@ body{
 	padding: 3px 6px;
 }
 
+.button-selected {
+	border: 1px solid #a0bfda!important;
+}
+
 @media (min-width: 768px){
 	.modal-dialog {
 		width: auto;
@@ -115,6 +119,10 @@ body{
 
 input[type="checkbox"] {
 	transform:scale(1.4, 1.4);
+}
+
+.overflow-y {
+	overflow-y: auto;
 }
 
 #map{
@@ -143,8 +151,31 @@ input[type="checkbox"] {
 	position: absolute;
 	z-index: 35;
 	top: 0;
-	bottom:0;
+	bottom:75px;
 	left: 0;
 	right:0;
 	margin: auto;
+}
+
+#loader-message{
+	color: white;
+	text-align: center;
+	white-space: nowrap;
+	position: absolute;
+	z-index: 10000000;
+	width: 200px;
+	height: 100px;
+	top:0;
+	bottom: -90px;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+
+.padding-header {
+	padding:3px 15px!important;
+}
+
+.padding-body {
+	padding: 5px!important;
 }

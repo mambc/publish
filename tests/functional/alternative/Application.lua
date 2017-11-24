@@ -43,6 +43,8 @@ return {
 			Application{
 				arg = "void",
 				clean = true,
+				simplify = false,
+				progress = false,
 				select = "river",
 				color = "BuGn",
 				value = {0, 1, 2},
@@ -50,10 +52,13 @@ return {
 				output = emasDir
 			}
 		end
-		unitTest:assertError(error_func, unnecessaryArgumentMsg("arg"))
+		unitTest:assertWarning(error_func, unnecessaryArgumentMsg("arg"))
+
+		if emasDir:exists() then emasDir:delete() end
 
 		local data = {
 			clean = true,
+			simplify = false,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
@@ -187,11 +192,11 @@ return {
 		end
 		unitTest:assertError(error_func, "'square' is an invalid value for argument 'loading'. Do you mean 'squares'?")
 
-		data.loading = "x"
+		data.loading = "xx"
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "'x' is an invalid value for argument 'loading'. It must be a string from the"
+		unitTest:assertError(error_func, "'xx' is an invalid value for argument 'loading'. It must be a string from the"
 			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
 
@@ -204,6 +209,8 @@ return {
 			Application{
 				project = filePath("caragua.tview", "publish"),
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = caraguaDir,
 				Limit = List{
 					limit = View{
@@ -225,5 +232,42 @@ return {
 		unitTest:assertError(error_func, "The application must be created using only 'List', got 1 View(s).")
 
 		if caraguaDir:exists() then caraguaDir:delete() end
+
+		data.loading = nil
+		data.simplify = 1
+		error_func = function()
+			Application(clone(data))
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("simplify", "boolean", 1))
+		if emasDir:exists() then emasDir:delete() end
+
+		local arapiunsDir = Directory("ArapiunsWebMap")
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+
+		local file = File("arapiuns-test.tview")
+		file:deleteIfExists()
+
+		local warning_func = function()
+			local gis = getPackage("gis")
+			local proj = gis.Project{
+				title = "The riverine settlements at Arapiuns (PA)",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				villages = filePath("AllCmmTab_210316OK.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				output = arapiunsDir,
+				simplify = true,
+				villages = View{
+					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
+				}
+			}
+		end
+		unitTest:assertWarning(warning_func, defaultValueMsg("simplify", true))
+		if arapiunsDir:exists() then arapiunsDir:delete() end
+		file:deleteIfExists()
 	end
 }

@@ -26,12 +26,22 @@
 
 import("publish")
 
+links = {
+	Amazonia           = "en.wikipedia.org/wiki/Amazon_biome",
+	Caatinga           = "en.wikipedia.org/wiki/Caatinga",
+	Cerrado            = "en.wikipedia.org/wiki/Cerrado",
+	Pampa              = "en.wikipedia.org/wiki/Pampas",
+	Pantanal           = "en.wikipedia.org/wiki/Pantanal",
+	["Mata Atlantica"] = "en.wikipedia.org/wiki/Atlantic_Forest"
+}
+
 Application{
 	project = filePath("brazil.tview", "publish"),
 	title = "Brazil Application",
-	description = "Small application with some data related to Brazil.",
+	description = "Small application with some data related to Brazil from "..link("www.ibge.gov.br", "IBGE")..".",
 	clean = true,
 	output = "BrazilWebMap",
+	simplify = false,
 	biomes = View{
 		select = "name",
 		color = "Set2",
@@ -41,6 +51,9 @@ Application{
 				title = cell.name,
 				author = "IBGE"
 			}
+
+			mreport:addImage(filePath("biomes/"..cell.name..".jpg", "publish"))
+			mreport:addText("For more information, please visit "..link(links[cell.name], "here")..".")
 
 			return mreport
 		end

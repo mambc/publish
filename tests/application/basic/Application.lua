@@ -26,24 +26,6 @@ return {
 	Application = function(unitTest)
 		local emasDir = Directory("view-basic-app")
 
-		local appRoot = {
-			["index.html"] = true,
-			["config.js"] = true
-		}
-
-		local appAssets = {
-			["jquery-3.1.1.min.js"] = true,
-			["publish.min.css"] = true,
-			["publish.min.js"] = true,
-			["default.gif"] = true
-		}
-
-		local appData = {
-			["firebreak.geojson"] = true,
-			["limit.geojson"] = true,
-			["river.geojson"] = true
-		}
-
 		local function assertFiles(dir, files)
 			local count = 0
 			forEachFile(dir, function(file)
@@ -64,22 +46,24 @@ return {
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778},
 			clean = true,
+			simplify = false,
 			progress = false,
 			output = emasDir,
+			logo = packageInfo("luadoc").path.."/logo/logo.png",
 			order = {"river", "firebreak", "limit"},
 			river = View{
 				color = "blue",
-				layer = filePath("emas-river.shp", "terralib")
+				layer = filePath("emas-river.shp", "gis")
 			},
 			firebreak = View{
 				color = "black",
-				layer = filePath("emas-firebreak.shp", "terralib")
+				layer = filePath("emas-firebreak.shp", "gis")
 			},
 			limit = View{
 				border = "blue",
 				color = "goldenrod",
 				width = 2,
-				layer = filePath("emas-limit.shp", "terralib")
+				layer = filePath("emas-limit.shp", "gis")
 			}
 		}
 
@@ -87,32 +71,40 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
-		unitTest:assertEquals(getn(app.view), getn(appData)) -- TODO #14. Raster layers are not counted.
+		--unitTest:assertEquals(getn(app.view), getn(appData)) -- SKIP TODO #14. Raster layers are not counted.
 
 		unitTest:assertEquals(app.view.river.width, 1)
 		unitTest:assertEquals(app.view.limit.width, 2)
-		unitTest:assertEquals(app.view.limit.visible, true)
+		unitTest:assert(app.view.limit.visible)
 
 		unitTest:assertEquals(app.view.river.order, 3)
 		unitTest:assertEquals(app.view.firebreak.order, 2)
 		unitTest:assertEquals(app.view.limit.order, 1)
 
+		local appRoot = {
+			["index.html"] = true,
+			["default.gif"] = true,
+			["config.js"] = true,
+			["limit.geojson"] = true,
+			["firebreak.geojson"] = true,
+			["river.geojson"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["logo.png"] = true
+		}
+
 		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
+		--assertFiles(app.assets, appAssets)
+		--assertFiles(app.datasource, appData)
 
 		unitTest:assert(not isFile(app.title..".tview"))
 		if emasDir:exists() then emasDir:delete() end
 
 		-- Testing Application: project = Project, view = {firebreak, river} and package = nil.
-		appData = {
-			["firebreak.geojson"] = true,
-			["river.geojson"] = true
-		}
-
 		app = Application{
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -121,6 +113,7 @@ return {
 			project = filePath("emas.tview", "publish"),
 			clean = true,
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			order = {"river"},
 			river = View{
@@ -137,10 +130,10 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers) - 2)
-		unitTest:assertEquals(getn(app.view), getn(appData))
+		--unitTest:assertEquals(getn(app.view), getn(appData)) -- SKIP
 
 		unitTest:assertEquals(app.view.river.order, 2)
 		unitTest:assertEquals(app.view.firebreak.order, 1)
@@ -148,9 +141,20 @@ return {
 		unitTest:assertEquals(app.view.river.color, "rgba(0, 0, 255, 0.4)")
 		unitTest:assertEquals(app.view.firebreak.color, "rgba(0, 0, 0, 0.5)")
 
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["firebreak.geojson"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["river.geojson"] = true
+		}
+
 		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
+		--assertFiles(app.assets, appAssets)
+		--assertFiles(app.datasource, appData)
 
 		if emasDir:exists() then emasDir:delete() end
 
@@ -160,6 +164,7 @@ return {
 			project = filePath("emas.tview", "publish"),
 			clean = true,
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			river = View{
 				color = "blue"
@@ -183,6 +188,7 @@ return {
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			project = filePath("emas.tview", "publish"),
 			clean = true,
+			simplify = false,
 			progress = false,
 			output = emasDir,
 		}
@@ -195,13 +201,6 @@ return {
 		if emasDir:exists() then emasDir:delete() end
 
 		local caraguaDir = Directory("CaraguaWebMap")
-		local appImages = {["urbis_2010_real.PNG"] = true}
-
-		appData = {
-			["real.geojson"] = true,
-			["limit.geojson"] = true,
-			["use.geojson"] = true
-		}
 
 		local report = Report{title = "URBIS-Caraguá"}
 		report:addImage("urbis_2010_real.PNG", "publish")
@@ -210,6 +209,8 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = caraguaDir,
 			report = report,
 			limit = View{
@@ -250,6 +251,8 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = caraguaDir,
 			limit = View{
 				description = "Bounding box of Caraguatatuba",
@@ -333,10 +336,174 @@ return {
 		unitTest:assertType(reports, "table")
 		unitTest:assertEquals(#reports, 1)
 
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["limit.geojson"] = true,
+			["real.geojson"] = true,
+			["use.geojson"] = true,
+			["urbis_2010_real.PNG"] = true
+		}
+
 		assertFiles(app.output, appRoot)
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
-		assertFiles(app.images, appImages)
+		--assertFiles(app.assets, appAssets)
+		--assertFiles(app.datasource, appData)
+		--assertFiles(app.images, appImages)
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+		local projRaster = File("raster.tview")
+		projRaster:deleteIfExists()
+
+		local gis = getPackage("gis")
+		local proj = gis.Project{
+			title = "Urbis",
+			author = "Carneiro, H.",
+			file = projRaster,
+			clean = true,
+			real = filePath("caragua_classes2010_regioes.tif", "publish")
+		}
+
+		app = Application{
+			project = proj,
+			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+			output = caraguaDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			real = View {
+				title = "Social Classes 2010",
+				description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+						.. "categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+				color = "Reds",
+				slices = 3
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.real
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+
+		unitTest:assertEquals(view.slices, 3)
+		unitTest:assertEquals(getn(view.color), 3)
+		unitTest:assertEquals(view.color["1.0"], "rgba(254, 224, 210, 1)")
+		unitTest:assertEquals(view.color["2.0"], "rgba(252, 146, 114, 1)")
+		unitTest:assertEquals(view.color["3.0"], "rgba(222, 45, 38, 1)")
+
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["real.geojson"] = true
+		}
+
+		assertFiles(app.output, appRoot)
+
+		projRaster:deleteIfExists()
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		local vegDir = Directory("raster-with-no-srid")
+		proj = gis.Project{
+			title = "Vegtype",
+			author = "Carneiro, H.",
+			file = projRaster,
+			clean = true,
+			vegtype = filePath("vegtype_2000_5880.tif", "publish")
+		}
+
+		app = Application{
+			project = proj,
+			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+			output = vegDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			vegtype = View {
+				title = "Vegetation Type 2000",
+				description = "Vegetation type Inland.",
+				color = "BuGn"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.vegtype
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+
+		unitTest:assertEquals(getn(view.color), 7)
+
+		appRoot = {
+			["index.html"] = true,
+			["config.js"] = true,
+			["default.gif"] = true,
+			["jquery-3.1.1.min.js"] = true,
+			["publish.min.css"] = true,
+			["publish.min.js"] = true,
+			["vegtype.geojson"] = true
+		}
+
+		assertFiles(app.output, appRoot)
+
+		if vegDir:exists() then vegDir:delete() end
+		app = Application{
+			project = proj,
+			description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
+			output = vegDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			title = "Vegetation scenario",
+			vegtype = View {
+				title = "Vegetation Type 2000",
+				description = "Vegetation type Inland.",
+				value = {-127, 1, 2, 3, 9, 10, 12},
+				color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.vegtype
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+		unitTest:assertType(view.value, "table")
+
+		unitTest:assertEquals(getn(view.value), 7)
+		projRaster:deleteIfExists()
+		if vegDir:exists() then vegDir:delete() end
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+		app = Application{
+			project = filePath("caragua.tview", "publish"),
+			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
+					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
+			output = caraguaDir,
+			clean = true,
+			simplify = false,
+			progress = false,
+			limit = View{
+				description = "Bounding box of Caraguatatuba.",
+				color = "goldenrod"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+
+		view = app.view.limit
+		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "string")
+		unitTest:assertEquals(view.color, "rgba(218, 165, 32, 1)")
 
 		if caraguaDir:exists() then caraguaDir:delete() end
 
@@ -347,6 +514,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -364,7 +533,7 @@ return {
 		unitTest:assertType(view, "View")
 		unitTest:assertType(view.description, "string")
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
-		unitTest:assertEquals(view.icon.path, "./assets/home.png")
+		unitTest:assertEquals(view.icon.path, "home.png")
 		unitTest:assert(File(app.output..view.icon.path):exists())
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
@@ -373,6 +542,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -412,8 +583,8 @@ return {
 		unitTest:assertType(view.report, "function")
 		unitTest:assertType(view.geom, "string")
 		unitTest:assertEquals(view.geom, "MultiPoint")
-		unitTest:assertEquals(view.download, true)
-		unitTest:assert(isFile(arapiunsDir.."data/villages.zip"))
+		unitTest:assert(view.download)
+		unitTest:assert(isFile(arapiunsDir.."villages.zip"))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 
@@ -421,6 +592,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -443,7 +616,7 @@ return {
 
 		view = app.view.villages
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.icon.path, "./assets/home.png")
+		unitTest:assertEquals(view.icon.path, "home.png")
 		unitTest:assert(File(app.output..view.icon.path):exists())
 		unitTest:assertNil(view.icon.time)
 
@@ -451,6 +624,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
 				description = "Route on the Arapiuns River.",
@@ -473,11 +648,12 @@ return {
 		unitTest:assertEquals(view.icon.options.strokeWeight, 2)
 		unitTest:assertEquals(view.icon.time, 25)
 
-
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
 				description = "Route on the Arapiuns River.",
@@ -507,6 +683,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -528,11 +706,11 @@ return {
 		unitTest:assertNil(view.icon.time)
 
 		unitTest:assertEquals(view.select, "UC")
-		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
-		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+		unitTest:assertEquals(view.icon.options["0"], "home.png")
+		unitTest:assertEquals(view.icon.options["1"], "forest.png")
 
-		unitTest:assertEquals(view.label["UC 0"], "./assets/home.png")
-		unitTest:assertEquals(view.label["UC 1"], "./assets/forest.png")
+		unitTest:assertEquals(view.label["UC 0"], "home.png")
+		unitTest:assertEquals(view.label["UC 1"], "forest.png")
 
 		unitTest:assert(isFile(app.output..view.icon.options["0"]))
 		unitTest:assert(isFile(app.output..view.icon.options["1"]))
@@ -543,6 +721,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -565,11 +745,11 @@ return {
 		unitTest:assertNil(view.icon.time)
 
 		unitTest:assertEquals(view.select, "UC")
-		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
-		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+		unitTest:assertEquals(view.icon.options["0"], "home.png")
+		unitTest:assertEquals(view.icon.options["1"], "forest.png")
 
-		unitTest:assertEquals(view.label["Absence of Conservation Unit"], "./assets/home.png")
-		unitTest:assertEquals(view.label["Presence of Conservation Unit"], "./assets/forest.png")
+		unitTest:assertEquals(view.label["Absence of Conservation Unit"], "home.png")
+		unitTest:assertEquals(view.label["Presence of Conservation Unit"], "forest.png")
 
 		unitTest:assert(isFile(app.output..view.icon.options["0"]))
 		unitTest:assert(isFile(app.output..view.icon.options["1"]))
@@ -581,6 +761,8 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
+			simplify = false,
+			progress = false,
 			output = arapiunsDir,
 			villages = View{
 				description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -608,11 +790,11 @@ return {
 
 		unitTest:assertEquals(view.select[1], "Nome")
 		unitTest:assertEquals(view.select[2], "UC")
-		unitTest:assertEquals(view.icon.options["0"], "./assets/home.png")
-		unitTest:assertEquals(view.icon.options["1"], "./assets/forest.png")
+		unitTest:assertEquals(view.icon.options["0"], "home.png")
+		unitTest:assertEquals(view.icon.options["1"], "forest.png")
 
-		unitTest:assertEquals(view.label["UC 0"], "./assets/home.png")
-		unitTest:assertEquals(view.label["UC 1"], "./assets/forest.png")
+		unitTest:assertEquals(view.label["UC 0"], "home.png")
+		unitTest:assertEquals(view.label["UC 1"], "forest.png")
 
 		unitTest:assert(isFile(app.output..view.icon.options["0"]))
 		unitTest:assert(isFile(app.output..view.icon.options["1"]))

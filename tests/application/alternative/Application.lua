@@ -27,30 +27,25 @@ return {
 		local emasDir = Directory("view-alternative-app")
 		if emasDir:exists() then emasDir:delete() end
 
+		local gis = getPackage("gis")
+		gis.Project{
+			file = "emas.tview",
+			clean = true,
+			firebreak = filePath("emas-firebreak.shp", "gis"),
+			river = filePath("emas-river.shp", "gis"),
+			limit = filePath("emas-limit.shp", "gis")
+		}
+
 		local error_func = function()
 			Application{
 				title = "Emas",
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "terralib"),
+				project = "emas.tview",
 				clean = true,
-				output = emasDir,
-				cover = View{
-					color = "green"
-				}
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'cover'.")
-
-		error_func = function()
-			Application{
-				title = "Emas",
-				description = "Creates a database that can be used by the example fire-spread of base package.",
-				zoom = 14,
-				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "terralib"),
-				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = 1,
 				cover = View{
@@ -66,8 +61,10 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = {1},
 				cover = View{
@@ -83,8 +80,10 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = {"cover", "cells"},
 				cover = View{
@@ -100,8 +99,10 @@ return {
 				description = "Creates a database that can be used by the example fire-spread of base package.",
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				order = {"cove"},
 				cover = View{
@@ -110,16 +111,27 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "View 'cove' in argument 'order' (1) does not exist.")
+
 		if emasDir:exists() then emasDir:delete() end
 
 		local arapiunsDir = Directory("ArapiunsWebMap")
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 
+		gis.Project{
+			title = "The riverine settlements at Arapiuns (PA)",
+			file = "arapiuns.tview",
+			clean = true,
+			trajectory = filePath("arapiuns_traj.shp", "publish"),
+			villages = filePath("AllCmmTab_210316OK.shp", "publish")
+		}
+
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -136,9 +148,11 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -158,9 +172,11 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -179,9 +195,11 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("emas.tview", "publish"),
+				project = "emas.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = emasDir,
 				limit = View{
 					icon = {path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"}
@@ -194,23 +212,11 @@ return {
 
 		error_func = function()
 			Application{
-				title = "app",
-				progress = false,
-				output = emasDir,
-				accumulation = View{
-					layer = filePath("emas-accumulation.tif", "terralib"),
-				}
-			}
-		end
-		unitTest:assertError(error_func, "Publish cannot export yet raster layer 'accumulation'.")
-
-		if emasDir:exists() then emasDir:delete() end
-
-		error_func = function()
-			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				trajectory = View{
 					description = "Route on the Arapiuns River.",
@@ -224,9 +230,11 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -239,9 +247,11 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -254,9 +264,11 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -269,9 +281,11 @@ return {
 
 		error_func = function()
 			Application{
-				project = filePath("arapiuns.tview", "publish"),
+				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
+				simplify = false,
+				progress = false,
 				output = arapiunsDir,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -284,5 +298,59 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("label", "string", 1))
 
 		if arapiunsDir:exists() then arapiunsDir:delete() end
+		File("arapiuns.tview"):deleteIfExists()
+		File("emas.tview"):deleteIfExists()
+
+		local projRaster = File("raster.tview")
+		projRaster:deleteIfExists()
+		local proj = gis.Project{
+			file = projRaster,
+			clean = true,
+			vegtype = filePath("vegtype_2000_5880.tif", "publish")
+		}
+
+		local vegDir = Directory("raster-with-no-srid")
+		if vegDir:exists() then vegDir:delete() end
+		error_func = function()
+			Application {
+				project = proj,
+				description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
+				output = vegDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				title = "Vegetation scenario",
+				vegtype = View {
+					title = "Vegetation Type 2000",
+					description = "Vegetation type Inland.",
+					select = "value",
+					color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'select' for View 'vegtype' is not valid for raster data.")
+		if vegDir:exists() then vegDir:delete() end
+		projRaster:deleteIfExists()
+
+		local caraguaDir = Directory("CaraguaWebMap")
+		if caraguaDir:exists() then caraguaDir:delete() end
+		error_func = function()
+			Application {
+				project = filePath("caragua.tview", "publish"),
+				output = caraguaDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				real = View{
+					title = "Social Classes 2010 Real",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that"
+								.." categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					value = {1, 2, 3},
+					color = {"red", "orange", "yellow"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }

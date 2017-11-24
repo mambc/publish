@@ -38,7 +38,7 @@ return {
 		unitTest:assertEquals(view.title, "Emas National Park")
 		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
 		unitTest:assertEquals(view.width, 2)
-		unitTest:assertEquals(view.visible, true)
+		unitTest:assert(view.visible)
 		unitTest:assertEquals(view.select, "river")
 		unitTest:assertEquals(view.border, "rgba(0, 0, 255, 1)")
 
@@ -68,7 +68,7 @@ return {
 		unitTest:assertEquals(view.title, "Emas National Park")
 		unitTest:assertEquals(view.description, "A small example related to a fire spread model.")
 		unitTest:assertEquals(view.width, 2)
-		unitTest:assertEquals(view.visible, false)
+		unitTest:assert(not view.visible)
 		unitTest:assertEquals(view.select, "river")
 		unitTest:assertEquals(view.transparency, 0.7)
 		unitTest:assertEquals(view.border, "rgba(255, 0, 0, 1)")
@@ -76,7 +76,7 @@ return {
 
 		view = View{
 			color = "blue",
-			layer = tostring(filePath("emas-limit.shp", "terralib")),
+			layer = tostring(filePath("emas-limit.shp", "gis")),
 			transparency = 0.95,
 		}
 
@@ -184,7 +184,7 @@ return {
 		unitTest:assertEquals(view.description, "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.")
 		unitTest:assertType(view.icon, "string")
 		unitTest:assertEquals(view.icon, "home")
-		unitTest:assertEquals(view.download, false)
+		unitTest:assert(not view.download)
 
 		view = View{
 			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -205,7 +205,7 @@ return {
 		unitTest:assertEquals(view.icon.color, "rgba(255, 0, 0, 1)")
 		unitTest:assertEquals(view.icon.transparency, 0.6)
 		unitTest:assertEquals(view.icon.time, 10)
-		unitTest:assertEquals(view.download, true)
+		unitTest:assert(view.download)
 
 		view = View{
 			description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
@@ -221,7 +221,7 @@ return {
 		unitTest:assertNotNil(view.icon.color)
 		unitTest:assertNotNil(view.icon.transparency)
 		unitTest:assertEquals(view.icon.time, 5)
-		unitTest:assertEquals(view.download, true)
+		unitTest:assert(view.download)
 
 		view = View{
 			select = "UC",
@@ -240,7 +240,8 @@ return {
 		view = View{
 			select = "UC",
 			icon = {"home", "forest"},
-			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
+			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"},
+			decimal = 3
 		}
 
 		unitTest:assertType(view, "View")
@@ -249,6 +250,7 @@ return {
 		unitTest:assertType(view.icon, "table")
 		unitTest:assertType(view.select, "string")
 		unitTest:assertEquals(view.select, "UC")
+		unitTest:assertEquals(view.decimal, 3)
 		unitTest:assertEquals(view.icon[1], "home")
 		unitTest:assertEquals(view.icon[2], "forest")
 		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
@@ -272,10 +274,29 @@ return {
 		unitTest:assertType(view.select, "table")
 		unitTest:assertEquals(view.select[1], "Nome")
 		unitTest:assertEquals(view.select[2], "UC")
+		unitTest:assertEquals(view.decimal, 5)
 		unitTest:assertEquals(view.icon[1], "home")
 		unitTest:assertEquals(view.icon[2], "forest")
 		unitTest:assertEquals(view.label[1], "Absence of Conservation Unit")
 		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
+
+		view = View {
+			select = "pib",
+			color = "PuBuGn",
+			slices = 2,
+			min = 1,
+			max = 3,
+			value = {0, 1, 2, 3}
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.slices, 2)
+		unitTest:assertEquals(view.min, 1)
+		unitTest:assertEquals(view.max, 3)
+
+		unitTest:assertNotNil(view.color)
+		unitTest:assertEquals(view.color["1.0"], "rgba(236, 226, 240, 1)")
+		unitTest:assertEquals(view.color["3.0"], "rgba(28, 144, 153, 1)")
 	end,
 	__tostring = function(unitTest)
 		local view = View{
@@ -289,6 +310,7 @@ return {
 
 		unitTest:assertEquals(tostring(view), [[border        string [rgba(0, 0, 255, 1)]
 color         named table of size 3
+decimal       number [5]
 download      boolean [false]
 label         named table of size 3
 select        string [river]

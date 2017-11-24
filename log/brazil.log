@@ -7,6 +7,12 @@ Loading layers from 'brazil.tview'
 Exporting layer 'biomes'
 Exporting layer 'states'
 Loading Template
+Copying image 'Amazonia.jpg'
+Copying image 'Caatinga.jpg'
+Copying image 'Cerrado.jpg'
+Copying image 'Pampa.jpg'
+Copying image 'Pantanal.jpg'
+Copying image 'Mata Atlantica.jpg'
 Creating file 'config.js'
 Creating file 'index.html'
 Summing up, application 'Brazil Application' was successfully created.

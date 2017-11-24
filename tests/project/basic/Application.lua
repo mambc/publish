@@ -24,34 +24,9 @@
 
 return {
 	Application = function(unitTest)
-		local terralib = getPackage("terralib")
+		local gis = getPackage("gis")
 		local emas = filePath("emas.tview", "publish")
 		local emasDir = Directory("project-basic-app")
-
-		local appAssets = {
-			["jquery-3.1.1.min.js"] = true,
-			["publish.min.css"] = true,
-			["publish.min.js"] = true,
-			["default.gif"] = true
-		}
-
-		local appData = {
-			["cells.geojson"] = true,
-			["firebreak.geojson"] = true,
-			["limit.geojson"] = true,
-			["river.geojson"] = true
-		}
-
-		local function assertFiles(dir, files)
-			local count = 0
-			forEachFile(dir, function(file)
-				unitTest:assert(files[file:name()])
-
-				count = count + 1
-			end)
-
-			unitTest:assertEquals(count, getn(files))
-		end
 
 		if emasDir:exists() then emasDir:delete() end
 
@@ -63,6 +38,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
@@ -72,15 +48,11 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(app.title, "Emas database")
 		-- unitTest:assertEquals(app.description, "A small example related to a fire spread model.") -- SKIP TODO Terrame/#1534
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
-		unitTest:assertEquals(getn(app.view), getn(appData))
-
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
 
 		if emasDir:exists() then emasDir:delete() end
 
@@ -88,20 +60,14 @@ return {
 		local fname = File("emas-test.tview")
 		fname:deleteIfExists()
 
-		appData = {
-			["firebreak.geojson"] = true,
-			["limit.geojson"] = true,
-			["river.geojson"] = true
-		}
-
-		emas = terralib.Project{
+		emas = gis.Project{
 			file = tostring(fname),
 			clean = true,
 			author = "Carneiro, H.",
 			title = "Emas database",
-			firebreak = filePath("emas-firebreak.shp", "terralib"),
-			river = filePath("emas-river.shp", "terralib"),
-			limit = filePath("emas-limit.shp", "terralib")
+			firebreak = filePath("emas-firebreak.shp", "gis"),
+			river = filePath("emas-river.shp", "gis"),
+			limit = filePath("emas-limit.shp", "gis")
 		}
 
 		emasDir = "project-basic-app-stroutput"
@@ -112,6 +78,7 @@ return {
 			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
 			value = {0, 1, 2},
 			progress = false,
+			simplify = false,
 			output = emasDir,
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
@@ -123,15 +90,11 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
-		unitTest:assertEquals(app.clean, true)
-		unitTest:assertEquals(app.progress, false)
+		unitTest:assert(app.clean)
+		unitTest:assert(not app.progress)
 		unitTest:assertEquals(app.title, "Emas")
 		unitTest:assertEquals(app.description, "Creates a database that can be used by the example fire-spread of base package.")
 		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
-		unitTest:assertEquals(getn(app.view), getn(appData))
-
-		assertFiles(app.assets, appAssets)
-		assertFiles(app.datasource, appData)
 
 		fname:deleteIfExists()
 		emasDir = Directory(emasDir)

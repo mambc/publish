@@ -15,15 +15,6 @@ local patterns = {
   tag = "[#\\^/>{&=!]"
 }
 
-local html_escape_characters = {
-  ["&"] = "&amp;",
-  ["<"] = "&lt;",
-  [">"] = "&gt;",
-  ['"'] = "&quot;",
-  ["'"] = "&#39;",
-  ["/"] = "&#x2F;"
-}
-
 local function is_array(array)
   if type(array) ~= "table" then return false end
   local max, n = 0, 0
@@ -276,10 +267,6 @@ function renderer:_name(name, context, escape)
 
   local str = value == nil and "" or value
   str = tostring(str)
-
-  if escape then
-    return string_gsub(str, '[&<>"\'/]', function(s) return html_escape_characters[s] end)
-  end
 
   return str
 end
