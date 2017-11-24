@@ -67,7 +67,7 @@ return {
 				progress = false,
 				output = emasDir,
 				order = {1},
-				cover = View{
+				limit = View{
 					color = "green"
 				}
 			}
@@ -85,8 +85,8 @@ return {
 				simplify = false,
 				progress = false,
 				output = emasDir,
-				order = {"cover", "cells"},
-				cover = View{
+				order = {"limit", "cells"},
+				limit = View{
 					color = "green"
 				}
 			}
@@ -104,13 +104,13 @@ return {
 				simplify = false,
 				progress = false,
 				output = emasDir,
-				order = {"cove"},
-				cover = View{
+				order = {"limi"},
+				limit = View{
 					color = "green"
 				}
 			}
 		end
-		unitTest:assertError(error_func, "View 'cove' in argument 'order' (1) does not exist.")
+		unitTest:assertError(error_func, "View 'limi' in argument 'order' (1) does not exist.")
 
 		if emasDir:exists() then emasDir:delete() end
 

@@ -619,5 +619,14 @@ return {
 			}
 		end
 		unitTest:assertError(error_func, "Argument 'time' must be 'snapshot' or 'creation', got 'a'.")
+
+		error_func = function()
+			View{
+				time = "snapshot",
+				select = "a",
+				report = function() end
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'report' is invalid in temporal views.")
 	end
 }

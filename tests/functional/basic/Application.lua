@@ -296,8 +296,8 @@ return {
 			author = "Carneiro, H.",
 			file = file,
 			clean = true,
-			uc_2001 = filePath("uc_federais_2016.shp", "publish"),
-			uc_2009 = filePath("uc_federais_2016.shp", "publish"),
+			uc_2001 = filePath("uc_federais_2001.shp", "publish"),
+			uc_2009 = filePath("uc_federais_2009.shp", "publish"),
 			uc_2016 = filePath("uc_federais_2016.shp", "publish")
 		}
 
@@ -313,7 +313,7 @@ return {
 				description = "UC Federais.",
 				select = "anoCriacao",
 				color = "Spectral",
-				slices =  10,
+				slices = 10,
 				time = "snapshot"
 			}
 		}
@@ -323,7 +323,6 @@ return {
 		view = app.view.uc
 		unitTest:assertType(view, "View")
 		unitTest:assertType(view.select, "string")
-		unitTest:assertType(view.name, "table")
 		unitTest:assertType(view.timeline, "table")
 
 		unitTest:assertEquals(view.select, "anoCriacao")
@@ -331,13 +330,13 @@ return {
 
 		unitTest:assertEquals(#view.name, 3)
 		unitTest:assertEquals(view.name[1], "uc_2001")
-		unitTest:assertEquals(view.name[1], "uc_2009")
-		unitTest:assertEquals(view.name[1], "uc_2016")
+		unitTest:assertEquals(view.name[2], "uc_2009")
+		unitTest:assertEquals(view.name[3], "uc_2016")
 
 		unitTest:assertEquals(#view.timeline, 3)
 		unitTest:assertEquals(view.timeline[1], 2001)
-		unitTest:assertEquals(view.timeline[1], 2009)
-		unitTest:assertEquals(view.timeline[1], 2016)
+		unitTest:assertEquals(view.timeline[2], 2009)
+		unitTest:assertEquals(view.timeline[3], 2016)
 		if temporalDir:exists() then temporalDir:delete() end
 
 		app = Application{
@@ -347,28 +346,28 @@ return {
 			clean = true,
 			simplify = false,
 			progress = false,
-			uc = View {
+			uc_2016 = View {
 				title = "UC",
 				description = "UC Federais.",
 				select = "anoCriacao",
 				color = "Spectral",
-				slices =  10,
+				slices = 10,
+				name = "anoCriacao",
 				time = "creation"
 			}
 		}
 
 		unitTest:assertType(app, "Application")
 
-		view = app.view.uc
+		view = app.view.uc_2016
 		unitTest:assertType(view, "View")
 		unitTest:assertType(view.select, "string")
 		unitTest:assertType(view.name, "string")
 		unitTest:assertType(view.timeline, "table")
 
 		unitTest:assertEquals(view.select, "anoCriacao")
+		unitTest:assertEquals(view.name, "anoCriacao")
 		unitTest:assertEquals(view.time, "creation")
-
-		unitTest:assertEquals(view.name, "uc")
 
 		unitTest:assertEquals(#view.timeline, 28)
 		unitTest:assertEquals(view.timeline[1], 1959)
@@ -381,9 +380,10 @@ return {
 			author = "Carneiro, H.",
 			file = file,
 			clean = true,
-			uc_2001 = filePath("uc_federais_2016.shp", "publish"),
-			uc_2009 = filePath("uc_federais_2016.shp", "publish"),
-			uc_2016 = filePath("uc_federais_2016.shp", "publish")
+			uc_2001 = filePath("uc_federais_2001.shp", "publish"),
+			uc_2009 = filePath("uc_federais_2009.shp", "publish"),
+			uc_2016 = filePath("uc_federais_2016.shp", "publish"),
+			uc_creation = filePath("uc_federais_2016.shp", "publish")
 		}
 
 		app = Application{
@@ -393,16 +393,15 @@ return {
 			clean = true,
 			simplify = false,
 			progress = false,
-			uc_snapshot = View {
+			uc = View {
 				title = "UC",
 				description = "UC Federais.",
 				select = "anoCriacao",
 				color = "Spectral",
 				slices =  10,
-				name = "anoCriacao",
 				time = "snapshot"
 			},
-			uc_2016 = View {
+			uc_creation = View {
 				title = "UC",
 				description = "UC Federais.",
 				select = "anoCriacao",
@@ -415,7 +414,7 @@ return {
 
 		unitTest:assertType(app, "Application")
 
-		view = app.view.uc_snapshot
+		view = app.view.uc
 		unitTest:assertType(view, "View")
 		unitTest:assertType(view.select, "string")
 		unitTest:assertType(view.name, "table")
@@ -426,13 +425,13 @@ return {
 
 		unitTest:assertEquals(#view.name, 3)
 		unitTest:assertEquals(view.name[1], "uc_2001")
-		unitTest:assertEquals(view.name[1], "uc_2009")
-		unitTest:assertEquals(view.name[1], "uc_2016")
+		unitTest:assertEquals(view.name[2], "uc_2009")
+		unitTest:assertEquals(view.name[3], "uc_2016")
 
 		unitTest:assertEquals(#view.timeline, 3)
 		unitTest:assertEquals(view.timeline[1], 2001)
-		unitTest:assertEquals(view.timeline[1], 2009)
-		unitTest:assertEquals(view.timeline[1], 2016)
+		unitTest:assertEquals(view.timeline[2], 2009)
+		unitTest:assertEquals(view.timeline[3], 2016)
 
 		view = app.view.uc_creation
 		unitTest:assertType(view, "View")
@@ -441,9 +440,8 @@ return {
 		unitTest:assertType(view.timeline, "table")
 
 		unitTest:assertEquals(view.select, "anoCriacao")
+		unitTest:assertEquals(view.name, "anoCriacao")
 		unitTest:assertEquals(view.time, "creation")
-
-		unitTest:assertEquals(view.name, "uc")
 
 		unitTest:assertEquals(#view.timeline, 28)
 		unitTest:assertEquals(view.timeline[1], 1959)
@@ -490,6 +488,7 @@ progress     boolean [false]
 project      Project
 simplify     boolean [false]
 template     named table of size 2
+temporal     vector of size 0
 title        string [Emas]
 view         named table of size 4
 zoom         number [14]

@@ -159,6 +159,10 @@ function View(data)
 		if data.time == "creation" then
 			mandatoryTableArgument(data, "name", "string")
 		end
+
+		if data.report then
+			customError("Argument 'report' is invalid in temporal views.")
+		end
 	end
 
 	if data.color then
