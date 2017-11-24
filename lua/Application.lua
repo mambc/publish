@@ -129,7 +129,7 @@ local function createDirectoryStructure(data)
 		data.assets:create() -- SKIP
 	end
 
-	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-3.1.1.min.js", "loader/"..data.loading}
+	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.js", "loader/"..data.loading}
 	if data.package then
 		table.insert(depends, "model/dist/package.min.js")
 	end
@@ -457,11 +457,17 @@ local function exportLayers(data, sof)
 			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
 		end
 
-		local filePathWithoutExtension = data.datasource..name
-		local jsonPath = filePathWithoutExtension..".geojson"
-		local exportArgs = {file = jsonPath, epsg = defaultEPSG, overwrite = true}
+		local isOGR = SourceTypeMapper[source] == SourceType.OGR
 		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
 		local isWMS = SourceTypeMapper[source] == SourceType.WMS
+
+		if mview.time and mview.time == "creation" and not isOGR then
+			customError("Temporal View with mode 'creation' only support OGR data, got '"..source.."'.")
+		end
+
+		local filePathWithoutExtension = data.datasource..name
+		local jsonPath = filePathWithoutExtension..".geojson"
+		local exportArgs = {file = jsonPath, epsg = defaultEPSG, overwrite = true }
 
 		printNormal("Exporting layer '"..name.."'")
 
@@ -662,6 +668,7 @@ local function loadViews(data)
 		nViews = nGroupViews
 	end
 
+	local temporalCount = 0
 	forEachElement(views, function(name, mview)
 		local time = mview.time
 		if time then
@@ -670,8 +677,16 @@ local function loadViews(data)
 			end
 
 			table.insert(temporal[time], name)
+			temporalCount = temporalCount + 1
 		end
 	end)
+
+	if temporalCount > 0 then
+		local sliderLib = templateDir.."model/src/assets/jquery-ui.js"
+		local sliderCss = templateDir.."model/src/css/jquery-ui.css"
+		os.execute("cp \""..sliderLib.."\" \""..data.assets.."\"")
+		os.execute("cp \""..sliderCss.."\" \""..data.assets.."\"")
+	end
 
 	data.view = views
 	data.temporal = temporal
@@ -1141,7 +1156,8 @@ local function createApplicationProjects(data, proj)
 			titleColor = data.template.title,
 			groups = groups,
 			logo = data.logo,
-			wms = data.hasWMS
+			wms = data.hasWMS,
+			slider = getn(data.temporal) > 0
 		}
 	}
 end

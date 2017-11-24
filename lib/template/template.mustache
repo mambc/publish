@@ -7,6 +7,7 @@
 		<title>{{title}}</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+		{{#slider}}<link rel="stylesheet" href="./jquery-ui.css"/>{{/slider}}
 		<link rel="stylesheet" href="./publish.min.css"/>
 	</head>
 	<body>
@@ -97,6 +98,20 @@
 				</div>
 			</div>
 		</div>
+		{{#slider}}
+		<div class="row">
+			<div id="slider-col" class="col-md-5 sidebar bottom-align-text">
+				<div id="slider-container" class="panel panel-default">
+					<div id="panel-slider" style="height: 61px;">
+						<div id="slider">
+							<span class="glyphicon glyphicon-arrow-down" id="spanSelectedYear" style="left:99%;top:-17px;"></span>
+							<button class="position" id="play"><span class="glyphicon glyphicon-play"></span></button>
+       					</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/slider}}
 		<div class="mini-submenu mini-submenu-left pull-left">
 			<i class="fa fa-list-alt"></i>
 		</div>
@@ -174,7 +189,8 @@
 			</div>
 		</div>
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?{{#key}}key={{key}}&{{/key}}sensor=false"></script>
-		<script type="text/javascript" src="./jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="./jquery-1.9.1.js"></script>
+		{{#slider}}<script type="text/javascript" src="./jquery-ui.js"></script>{{/slider}}
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		{{#wms}}<script type="text/javascript" src="./geoambientev2.min.js"></script>{{/wms}}
 		<script type="text/javascript" src="./{{config}}"></script>
