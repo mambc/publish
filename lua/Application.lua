@@ -339,8 +339,9 @@ end
 local function exportWMSLayer(data, name, layer, defaultEPSG)
 	local view = data.view[name]
 	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
-		"label", "icon", "download", "group", "decimal", "properties"})
+		"label", "icon", "download", "group", "decimal", "properties", "color"})
 
+	mandatoryTableArgument(view, "color", "table")
 	mandatoryTableArgument(view, "label", "table")
 
 	if view.download then
@@ -348,17 +349,30 @@ local function exportWMSLayer(data, name, layer, defaultEPSG)
 	end
 
 	if layer.epsg ~= defaultEPSG then
-		customError("Layer '"..name.."' must be projected in EPSG:"..defaultEPSG..", got 'EPSG:"..layer.epsg.."'.")
+		customError("Layer '"..name.."' must use projection 'EPSG:"..defaultEPSG.."', got 'EPSG:"..layer.epsg.."'.")
 	end
 
+	local colors = view.color
 	local label = view.label
-	if #label > 0 or getn(label) == 0 then
-		customError("Argument 'label' of view '"..name.."' must be a named table with the description and color.")
+
+	local colorSize = #colors
+	local labelSize = #label
+
+	if colorSize == 0 or colorSize ~= getn(colors) then
+		customError("Argument 'color' of View '"..name.."' must be a table with the colors. Example {'#F4C87F', '#CB8969', '#885944'}.")
+	end
+
+	if labelSize == 0 or labelSize ~= getn(label) then
+		customError("Argument 'label' of View '"..name.."' must be a table with the labels. Example {'Class 1', 'Class 2', 'Class 3'}.")
+	end
+
+	if colorSize ~= labelSize then
+		customError("Argument 'color' and 'label' of View '"..name.."' must have the same size, got "..colorSize.." and "..labelSize..".")
 	end
 
 	local newLabel = {}
-	forEachElement(label, function(description, strColor)
-		newLabel[tostring(description)] = color{labelColor = strColor, alpha = 1 - view.transparency}
+	forEachElement(label, function(idx, description)
+		newLabel[tostring(description)] = colors[idx]
 	end)
 
 	view.label = newLabel
@@ -454,6 +468,9 @@ local function exportLayers(data, sof)
 		mproj.clean = true
 		data.project = gis.Project(mproj)
 	end
+
+	local wmsDir = Directory("wms")
+	if wmsDir:exists() then wmsDir:delete() end
 end
 
 local function loadViewValue(data, name, view)
