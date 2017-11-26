@@ -69,9 +69,8 @@ return {
 			wmsLayer = View {
 				title = "WMS",
 				description = "Loading a view from WMS.",
-				label = {
-					boundingbox = "#ffffff"
-				}
+				color = {"#ffffff"},
+				label = {"boundingbox"}
 			}
 		}
 
@@ -79,6 +78,7 @@ return {
 		unitTest:assertType(app.project, "Project")
 		unitTest:assertType(app.output, "Directory")
 		unitTest:assert(app.output:exists())
+		unitTest:assert(not Directory("wms"):exists())
 
 		local view = app.view.wmsLayer
 		unitTest:assertType(view, "View")
@@ -125,9 +125,8 @@ return {
 			wmsLayer = View {
 				title = "WMS",
 				description = "Loading a view from WMS.",
-				label = {
-					boundingbox = "#ffffff"
-				}
+				color = {"red"},
+				label = {"boundingbox"}
 			},
 			limit = View{
 				description = "Bounding box of Caraguatatuba.",
@@ -143,6 +142,7 @@ return {
 		unitTest:assertType(view, "View")
 		unitTest:assertEquals(view.name, map)
 		unitTest:assertEquals(view.url, service)
+		unitTest:assertEquals(view.label.boundingbox, "rgba(255, 0, 0, 1)")
 
 		view = app.view.limit
 		unitTest:assertType(view, "View")

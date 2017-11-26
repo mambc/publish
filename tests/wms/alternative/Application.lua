@@ -63,14 +63,13 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
-					label = {
-						boundingbox = "#ffffff"
-					},
-					color = "#ffffff"
+					color = {"red"},
+					label = {"A"},
+					select = "a"
 				}
 			}
 		end
-		unitTest:assertWarning(warning_func, "Argument 'color' is unnecessary.")
+		unitTest:assertWarning(warning_func, "Argument 'select' is unnecessary.")
 
 		local error_func = function()
 			Application{
@@ -85,7 +84,40 @@ return {
 				}
 			}
 		end
+		unitTest:assertError(error_func, "Argument 'color' is mandatory.")
+
+		error_func = function()
+			Application{
+				project = proj,
+				output = wmsDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				wmsLayer = View {
+					title = "WMS",
+					description = "Loading a view from WMS.",
+					color = {"red"}
+				}
+			}
+		end
 		unitTest:assertError(error_func, "Argument 'label' is mandatory.")
+
+		error_func = function()
+			Application{
+				project = proj,
+				output = wmsDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				wmsLayer = View {
+					title = "WMS",
+					description = "Loading a view from WMS.",
+					color = {"red"},
+					label = {"A", "B"}
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'color' and 'label' of View 'wmsLayer' must have the same size, got 1 and 2.")
 
 		error_func = function()
 			local errorProj = buildProject()
@@ -107,13 +139,12 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
-					label = {
-						boundingbox = "#ffffff"
-					}
+					color = {"#ffffff"},
+					label = {"boundingbox"}
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Layer 'wmsLayer' must be projected in EPSG:4326, got 'EPSG:5880'.")
+		unitTest:assertError(error_func, "Layer 'wmsLayer' must use projection 'EPSG:4326', got 'EPSG:5880'.")
 
 		proj = buildProject()
 		gis.Layer{
@@ -134,11 +165,14 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
-					label = {1, 2, 3}
+					color = {"red", "green", "yellow"},
+					label = {
+						boudingbox = "red"
+					}
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'label' of view 'wmsLayer' must be a named table with the description and color.")
+		unitTest:assertError(error_func, "Argument 'label' of View 'wmsLayer' must be a table with the labels. Example {'Class 1', 'Class 2', 'Class 3'}.")
 
 		error_func = function()
 			Application{
@@ -150,11 +184,12 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
+					color = {"red"},
 					label = {}
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'label' of view 'wmsLayer' must be a named table with the description and color.")
+		unitTest:assertError(error_func, "Argument 'label' of View 'wmsLayer' must be a table with the labels. Example {'Class 1', 'Class 2', 'Class 3'}.")
 
 		error_func = function()
 			Application{
@@ -166,9 +201,8 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
-					label = {
-						boundingbox = "#ffffff"
-					},
+					color = {"#ffffff"},
+					label = {"boundingbox"},
 					download = true
 				}
 			}
