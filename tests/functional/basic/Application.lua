@@ -448,6 +448,72 @@ return {
 		unitTest:assertEquals(view.timeline[#view.timeline], 2016)
 		if temporalDir:exists() then temporalDir:delete() end
 		file:deleteIfExists()
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+
+		file = File("scenario.tview")
+		proj = gis.Project{
+			title = "Future Scenarios",
+			author = "Carneiro, H.",
+			file = file,
+			clean = true,
+			classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+			classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish"),
+			classes_lessgrowth_2025 = filePath("simulation2025_lessgrowth.shp", "publish"),
+			classes_plusgrowth_2025 = filePath("simulation2025_plusgrowth.shp", "publish"),
+			classes_poorer_2025 = filePath("simulation2025_poorer.shp", "publish"),
+			classes_richer_2025 = filePath("simulation2025_richer_final.shp", "publish")
+		}
+
+		app = Application{
+			project = proj,
+			clean = true,
+			simplify = false,
+			progress = false,
+			output = caraguaDir,
+			scenario = {
+				baseline = "Baseline simulation for 2025.",
+				lessgrowth = "Less growth simulation in 2025.",
+				plusgrowth = "Plus growth simulation in 2025.",
+				poorer = "Poorer people in Caragua in 2025.",
+				richer = "Richer people in Caragua in 2025."
+			},
+			classes = View{
+				title = "Social Classes 2010",
+				description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+						.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+				width = 0,
+				select = "classe",
+				color = {"red", "orange", "yellow"},
+				label = {"Condition C", "Condition B", "Condition A"},
+				time = "snapshot"
+			}
+		}
+
+		unitTest:assertType(app, "Application")
+		unitTest:assertType(app.scenario, "table")
+
+		unitTest:assertEquals(getn(app.scenario), #app.scenario)
+		unitTest:assertEquals(app.scenario.baseline, "Baseline simulation for 2025.")
+		unitTest:assertEquals(app.scenario.lessgrowth, "Less growth simulation in 2025.")
+		unitTest:assertEquals(app.scenario.plusgrowth, "Plus growth simulation in 2025.")
+		unitTest:assertEquals(app.scenario.poorer, "Poorer people in Caragua in 2025.")
+		unitTest:assertEquals(app.scenario.richer, "Richer people in Caragua in 2025.")
+
+		view = app.view.classes
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.time, "snapshot")
+
+		unitTest:assertEquals(#view.name, 1)
+		unitTest:assertEquals(view.name[1], "classes_2010")
+
+		unitTest:assertEquals(#view.timeline, 1)
+		unitTest:assertEquals(view.timeline[1], 2010)
+
+		unitTest:assertNotNil(view.scenario)
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+		file:deleteIfExists()
 	end,
 	__tostring = function(unitTest)
 		local emas = filePath("emas.tview", "publish")

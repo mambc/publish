@@ -421,5 +421,143 @@ return {
 
 		file:deleteIfExists()
 		if temporalDir:exists() then temporalDir:delete() end
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+		file = File("scenario.tview")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				clean = true,
+				simplify = false,
+				progress = false,
+				output = caraguaDir,
+				scenario = {},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				clean = true,
+				simplify = false,
+				progress = false,
+				output = caraguaDir,
+				scenario = {"Baseline simulation for 2025."},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				clean = true,
+				simplify = false,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = 1,
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				clean = true,
+				simplify = false,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					void = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Scenario 'void' does not exist in project 'Future Scenarios'.")
+
+		file:deleteIfExists()
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }
