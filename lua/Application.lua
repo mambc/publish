@@ -418,16 +418,37 @@ local function layerPostProcessing(data, layer, jsonPath, view, isRaster, isWMS)
 	end
 end
 
+local function splitLayerName(name, scenarios, yearPattern, scenarioPattern, numberOfScenarioSeparator)
+	local basename
+	local scenario
+	local strYear
+	local _, numberOfUnderscore = string.gsub(name, "_", "")
+	if scenarios and numberOfUnderscore == numberOfScenarioSeparator then
+		basename, scenario, strYear = string.match(name, scenarioPattern)
+	else
+		basename, strYear = string.match(name, yearPattern)
+	end
+
+	return basename, strYear, scenario
+end
+
 local function exportLayers(data, sof)
 	layerPreProcessing(data)
 
-	local mproj = {}
+	local scenarios = data.scenario
+	local snapshot = data.temporal.snapshot
+
 	local defaultEPSG = 4326
 	local hasRaster = false
-	local yearPattern = "(%w+)_(%d+)"
-	local numberOfYearChars = 4
+
 	local nView = 0
-	local snapshot = data.temporal.snapshot
+	local mproj = {}
+	local uniqueScenarios = {}
+
+	local numberOfYearChars = 4
+	local numberOfScenarioSeparator = 2
+	local yearPattern = "(%w+)_(%d+)"
+	local scenarioPattern = "(%w+)_"..yearPattern
 	gis.forEachLayer(data.project, function(layer, idx)
 		if (sof and not sof(layer, idx)) then
 			return
@@ -440,7 +461,7 @@ local function exportLayers(data, sof)
 				return
 			end
 
-			local basename, strYear = string.match(name, yearPattern)
+			local basename, strYear, scenario = splitLayerName(name, scenarios, yearPattern, scenarioPattern, numberOfScenarioSeparator)
 			local year = tonumber(strYear)
 			if not (basename and strYear and year) or (#strYear ~= numberOfYearChars or year ~= math.floor(year)) then
 				customError("Layer '"..name.."' has an invalid pattern for temporal View [Ex. name_2017].")
@@ -458,12 +479,27 @@ local function exportLayers(data, sof)
 			if not data.temporalConfig[basename] then
 				data.temporalConfig[basename] = {
 					name = {},
-					timeline = {}
+					timeline = {},
+					scenario = {}
 				}
 			end
 
-			table.insert(data.temporalConfig[basename].name, name)
-			table.insert(data.temporalConfig[basename].timeline, year)
+			local viewTemporalConfig = data.temporalConfig[basename]
+			if scenario then
+				if not viewTemporalConfig.scenario[scenario] then
+					viewTemporalConfig.scenario[scenario] = {
+						name = {},
+						timeline = {}
+					}
+				end
+
+				table.insert(viewTemporalConfig.scenario[scenario].name, name)
+				table.insert(viewTemporalConfig.scenario[scenario].timeline, year)
+				uniqueScenarios[scenario] = true
+			else
+				table.insert(viewTemporalConfig.name, name)
+				table.insert(viewTemporalConfig.timeline, year)
+			end
 		end
 
 		local source = layer.source
@@ -510,6 +546,12 @@ local function exportLayers(data, sof)
 
 	if snapshot and #snapshot > 0 and not data.temporalConfig then
 		customError("Temporal View of mode 'snapshot' declared, but no Layer was found.")
+	end
+
+	for scene in pairs(data.scenario) do
+		if not uniqueScenarios[scene] then
+			customError("Scenario '"..scene"' does not exist in project '"..data.project.title.."'.")
+		end
 	end
 
 	if hasRaster then
@@ -608,6 +650,14 @@ local function loadViewValue(data, name, view)
 			for _, layerName in ipairs(data.temporalConfig[name].name) do
 				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
 			end
+
+			if data.scenario then
+				for scene, params in pairs(data.temporalConfig[name].scenario) do
+					for _, layerName in ipairs(params.name) do
+						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
+					end
+				end
+			end
 		else
 			loadValuesFromDataSet(set, data.project, name, select, mview.slices)
 		end
@@ -698,6 +748,10 @@ local function loadViews(data)
 		end
 	end)
 
+	if data.scenario and not temporal.snapshot then
+		customError("View temporal of mode 'snapshot' is mandatory when using argument 'scenario'.")
+	end
+
 	if temporalCount > 0 then
 		local sliderLib = templateDir.."model/src/assets/jquery-ui.js"
 		local sliderCss = templateDir.."model/src/css/jquery-ui.css"
@@ -716,7 +770,7 @@ local function loadLayers(data)
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
-		"simplify", "fontSize", "name", "time", "temporal"})
+		"simplify", "fontSize", "name", "time", "temporal", "scenario"})
 
 	if nView > 0 then
 		if data.project then
@@ -846,7 +900,14 @@ local function processingView(data, layers, reports, name, view)
 			local tlib = gis.TerraLib{}
 			local layerName = name
 			if not data.project.layers[layerName] then
-				layerName = data.temporalConfig[name].name[1]
+				local viewConfig = data.temporalConfig[name]
+				layerName = viewConfig.name[1]
+				if not layerName and data.scenario then
+					for scene, params in pairs(viewConfig.sceneario) do
+						layerName = params.name[1]
+						break;
+					end
+				end
 			end
 
 			dset = tlib.getDataSet(data.project, layerName)
@@ -1056,6 +1117,7 @@ local function processingView(data, layers, reports, name, view)
 			local viewConfig = data.temporalConfig[name]
 			view.timeline = viewConfig.timeline
 			view.name = viewConfig.name
+			view.scenario = viewConfig.scenario
 			table.sort(view.name)
 		end
 
@@ -1428,6 +1490,18 @@ function Application(data)
 
 	if data.fontSize and data.fontSize <= 0 then
 		customError("Argument 'fontSize' must be a number greater than 0, got "..data.fontSize..".")
+	end
+
+	if data.scenario then
+		if #data.scenario > 0 or getn(data.scenario) == 0 then
+			customError("Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+		end
+
+		forEachElement(data.scenario, function(scenario, description, descriptionType)
+			if descriptionType ~= "string" then
+				customError("Argument 'scenario' must have strings values with the descriptions, got "..descriptionType.." in the scenario '"..scenario.."'.")
+			end
+		end)
 	end
 
 	if not data.progress then

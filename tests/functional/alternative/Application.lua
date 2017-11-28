@@ -521,7 +521,7 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+		unitTest:assertError(error_func, "Argument 'scenario' must have strings values with the descriptions, got number in the scenario 'baseline'.")
 
 		error_func = function()
 			file:deleteIfExists()
