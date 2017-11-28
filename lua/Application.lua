@@ -129,7 +129,7 @@ local function createDirectoryStructure(data)
 		data.assets:create() -- SKIP
 	end
 
-	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-3.1.1.min.js", "loader/"..data.loading}
+	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.js", "loader/"..data.loading}
 	if data.package then
 		table.insert(depends, "model/dist/package.min.js")
 	end
@@ -336,8 +336,7 @@ local function exportRasterLayer(name, layer, filePathWithoutExtension, jsonPath
 	return layerExported
 end
 
-local function exportWMSLayer(data, name, layer, defaultEPSG)
-	local view = data.view[name]
+local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
 		"label", "icon", "download", "group", "decimal", "properties", "color"})
 
@@ -392,26 +391,25 @@ local function layerPreProcessing(data)
 	end
 end
 
-local function layerPostProcessing(data, layer, jsonPath, isRaster, isWMS)
+local function layerPostProcessing(data, layer, jsonPath, view, isRaster, isWMS)
 	local name = layer.name
-	local mview = data.view[name]
 	if not isWMS then
 		if isRaster then
-			if mview.select then
+			if view.select then
 				customError("Argument 'select' for View '"..name.."' is not valid for raster data.")
 			end
 
-			mview.select = "value"
+			view.select = "value"
 		end
 
-		if mview.color and mview.value then
-			mandatoryTableArgument(mview, "select", {"string", "table"})
+		if view.color and view.value then
+			mandatoryTableArgument(view, "select", {"string", "table"})
 		end
 
 		if data.simplify then
 			printInfo("Simplifying layer'"..name.."'")
-			local properties = simplify(jsonPath, mview.decimal, mview.select)
-			mview.properties = properties
+			local properties = simplify(jsonPath, view.decimal, view.select)
+			view.properties = properties
 		end
 	end
 
@@ -426,10 +424,46 @@ local function exportLayers(data, sof)
 	local mproj = {}
 	local defaultEPSG = 4326
 	local hasRaster = false
+	local yearPattern = "(%w+)_(%d+)"
+	local numberOfYearChars = 4
+	local nView = 0
+	local snapshot = data.temporal.snapshot
 	gis.forEachLayer(data.project, function(layer, idx)
-		local name = layer.name
-		if (sof and not sof(layer, idx)) or not data.view[name] then
+		if (sof and not sof(layer, idx)) then
 			return
+		end
+
+		local name = layer.name
+		local mview = data.view[name]
+		if not mview then
+			if not snapshot then
+				return
+			end
+
+			local basename, strYear = string.match(name, yearPattern)
+			local year = tonumber(strYear)
+			if not (basename and strYear and year) or (#strYear ~= numberOfYearChars or year ~= math.floor(year)) then
+				customError("Layer '"..name.."' has an invalid pattern for temporal View [Ex. name_2017].")
+			end
+
+			if not belong(basename, snapshot) then
+				customError("Layer '"..name.."' is not a temporal View of mode 'snapshot'.")
+			end
+
+			mview = data.view[basename]
+			if not data.temporalConfig then
+				data.temporalConfig = {}
+			end
+
+			if not data.temporalConfig[basename] then
+				data.temporalConfig[basename] = {
+					name = {},
+					timeline = {}
+				}
+			end
+
+			table.insert(data.temporalConfig[basename].name, name)
+			table.insert(data.temporalConfig[basename].timeline, year)
 		end
 
 		local source = layer.source
@@ -437,11 +471,17 @@ local function exportLayers(data, sof)
 			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
 		end
 
-		local filePathWithoutExtension = data.datasource..name
-		local jsonPath = filePathWithoutExtension..".geojson"
-		local exportArgs = {file = jsonPath, epsg = defaultEPSG, overwrite = true}
+		local isOGR = SourceTypeMapper[source] == SourceType.OGR
 		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
 		local isWMS = SourceTypeMapper[source] == SourceType.WMS
+
+		if mview.time and mview.time == "creation" and not isOGR then
+			customError("Temporal View with mode 'creation' only support OGR data, got '"..source.."'.")
+		end
+
+		local filePathWithoutExtension = data.datasource..name
+		local jsonPath = filePathWithoutExtension..".geojson"
+		local exportArgs = {file = jsonPath, epsg = defaultEPSG, overwrite = true }
 
 		printNormal("Exporting layer '"..name.."'")
 
@@ -451,7 +491,7 @@ local function exportLayers(data, sof)
 			if not hasRaster then hasRaster = true end
 		else
 			if isWMS then
-				exportWMSLayer(data, name, layer, defaultEPSG)
+				exportWMSLayer(data, name, layer, defaultEPSG, mview)
 			else
 				layer:export(exportArgs)
 			end
@@ -459,9 +499,18 @@ local function exportLayers(data, sof)
 			layerExported = layer
 		end
 
-		layerPostProcessing(data, layerExported, jsonPath, isRaster, isWMS)
+		layerPostProcessing(data, layerExported, jsonPath, mview, isRaster, isWMS)
 		mproj[name] = jsonPath
+		nView = nView + 1
 	end)
+
+	if nView == 0 then
+		customError("The application does not have any View related to a Layer.")
+	end
+
+	if snapshot and #snapshot > 0 and not data.temporalConfig then
+		customError("Temporal View of mode 'snapshot' declared, but no Layer was found.")
+	end
 
 	if hasRaster then
 		mproj.file = Directory{tmp = true}..data.project.title..".tview"
@@ -471,6 +520,58 @@ local function exportLayers(data, sof)
 
 	local wmsDir = Directory("wms")
 	if wmsDir:exists() then wmsDir:delete() end
+end
+
+local function loadValuesFromDataSet(set, project, name, select, slices)
+	local tlib = gis.TerraLib{}
+	local dset = tlib.getDataSet(project, name)
+	for i = 0, #dset do
+		for k, v in pairs(dset[i]) do
+			if k == select and not set[v] then
+				if slices and type(v) ~= "number" then
+					customError("Selected element should be number, got "..type(v).." in row "..(i + 1)..".")
+				end
+
+				set[v] = true
+			end
+		end
+	end
+end
+
+local function validateTemporalProperty(project, name, view)
+	local tlib = gis.TerraLib{}
+	local dset = tlib.getDataSet(project, name)
+
+	local set = {}
+	local numberOfYearChars = 4
+	local propertyTemporal = view.name
+	for i = 0, #dset do
+		for k, v in pairs(dset[i]) do
+			if k == propertyTemporal and not set[v] then
+				local vtype = type(v)
+				if vtype == "number" and v ~= math.floor(v) then
+					vtype = "float"
+				end
+
+				if vtype ~= "number" then
+					customError("Argument 'name' of View '"..name.."' must be a column with integers that represent years, got "..vtype.." in row "..(i + 1)..".")
+				end
+
+				if #tostring(v) ~= numberOfYearChars then
+					customError("Argument 'name' of View '"..name.."' with invalid pattern for year (YYYY), got "..v.." in row "..(i + 1)..".")
+				end
+
+				set[v] = true
+			end
+		end
+	end
+
+	local timeline = {}
+	for v in pairs(set) do
+		table.insert(timeline, v)
+	end
+
+	view.timeline = timeline
 end
 
 local function loadViewValue(data, name, view)
@@ -503,18 +604,12 @@ local function loadViewValue(data, name, view)
 
 	do
 		local set = {}
-		local tlib = gis.TerraLib{}
-		local dset = tlib.getDataSet(data.project, name)
-		for i = 0, #dset do
-			for k, v in pairs(dset[i]) do
-				if k == select and not set[v] then
-					if mview.slices and type(v) ~= "number" then
-						customError("Selected element should be number, got "..type(v).." in row "..(i + 1)..".")
-					end
-
-					set[v] = true
-				end
+		if not data.project.layers[name] then
+			for _, layerName in ipairs(data.temporalConfig[name].name) do
+				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
 			end
+		else
+			loadValuesFromDataSet(set, data.project, name, select, mview.slices)
 		end
 
 		local huge = math.huge
@@ -556,6 +651,7 @@ local function loadViews(data)
 	local nViews = 0
 	local nGroups = 0
 	local nGroupViews = 0
+	local temporal =  {}
 	forEachElement(data, function(idx, mview, mtype)
 		if mtype == "View" then
 			views[idx] = mview
@@ -589,7 +685,28 @@ local function loadViews(data)
 		nViews = nGroupViews
 	end
 
+	local temporalCount = 0
+	forEachElement(views, function(name, mview)
+		local time = mview.time
+		if time then
+			if not temporal[time] then
+				temporal[time] = {}
+			end
+
+			table.insert(temporal[time], name)
+			temporalCount = temporalCount + 1
+		end
+	end)
+
+	if temporalCount > 0 then
+		local sliderLib = templateDir.."model/src/assets/jquery-ui.js"
+		local sliderCss = templateDir.."model/src/css/jquery-ui.css"
+		os.execute("cp \""..sliderLib.."\" \""..data.assets.."\"")
+		os.execute("cp \""..sliderCss.."\" \""..data.assets.."\"")
+	end
+
 	data.view = views
+	data.temporal = temporal
 	return nViews
 end
 
@@ -599,7 +716,7 @@ local function loadLayers(data)
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
-		"simplify", "fontSize"})
+		"simplify", "fontSize", "name", "time", "temporal"})
 
 	if nView > 0 then
 		if data.project then
@@ -664,6 +781,12 @@ local function loadLayers(data)
 		loadViewValue(data, name, view)
 	end)
 
+	forEachElement(data.view, function(name, view)
+		if view.time and view.time == "creation" then
+			validateTemporalProperty(data.project, name, view)
+		end
+	end)
+
 	if data.order then
 		local orderSize = #data.order
 		if orderSize == 0 or orderSize > nView then
@@ -721,7 +844,12 @@ local function processingView(data, layers, reports, name, view)
 		local dset
 		do
 			local tlib = gis.TerraLib{}
-			dset = tlib.getDataSet(data.project, name)
+			local layerName = name
+			if not data.project.layers[layerName] then
+				layerName = data.temporalConfig[name].name[1]
+			end
+
+			dset = tlib.getDataSet(data.project, layerName)
 			for i = 0, #dset do
 				if view.geom then break end
 
@@ -922,6 +1050,17 @@ local function processingView(data, layers, reports, name, view)
 			zip:deleteIfExists()
 		end
 	end
+
+	if view.time then
+		if view.time == "snapshot" then
+			local viewConfig = data.temporalConfig[name]
+			view.timeline = viewConfig.timeline
+			view.name = viewConfig.name
+			table.sort(view.name)
+		end
+
+		table.sort(view.timeline)
+	end
 end
 
 local function createApplicationGroup(data, groups, layers)
@@ -976,26 +1115,26 @@ local function createApplicationProjects(data, proj)
 	end
 
 	local mview = clone(data.view, {type_ = true, value = true})
-	forEachElement(mview, function(_, mdata)
-		if mdata.report then
-			mdata.report = type(mdata.report)
+	forEachElement(mview, function(_, viewAttributes)
+		if viewAttributes.report then
+			viewAttributes.report = type(viewAttributes.report)
 		elseif data.report then
-			mdata.report = type(data.report)
+			viewAttributes.report = type(data.report)
 		end
 
-		if mdata.select and data.simplify then
-			if type(mdata.select) == "string" then
-				mdata.select = mdata.properties[mdata.select]
+		if viewAttributes.select and data.simplify then
+			if type(viewAttributes.select) == "string" then
+				viewAttributes.select = viewAttributes.properties[viewAttributes.select]
 			else
 				local select = {}
-				for _, property in ipairs(mdata.select) do
-					table.insert(select, mdata.properties[property])
+				for _, property in ipairs(viewAttributes.select) do
+					table.insert(select, viewAttributes.properties[property])
 				end
 
-				mdata.select = select
+				viewAttributes.select = select
 			end
 
-			mdata.properties = nil
+			viewAttributes.properties = nil
 		end
 	end)
 
@@ -1034,7 +1173,8 @@ local function createApplicationProjects(data, proj)
 			titleColor = data.template.title,
 			groups = groups,
 			logo = data.logo,
-			wms = data.hasWMS
+			wms = data.hasWMS,
+			slider = getn(data.temporal) > 0
 		}
 	}
 end

@@ -297,6 +297,22 @@ return {
 		unitTest:assertNotNil(view.color)
 		unitTest:assertEquals(view.color["1.0"], "rgba(236, 226, 240, 1)")
 		unitTest:assertEquals(view.color["3.0"], "rgba(28, 144, 153, 1)")
+
+		view = View {
+			time = "snapshot"
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.time, "snapshot")
+
+		view = View {
+			name = "anoCriacao",
+			time = "creation"
+		}
+
+		unitTest:assertType(view, "View")
+		unitTest:assertEquals(view.name, "anoCriacao")
+		unitTest:assertEquals(view.time, "creation")
 	end,
 	__tostring = function(unitTest)
 		local view = View{

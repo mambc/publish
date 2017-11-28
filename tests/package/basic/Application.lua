@@ -45,7 +45,7 @@ return {
 		local appRoot = {
 			["index.html"] = true,
 			["config.js"] = true,
-			["jquery-3.1.1.min.js"] = true,
+			["jquery-1.9.1.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["default.gif"] = true,

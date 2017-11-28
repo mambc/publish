@@ -197,3 +197,87 @@ data{
 		["0"] = "Vegetation classes."
 	}
 }
+
+data{
+	file = "uc_federais_2001.shp",
+	summary = "Conservation units of Brazil.",
+	source = "INCT.",
+	attributes = {
+		codigoCnuc = "Unique identifier.",
+		nome = "Name of the unit.",
+		geometriaA = "Geometry.",
+		anoCriacao = "Creation year.",
+		sigla = "Initials.",
+		areaHa = "Area.",
+		perimetroM = "Perimeter.",
+		atoLegal = "Legal.",
+		administra = "Administration.",
+		SiglaGrupo = "Group initials.",
+		UF = "States of Brazil.",
+		municipios = "Municipalities.",
+		biomaIBGE = "Biome IBGE.",
+		biomaCRL = "Biome CRL.",
+		CoordRegio = "Region coordinates.",
+		codCat = "Code.",
+		codUso = "Code.",
+		categoria = "Category.",
+		IdUnidade = "Unit id.",
+		tipo = "Type.",
+	}
+}
+
+data{
+	file = "uc_federais_2009.shp",
+	summary = "Conservation units of Brazil.",
+	source = "INCT.",
+	attributes = {
+		codigoCnuc = "Unique identifier.",
+		nome = "Name of the unit.",
+		geometriaA = "Geometry.",
+		anoCriacao = "Creation year.",
+		sigla = "Initials.",
+		areaHa = "Area.",
+		perimetroM = "Perimeter.",
+		atoLegal = "Legal.",
+		administra = "Administration.",
+		SiglaGrupo = "Group initials.",
+		UF = "States of Brazil.",
+		municipios = "Municipalities.",
+		biomaIBGE = "Biome IBGE.",
+		biomaCRL = "Biome CRL.",
+		CoordRegio = "Region coordinates.",
+		codCat = "Code.",
+		codUso = "Code.",
+		categoria = "Category.",
+		IdUnidade = "Unit id.",
+		tipo = "Type.",
+	}
+}
+
+data{
+	file = "uc_federais_2016.shp",
+	summary = "Conservation units of Brazil.",
+	source = "INCT.",
+	attributes = {
+		codigoCnuc = "Unique identifier.",
+		nome = "Name of the unit.",
+		geometriaA = "Geometry.",
+		anoCriacao = "Creation year.",
+		sigla = "Initials.",
+		areaHa = "Area.",
+		perimetroM = "Perimeter.",
+		atoLegal = "Legal.",
+		administra = "Administration.",
+		SiglaGrupo = "Group initials.",
+		UF = "States of Brazil.",
+		municipios = "Municipalities.",
+		biomaIBGE = "Biome IBGE.",
+		biomaCRL = "Biome CRL.",
+		CoordRegio = "Region coordinates.",
+		codCat = "Code.",
+		codUso = "Code.",
+		categoria = "Category.",
+		IdUnidade = "Unit id.",
+		tipo = "Type.",
+	}
+}

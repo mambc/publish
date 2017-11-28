@@ -91,7 +91,7 @@ return {
 			["limit.geojson"] = true,
 			["firebreak.geojson"] = true,
 			["river.geojson"] = true,
-			["jquery-3.1.1.min.js"] = true,
+			["jquery-1.9.1.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["logo.png"] = true
@@ -146,7 +146,7 @@ return {
 			["config.js"] = true,
 			["firebreak.geojson"] = true,
 			["default.gif"] = true,
-			["jquery-3.1.1.min.js"] = true,
+			["jquery-1.9.1.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["river.geojson"] = true
@@ -340,7 +340,7 @@ return {
 			["index.html"] = true,
 			["config.js"] = true,
 			["default.gif"] = true,
-			["jquery-3.1.1.min.js"] = true,
+			["jquery-1.9.1.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["limit.geojson"] = true,
@@ -400,7 +400,7 @@ return {
 			["index.html"] = true,
 			["config.js"] = true,
 			["default.gif"] = true,
-			["jquery-3.1.1.min.js"] = true,
+			["jquery-1.9.1.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["real.geojson"] = true
@@ -447,7 +447,7 @@ return {
 			["index.html"] = true,
 			["config.js"] = true,
 			["default.gif"] = true,
-			["jquery-3.1.1.min.js"] = true,
+			["jquery-1.9.1.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["vegtype.geojson"] = true

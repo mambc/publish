@@ -269,5 +269,157 @@ return {
 		unitTest:assertWarning(warning_func, defaultValueMsg("simplify", true))
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 		file:deleteIfExists()
+
+		file = File("temporal.tview")
+		file:deleteIfExists()
+
+		local temporalDir = Directory("temporal-test")
+		if temporalDir:exists() then temporalDir:delete() end
+
+		local gis = getPackage("gis")
+		local proj = gis.Project{
+			title = "Testing temporal View",
+			author = "Carneiro, H.",
+			file = file,
+			clean = true,
+			uc = filePath("uc_federais_2016.shp", "publish")
+		}
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Temporal View of mode 'snapshot' declared, but no Layer was found.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "nome",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' of View 'uc' must be a column with integers that represent years, got string in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "areaHa",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' of View 'uc' must be a column with integers that represent years, got float in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "codUso",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' of View 'uc' with invalid pattern for year (YYYY), got 1 in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				a = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices = 10,
+					name = "anoCriacao",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "The application does not have any View related to a Layer.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Testing temporal View",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				snapshot1_2001 = filePath("uc_federais_2001.shp", "publish"),
+				snapshot2_2001 = filePath("uc_federais_2001.shp", "publish")
+			}
+
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				snapshot1 = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices = 10,
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Layer 'snapshot2_2001' is not a temporal View of mode 'snapshot'.")
+
+		file:deleteIfExists()
+		if temporalDir:exists() then temporalDir:delete() end
 	end
 }

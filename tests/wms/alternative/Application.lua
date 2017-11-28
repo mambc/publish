@@ -209,6 +209,26 @@ return {
 		end
 		unitTest:assertError(error_func, "WMS layer 'wmsLayer' does not support download.")
 
+		error_func = function()
+			Application{
+				project = proj,
+				output = wmsDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				wmsLayer = View {
+					title = "WMS",
+					description = "Loading a view from WMS.",
+					label = {
+						boundingbox = "#ffffff"
+					},
+					name = "anoCriacao",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Temporal View with mode 'creation' only support OGR data, got 'wms'.")
+
 		projFile:deleteIfExists()
 		if wmsDir:exists() then wmsDir:delete() end
 	end
