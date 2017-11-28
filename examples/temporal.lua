@@ -43,7 +43,7 @@ local proj = gis.Project{
 	uc_2016 = filePath("uc_federais_2016.shp", "publish")
 }
 
-local app = Application{
+Application{
 	base = "roadmap",
 	project = proj,
 	output = temporalDir,
