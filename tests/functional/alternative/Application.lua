@@ -557,6 +557,108 @@ return {
 		end
 		unitTest:assertError(error_func, "Scenario 'void' does not exist in project 'Future Scenarios'.")
 
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_20255 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				clean = true,
+				simplify = false,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Layer 'classes_baseline_20255' has an invalid pattern for temporal View [Ex. name_2017].")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				clean = true,
+				simplify = false,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					name = "classe",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "View temporal of mode 'snapshot' is mandatory when using argument 'scenario'.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				clean = true,
+				simplify = false,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "View 'classes' has only future scenarios.")
+
 		file:deleteIfExists()
 		if caraguaDir:exists() then caraguaDir:delete() end
 	end

@@ -493,7 +493,7 @@ return {
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.scenario, "table")
 
-		unitTest:assertEquals(getn(app.scenario), #app.scenario)
+		unitTest:assertEquals(getn(app.scenario), 5)
 		unitTest:assertEquals(app.scenario.baseline, "Baseline simulation for 2025.")
 		unitTest:assertEquals(app.scenario.lessgrowth, "Less growth simulation in 2025.")
 		unitTest:assertEquals(app.scenario.plusgrowth, "Plus growth simulation in 2025.")

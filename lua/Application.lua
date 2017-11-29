@@ -548,9 +548,11 @@ local function exportLayers(data, sof)
 		customError("Temporal View of mode 'snapshot' declared, but no Layer was found.")
 	end
 
-	for scene in pairs(data.scenario) do
-		if not uniqueScenarios[scene] then
-			customError("Scenario '"..scene"' does not exist in project '"..data.project.title.."'.")
+	if scenarios then
+		for scene in pairs(scenarios) do
+			if not uniqueScenarios[scene] then
+				customError("Scenario '"..scene.."' does not exist in project '"..data.project.title.."'.")
+			end
 		end
 	end
 
@@ -839,6 +841,17 @@ local function loadLayers(data)
 		if view.time and view.time == "creation" then
 			validateTemporalProperty(data.project, name, view)
 		end
+
+		if view.time then
+			if view.time == "creation" then
+				validateTemporalProperty(data.project, name, view)
+			else
+				local viewConfig = data.temporalConfig[name]
+				if #viewConfig.timeline == 0 and getn(viewConfig.scenario) > 0 then
+					customError("View '"..name.."' has only future scenarios.")
+				end
+			end
+		end
 	end)
 
 	if data.order then
@@ -902,12 +915,6 @@ local function processingView(data, layers, reports, name, view)
 			if not data.project.layers[layerName] then
 				local viewConfig = data.temporalConfig[name]
 				layerName = viewConfig.name[1]
-				if not layerName and data.scenario then
-					for scene, params in pairs(viewConfig.sceneario) do
-						layerName = params.name[1]
-						break;
-					end
-				end
 			end
 
 			dset = tlib.getDataSet(data.project, layerName)
@@ -1306,6 +1313,11 @@ local function exportTemplates(data)
 	end)
 end
 
+local function endswith(str, word)
+	local len = #word
+	return word == '' or string.sub(str, -len) == word
+end
+
 Application_ = {
 	type_ = "Application"
 }
@@ -1497,9 +1509,14 @@ function Application(data)
 			customError("Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
 		end
 
+		local dot = "."
 		forEachElement(data.scenario, function(scenario, description, descriptionType)
 			if descriptionType ~= "string" then
 				customError("Argument 'scenario' must have strings values with the descriptions, got "..descriptionType.." in the scenario '"..scenario.."'.")
+			end
+
+			if not endswith(description, dot) then
+				description = description..dot
 			end
 		end)
 	end
