@@ -460,9 +460,7 @@ return {
 			classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
 			classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish"),
 			classes_lessgrowth_2025 = filePath("simulation2025_lessgrowth.shp", "publish"),
-			classes_plusgrowth_2025 = filePath("simulation2025_plusgrowth.shp", "publish"),
-			classes_poorer_2025 = filePath("simulation2025_poorer.shp", "publish"),
-			classes_richer_2025 = filePath("simulation2025_richer_final.shp", "publish")
+			classes_plusgrowth_2025 = filePath("simulation2025_plusgrowth.shp", "publish")
 		}
 
 		app = Application{
@@ -474,9 +472,7 @@ return {
 			scenario = {
 				baseline = "Baseline simulation for 2025.",
 				lessgrowth = "Less growth simulation in 2025.",
-				plusgrowth = "Plus growth simulation in 2025.",
-				poorer = "Poorer people in Caragua in 2025.",
-				richer = "Richer people in Caragua in 2025."
+				plusgrowth = "Plus growth simulation in 2025."
 			},
 			classes = View{
 				title = "Social Classes 2010",
@@ -493,12 +489,10 @@ return {
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.scenario, "table")
 
-		unitTest:assertEquals(getn(app.scenario), 5)
+		unitTest:assertEquals(getn(app.scenario), 3)
 		unitTest:assertEquals(app.scenario.baseline, "Baseline simulation for 2025.")
 		unitTest:assertEquals(app.scenario.lessgrowth, "Less growth simulation in 2025.")
 		unitTest:assertEquals(app.scenario.plusgrowth, "Plus growth simulation in 2025.")
-		unitTest:assertEquals(app.scenario.poorer, "Poorer people in Caragua in 2025.")
-		unitTest:assertEquals(app.scenario.richer, "Richer people in Caragua in 2025.")
 
 		view = app.view.classes
 		unitTest:assertType(view, "View")
@@ -511,6 +505,14 @@ return {
 		unitTest:assertEquals(view.timeline[1], 2010)
 
 		unitTest:assertNotNil(view.scenario)
+		unitTest:assertEquals(#view.scenario.baseline.timeline, 1)
+		unitTest:assertEquals(view.scenario.baseline.timeline[1], 2025)
+
+		unitTest:assertEquals(#view.scenario.lessgrowth.timeline, 1)
+		unitTest:assertEquals(view.scenario.lessgrowth.timeline[1], 2025)
+
+		unitTest:assertEquals(#view.scenario.plusgrowth.timeline, 1)
+		unitTest:assertEquals(view.scenario.plusgrowth.timeline[1], 2025)
 
 		if caraguaDir:exists() then caraguaDir:delete() end
 		file:deleteIfExists()
