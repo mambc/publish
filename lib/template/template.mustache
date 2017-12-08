@@ -44,9 +44,10 @@
 								<div id="panel-element-{{group}}" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
 										{{#layers}}
-											<button id="{{layer}}" type="button" class="list-group-item custom-font-layer">
-												<input name="{{layer}}" type="checkbox"> {{label}}
-											</button>
+											<label>
+												<input name="{{layer}}" type="checkbox">
+												<a id="{{layer}}" href="javascript:void(0);"> {{label}} </a>
+											</label>
 										{{/layers}}
 									</div>
 								</div>
@@ -55,9 +56,10 @@
 							{{^groups}}
 								<div class="panel-body list-group padding-body">
 									{{#layers}}
-										<button id="{{layer}}" type="button" class="list-group-item custom-font-layer">
-											<input name="{{layer}}" type="checkbox"> {{label}}
-										</button>
+										<label>
+											<input name="{{layer}}" type="checkbox">
+											<a id="{{layer}}" href="javascript:void(0);"> {{label}} </a>
+										</label>
 									{{/layers}}
 								</div>
 							{{/groups}}
