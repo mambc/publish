@@ -43,24 +43,12 @@
 										<option value="classes">plusgrowth</option>
 										<option value="classes">lessgrowth</option>
 									</select>
+
+									<p class="custom-font-body" id="scenario-description"></p>
+									<button id="more-scenario-description" type="button" class="btn btn-default custom-font-more" style="display:none;">
+										More
+									</button>
 								</div>
-						</div>
-					</div>
-					<div class="panel panel-default">
-						<div class="panel-heading padding-header">
-							<h4 class="panel-title custom-font-subtitle">
-								<i class="fa fa-list-alt"></i><a id="scenario-title" data-toggle="collapse" href="#scenario-description"> Scenario Description</a>
-							</h4>
-						</div>
-						<div id="scenario-description" class="panel-collapse collapse overflow-y">
-							<div class="panel-body padding-body">
-								<p class="custom-font-body" id="scenario-description">
-									Baseline simulation for 2025.
-								</p>
-								<button id="scenario-more" type="button" class="btn btn-default custom-font-more" style="display:none;">
-									More
-								</button>
-							</div>
 						</div>
 					</div>
 					<div class="panel panel-default">
@@ -144,6 +132,21 @@
 					</div>
 					<div class="modal-body">
 						<p class="custom-font-body" id="info-description"></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-scenario-completed-description" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title custom-font-subtitle" id="modal-scenario-title-description"></h4>
+					</div>
+					<div class="modal-body">
+						<p class="custom-font-body" id="scenario-info-description"></p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>

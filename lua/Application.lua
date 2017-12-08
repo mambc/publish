@@ -1207,6 +1207,22 @@ local function createApplicationProjects(data, proj)
 		end
 	end)
 
+	local scenarios
+	if data.scenario then
+		scenarios = {{scenario = "None", view = ""} }
+		forEachElement(mview, function(viewName, viewAttributes)
+			if not viewAttributes.scenario then return end
+
+			forEachElement(viewAttributes.scenario, function(scenarioName)
+				table.insert(scenarios, {scenario = scenarioName, view = viewName})
+			end)
+		end)
+
+		table.sort(scenarios, function(k1, k2)
+			return k1.scenario < k2.scenario
+		end)
+	end
+
 	if data.bounds then
 		exportBounds(data)
 	end
@@ -1223,7 +1239,8 @@ local function createApplicationProjects(data, proj)
 			data = mview,
 			path = path,
 			group = data.group,
-			fontSize = data.fontSize
+			fontSize = data.fontSize,
+			scenario = data.scenario
 		}
 	}
 
@@ -1243,7 +1260,8 @@ local function createApplicationProjects(data, proj)
 			groups = groups,
 			logo = data.logo,
 			wms = data.hasWMS,
-			slider = getn(data.temporal) > 0
+			slider = getn(data.temporal) > 0,
+			scenarios = scenarios
 		}
 	}
 end
