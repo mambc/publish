@@ -197,6 +197,7 @@ input[type="checkbox"] {
 
 #panel-slider {
 	height: 40px;
+	width: 110%;
 }
 
 .ui-widget {
