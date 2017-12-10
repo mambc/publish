@@ -338,7 +338,7 @@ end
 
 local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
-		"label", "icon", "download", "group", "decimal", "properties", "color"})
+		"label", "icon", "download", "group", "decimal", "properties", "color", "time"})
 
 	mandatoryTableArgument(view, "color", "table")
 	mandatoryTableArgument(view, "label", "table")
@@ -444,6 +444,7 @@ local function exportLayers(data, sof)
 	local nView = 0
 	local mproj = {}
 	local uniqueScenarios = {}
+	local wmsTemporalExported = {}
 
 	local numberOfYearChars = 4
 	local numberOfScenarioSeparator = 2
@@ -455,6 +456,16 @@ local function exportLayers(data, sof)
 		end
 
 		local name = layer.name
+		local source = layer.source
+
+		local isOGR = SourceTypeMapper[source] == SourceType.OGR
+		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
+		local isWMS = SourceTypeMapper[source] == SourceType.WMS
+
+		if not isValidSource(source) then
+			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
+		end
+
 		local mview = data.view[name]
 		if not mview then
 			if not snapshot then
@@ -485,6 +496,11 @@ local function exportLayers(data, sof)
 			end
 
 			local viewTemporalConfig = data.temporalConfig[basename]
+			local viewTemporalName = name
+			if isWMS then
+				viewTemporalName = layer.map
+			end
+
 			if scenario then
 				if not viewTemporalConfig.scenario[scenario] then
 					viewTemporalConfig.scenario[scenario] = {
@@ -493,23 +509,14 @@ local function exportLayers(data, sof)
 					}
 				end
 
-				table.insert(viewTemporalConfig.scenario[scenario].name, name)
+				table.insert(viewTemporalConfig.scenario[scenario].name, viewTemporalName)
 				table.insert(viewTemporalConfig.scenario[scenario].timeline, year)
 				uniqueScenarios[scenario] = true
 			else
-				table.insert(viewTemporalConfig.name, name)
+				table.insert(viewTemporalConfig.name, viewTemporalName)
 				table.insert(viewTemporalConfig.timeline, year)
 			end
 		end
-
-		local source = layer.source
-		if not isValidSource(source) then
-			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
-		end
-
-		local isOGR = SourceTypeMapper[source] == SourceType.OGR
-		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
-		local isWMS = SourceTypeMapper[source] == SourceType.WMS
 
 		if mview.time and mview.time == "creation" and not isOGR then
 			customError("Temporal View with mode 'creation' only support OGR data, got '"..source.."'.")
@@ -526,8 +533,12 @@ local function exportLayers(data, sof)
 			layerExported = exportRasterLayer(name, layer, filePathWithoutExtension, jsonPath, defaultEPSG, exportArgs)
 			if not hasRaster then hasRaster = true end
 		else
+
 			if isWMS then
-				exportWMSLayer(data, name, layer, defaultEPSG, mview)
+				if not wmsTemporalExported[mview] then
+					exportWMSLayer(data, name, layer, defaultEPSG, mview)
+					wmsTemporalExported[mview] = true
+				end
 			else
 				layer:export(exportArgs)
 			end
@@ -654,7 +665,7 @@ local function loadViewValue(data, name, view)
 			end
 
 			if data.scenario then
-				for scene, params in pairs(data.temporalConfig[name].scenario) do
+				for _, params in pairs(data.temporalConfig[name].scenario) do
 					for _, layerName in ipairs(params.name) do
 						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
 					end
@@ -1534,7 +1545,7 @@ function Application(data)
 			end
 
 			if not endswith(description, dot) then
-				description = description..dot
+				data.scenario[scenario] = description..dot
 			end
 		end)
 	end
