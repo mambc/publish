@@ -340,7 +340,7 @@ local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
 		"label", "icon", "download", "group", "decimal", "properties", "color", "time"})
 
-	mandatoryTableArgument(view, "color", "table")
+	mandatoryTableArgument(view, "color", {"string", "table"})
 	mandatoryTableArgument(view, "label", "table")
 
 	if view.download then
@@ -349,6 +349,10 @@ local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 
 	if layer.epsg ~= defaultEPSG then
 		customError("Layer '"..name.."' must use projection 'EPSG:"..defaultEPSG.."', got 'EPSG:"..layer.epsg.."'.")
+	end
+
+	if type(view.color) == "string" then
+		view.color = {view.color}
 	end
 
 	local colors = view.color
@@ -371,7 +375,13 @@ local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 
 	local newLabel = {}
 	forEachElement(label, function(idx, description)
-		newLabel[tostring(description)] = colors[idx]
+		local colorValue = colors[idx]
+		if type(colorValue) == "table" then
+			colorValue = color{color = colorValue, alpha = 1 - view.transparency}
+			colors[idx] = colorValue
+		end
+
+		newLabel[tostring(description)] = colorValue
 	end)
 
 	view.label = newLabel

@@ -214,7 +214,7 @@
 				</div>
 			</div>
 		</div>
-		{{#scenarios}}
+		{{#hasScenario}}
 		<div class="modal fade" id="modal-scenario-completed-description" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -230,7 +230,7 @@
 				</div>
 			</div>
 		</div>
-		{{/scenarios}}
+		{{/hasScenario}}
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js{{#key}}?key={{key}}{{/key}}"></script>
 		<script type="text/javascript" src="./jquery-1.9.1.js"></script>
 		{{#slider}}<script type="text/javascript" src="./jquery-ui.js"></script>{{/slider}}
