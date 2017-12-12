@@ -1,0 +1,20 @@
+# System
+.DS_Store
+*.*~
+*.swp
+.gitignore.swp
+
+# TerraME
+doc/
+.terrame*
+*.tview
+*.log
+
+# publish
+app/
+lib/template/model/node_modules/
+lib/template/model/package-lock.json
+
+# JetBrains
+.idea/
+*.iws
