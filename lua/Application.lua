@@ -1219,8 +1219,9 @@ local function createApplicationProjects(data, proj)
 	end)
 
 	local scenarios
+	local hasScenario = false
 	if data.scenario then
-		scenarios = {{scenario = "None", view = ""} }
+		scenarios = {{scenario = "None", view = ""}}
 		forEachElement(mview, function(viewName, viewAttributes)
 			if not viewAttributes.scenario then return end
 
@@ -1232,6 +1233,8 @@ local function createApplicationProjects(data, proj)
 		table.sort(scenarios, function(k1, k2)
 			return k1.scenario < k2.scenario
 		end)
+
+		hasScenario = true
 	end
 
 	if data.bounds then
@@ -1272,7 +1275,8 @@ local function createApplicationProjects(data, proj)
 			logo = data.logo,
 			wms = data.hasWMS,
 			slider = getn(data.temporal) > 0,
-			scenarios = scenarios
+			scenarios = scenarios,
+			hasScenario = hasScenario
 		}
 	}
 end

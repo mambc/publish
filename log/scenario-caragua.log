@@ -1,0 +1,20 @@
+Creating directory structure
+Copying dependency 'model/dist/publish.min.css'
+Copying dependency 'model/dist/publish.min.js'
+Copying dependency 'model/src/assets/jquery-1.9.1.js'
+Copying dependency 'loader/default.gif'
+Copying image 'urbis_2010_real.PNG'
+Copying image 'urbis_uso_2010.PNG'
+Copying image 'urbis_simulation_2025_baseline.PNG'
+Loading layers from 'caragua.tview'
+Exporting layer 'classes_2010'
+Exporting layer 'classes_baseline_2025'
+Exporting layer 'classes_lessgrowth_2025'
+Exporting layer 'classes_plusgrowth_2025'
+Exporting layer 'limit'
+Exporting layer 'regions'
+Exporting layer 'use'
+Loading Template
+Creating file 'config.js'
+Creating file 'index.html'
+Summing up, application 'URBIS-Caraguá' was successfully created.
