@@ -28,7 +28,7 @@
 		<div class="row main-row">
 			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
-					{{#scenarios}}
+					{{#hasScenario}}
 					<div class="panel panel-default">
 						<div class="panel-heading padding-header" >
 							<h4 class="panel-title custom-font-subtitle">
@@ -39,7 +39,9 @@
 						<div id="scenario" class="panel-collapse collapse in overflow-y">
 								<div class="panel-body list-group padding-body">
 									<select id="scenario-combobox" class="form-control">
+										{{#scenarios}}
 										<option value="{{view}}">{{scenario}}</option>
+										{{/scenarios}}
 									</select>
 
 									<p class="custom-font-body" id="scenario-description"></p>
@@ -49,7 +51,7 @@
 								</div>
 						</div>
 					</div>
-					{{/scenarios}}
+					{{/hasScenario}}
 					<div class="panel panel-default">
 						<div class="panel-heading padding-header" >
 							<h4 class="panel-title custom-font-subtitle">
