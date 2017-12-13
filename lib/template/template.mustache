@@ -7,7 +7,6 @@
 		<title>{{title}}</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-		{{#slider}}<link rel="stylesheet" href="./jquery-ui.css"/>{{/slider}}
 		<link rel="stylesheet" href="./publish.min.css"/>
 	</head>
 	<body>
@@ -232,8 +231,8 @@
 		</div>
 		{{/hasScenario}}
 		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js{{#key}}?key={{key}}{{/key}}"></script>
-		<script type="text/javascript" src="./jquery-1.9.1.js"></script>
-		{{#slider}}<script type="text/javascript" src="./jquery-ui.js"></script>{{/slider}}
+		<script type="text/javascript" src="./jquery-1.9.1.min.js"></script>
+		{{#slider}}<script type="text/javascript" src="./jquery-ui.min.js"></script>{{/slider}}
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		{{#wms}}<script type="text/javascript" src="./geoambientev2.min.js"></script>{{/wms}}
 		<script type="text/javascript" src="./{{config}}"></script>
