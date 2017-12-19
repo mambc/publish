@@ -1219,14 +1219,18 @@ local function createApplicationProjects(data, proj)
 	end)
 
 	local scenarios
+	local scenariosWrapper
 	local hasScenario = false
 	if data.scenario then
-		scenarios = {{scenario = "None", view = ""}}
+		scenarios = {}
+		scenariosWrapper = {}
 		forEachElement(mview, function(viewName, viewAttributes)
 			if not viewAttributes.scenario then return end
 
 			forEachElement(viewAttributes.scenario, function(scenarioName)
-				table.insert(scenarios, {scenario = scenarioName, view = viewName})
+				local label = _Gtme.stringToLabel(scenarioName)
+				scenariosWrapper[label] = scenarioName
+				table.insert(scenarios, {scenario = label, view = viewName})
 			end)
 		end)
 
@@ -1234,6 +1238,7 @@ local function createApplicationProjects(data, proj)
 			return k1.scenario < k2.scenario
 		end)
 
+		table.insert(scenarios, 1, {scenario = "None", view = ""})
 		hasScenario = true
 	end
 
@@ -1254,7 +1259,8 @@ local function createApplicationProjects(data, proj)
 			path = path,
 			group = data.group,
 			fontSize = data.fontSize,
-			scenario = data.scenario
+			scenario = data.scenario,
+			scenarioWrapper = scenariosWrapper
 		}
 	}
 
