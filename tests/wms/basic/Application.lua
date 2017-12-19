@@ -95,7 +95,7 @@ return {
 			["index.html"] = true,
 			["config.js"] = true,
 			["default.gif"] = true,
-			["jquery-1.9.1.js"] = true,
+			["jquery-1.9.1.min.js"] = true,
 			["publish.min.css"] = true,
 			["publish.min.js"] = true,
 			["geoambientev2.min.js"] = true

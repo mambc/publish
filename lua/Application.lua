@@ -126,10 +126,10 @@ local function createDirectoryStructure(data)
 
 	data.assets = data.output -- Directory(data.output.."assets")
 	if not data.assets:exists() then
-		data.assets:create() -- SKIP
+		data.assets:create() -- SKIP'
 	end
 
-	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.js", "loader/"..data.loading}
+	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.min.js", "loader/"..data.loading}
 	if data.package then
 		table.insert(depends, "model/dist/package.min.js")
 	end
@@ -776,10 +776,8 @@ local function loadViews(data)
 	end
 
 	if temporalCount > 0 then
-		local sliderLib = templateDir.."model/src/assets/jquery-ui.js"
-		local sliderCss = templateDir.."model/src/css/jquery-ui.css"
+		local sliderLib = templateDir.."model/src/assets/jquery-ui.min.js"
 		os.execute("cp \""..sliderLib.."\" \""..data.assets.."\"")
-		os.execute("cp \""..sliderCss.."\" \""..data.assets.."\"")
 	end
 
 	data.view = views

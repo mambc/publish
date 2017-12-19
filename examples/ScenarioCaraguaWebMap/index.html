@@ -7,7 +7,6 @@
 		<title>URBIS-Caraguá</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-		<link rel="stylesheet" href="./jquery-ui.css"/>
 		<link rel="stylesheet" href="./publish.min.css"/>
 	</head>
 	<body>
@@ -39,9 +38,9 @@
 								<div class="panel-body list-group padding-body">
 									<select id="scenario-combobox" class="form-control">
 										<option value="">None</option>
-										<option value="classes">baseline</option>
-										<option value="classes">lessgrowth</option>
-										<option value="classes">plusgrowth</option>
+										<option value="classes">Base Line</option>
+										<option value="classes">Less Growth</option>
+										<option value="classes">Plus Growth</option>
 									</select>
 
 									<p class="custom-font-body" id="scenario-description"></p>
@@ -65,12 +64,14 @@
 								</div>
 								<div id="panel-element-Border" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
-											<button id="limit" type="button" class="list-group-item custom-font-layer">
-												<input name="limit" type="checkbox"> Limit
-											</button>
-											<button id="regions" type="button" class="list-group-item custom-font-layer">
-												<input name="regions" type="checkbox"> Regions
-											</button>
+											<label>
+												<input name="limit" type="checkbox">
+												<a id="limit" href="javascript:void(0);"> Limit </a>
+											</label>
+											<label>
+												<input name="regions" type="checkbox">
+												<a id="regions" href="javascript:void(0);"> Regions </a>
+											</label>
 									</div>
 								</div>
 							</div>
@@ -80,9 +81,10 @@
 								</div>
 								<div id="panel-element-OccupationalClasses" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
-											<button id="use" type="button" class="list-group-item custom-font-layer">
-												<input name="use" type="checkbox"> Occupational Classes 2010
-											</button>
+											<label>
+												<input name="use" type="checkbox">
+												<a id="use" href="javascript:void(0);"> Occupational Classes 2010 </a>
+											</label>
 									</div>
 								</div>
 							</div>
@@ -92,9 +94,10 @@
 								</div>
 								<div id="panel-element-SocialClasses" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
-											<button id="classes" type="button" class="list-group-item custom-font-layer">
-												<input name="classes" type="checkbox"> Social Classes 2010
-											</button>
+											<label>
+												<input name="classes" type="checkbox">
+												<a id="classes" href="javascript:void(0);"> Social Classes 2010 </a>
+											</label>
 									</div>
 								</div>
 							</div>
@@ -172,48 +175,6 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal fade" id="modal-report-classes" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title custom-font-report-title" id="modal-report-label-classes"> URBIS-Caraguá</h2>
-						<p class="text-muted custom-font-body">Feitosa et. al (2014)</p>
-					</div>
-					<div class="modal-body" id="modal-report-text-classes">
-						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
-						<br/>
-						
-						<img class="report-img" src="urbis_2010_real.PNG"/>
-						<br/>
-						
-						<p class="custom-font-body">This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</p>
-						
-						<hr>
-						<h4 class="custom-font-subtitle"><strong>Occupational Classes (IBGE, 2010)</strong></h4>
-						<br/>
-						
-						<img class="report-img" src="urbis_uso_2010.PNG"/>
-						<br/>
-						
-						<p class="custom-font-body">The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</p>
-						
-						<hr>
-						<h4 class="custom-font-subtitle"><strong>Social Classes 2025</strong></h4>
-						<br/>
-						
-						<img class="report-img" src="urbis_simulation_2025_baseline.PNG"/>
-						<br/>
-						
-						<p class="custom-font-body">The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</p>
-						
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="modal fade" id="modal-report-limit" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -265,6 +226,48 @@
 						<p class="text-muted custom-font-body">Feitosa et. al (2014)</p>
 					</div>
 					<div class="modal-body" id="modal-report-text-regions">
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
+						<br/>
+						
+						<img class="report-img" src="urbis_2010_real.PNG"/>
+						<br/>
+						
+						<p class="custom-font-body">This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on "condition A" (best), "B" or "C". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.</p>
+						
+						<hr>
+						<h4 class="custom-font-subtitle"><strong>Occupational Classes (IBGE, 2010)</strong></h4>
+						<br/>
+						
+						<img class="report-img" src="urbis_uso_2010.PNG"/>
+						<br/>
+						
+						<p class="custom-font-body">The occupational class describes the percentage of houses and apartments inside such areas that have occasional use. The dwelling is typically used in summer vacations and holidays.</p>
+						
+						<hr>
+						<h4 class="custom-font-subtitle"><strong>Social Classes 2025</strong></h4>
+						<br/>
+						
+						<img class="report-img" src="urbis_simulation_2025_baseline.PNG"/>
+						<br/>
+						
+						<p class="custom-font-body">The base scenario considers the zoning proposed by the new master plan of Caraguatatuba. This scenario shows how the new master plan consolidates existing patterns and trends, not being able to force significant changes in relation to the risk distribution observed in 2010.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-classes" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-classes"> URBIS-Caraguá</h2>
+						<p class="text-muted custom-font-body">Feitosa et. al (2014)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-classes">
 						<h4 class="custom-font-subtitle"><strong>Social Classes 2010</strong></h4>
 						<br/>
 						
@@ -370,9 +373,9 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="./jquery-1.9.1.js"></script>
-		<script type="text/javascript" src="./jquery-ui.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA"></script>
+		<script type="text/javascript" src="./jquery-1.9.1.min.js"></script>
+		<script type="text/javascript" src="./jquery-ui.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		
 		<script type="text/javascript" src="./config.js"></script>
