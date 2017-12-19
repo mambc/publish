@@ -69,8 +69,8 @@ return {
 			wmsLayer = View {
 				title = "WMS",
 				description = "Loading a view from WMS.",
-				color = {"#ffffff"},
-				label = {"boundingbox"}
+				color = {{244,200,127}, {203,137,105}, {136,89,68}},
+				label = {"Class 1", "Class 2", "Class 3"},
 			}
 		}
 
@@ -82,7 +82,11 @@ return {
 
 		local view = app.view.wmsLayer
 		unitTest:assertType(view, "View")
-		unitTest:assertEquals(view.label.boundingbox, "#ffffff")
+
+		unitTest:assertEquals(view.label["Class 1"], "rgba(244, 200, 127, 1)")
+		unitTest:assertEquals(view.label["Class 2"], "rgba(203, 137, 105, 1)")
+		unitTest:assertEquals(view.label["Class 3"], "rgba(136, 89, 68, 1)")
+
 		unitTest:assertEquals(view.name, map)
 		unitTest:assertEquals(view.url, service)
 		unitTest:assertEquals(view.geom, "WMS")
@@ -180,7 +184,7 @@ return {
 			wms = View {
 				title = "WMS",
 				description = "Loading a view from WMS.",
-				color = {"red"},
+				color = "red",
 				label = {"boundingbox"},
 				time = "snapshot"
 			}
@@ -191,6 +195,8 @@ return {
 
 		view = app.view.wms
 		unitTest:assertType(view, "View")
+		unitTest:assertType(view.color, "table")
+		unitTest:assertEquals(view.label.boundingbox, "rgba(255, 0, 0, 1)")
 		unitTest:assertType(view.name, "table")
 		unitTest:assertType(view.timeline, "table")
 		unitTest:assertEquals(view.name[1], map)
