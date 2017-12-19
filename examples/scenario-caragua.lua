@@ -63,13 +63,14 @@ local project = Project{
 	regions = filePath("regions.shp", "publish"),
 	use = filePath("occupational2010.shp", "publish"),
 	classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
-	classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish"),
-	classes_lessgrowth_2025 = filePath("simulation2025_lessgrowth.shp", "publish"),
-	classes_plusgrowth_2025 = filePath("simulation2025_plusgrowth.shp", "publish")
+	classes_BaseLine_2025 = filePath("simulation2025_baseline.shp", "publish"),
+	classes_LessGrowth_2025 = filePath("simulation2025_lessgrowth.shp", "publish"),
+	classes_PlusGrowth_2025 = filePath("simulation2025_plusgrowth.shp", "publish")
 }
 
 
 Application{
+	key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 	project = project,
 	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
 			.."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
@@ -78,9 +79,9 @@ Application{
 	report = report,
 	simplify = false,
 	scenario = {
-		baseline = "Baseline simulation for 2025.",
-		lessgrowth = "Less growth simulation in 2025. Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
-		plusgrowth = "Plus growth simulation in 2025. Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1)."
+		BaseLine = "Baseline simulation for 2025.",
+		LessGrowth = "Less growth simulation in 2025. Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",
+		PlusGrowth = "Plus growth simulation in 2025. Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1)."
 	},
 	SocialClasses = List{
 		classes = View{
