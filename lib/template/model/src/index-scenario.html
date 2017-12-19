@@ -4,20 +4,20 @@
 		<meta charset="utf-8"/>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
-		<title>{{title}}</title>
+		<title>Future Scenarios</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-		{{#slider}}<link rel="stylesheet" href="./jquery-ui.css"/>{{/slider}}
-		<link rel="stylesheet" href="./publish.min.css"/>
+		<link rel="stylesheet" href="./css/jquery-ui.css"/>
+		<link rel="stylesheet" href="./css/publish.css"/>
 	</head>
 	<body>
 		<div class="container">
-			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: {{navbarColor}};" role="navigation">
+			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: #1ea789;" role="navigation">
 				<div class="container-fluid">
 					<div class="navbar-header">
-						<a class="navbar-brand custom-font-app-title" style="color: {{titleColor}};">{{title}}</a>
+						<a class="navbar-brand custom-font-app-title" style="color: white;">Future Scenarios</a>
 					</div>
-					{{#logo}}<a class="nav navbar-nav pull-right"><img id="logo" src="./{{logo}}"/></a>{{/logo}}
+					
 				</div>
 			</nav>
 		</div>
@@ -28,7 +28,6 @@
 		<div class="row main-row">
 			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
-					{{#hasScenario}}
 					<div class="panel panel-default">
 						<div class="panel-heading padding-header" >
 							<h4 class="panel-title custom-font-subtitle">
@@ -39,9 +38,10 @@
 						<div id="scenario" class="panel-collapse collapse in overflow-y">
 								<div class="panel-body list-group padding-body">
 									<select id="scenario-combobox" class="form-control">
-										{{#scenarios}}
-										<option value="{{view}}">{{scenario}}</option>
-										{{/scenarios}}
+										<option value="">None</option>
+										<option value="classes">Base Line</option>
+										<option value="classes">Plus Growth</option>
+										<option value="classes">Less Growth</option>
 									</select>
 
 									<p class="custom-font-body" id="scenario-description"></p>
@@ -51,40 +51,22 @@
 								</div>
 						</div>
 					</div>
-					{{/hasScenario}}
 					<div class="panel panel-default">
 						<div class="panel-heading padding-header" >
 							<h4 class="panel-title custom-font-subtitle">
 								<i class="fa fa-list-alt"></i><a data-toggle="collapse" href="#layers"> Layers</a>
-								<span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span>
+								<!-- <span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span> -->
 							</h4>
 						</div>
 						<div id="layers" class="panel-collapse collapse in overflow-y">
-							{{#groups}}
-							<div class="panel" style="border-radius: 0 !important;">
-								<div class="panel-heading padding-header">
-									<a id="group-{{group}}" class="panel-title custom-font-group-title" data-toggle="collapse" href="#panel-element-{{group}}"> {{lblGroup}}</a>
-								</div>
-								<div id="panel-element-{{group}}" class="panel-collapse collapse in">
-									<div class="panel-body list-group padding-body">
-										{{#layers}}
-											<button id="{{layer}}" type="button" class="list-group-item custom-font-layer">
-												<input name="{{layer}}" type="checkbox"> {{label}}
-											</button>
-										{{/layers}}
-									</div>
-								</div>
-							</div>
-							{{/groups}}
-							{{^groups}}
 								<div class="panel-body list-group padding-body">
-									{{#layers}}
-										<button id="{{layer}}" type="button" class="list-group-item custom-font-layer">
-											<input name="{{layer}}" type="checkbox"> {{label}}
+										<button id="classes" type="button" class="list-group-item custom-font-layer">
+											<input name="classes" type="checkbox"> Social Classes 2010
 										</button>
-									{{/layers}}
+										<button id="limit" type="button" class="list-group-item custom-font-layer">
+											<input name="limit" type="checkbox"> Limit
+										</button>
 								</div>
-							{{/groups}}
 						</div>
 					</div>
 					<div class="panel panel-default">
@@ -122,7 +104,6 @@
 				</div>
 			</div>
 		</div>
-		{{#slider}}
 		<div class="row">
 			<div id="slider-col" class="col-md-5 sidebar bottom-align-text">
 				<div id="slider-container" class="panel panel-default">
@@ -130,73 +111,22 @@
 						<div id="slider">
 							<span class="glyphicon glyphicon-arrow-down" id="spanSelectedYear" style="left:99%;top:-17px;"></span>
 							<button class="position" id="play"><span class="glyphicon glyphicon-play"></span></button>
+							
        					</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		{{/slider}}
 		<div class="mini-submenu mini-submenu-left pull-left">
 			<i class="fa fa-list-alt"></i>
 		</div>
-		<img id="loader" src="./{{loading}}" hidden="hidden"/>
+		<img id="loader" src="./assets/default.gif" hidden="hidden"/>
 		<div id="loader-message"><h4 id="loader-message-text"></h4></div>
 		<footer class="navbar-default navbar-fixed-bottom">
 			<div id="footer" class="container-fluid">
 				<p>Powered by package <a href="https://github.com/TerraME/publish" target="_blank">publish</a> of <a href="http://www.terrame.org" target="_blank">TerraME</a>.</p>
 			</div>
 		</footer>
-		{{#description}}
-		<div class="modal fade" id="modal-app-description" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title custom-font-subtitle">{{title}}</h4>
-					</div>
-					<div class="modal-body">
-						<p class="custom-font-body">{{description}}</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		{{/description}}
-		{{#report}}
-		<div class="modal fade" id="modal-report-{{layer}}{{select}}" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-						<h2 class="modal-title custom-font-report-title" id="modal-report-label-{{layer}}{{select}}"> {{title}}</h2>
-						{{#author}}
-						<p class="text-muted custom-font-body">{{author}}</p>
-						{{/author}}
-					</div>
-					<div class="modal-body" id="modal-report-text-{{layer}}{{select}}">
-					{{#reports}}
-						{{#heading}}
-						<h4 class="custom-font-subtitle"><strong>{{heading}}</strong></h4>
-						<br/>
-						{{/heading}}
-						{{#image}}
-						<img class="report-img" src="{{image}}"/>
-						<br/>
-						{{/image}}
-						{{#text}}
-						<p class="custom-font-body">{{text}}</p>
-						{{/text}}
-						{{#separator}}<hr>{{/separator}}
-					{{/reports}}
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-		{{/report}}
 		<div class="modal fade" id="modal-completed-description" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -212,7 +142,6 @@
 				</div>
 			</div>
 		</div>
-		{{#hasScenario}}
 		<div class="modal fade" id="modal-scenario-completed-description" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -228,13 +157,12 @@
 				</div>
 			</div>
 		</div>
-		{{/hasScenario}}
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?{{#key}}key={{key}}&{{/key}}sensor=false"></script>
-		<script type="text/javascript" src="./jquery-1.9.1.js"></script>
-		{{#slider}}<script type="text/javascript" src="./jquery-ui.js"></script>{{/slider}}
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA&sensor=false"></script>
+		<script type="text/javascript" src="./assets/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="./assets/jquery-ui.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		{{#wms}}<script type="text/javascript" src="./geoambientev2.min.js"></script>{{/wms}}
-		<script type="text/javascript" src="./{{config}}"></script>
-		<script type="text/javascript" src="./publish.min.js"></script>
+		<script type="text/javascript" src="./config-scenario.js"></script>
+		<script type="text/javascript" src="./js/publish.js"></script>
 	</body>
 </html>
+
