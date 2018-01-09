@@ -1,0 +1,14 @@
+Creating directory structure
+Copying dependency 'model/dist/publish.min.css'
+Copying dependency 'model/dist/publish.min.js'
+Copying dependency 'model/src/assets/jquery-1.9.1.min.js'
+Copying dependency 'loader/default.gif'
+Loading layers from 'prodes.tview'
+Exporting layer 'prodes_2000'
+Exporting layer 'prodes_2005'
+Exporting layer 'prodes_2010'
+Exporting layer 'prodes_2015'
+Loading Template
+Creating file 'config.js'
+Creating file 'index.html'
+Summing up, application 'Prodes' was successfully created.

@@ -7,7 +7,6 @@
 		<title>Brazil Application</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-		
 		<link rel="stylesheet" href="./publish.min.css"/>
 	</head>
 	<body>
@@ -37,12 +36,14 @@
 						</div>
 						<div id="layers" class="panel-collapse collapse in overflow-y">
 								<div class="panel-body list-group padding-body">
-										<button id="biomes" type="button" class="list-group-item custom-font-layer">
-											<input name="biomes" type="checkbox"> Biomes
-										</button>
-										<button id="states" type="button" class="list-group-item custom-font-layer">
-											<input name="states" type="checkbox"> States
-										</button>
+										<label>
+											<input name="biomes" type="checkbox">
+											<a id="biomes" href="javascript:void(0);"> Biomes </a>
+										</label>
+										<label>
+											<input name="states" type="checkbox">
+											<a id="states" href="javascript:void(0);"> States </a>
+										</label>
 								</div>
 						</div>
 					</div>
@@ -247,8 +248,8 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-		<script type="text/javascript" src="./jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+		<script type="text/javascript" src="./jquery-1.9.1.min.js"></script>
 		
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		

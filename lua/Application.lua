@@ -126,10 +126,10 @@ local function createDirectoryStructure(data)
 
 	data.assets = data.output -- Directory(data.output.."assets")
 	if not data.assets:exists() then
-		data.assets:create() -- SKIP
+		data.assets:create() -- SKIP'
 	end
 
-	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.js", "loader/"..data.loading}
+	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.min.js", "loader/"..data.loading}
 	if data.package then
 		table.insert(depends, "model/dist/package.min.js")
 	end
@@ -338,9 +338,9 @@ end
 
 local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
-		"label", "icon", "download", "group", "decimal", "properties", "color"})
+		"label", "icon", "download", "group", "decimal", "properties", "color", "time"})
 
-	mandatoryTableArgument(view, "color", "table")
+	mandatoryTableArgument(view, "color", {"string", "table"})
 	mandatoryTableArgument(view, "label", "table")
 
 	if view.download then
@@ -349,6 +349,10 @@ local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 
 	if layer.epsg ~= defaultEPSG then
 		customError("Layer '"..name.."' must use projection 'EPSG:"..defaultEPSG.."', got 'EPSG:"..layer.epsg.."'.")
+	end
+
+	if type(view.color) == "string" then
+		view.color = {view.color}
 	end
 
 	local colors = view.color
@@ -371,7 +375,13 @@ local function exportWMSLayer(data, name, layer, defaultEPSG, view)
 
 	local newLabel = {}
 	forEachElement(label, function(idx, description)
-		newLabel[tostring(description)] = colors[idx]
+		local colorValue = colors[idx]
+		if type(colorValue) == "table" then
+			colorValue = color{color = colorValue, alpha = 1 - view.transparency}
+			colors[idx] = colorValue
+		end
+
+		newLabel[tostring(description)] = colorValue
 	end)
 
 	view.label = newLabel
@@ -418,29 +428,61 @@ local function layerPostProcessing(data, layer, jsonPath, view, isRaster, isWMS)
 	end
 end
 
+local function splitLayerName(name, scenarios, yearPattern, scenarioPattern, numberOfScenarioSeparator)
+	local basename
+	local scenario
+	local strYear
+	local _, numberOfUnderscore = string.gsub(name, "_", "")
+	if scenarios and numberOfUnderscore == numberOfScenarioSeparator then
+		basename, scenario, strYear = string.match(name, scenarioPattern)
+	else
+		basename, strYear = string.match(name, yearPattern)
+	end
+
+	return basename, strYear, scenario
+end
+
 local function exportLayers(data, sof)
 	layerPreProcessing(data)
 
-	local mproj = {}
+	local scenarios = data.scenario
+	local snapshot = data.temporal.snapshot
+
 	local defaultEPSG = 4326
 	local hasRaster = false
-	local yearPattern = "(%w+)_(%d+)"
-	local numberOfYearChars = 4
+
 	local nView = 0
-	local snapshot = data.temporal.snapshot
+	local mproj = {}
+	local uniqueScenarios = {}
+	local wmsTemporalExported = {}
+
+	local numberOfYearChars = 4
+	local numberOfScenarioSeparator = 2
+	local yearPattern = "(%w+)_(%d+)"
+	local scenarioPattern = "(%w+)_"..yearPattern
 	gis.forEachLayer(data.project, function(layer, idx)
 		if (sof and not sof(layer, idx)) then
 			return
 		end
 
 		local name = layer.name
+		local source = layer.source
+
+		local isOGR = SourceTypeMapper[source] == SourceType.OGR
+		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
+		local isWMS = SourceTypeMapper[source] == SourceType.WMS
+
+		if not isValidSource(source) then
+			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
+		end
+
 		local mview = data.view[name]
 		if not mview then
 			if not snapshot then
 				return
 			end
 
-			local basename, strYear = string.match(name, yearPattern)
+			local basename, strYear, scenario = splitLayerName(name, scenarios, yearPattern, scenarioPattern, numberOfScenarioSeparator)
 			local year = tonumber(strYear)
 			if not (basename and strYear and year) or (#strYear ~= numberOfYearChars or year ~= math.floor(year)) then
 				customError("Layer '"..name.."' has an invalid pattern for temporal View [Ex. name_2017].")
@@ -458,22 +500,33 @@ local function exportLayers(data, sof)
 			if not data.temporalConfig[basename] then
 				data.temporalConfig[basename] = {
 					name = {},
-					timeline = {}
+					timeline = {},
+					scenario = {}
 				}
 			end
 
-			table.insert(data.temporalConfig[basename].name, name)
-			table.insert(data.temporalConfig[basename].timeline, year)
-		end
+			local viewTemporalConfig = data.temporalConfig[basename]
+			local viewTemporalName = name
+			if isWMS then
+				viewTemporalName = layer.map
+			end
 
-		local source = layer.source
-		if not isValidSource(source) then
-			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
-		end
+			if scenario then
+				if not viewTemporalConfig.scenario[scenario] then
+					viewTemporalConfig.scenario[scenario] = {
+						name = {},
+						timeline = {}
+					}
+				end
 
-		local isOGR = SourceTypeMapper[source] == SourceType.OGR
-		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
-		local isWMS = SourceTypeMapper[source] == SourceType.WMS
+				table.insert(viewTemporalConfig.scenario[scenario].name, viewTemporalName)
+				table.insert(viewTemporalConfig.scenario[scenario].timeline, year)
+				uniqueScenarios[scenario] = true
+			else
+				table.insert(viewTemporalConfig.name, viewTemporalName)
+				table.insert(viewTemporalConfig.timeline, year)
+			end
+		end
 
 		if mview.time and mview.time == "creation" and not isOGR then
 			customError("Temporal View with mode 'creation' only support OGR data, got '"..source.."'.")
@@ -490,8 +543,12 @@ local function exportLayers(data, sof)
 			layerExported = exportRasterLayer(name, layer, filePathWithoutExtension, jsonPath, defaultEPSG, exportArgs)
 			if not hasRaster then hasRaster = true end
 		else
+
 			if isWMS then
-				exportWMSLayer(data, name, layer, defaultEPSG, mview)
+				if not wmsTemporalExported[mview] then
+					exportWMSLayer(data, name, layer, defaultEPSG, mview)
+					wmsTemporalExported[mview] = true
+				end
 			else
 				layer:export(exportArgs)
 			end
@@ -510,6 +567,14 @@ local function exportLayers(data, sof)
 
 	if snapshot and #snapshot > 0 and not data.temporalConfig then
 		customError("Temporal View of mode 'snapshot' declared, but no Layer was found.")
+	end
+
+	if scenarios then
+		for scene in pairs(scenarios) do
+			if not uniqueScenarios[scene] then
+				customError("Scenario '"..scene.."' does not exist in project '"..data.project.title.."'.")
+			end
+		end
 	end
 
 	if hasRaster then
@@ -608,6 +673,14 @@ local function loadViewValue(data, name, view)
 			for _, layerName in ipairs(data.temporalConfig[name].name) do
 				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
 			end
+
+			if data.scenario then
+				for _, params in pairs(data.temporalConfig[name].scenario) do
+					for _, layerName in ipairs(params.name) do
+						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
+					end
+				end
+			end
 		else
 			loadValuesFromDataSet(set, data.project, name, select, mview.slices)
 		end
@@ -698,11 +771,13 @@ local function loadViews(data)
 		end
 	end)
 
+	if data.scenario and not temporal.snapshot then
+		customError("View temporal of mode 'snapshot' is mandatory when using argument 'scenario'.")
+	end
+
 	if temporalCount > 0 then
-		local sliderLib = templateDir.."model/src/assets/jquery-ui.js"
-		local sliderCss = templateDir.."model/src/css/jquery-ui.css"
+		local sliderLib = templateDir.."model/src/assets/jquery-ui.min.js"
 		os.execute("cp \""..sliderLib.."\" \""..data.assets.."\"")
-		os.execute("cp \""..sliderCss.."\" \""..data.assets.."\"")
 	end
 
 	data.view = views
@@ -716,7 +791,7 @@ local function loadLayers(data)
 	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
-		"simplify", "fontSize", "name", "time", "temporal"})
+		"simplify", "fontSize", "name", "time", "temporal", "scenario"})
 
 	if nView > 0 then
 		if data.project then
@@ -785,6 +860,17 @@ local function loadLayers(data)
 		if view.time and view.time == "creation" then
 			validateTemporalProperty(data.project, name, view)
 		end
+
+		if view.time then
+			if view.time == "creation" then
+				validateTemporalProperty(data.project, name, view)
+			else
+				local viewConfig = data.temporalConfig[name]
+				if #viewConfig.timeline == 0 and getn(viewConfig.scenario) > 0 then
+					customError("View '"..name.."' has only future scenarios.")
+				end
+			end
+		end
 	end)
 
 	if data.order then
@@ -846,7 +932,8 @@ local function processingView(data, layers, reports, name, view)
 			local tlib = gis.TerraLib{}
 			local layerName = name
 			if not data.project.layers[layerName] then
-				layerName = data.temporalConfig[name].name[1]
+				local viewConfig = data.temporalConfig[name]
+				layerName = viewConfig.name[1]
 			end
 
 			dset = tlib.getDataSet(data.project, layerName)
@@ -1056,6 +1143,7 @@ local function processingView(data, layers, reports, name, view)
 			local viewConfig = data.temporalConfig[name]
 			view.timeline = viewConfig.timeline
 			view.name = viewConfig.name
+			view.scenario = viewConfig.scenario
 			table.sort(view.name)
 		end
 
@@ -1138,6 +1226,30 @@ local function createApplicationProjects(data, proj)
 		end
 	end)
 
+	local scenarios
+	local scenariosWrapper
+	local hasScenario = false
+	if data.scenario then
+		scenarios = {}
+		scenariosWrapper = {}
+		forEachElement(mview, function(viewName, viewAttributes)
+			if not viewAttributes.scenario then return end
+
+			forEachElement(viewAttributes.scenario, function(scenarioName)
+				local label = _Gtme.stringToLabel(scenarioName)
+				scenariosWrapper[label] = scenarioName
+				table.insert(scenarios, {scenario = label, view = viewName})
+			end)
+		end)
+
+		table.sort(scenarios, function(k1, k2)
+			return k1.scenario < k2.scenario
+		end)
+
+		table.insert(scenarios, 1, {scenario = "None", view = ""})
+		hasScenario = true
+	end
+
 	if data.bounds then
 		exportBounds(data)
 	end
@@ -1154,7 +1266,9 @@ local function createApplicationProjects(data, proj)
 			data = mview,
 			path = path,
 			group = data.group,
-			fontSize = data.fontSize
+			fontSize = data.fontSize,
+			scenario = data.scenario,
+			scenarioWrapper = scenariosWrapper
 		}
 	}
 
@@ -1174,7 +1288,9 @@ local function createApplicationProjects(data, proj)
 			groups = groups,
 			logo = data.logo,
 			wms = data.hasWMS,
-			slider = getn(data.temporal) > 0
+			slider = getn(data.temporal) > 0,
+			scenarios = scenarios,
+			hasScenario = hasScenario
 		}
 	}
 end
@@ -1242,6 +1358,11 @@ local function exportTemplates(data)
 		fwrite:writeLine(model)
 		fwrite:close()
 	end)
+end
+
+local function endswith(str, word)
+	local len = #word
+	return word == '' or string.sub(str, -len) == word
 end
 
 Application_ = {
@@ -1428,6 +1549,23 @@ function Application(data)
 
 	if data.fontSize and data.fontSize <= 0 then
 		customError("Argument 'fontSize' must be a number greater than 0, got "..data.fontSize..".")
+	end
+
+	if data.scenario then
+		if #data.scenario > 0 or getn(data.scenario) == 0 then
+			customError("Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+		end
+
+		local dot = "."
+		forEachElement(data.scenario, function(scenario, description, descriptionType)
+			if descriptionType ~= "string" then
+				customError("Argument 'scenario' must have strings values with the descriptions, got "..descriptionType.." in the scenario '"..scenario.."'.")
+			end
+
+			if not endswith(description, dot) then
+				data.scenario[scenario] = description..dot
+			end
+		end)
 	end
 
 	if not data.progress then

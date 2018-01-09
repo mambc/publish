@@ -7,7 +7,6 @@
 		<title>{{title}}</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-		{{#slider}}<link rel="stylesheet" href="./jquery-ui.css"/>{{/slider}}
 		<link rel="stylesheet" href="./publish.min.css"/>
 	</head>
 	<body>
@@ -28,6 +27,30 @@
 		<div class="row main-row">
 			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
+					{{#hasScenario}}
+					<div class="panel panel-default">
+						<div class="panel-heading padding-header" >
+							<h4 class="panel-title custom-font-subtitle">
+								<i class="fa fa-list-alt"></i><a data-toggle="collapse" href="#scenario"> Scenario</a>
+								<span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span>
+							</h4>
+						</div>
+						<div id="scenario" class="panel-collapse collapse in overflow-y">
+								<div class="panel-body list-group padding-body">
+									<select id="scenario-combobox" class="form-control">
+										{{#scenarios}}
+										<option value="{{view}}">{{scenario}}</option>
+										{{/scenarios}}
+									</select>
+
+									<p class="custom-font-body" id="scenario-description"></p>
+									<button id="more-scenario-description" type="button" class="btn btn-default custom-font-more" style="display:none;">
+										More
+									</button>
+								</div>
+						</div>
+					</div>
+					{{/hasScenario}}
 					<div class="panel panel-default">
 						<div class="panel-heading padding-header" >
 							<h4 class="panel-title custom-font-subtitle">
@@ -44,9 +67,10 @@
 								<div id="panel-element-{{group}}" class="panel-collapse collapse in">
 									<div class="panel-body list-group padding-body">
 										{{#layers}}
-											<button id="{{layer}}" type="button" class="list-group-item custom-font-layer">
-												<input name="{{layer}}" type="checkbox"> {{label}}
-											</button>
+											<label>
+												<input name="{{layer}}" type="checkbox">
+												<a id="{{layer}}" href="javascript:void(0);"> {{label}} </a>
+											</label>
 										{{/layers}}
 									</div>
 								</div>
@@ -55,9 +79,10 @@
 							{{^groups}}
 								<div class="panel-body list-group padding-body">
 									{{#layers}}
-										<button id="{{layer}}" type="button" class="list-group-item custom-font-layer">
-											<input name="{{layer}}" type="checkbox"> {{label}}
-										</button>
+										<label>
+											<input name="{{layer}}" type="checkbox">
+											<a id="{{layer}}" href="javascript:void(0);"> {{label}} </a>
+										</label>
 									{{/layers}}
 								</div>
 							{{/groups}}
@@ -188,9 +213,26 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?{{#key}}key={{key}}&{{/key}}sensor=false"></script>
-		<script type="text/javascript" src="./jquery-1.9.1.js"></script>
-		{{#slider}}<script type="text/javascript" src="./jquery-ui.js"></script>{{/slider}}
+		{{#hasScenario}}
+		<div class="modal fade" id="modal-scenario-completed-description" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title custom-font-subtitle" id="modal-scenario-title-description"></h4>
+					</div>
+					<div class="modal-body">
+						<p class="custom-font-body" id="scenario-info-description"></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{{/hasScenario}}
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js{{#key}}?key={{key}}{{/key}}"></script>
+		<script type="text/javascript" src="./jquery-1.9.1.min.js"></script>
+		{{#slider}}<script type="text/javascript" src="./jquery-ui.min.js"></script>{{/slider}}
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		{{#wms}}<script type="text/javascript" src="./geoambientev2.min.js"></script>{{/wms}}
 		<script type="text/javascript" src="./{{config}}"></script>
