@@ -63,8 +63,8 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
-					color = {"red"},
-					label = {"A"},
+					color = "red",
+					label = "A",
 					select = "a"
 				}
 			}
@@ -139,8 +139,8 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
-					color = {"#ffffff"},
-					label = {"boundingbox"}
+					color = "#ffffff",
+					label = "boundingbox"
 				}
 			}
 		end
@@ -201,8 +201,8 @@ return {
 				wmsLayer = View {
 					title = "WMS",
 					description = "Loading a view from WMS.",
-					color = {"#ffffff"},
-					label = {"boundingbox"},
+					color = "#ffffff",
+					label = "boundingbox",
 					download = true
 				}
 			}

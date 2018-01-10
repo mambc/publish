@@ -52,7 +52,7 @@ return {
 			logo = packageInfo("luadoc").path.."/logo/logo.png",
 			order = {"river", "firebreak", "limit"},
 			river = View{
-				color = "blue",
+				color = {0, 0, 255},
 				layer = filePath("emas-river.shp", "gis")
 			},
 			firebreak = View{

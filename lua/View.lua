@@ -58,7 +58,7 @@ metaTableView_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
--- @arg data.label An optional table of strings that describes the labels to be shown in the Legend.
+-- @arg data.label An optional string or table of strings that describes the labels to be shown in the Legend.
 -- @arg data.icon An optional table or string. A table with the icon properties, such as path, color and transparency. The property path
 -- uses SVG notation (see https://www.w3.org/TR/SVG/paths.html). A string with the name of marker icon. The markers available are:
 -- "airport", "animal", "bigcity", "bus", "car", "caution", "cycling", "database", "desert", "diving", "fillingstation", "finish", "fire", "firstaid", "fishing",
@@ -89,12 +89,26 @@ function View(data)
 	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", {"string", "table"})
+
+	if type(data.label) == "string" then
+		data.label = {data.label}
+	end
+
 	optionalTableArgument(data, "label", "table")
 	optionalTableArgument(data, "report", {"Report", "function"})
 	optionalTableArgument(data, "icon", {"string", "table"})
 	optionalTableArgument(data, "min", "number")
 	optionalTableArgument(data, "max", "number")
 	optionalTableArgument(data, "slices", "number")
+
+	local mcolor = data.color
+
+	if type(mcolor) == "table" and #mcolor == 3 then
+		if type(mcolor[1]) == "number" and type(mcolor[2]) == "number" and type(mcolor[3]) == "number" then
+			data.color = {data.color}
+		end
+	end
+
 	optionalTableArgument(data, "color", {"string", "table"})
 	optionalTableArgument(data, "name", "string")
 	optionalTableArgument(data, "time", "string")
