@@ -1400,6 +1400,8 @@ metaTableApplication_ = {
 -- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
 -- The Google Maps API key monitors your Application's usage in the Google API Console.
 -- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
+-- @arg data.order An optional vector of strings with the order of the Views to be displayed, from
+-- top to bottom. The elements of the vector are the names of each View.
 -- @arg data.template An optional named table with two string elements called navbar and
 -- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
 -- @arg data.fontSize An optional number with the font size.

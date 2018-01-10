@@ -37,7 +37,7 @@ metaTableView_ = {
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
 -- @arg data.name An optional string with the name of the attribute to be visualized over time. This argument is mandatory when using time equals to 'creation'.
 -- @arg data.time An optional string with the temporal mode. The possible values are: 'snapshot' and 'creation'.
--- @arg data.visible An optional boolean whether the layer is visible. Defaults to false.
+-- @arg data.visible An optional boolean whether the layer is visible. Default value is true.
 -- @arg data.width An optional argument with the stroke width in pixels.
 -- @arg data.transparency An optional argument with the opacity of color attribute. The transparency parameter is a number between 0.0 (fully opaque) and 1.0 (fully transparent).
 -- The default value is 0.
