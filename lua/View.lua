@@ -197,7 +197,6 @@ function View(data)
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
 
-			local mcolor
 			if type(data.color) == "string" then
 				mcolor = color{color = data.color, classes = classes, alpha = realTransparency}
 			else
