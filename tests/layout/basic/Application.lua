@@ -85,6 +85,7 @@ return {
 
 		app = Application{
 			project = filePath("emas.tview", "publish"),
+			description = "abc.",
 			output = emasDir,
 			template = {navbar = "#034871", title = "#F63B4C"},
 			clean = true,
@@ -108,6 +109,7 @@ return {
 			project = filePath("emas.tview", "publish"),
 			output = emasDir,
 			template = {navbar = {3, 72, 113}, title = {246, 59, 76}},
+			description = "abc.",
 			clean = true,
 			select = "river",
 			color = "BuGn",
@@ -128,6 +130,7 @@ return {
 			project = filePath("emas.tview", "publish"),
 			output = emasDir,
 			template = {navbar = "dodgerblue", title = "brown"},
+			description = "abc.",
 			clean = true,
 			select = "river",
 			color = "BuGn",
@@ -168,6 +171,7 @@ return {
 			progress = false,
 			simplify = false,
 			use = View{
+				description = "abc.", 
 				title = "Occupational Classes 2010",
 				select = "uso",
 				color = "RdPu"
@@ -199,6 +203,7 @@ return {
 			simplify = false,
 			center = {lat = -23.648856395349, long = -45.489454594686094},
 			use = View{
+				description = "abc.", 
 				title = "Occupational Classes 2010",
 				select = "uso",
 				color = "RdPu"
@@ -230,6 +235,7 @@ return {
 			simplify = false,
 			zoom = 12,
 			use = View{
+				description = "abc.", 
 				title = "Occupational Classes 2010",
 				select = "uso",
 				color = "RdPu"
@@ -270,6 +276,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
+				description = "abc.", 
 				select = "pib",
 				color = "Spectral",
 				slices = 5
@@ -297,6 +304,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
+				description = "abc.", 
 				select = "pib",
 				color = "Spectral",
 				slices = 5,
@@ -326,6 +334,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
+				description = "abc.", 
 				select = "pib",
 				color = "Spectral",
 				slices = 5,
@@ -354,6 +363,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
+				description = "abc.", 
 				select = "pib",
 				color = "Spectral",
 				slices = 5,

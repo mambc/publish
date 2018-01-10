@@ -85,8 +85,9 @@ metaTableView_ = {
 -- print(vardump(view))
 function View(data)
 	verifyNamedTable(data)
+	mandatoryTableArgument(data, "description", "string")
+
 	optionalTableArgument(data, "title", "string")
-	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", {"string", "table"})
 

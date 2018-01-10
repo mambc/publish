@@ -49,6 +49,7 @@ return {
 				output = emasDir,
 				order = 1,
 				cover = View{
+					description = "abc.", 
 					color = "green"
 				}
 			}
@@ -68,6 +69,7 @@ return {
 				output = emasDir,
 				order = {1},
 				limit = View{
+					description = "abc.", 
 					color = "green"
 				}
 			}
@@ -87,6 +89,7 @@ return {
 				output = emasDir,
 				order = {"limit", "cells"},
 				limit = View{
+					description = "abc.", 
 					color = "green"
 				}
 			}
@@ -106,6 +109,7 @@ return {
 				output = emasDir,
 				order = {"limi"},
 				limit = View{
+					description = "abc.", 
 					color = "green"
 				}
 			}
@@ -202,6 +206,7 @@ return {
 				progress = false,
 				output = emasDir,
 				limit = View{
+					description = "abc.", 
 					icon = {path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"}
 				}
 			}
