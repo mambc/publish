@@ -76,7 +76,7 @@ return {
 
 		view = View{
 			color = "blue",
-			description = "abc.", 
+			description = "abc.",
 			layer = tostring(filePath("emas-limit.shp", "gis")),
 			transparency = 0.95,
 		}
@@ -89,7 +89,7 @@ return {
 
 		view = View{
 			select = "classe",
-			description = "abc.", 
+			description = "abc.",
 			color = {"red", "orange", "yellow"},
 			value = {1, 2, 3}
 		}
@@ -100,7 +100,7 @@ return {
 		unitTest:assertEquals(view.color["3"], "rgba(255, 255, 0, 1)")
 
 		view = View{
-			description = "abc.", 
+			description = "abc.",
 			select = "classe",
 			color = "Blues"
 		}
@@ -110,7 +110,7 @@ return {
 		unitTest:assertEquals(view.color, "Blues")
 
 		view = View{
-			description = "abc.", 
+			description = "abc.",
 			select = "classe",
 			color = {"red", "orange", "yellow"}
 		}
@@ -122,7 +122,7 @@ return {
 		unitTest:assertEquals(view.color[3], "yellow")
 
 		view = View{
-			description = "abc.", 
+			description = "abc.",
 			select = "classe",
 			color = {{10, 10, 10}, {11, 11, 11}, {12, 12, 12}}
 		}
@@ -154,7 +154,7 @@ return {
 		report:addText("This is the main endogenous variable of the model. It was obtained from a classification that categorizes the social conditions of households in Caraguatatuba on \"condition A\" (best), \"B\" or \"C\". This classification was carried out through satellite imagery interpretation and a cluster analysis (k-means method) on a set of indicators build from census data of income, education, dependency ratio, householder gender, and occupation condition of households. More details on this classification were presented in Feitosa et al. (2012) Vulnerabilidade e Modelos de Simulação como Estratégias Mediadoras: contribuição ao debate das mudanças climáticas e ambientais.")
 
 		view = View{
-			description = "abc.", 
+			description = "abc.",
 			select = "classe",
 			color = {"#088da5", "#0b7b47", "#7b0b3f"},
 			value = {1, 2, 3},
@@ -230,7 +230,7 @@ return {
 		unitTest:assert(view.download)
 
 		view = View{
-			description = "abc.", 
+			description = "abc.",
 			select = "UC",
 			icon = {"home", "forest"}
 		}
@@ -245,7 +245,7 @@ return {
 		unitTest:assertEquals(view.icon[2], "forest")
 
 		view = View{
-			description = "abc.", 
+			description = "abc.",
 			select = "UC",
 			icon = {"home", "forest"},
 			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"},
@@ -265,7 +265,7 @@ return {
 		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
 
 		view = View{
-			description = "abc.", 
+			description = "abc.",
 			select = {"Nome", "UC"},
 			icon = {"home", "forest"},
 			label = {"Absence of Conservation Unit", "Presence of Conservation Unit"},
@@ -290,7 +290,7 @@ return {
 		unitTest:assertEquals(view.label[2], "Presence of Conservation Unit")
 
 		view = View {
-			description = "abc.", 
+			description = "abc.",
 			select = "pib",
 			color = "PuBuGn",
 			slices = 2,
@@ -309,7 +309,7 @@ return {
 		unitTest:assertEquals(view.color["3.0"], "rgba(28, 144, 153, 1)")
 
 		view = View {
-			description = "abc.", 
+			description = "abc.",
 			time = "snapshot"
 		}
 
@@ -317,7 +317,7 @@ return {
 		unitTest:assertEquals(view.time, "snapshot")
 
 		view = View {
-			description = "abc.", 
+			description = "abc.",
 			name = "anoCriacao",
 			time = "creation"
 		}
@@ -328,7 +328,7 @@ return {
 	end,
 	__tostring = function(unitTest)
 		local view = View{
-			description = "abc.", 
+			description = "abc.",
 			title = "Emas National Park",
 			border = "blue",
 			width = 2,

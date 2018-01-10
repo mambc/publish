@@ -42,7 +42,7 @@ return {
 		error_func = function()
 			Application{
 				arg = "void",
-				description = "abc.", 
+				description = "abc.",
 				clean = true,
 				simplify = false,
 				progress = false,
@@ -215,17 +215,17 @@ return {
 				output = caraguaDir,
 				Limit = List{
 					limit = View{
-						description = "abc.", 
+						description = "abc.",
 						color = "goldenrod",
 					},
 					regions = View{
-						description = "abc.", 
+						description = "abc.",
 						select = "name",
 						color = "Set2"
 					}
 				},
 				real = View{
-					description = "abc.", 
+					description = "abc.",
 					title = "Social Classes 2010",
 					select = "classe",
 					color = {"red", "orange", "yellow"},
@@ -266,7 +266,6 @@ return {
 				output = arapiunsDir,
 				simplify = true,
 				villages = View{
-					description = "abc.", 
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
 				}
 			}
@@ -299,7 +298,6 @@ return {
 				simplify = false,
 				progress = false,
 				uc = View {
-					description = "abc.", 
 					title = "UC",
 					description = "UC Federais.",
 					select = "anoCriacao",
@@ -320,7 +318,6 @@ return {
 				simplify = false,
 				progress = false,
 				uc = View {
-					description = "abc.", 
 					title = "UC",
 					description = "UC Federais.",
 					select = "anoCriacao",
@@ -342,7 +339,6 @@ return {
 				simplify = false,
 				progress = false,
 				uc = View {
-					description = "abc.", 
 					title = "UC",
 					description = "UC Federais.",
 					select = "anoCriacao",
@@ -364,7 +360,6 @@ return {
 				simplify = false,
 				progress = false,
 				uc = View {
-					description = "abc.", 
 					title = "UC",
 					description = "UC Federais.",
 					select = "anoCriacao",
@@ -386,7 +381,6 @@ return {
 				simplify = false,
 				progress = false,
 				a = View {
-					description = "abc.", 
 					title = "UC",
 					description = "UC Federais.",
 					select = "anoCriacao",
@@ -418,7 +412,6 @@ return {
 				simplify = false,
 				progress = false,
 				snapshot1 = View {
-					description = "abc.", 
 					title = "UC",
 					description = "UC Federais.",
 					select = "anoCriacao",
@@ -455,7 +448,6 @@ return {
 				output = caraguaDir,
 				scenario = {},
 				classes = View{
-					description = "abc.", 
 					title = "Social Classes 2010",
 					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
 							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
@@ -488,7 +480,6 @@ return {
 				output = caraguaDir,
 				scenario = {"Baseline simulation for 2025."},
 				classes = View{
-					description = "abc.", 
 					title = "Social Classes 2010",
 					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
 							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
@@ -523,7 +514,6 @@ return {
 					baseline = 1,
 				},
 				classes = View{
-					description = "abc.", 
 					title = "Social Classes 2010",
 					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
 							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
@@ -558,7 +548,6 @@ return {
 					void = "Baseline simulation for 2025.",
 				},
 				classes = View{
-					description = "abc.", 
 					title = "Social Classes 2010",
 					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
 							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
@@ -593,7 +582,6 @@ return {
 					baseline = "Baseline simulation for 2025.",
 				},
 				classes = View{
-					description = "abc.", 
 					title = "Social Classes 2010",
 					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
 							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
@@ -628,7 +616,6 @@ return {
 					baseline = "Baseline simulation for 2025.",
 				},
 				classes = View{
-					description = "abc.", 
 					title = "Social Classes 2010",
 					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
 							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
@@ -663,7 +650,6 @@ return {
 					baseline = "Baseline simulation for 2025.",
 				},
 				classes = View{
-					description = "abc.", 
 					title = "Social Classes 2010",
 					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
 							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",

@@ -52,17 +52,17 @@ return {
 			logo = packageInfo("luadoc").path.."/logo/logo.png",
 			order = {"river", "firebreak", "limit"},
 			river = View{
-				description = "abc.", 
+				description = "abc.",
 				color = {0, 0, 255},
 				layer = filePath("emas-river.shp", "gis")
 			},
 			firebreak = View{
-				description = "abc.", 
+				description = "abc.",
 				color = "black",
 				layer = filePath("emas-firebreak.shp", "gis")
 			},
 			limit = View{
-				description = "abc.", 
+				description = "abc.",
 				border = "blue",
 				color = "goldenrod",
 				width = 2,
@@ -120,12 +120,12 @@ return {
 			output = emasDir,
 			order = {"river"},
 			river = View{
-				description = "abc.", 
+				description = "abc.",
 				color = "blue",
 				transparency = 0.6
 			},
 			firebreak = View{
-				description = "abc.", 
+				description = "abc.",
 				color = "black",
 				transparency = 0.5
 			}
@@ -172,11 +172,11 @@ return {
 			simplify = false,
 			output = emasDir,
 			river = View{
-				description = "abc.", 
+				description = "abc.",
 				color = "blue"
 			},
 			firebreak = View{
-				description = "abc.", 
+				description = "abc.",
 				color = "black"
 			}
 		}

@@ -171,7 +171,7 @@ return {
 			progress = false,
 			simplify = false,
 			use = View{
-				description = "abc.", 
+				description = "abc.",
 				title = "Occupational Classes 2010",
 				select = "uso",
 				color = "RdPu"
@@ -203,7 +203,7 @@ return {
 			simplify = false,
 			center = {lat = -23.648856395349, long = -45.489454594686094},
 			use = View{
-				description = "abc.", 
+				description = "abc.",
 				title = "Occupational Classes 2010",
 				select = "uso",
 				color = "RdPu"
@@ -235,7 +235,7 @@ return {
 			simplify = false,
 			zoom = 12,
 			use = View{
-				description = "abc.", 
+				description = "abc.",
 				title = "Occupational Classes 2010",
 				select = "uso",
 				color = "RdPu"
@@ -276,7 +276,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
-				description = "abc.", 
+				description = "abc.",
 				select = "pib",
 				color = "Spectral",
 				slices = 5
@@ -304,7 +304,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
-				description = "abc.", 
+				description = "abc.",
 				select = "pib",
 				color = "Spectral",
 				slices = 5,
@@ -334,7 +334,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
-				description = "abc.", 
+				description = "abc.",
 				select = "pib",
 				color = "Spectral",
 				slices = 5,
@@ -363,7 +363,7 @@ return {
 			simplify = false,
 			progress = false,
 			municipalities = View {
-				description = "abc.", 
+				description = "abc.",
 				select = "pib",
 				color = "Spectral",
 				slices = 5,

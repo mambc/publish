@@ -248,7 +248,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					color = 1
@@ -259,7 +259,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					transparency = "a"
@@ -270,7 +270,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					transparency = 2
@@ -281,7 +281,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = "a"
@@ -292,7 +292,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = 0
@@ -303,7 +303,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = -1
@@ -315,7 +315,7 @@ return {
 
 		warning_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = 5
@@ -333,7 +333,7 @@ return {
 
 		warning_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					transparency = 0
@@ -345,7 +345,7 @@ return {
 
 		warning_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					color = "black"
@@ -357,7 +357,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {path = "1234"}
 			}
 		end
@@ -377,7 +377,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = {"forest"}
 			}
 		end
@@ -386,7 +386,7 @@ return {
 
 		warning_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				border = "red"
@@ -397,7 +397,7 @@ return {
 
 		warning_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				value = {1, 2, 3}
@@ -408,7 +408,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
@@ -419,7 +419,7 @@ return {
 
 		warning_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				color = "PuBu"
@@ -464,7 +464,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = "VOID"
 			}
 		end
@@ -472,7 +472,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				icon = "hom"
 			}
 		end
@@ -480,7 +480,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				decimal = "a"
 			}
 		end
@@ -488,7 +488,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				decimal = -3
 			}
 		end
@@ -496,7 +496,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				select = {"Nome"},
 				icon = {"home", "forest"},
 				report = function(cell)
@@ -510,7 +510,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				select = {"Nome"},
 				color = {"red", "blue"},
 				report = function(cell)
@@ -524,7 +524,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				slices = "a",
 				color = "Spectral"
 			}
@@ -533,7 +533,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				slices = 5,
 				min = "a",
 				color = "Spectral"
@@ -543,7 +543,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				slices = 5,
 				max = "a",
 				color = "Spectral"
@@ -553,7 +553,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				min = 1
 			}
 		end
@@ -561,7 +561,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				max = 1
 			}
 		end
@@ -569,7 +569,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				slices = 5,
 				min = 2,
 				max = 1,
@@ -580,7 +580,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				slices = 1,
 				color = "Spectral"
 			}
@@ -589,7 +589,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				slices = -2,
 				color = "Spectral"
 			}
@@ -598,7 +598,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				slices = 2.1,
 				color = "Spectral"
 			}
@@ -607,7 +607,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				time = "creation"
 			}
 		end
@@ -615,7 +615,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				name = "anoCriacao"
 			}
 		end
@@ -623,7 +623,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				name = "anoCriacao",
 				time = 1
 			}
@@ -632,7 +632,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				name = 1,
 				time = "snapshot"
 			}
@@ -641,7 +641,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				name = "anoCriacao",
 				time = "snapshot"
 			}
@@ -650,7 +650,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				time = "a"
 			}
 		end
@@ -658,7 +658,7 @@ return {
 
 		error_func = function()
 			View{
-				description = "abc.", 
+				description = "abc.",
 				time = "snapshot",
 				select = "a",
 				report = function() end

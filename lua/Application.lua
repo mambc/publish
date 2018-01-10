@@ -1419,6 +1419,7 @@ metaTableApplication_ = {
 -- local app = Application{
 --     project = emas,
 --     clean = true,
+--     description = "My description.",
 --     simplify = false,
 --     select = "river",
 --     color = "BuGn",
