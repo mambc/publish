@@ -545,6 +545,7 @@ return {
 base         string [satellite]
 center       named table of size 2
 clean        boolean [true]
+code         boolean [true]
 datasource   Directory
 description  string [Creates a database that can be used by the example fire-spread of base package.]
 display      boolean [true]

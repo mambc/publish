@@ -788,7 +788,7 @@ end
 local function loadLayers(data)
 	local nView = loadViews(data)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "display", "legend", "progress", "loading", "key",
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "display", "code", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
 		"simplify", "fontSize", "name", "time", "temporal", "scenario"})
@@ -1399,6 +1399,10 @@ metaTableApplication_ = {
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is "default".
 -- @arg data.display An optional boolean value indicating whether the application should be opened in a Web Browser
 -- after being created. The default value is true.
+-- @arg data.code An optional boolean value indicating whether the source code of the application should be
+-- copied to the directory of the final application. Note that only the script that was passed as
+-- argument to TerraME will be copied. If it include other files, they will not be copied.
+-- The default value is true.
 -- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
 -- The Google Maps API key monitors your Application's usage in the Google API Console.
 -- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
@@ -1441,6 +1445,7 @@ function Application(data)
 
 	defaultTableValue(data, "clean", false)
 	defaultTableValue(data, "display", true)
+	defaultTableValue(data, "code", true)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "simplify", true)
 	defaultTableValue(data, "legend", "Legend")
@@ -1690,7 +1695,14 @@ function Application(data)
 
 	setmetatable(data, metaTableApplication_)
 
-	if data.display and sessionInfo().currentFile then -- does not execute along tests
+	local currentFile = sessionInfo().currentFile
+
+	if data.code and currentFile then -- does not execute along tests
+		printInfo("Copying source code") -- SKIP
+		currentFile:copy(data.output) -- SKIP
+	end
+
+	if data.display and currentFile then -- does not execute along tests
 		printInfo("Opening index.html...") -- SKIP
 		openWebpage(data.output.."index.html") -- SKIP
 	end
