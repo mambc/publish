@@ -37,9 +37,11 @@ Application{
 	order = {"cells", "river", "firebreak", "limit"},
 	simplify = false,
 	river = View{
+		description = "Rivers.",
 		color = "blue"
 	},
 	firebreak = View{
+		description = "Fire breaks.",
 		color = "black"
 	},
 	limit = View{
@@ -59,3 +61,4 @@ Application{
 		visible = false
 	}
 }
+

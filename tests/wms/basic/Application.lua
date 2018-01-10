@@ -129,8 +129,8 @@ return {
 			wmsLayer = View {
 				title = "WMS",
 				description = "Loading a view from WMS.",
-				color = {"red"},
-				label = {"boundingbox"}
+				color = {255, 0, 0},
+				label = "boundingbox"
 			},
 			limit = View{
 				description = "Bounding box of Caraguatatuba.",

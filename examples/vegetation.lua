@@ -47,3 +47,6 @@ app = Application {
 		color = {"red", "blue", "green", "yellow", "brown", "cyan", "orange"}
 	}
 }
+
+File("vegetation.tview"):delete()
+

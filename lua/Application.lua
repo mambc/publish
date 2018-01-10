@@ -788,7 +788,7 @@ end
 local function loadLayers(data)
 	local nView = loadViews(data)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "display", "code", "legend", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
 		"simplify", "fontSize", "name", "time", "temporal", "scenario"})
@@ -1397,9 +1397,17 @@ metaTableApplication_ = {
 -- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is "default".
+-- @arg data.display An optional boolean value indicating whether the application should be opened in a Web Browser
+-- after being created. The default value is true.
+-- @arg data.code An optional boolean value indicating whether the source code of the application should be
+-- copied to the directory of the final application. Note that only the script that was passed as
+-- argument to TerraME will be copied. If it include other files, they will not be copied.
+-- The default value is true.
 -- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
 -- The Google Maps API key monitors your Application's usage in the Google API Console.
 -- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
+-- @arg data.order An optional vector of strings with the order of the Views to be displayed, from
+-- top to bottom. The elements of the vector are the names of each View.
 -- @arg data.template An optional named table with two string elements called navbar and
 -- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
 -- @arg data.fontSize An optional number with the font size.
@@ -1411,6 +1419,7 @@ metaTableApplication_ = {
 -- local app = Application{
 --     project = emas,
 --     clean = true,
+--     description = "My description.",
 --     simplify = false,
 --     select = "river",
 --     color = "BuGn",
@@ -1436,6 +1445,8 @@ function Application(data)
 	optionalTableArgument(data, "fontSize", "number")
 
 	defaultTableValue(data, "clean", false)
+	defaultTableValue(data, "display", true)
+	defaultTableValue(data, "code", true)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "simplify", true)
 	defaultTableValue(data, "legend", "Legend")
@@ -1684,7 +1695,19 @@ function Application(data)
 	end
 
 	setmetatable(data, metaTableApplication_)
-	printInfo("Summing up, application '"..data.title.."' was successfully created.")
 
+	local currentFile = sessionInfo().currentFile
+
+	if data.code and currentFile then -- does not execute along tests
+		printInfo("Copying source code") -- SKIP
+		currentFile:copy(data.output) -- SKIP
+	end
+
+	if data.display and currentFile then -- does not execute along tests
+		printInfo("Opening index.html...") -- SKIP
+		openWebpage(data.output.."index.html") -- SKIP
+	end
+
+	printInfo("Summing up, application '"..data.title.."' was successfully created.")
 	return data
 end

@@ -31,7 +31,6 @@ import("publish")
 local file = File("prodes.tview")
 local baseproj = {title = "Prodes", file = file, clean = true}
 
-local source = "wms"
 local basemap = "amazon:"
 local service = "http://35.198.39.192/geoserver/wms"
 
@@ -42,7 +41,6 @@ local proj = Project(baseproj)
 forEachElement(layers, function(_, name)
 	Layer{
 		project = proj,
-		source = source,
 		service = service,
 		name = name,
 		map = basemap..name

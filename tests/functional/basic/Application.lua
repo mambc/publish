@@ -32,6 +32,7 @@ return {
 			output = "functional-basic-app",
 			clean = true,
 			select = "river",
+			description = "abc.",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
@@ -50,6 +51,7 @@ return {
 		app = Application{
 			project = filePath("emas.tview", "publish"),
 			output = emasDir,
+			description = "abc.",
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 			clean = true,
 			select = "river",
@@ -77,21 +79,25 @@ return {
 			output = caraguaDir,
 			Limit = List{
 				limit = View{
+					description = "abc.",
 					color = "goldenrod",
 				},
 				regions = View{
+					description = "abc.",
 					select = "name",
 					color = "Set2"
 				}
 			},
 			SocialClasses = List{
 				real = View{
+					description = "abc.",
 					title = "Social Classes 2010",
 					select = "classe",
 					color = {"red", "orange", "yellow"},
 					label = {"Condition C", "Condition B", "Condition A"}
 				},
 				baseline = View{
+					description = "abc.",
 					title = "Social Classes 2025",
 					select = "classe",
 					color = {"red", "orange", "yellow"},
@@ -100,6 +106,7 @@ return {
 			},
 			OccupationalClasses = List{
 				use = View{
+					description = "abc.",
 					title = "Occupational Classes 2010",
 					select = "uso",
 					color = "RdPu"
@@ -156,6 +163,7 @@ return {
 			clean = true,
 			progress = false,
 			use = View{
+				description = "abc.",
 				title = "Occupational Classes 2010",
 				select = "uso",
 				color = "RdPu",
@@ -217,6 +225,7 @@ return {
 			clean = true,
 			progress = false,
 			villages = View{
+				description = "abc.",
 				select = {"Nome", "UC"},
 				report = function(cell)
 					local mreport = Report{title = cell.Nome}
@@ -545,8 +554,10 @@ return {
 base         string [satellite]
 center       named table of size 2
 clean        boolean [true]
+code         boolean [true]
 datasource   Directory
 description  string [Creates a database that can be used by the example fire-spread of base package.]
+display      boolean [true]
 legend       string [Legend]
 loading      string [default.gif]
 maxZoom      number [20]

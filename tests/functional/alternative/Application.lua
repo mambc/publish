@@ -42,6 +42,7 @@ return {
 		error_func = function()
 			Application{
 				arg = "void",
+				description = "abc.",
 				clean = true,
 				simplify = false,
 				progress = false,
@@ -214,14 +215,17 @@ return {
 				output = caraguaDir,
 				Limit = List{
 					limit = View{
+						description = "abc.",
 						color = "goldenrod",
 					},
 					regions = View{
+						description = "abc.",
 						select = "name",
 						color = "Set2"
 					}
 				},
 				real = View{
+					description = "abc.",
 					title = "Social Classes 2010",
 					select = "classe",
 					color = {"red", "orange", "yellow"},

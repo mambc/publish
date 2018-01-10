@@ -37,7 +37,7 @@ metaTableView_ = {
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
 -- @arg data.name An optional string with the name of the attribute to be visualized over time. This argument is mandatory when using time equals to 'creation'.
 -- @arg data.time An optional string with the temporal mode. The possible values are: 'snapshot' and 'creation'.
--- @arg data.visible An optional boolean whether the layer is visible. Defaults to false.
+-- @arg data.visible An optional boolean whether the layer is visible. Default value is true.
 -- @arg data.width An optional argument with the stroke width in pixels.
 -- @arg data.transparency An optional argument with the opacity of color attribute. The transparency parameter is a number between 0.0 (fully opaque) and 1.0 (fully transparent).
 -- The default value is 0.
@@ -58,7 +58,7 @@ metaTableView_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
--- @arg data.label An optional table of strings that describes the labels to be shown in the Legend.
+-- @arg data.label An optional string or table of strings that describes the labels to be shown in the Legend.
 -- @arg data.icon An optional table or string. A table with the icon properties, such as path, color and transparency. The property path
 -- uses SVG notation (see https://www.w3.org/TR/SVG/paths.html). A string with the name of marker icon. The markers available are:
 -- "airport", "animal", "bigcity", "bus", "car", "caution", "cycling", "database", "desert", "diving", "fillingstation", "finish", "fire", "firstaid", "fishing",
@@ -85,16 +85,31 @@ metaTableView_ = {
 -- print(vardump(view))
 function View(data)
 	verifyNamedTable(data)
+	mandatoryTableArgument(data, "description", "string")
+
 	optionalTableArgument(data, "title", "string")
-	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
 	optionalTableArgument(data, "select", {"string", "table"})
+
+	if type(data.label) == "string" then
+		data.label = {data.label}
+	end
+
 	optionalTableArgument(data, "label", "table")
 	optionalTableArgument(data, "report", {"Report", "function"})
 	optionalTableArgument(data, "icon", {"string", "table"})
 	optionalTableArgument(data, "min", "number")
 	optionalTableArgument(data, "max", "number")
 	optionalTableArgument(data, "slices", "number")
+
+	local mcolor = data.color
+
+	if type(mcolor) == "table" and #mcolor == 3 then
+		if type(mcolor[1]) == "number" and type(mcolor[2]) == "number" and type(mcolor[3]) == "number" then
+			data.color = {data.color}
+		end
+	end
+
 	optionalTableArgument(data, "color", {"string", "table"})
 	optionalTableArgument(data, "name", "string")
 	optionalTableArgument(data, "time", "string")
@@ -183,7 +198,6 @@ function View(data)
 				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
 			end
 
-			local mcolor
 			if type(data.color) == "string" then
 				mcolor = color{color = data.color, classes = classes, alpha = realTransparency}
 			else

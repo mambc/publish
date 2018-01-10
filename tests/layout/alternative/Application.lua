@@ -340,6 +340,7 @@ return {
 				simplify = false,
 				progress = false,
 				municipalities = View {
+					description = "abc.",
 					select = "pib",
 					color = "Spectral",
 					slices = 5,
@@ -358,6 +359,7 @@ return {
 				simplify = false,
 				progress = false,
 				municipalities = View {
+					description = "abc.",
 					select = "pib",
 					color = "Spectral",
 					slices = 5,
@@ -376,6 +378,7 @@ return {
 				simplify = false,
 				progress = false,
 				municipalities = View {
+					description = "abc.",
 					select = "uf",
 					color = "Spectral",
 					slices = 5

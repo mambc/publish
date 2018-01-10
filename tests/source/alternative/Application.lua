@@ -60,7 +60,6 @@ return {
 			local feature = "reddpac:wfs_biomes"
 			gis.Layer{
 				project = proj,
-				source = "wfs",
 				name = "wfsLayer",
 				service = service,
 				feature = feature

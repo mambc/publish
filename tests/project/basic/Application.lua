@@ -36,6 +36,7 @@ return {
 			clean = true,
 			select = "river",
 			color = "BuGn",
+			description = "abc.",
 			value = {0, 1, 2},
 			progress = false,
 			simplify = false,
