@@ -587,9 +587,9 @@ local function exportLayers(data, sof)
 	if wmsDir:exists() then wmsDir:delete() end
 end
 
-local function loadValuesFromDataSet(set, project, name, select, slices)
+local function loadValuesFromDataSet(set, project, name, select, slices, missing)
 	local tlib = gis.TerraLib{}
-	local dset = tlib.getDataSet(project, name)
+	local dset = tlib.getDataSet(project, name, missing)
 	for i = 0, #dset do
 		for k, v in pairs(dset[i]) do
 			if k == select and not set[v] then
@@ -671,18 +671,18 @@ local function loadViewValue(data, name, view)
 		local set = {}
 		if not data.project.layers[name] then
 			for _, layerName in ipairs(data.temporalConfig[name].name) do
-				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
+				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices, mview.missing)
 			end
 
 			if data.scenario then
 				for _, params in pairs(data.temporalConfig[name].scenario) do
 					for _, layerName in ipairs(params.name) do
-						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
+						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices, mview.missing)
 					end
 				end
 			end
 		else
-			loadValuesFromDataSet(set, data.project, name, select, mview.slices)
+			loadValuesFromDataSet(set, data.project, name, select, mview.slices, mview.missing)
 		end
 
 		local huge = math.huge
@@ -936,7 +936,7 @@ local function processingView(data, layers, reports, name, view)
 				layerName = viewConfig.name[1]
 			end
 
-			dset = tlib.getDataSet(data.project, layerName)
+			dset = tlib.getDataSet(data.project, layerName, view.missing)
 			for i = 0, #dset do
 				if view.geom then break end
 

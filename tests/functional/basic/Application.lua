@@ -523,6 +523,27 @@ return {
 		unitTest:assertEquals(#view.scenario.plusgrowth.timeline, 1)
 		unitTest:assertEquals(view.scenario.plusgrowth.timeline[1], 2025)
 
+		proj = gis.Project{
+			title = "Testing missing data",
+			file = "file.tview",
+			clean = true,
+			amaz = filePath("test/CellsAmaz.shp")
+		}
+
+		Application{
+			base = "roadmap",
+			project = proj,
+			output = "myresult",
+			clean = true,
+			simplify = false,
+			progress = false,
+			amaz = View {
+				title = "Amaz",
+				missing = 0,
+				description = "Amazonia.",
+			}
+		}
+
 		if caraguaDir:exists() then caraguaDir:delete() end
 		file:deleteIfExists()
 	end,
