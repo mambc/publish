@@ -523,9 +523,14 @@ return {
 		unitTest:assertEquals(#view.scenario.plusgrowth.timeline, 1)
 		unitTest:assertEquals(view.scenario.plusgrowth.timeline[1], 2025)
 
+		if caraguaDir:exists() then caraguaDir:delete() end
+		file:deleteIfExists()
+
+		file = File("file.tview")
+
 		proj = gis.Project{
 			title = "Testing missing data",
-			file = "file.tview",
+			file = file,
 			clean = true,
 			amaz = filePath("test/CellsAmaz.shp", "publish")
 		}
@@ -544,8 +549,8 @@ return {
 			}
 		}
 
-		if caraguaDir:exists() then caraguaDir:delete() end
 		file:deleteIfExists()
+		Directory("myresult"):delete()
 	end,
 	__tostring = function(unitTest)
 		local emas = filePath("emas.tview", "publish")
