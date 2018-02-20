@@ -527,7 +527,7 @@ return {
 			title = "Testing missing data",
 			file = "file.tview",
 			clean = true,
-			amaz = filePath("test/CellsAmaz.shp")
+			amaz = filePath("test/CellsAmaz.shp", "publish")
 		}
 
 		Application{

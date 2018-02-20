@@ -397,7 +397,7 @@ return {
 			title = "Testing temporal View",
 			file = file,
 			clean = true,
-			amaz = filePath("test/CellsAmaz.shp")
+			amaz = filePath("test/CellsAmaz.shp", "publish")
 		}
 
 		error_func = function()
