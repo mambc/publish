@@ -584,6 +584,7 @@ code         boolean [true]
 datasource   Directory
 description  string [Creates a database that can be used by the example fire-spread of base package.]
 display      boolean [true]
+layers       string [Layers]
 legend       string [Legend]
 loading      string [default.gif]
 maxZoom      number [20]
