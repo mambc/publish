@@ -69,6 +69,9 @@ metaTableView_ = {
 -- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates.  Default value is 5.
 -- @arg data.max The maximum value of the attribute (used only for numbers).
 -- @arg data.min The minimum value of the attribute (used only for numbers).
+-- @arg data.missing An optional number that replaces all attributes read from a data source
+-- that do not have any value. If this argument is not set and there is some attribute without
+-- a value, TerraME will stop with an error.
 -- @arg data.slices Number of colors to be used for drawing. It must be an integer number greater than one.
 -- @usage import("publish")
 --
@@ -89,6 +92,7 @@ function View(data)
 
 	optionalTableArgument(data, "title", "string")
 	optionalTableArgument(data, "value", "table")
+	optionalTableArgument(data, "missing", "number")
 	optionalTableArgument(data, "select", {"string", "table"})
 
 	if type(data.label) == "string" then
@@ -122,7 +126,7 @@ function View(data)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 		"value", "layer", "report", "transparency", "label", "icon", "download", "group", "decimal", "properties",
-		"min", "max", "slices", "name", "time"})
+		"min", "max", "slices", "name", "time", "missing"})
 
 	if data.report and type(data.report) == "function" then
 		mandatoryTableArgument(data, "select")

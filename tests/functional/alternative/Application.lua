@@ -393,6 +393,29 @@ return {
 		end
 		unitTest:assertError(error_func, "The application does not have any View related to a Layer.")
 
+		proj = gis.Project{
+			title = "Testing temporal View",
+			file = file,
+			clean = true,
+			amaz = filePath("test/CellsAmaz.shp", "publish")
+		}
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				clean = true,
+				simplify = false,
+				progress = false,
+				amaz = View {
+					title = "Amaz",
+					description = "Amazonia.",
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Data has a missing value in attribute 'pointcount'. Use argument 'missing' to set its value.")
+
 		error_func = function()
 			file:deleteIfExists()
 			proj = gis.Project{

@@ -525,6 +525,32 @@ return {
 
 		if caraguaDir:exists() then caraguaDir:delete() end
 		file:deleteIfExists()
+
+		file = File("file.tview")
+
+		proj = gis.Project{
+			title = "Testing missing data",
+			file = file,
+			clean = true,
+			amaz = filePath("test/CellsAmaz.shp", "publish")
+		}
+
+		Application{
+			base = "roadmap",
+			project = proj,
+			output = "myresult",
+			clean = true,
+			simplify = false,
+			progress = false,
+			amaz = View {
+				title = "Amaz",
+				missing = 0,
+				description = "Amazonia.",
+			}
+		}
+
+		file:deleteIfExists()
+		Directory("myresult"):delete()
 	end,
 	__tostring = function(unitTest)
 		local emas = filePath("emas.tview", "publish")
@@ -558,6 +584,7 @@ code         boolean [true]
 datasource   Directory
 description  string [Creates a database that can be used by the example fire-spread of base package.]
 display      boolean [true]
+layers       string [Layers]
 legend       string [Legend]
 loading      string [default.gif]
 maxZoom      number [20]

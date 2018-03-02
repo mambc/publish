@@ -587,9 +587,9 @@ local function exportLayers(data, sof)
 	if wmsDir:exists() then wmsDir:delete() end
 end
 
-local function loadValuesFromDataSet(set, project, name, select, slices)
+local function loadValuesFromDataSet(set, project, name, select, slices, missing)
 	local tlib = gis.TerraLib{}
-	local dset = tlib.getDataSet(project, name)
+	local dset = tlib.getDataSet(project, name, missing)
 	for i = 0, #dset do
 		for k, v in pairs(dset[i]) do
 			if k == select and not set[v] then
@@ -671,18 +671,18 @@ local function loadViewValue(data, name, view)
 		local set = {}
 		if not data.project.layers[name] then
 			for _, layerName in ipairs(data.temporalConfig[name].name) do
-				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
+				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices, mview.missing)
 			end
 
 			if data.scenario then
 				for _, params in pairs(data.temporalConfig[name].scenario) do
 					for _, layerName in ipairs(params.name) do
-						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices)
+						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices, mview.missing)
 					end
 				end
 			end
 		else
-			loadValuesFromDataSet(set, data.project, name, select, mview.slices)
+			loadValuesFromDataSet(set, data.project, name, select, mview.slices, mview.missing)
 		end
 
 		local huge = math.huge
@@ -788,7 +788,7 @@ end
 local function loadLayers(data)
 	local nView = loadViews(data)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "display", "code", "legend", "progress", "loading", "key",
+	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "display", "code", "legend", "layers", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
 		"simplify", "fontSize", "name", "time", "temporal", "scenario"})
@@ -936,7 +936,7 @@ local function processingView(data, layers, reports, name, view)
 				layerName = viewConfig.name[1]
 			end
 
-			dset = tlib.getDataSet(data.project, layerName)
+			dset = tlib.getDataSet(data.project, layerName, view.missing)
 			for i = 0, #dset do
 				if view.geom then break end
 
@@ -1263,6 +1263,7 @@ local function createApplicationProjects(data, proj)
 			maxZoom = data.maxZoom,
 			mapTypeId = data.base:upper(),
 			legend = data.legend,
+			layers = data.layers,
 			data = mview,
 			path = path,
 			group = data.group,
@@ -1314,6 +1315,7 @@ local function createApplicationHome(data)
 			maxZoom = data.maxZoom, -- SKIP
 			mapTypeId = data.base:upper(), -- SKIP
 			legend = data.legend, -- SKIP
+			layers = data.layers, -- SKIP
 			data = layers -- SKIP
 		}
 	}
@@ -1376,7 +1378,8 @@ metaTableApplication_ = {
 
 --- Creates a web page to visualize the published data.
 -- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is false.
--- @arg data.legend An optional value with the layers legend. The default value is 'Legend'.
+-- @arg data.legend An optional value with the title of the legend box. The default value is 'Legend'.
+-- @arg data.layers An optional value with the title of the layers box. The default value is 'Layers'.
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
 -- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
@@ -1450,6 +1453,7 @@ function Application(data)
 	defaultTableValue(data, "progress", true)
 	defaultTableValue(data, "simplify", true)
 	defaultTableValue(data, "legend", "Legend")
+	defaultTableValue(data, "layers", "Layers")
 	defaultTableValue(data, "loading", "default")
 	defaultTableValue(data, "base", "satellite")
 	defaultTableValue(data, "minZoom", 0)
