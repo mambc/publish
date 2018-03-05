@@ -23,7 +23,76 @@
 -------------------------------------------------------------------------------------------
 
 View_ = {
-	type_ = "View"
+	type_ = "View",
+	loadColors = function(data)
+		local realTransparency = 1 - data.transparency
+			local classes
+			if data.slices and data.min and data.max then
+				classes = data.slices -- SKIP
+			else
+				classes = #data.value
+			end
+
+			if classes == 0 then
+				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
+			end
+			local mcolor
+
+			if type(data.color) == "string" then
+				mcolor = color{color = data.color, classes = classes, alpha = realTransparency}
+			else
+				mcolor = color{color = data.color, alpha = realTransparency}
+			end
+
+			local nColors = #mcolor
+			if classes ~= nColors then
+				customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
+			end
+
+			local colors = {}
+			if data.slices and data.min and data.max then
+				local step = (data.max - data.min) / (data.slices - 1)
+				for i = 1, classes do
+					colors[tostring(data.min + step * (i - 1))] = mcolor[i] -- SKIP
+				end
+			else
+				for i = 1, classes do
+					colors[tostring(data.value[i])] = mcolor[i]
+				end
+			end
+
+			local label = {}
+
+			if data.label then
+				local labels = #data.label
+				if labels == 0 then
+					customError("Argument 'label' must be a table of strings with size greater than 0, got "..labels..".")
+				end
+
+				if classes ~= labels then
+					customError("The number of labels ("..labels..") must be equal to number of data classes ("..classes..").")
+				end
+
+				forEachElement(data.label, function(k, v, mtype)
+					if mtype ~= "string" then
+						customError("Argument 'label' must be a table of strings, element "..k.." ("..tostring(v)..") got "..mtype..".")
+					end
+				end)
+
+				local i = 1
+				forEachOrderedElement(colors, function(_, color)
+					label[data.label[i]] = tostring(color)
+					i = i + 1
+				end)
+			else
+				forEachElement(colors, function(value, color)
+					label[value] = tostring(color)
+				end)
+			end
+
+			data.color = colors
+			data.label = label
+	end
 }
 
 metaTableView_ = {
@@ -66,7 +135,7 @@ metaTableView_ = {
 --"shipwreck" and "thunderstorm".
 -- @arg data.report An optional argument that describes what happens when the user clicks in a given object of the View. It can be a Report or a user-defined function that creates a report for each spatial object of that view.
 -- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
--- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates.  Default value is 5.
+-- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates. Default value is 5.
 -- @arg data.max The maximum value of the attribute (used only for numbers).
 -- @arg data.min The minimum value of the attribute (used only for numbers).
 -- @arg data.missing An optional number that replaces all attributes read from a data source
@@ -184,6 +253,8 @@ function View(data)
 		end
 	end
 
+	setmetatable(data, metaTableView_)
+
 	if data.color then
 		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 			"value", "layer", "report", "transparency", "label", "download", "group", "decimal", "properties",
@@ -191,70 +262,7 @@ function View(data)
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
-			local classes
-			if data.slices and data.min and data.max then
-				classes = data.slices
-			else
-				classes = #data.value
-			end
-
-			if classes == 0 then
-				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
-			end
-
-			if type(data.color) == "string" then
-				mcolor = color{color = data.color, classes = classes, alpha = realTransparency}
-			else
-				mcolor = color{color = data.color, alpha = realTransparency}
-			end
-
-			local nColors = #mcolor
-			if classes ~= nColors then
-				customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
-			end
-
-			local colors = {}
-			if data.slices and data.min and data.max then
-				local step = (data.max - data.min) / (data.slices - 1)
-				for i = 1, classes do
-					colors[tostring(data.min + step * (i - 1))] = mcolor[i]
-				end
-			else
-				for i = 1, classes do
-					colors[tostring(data.value[i])] = mcolor[i]
-				end
-			end
-
-			local label = {}
-			if data.label then
-				local labels = #data.label
-				if labels == 0 then
-					customError("Argument 'label' must be a table of strings with size greater than 0, got "..labels..".")
-				end
-
-				if classes ~= labels then
-					customError("The number of labels ("..labels..") must be equal to number of data classes ("..classes..").")
-				end
-
-				forEachElement(data.label, function(k, v, mtype)
-					if mtype ~= "string" then
-						customError("Argument 'label' must be a table of strings, element "..k.." ("..tostring(v)..") got "..mtype..".")
-					end
-				end)
-
-				local i = 1
-				forEachOrderedElement(colors, function(_, color)
-					label[data.label[i]] = tostring(color)
-					i = i + 1
-				end)
-			else
-				forEachElement(colors, function(value, color)
-					label[value] = tostring(color)
-				end)
-			end
-
-			data.color = colors
-			data.label = label
+			data:loadColors()
 		else
 			local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
 				"Oranges", "PRGn", "Paired", "Pastel1", "Pastel2", "PiYG", "PuBu", "PuBuGn", "PuOr", "PuRd", "Purples",
@@ -299,7 +307,7 @@ function View(data)
 		if itype == "string" then
 			if data.icon:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon:find("[0-9]") then
 				data.icon = {path = data.icon}
-				itype = "table"
+				itype = "table" -- SKIP
 			else
 				local ics = {
 					airport = true,
@@ -379,6 +387,5 @@ function View(data)
 		customError("Argument 'decimal' should be an integer greater than 0, got "..data.decimal..".")
 	end
 
-	setmetatable(data, metaTableView_)
 	return data
 end

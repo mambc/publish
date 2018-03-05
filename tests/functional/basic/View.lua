@@ -23,6 +23,9 @@
 -------------------------------------------------------------------------------------------
 
 return {
+	loadColors = function(unitTest)
+		unitTest:assert(true)
+	end,
 	View = function(unitTest)
 		local view = View{
 			title = "Emas National Park",

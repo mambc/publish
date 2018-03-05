@@ -640,30 +640,7 @@ local function validateTemporalProperty(project, name, view)
 end
 
 local function loadViewValue(data, name, view)
-	local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
-		report = true, download = true, decimal = true})
-	mview.value = {}
-	mview.report = view.report
-
-	if view.width ~= 1 then
-		mview.width = view.width
-	end
-
-	if view.transparency ~= 0 then
-		mview.transparency = view.transparency
-	end
-
-	if view.visible == false then
-		mview.visible = false
-	end
-
-	if view.download == true then
-		mview.download = true
-	end
-
-	if view.decimal ~= 5 then
-		mview.decimal = view.decimal
-	end
+	view.value = {}
 
 	local select = view.select[2] or view.select
 
@@ -671,26 +648,26 @@ local function loadViewValue(data, name, view)
 		local set = {}
 		if not data.project.layers[name] then
 			for _, layerName in ipairs(data.temporalConfig[name].name) do
-				loadValuesFromDataSet(set, data.project, layerName, select, mview.slices, mview.missing)
+				loadValuesFromDataSet(set, data.project, layerName, select, view.slices, view.missing)
 			end
 
 			if data.scenario then
 				for _, params in pairs(data.temporalConfig[name].scenario) do
 					for _, layerName in ipairs(params.name) do
-						loadValuesFromDataSet(set, data.project, layerName, select, mview.slices, mview.missing)
+						loadValuesFromDataSet(set, data.project, layerName, select, view.slices, view.missing)
 					end
 				end
 			end
 		else
-			loadValuesFromDataSet(set, data.project, name, select, mview.slices, mview.missing)
+			loadValuesFromDataSet(set, data.project, name, select, view.slices, view.missing)
 		end
 
 		local huge = math.huge
 		local min = huge
 		local max = -huge
 		for v in pairs(set) do
-			if mview.slices then
-				if mview.min == nil or mview.max == nil then
+			if view.slices then
+				if view.min == nil or view.max == nil then
 					if min > v then
 						min = v
 					elseif max < v then
@@ -698,24 +675,24 @@ local function loadViewValue(data, name, view)
 					end
 				end
 
-				if mview.min and mview.min > v then
-					customWarning("Value "..v.." out of range [min: "..mview.min.."] and will not be drawn.")
+				if view.min and view.min > v then
+					customWarning("Value "..v.." out of range [min: "..view.min.."] and will not be drawn.")
 				end
 
-				if mview.max and mview.max < v then
-					customWarning("Value "..v.." out of range [max: "..mview.max.."] and will not be drawn.")
+				if view.max and view.max < v then
+					customWarning("Value "..v.." out of range [max: "..view.max.."] and will not be drawn.")
 				end
 			end
 
-			table.insert(mview.value, v)
+			table.insert(view.value, v)
 		end
 
-		if mview.slices and mview.min == nil then mview.min = min end
-		if mview.slices and mview.max == nil then mview.max = max end
+		if view.slices and view.min == nil then view.min = min end
+		if view.slices and view.max == nil then view.max = max end
 	end
 
-	table.sort(mview.value)
-	data.view[name] = View(mview)
+	table.sort(view.value)
+	view:loadColors()
 end
 
 local function loadViews(data)
