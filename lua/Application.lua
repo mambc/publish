@@ -130,9 +130,6 @@ local function createDirectoryStructure(data)
 	end
 
 	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.min.js", "loader/"..data.loading}
-	if data.package then
-		table.insert(depends, "model/dist/package.min.js")
-	end
 
 	if data.logo then
 		table.insert(depends, data.logo)
@@ -192,7 +189,6 @@ local function reduceCoordinates(coordinates, decimalFormat)
 	end
 end
 
-
 local function getPropertiesWithReducedNames(propertiesMap, properties, select)
 	local newProperties = {}
 	if select then
@@ -206,7 +202,6 @@ local function getPropertiesWithReducedNames(propertiesMap, properties, select)
 
 	return newProperties
 end
-
 
 local function uglify(file, decimal, select)
 	local fopen = file:open()
@@ -1273,46 +1268,6 @@ local function createApplicationProjects(data, proj)
 	}
 end
 
-local function createApplicationHome(data)
-	printInfo("Loading Home Page")
-	local index = "index.html"
-	local config = "config.js"
-
-	local layers = {}
-	for _, mproj in pairs(data.project) do
-		layers[mproj.project] = mproj.layer -- SKIP
-	end
-
-	registerApplicationModel { -- SKIP
-		output = config, -- SKIP
-		model = { -- SKIP
-			center = data.center, -- SKIP
-			zoom = data.zoom, -- SKIP
-			minZoom = data.minZoom, -- SKIP
-			maxZoom = data.maxZoom, -- SKIP
-			mapTypeId = data.base:upper(), -- SKIP
-			legend = data.legend, -- SKIP
-			layers = data.layers, -- SKIP
-			data = layers -- SKIP
-		}
-	}
-
-	registerApplicationModel { -- SKIP
-		input = templateDir.."package.mustache", -- SKIP
-		output = index, -- SKIP
-		model = { -- SKIP
-			config = config, -- SKIP
-			package = data.package.package, -- SKIP
-			description = data.package.content, -- SKIP
-			projects = data.project, -- SKIP
-			loading = data.loading, -- SKIP
-			key = data.key, -- SKIP
-			navbarColor = data.template.navbar, -- SKIP
-			titleColor = data.template.title -- SKIP
-		}
-	}
-end
-
 local function exportTemplates(data)
 	forEachElement(ViewModel, function(_, mfile)
 		printNormal("Creating file '"..mfile.output.."'")
@@ -1358,7 +1313,6 @@ metaTableApplication_ = {
 -- @arg data.legend An optional value with the title of the legend box. The default value is 'Legend'.
 -- @arg data.layers An optional value with the title of the layers box. The default value is 'Layers'.
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
--- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.simplify An optional boolean value indicating if the data should be simplified. The default value is true.
 -- @arg data.project An optional gis::Project or string with the path to a .tview file.
@@ -1565,89 +1519,6 @@ function Application(data)
 		printInfo = function() end
 	end
 
-	if data.package then
-		mandatoryTableArgument(data, "package", "string")
-		optionalTableArgument(data, "project", "table")
-		data.package = packageInfo(data.package)
-		defaultTableValue(data, "title", data.package.package)
-
-		printInfo("Creating application for package '"..data.package.package.."'")
-		local nProj = 0
-		local projects = {}
-		forEachFile(data.package.data, function(file)
-			if file:extension() == "tview" then
-				local proj, bbox
-				local _, name = file:split()
-				if data.project then
-					bbox = data.project[name]
-					if not bbox then
-						return
-					end
-
-					local mtype = type(bbox)
-					verify(mtype == "string", "Each element of 'project' must be a string, '"..name.."' got type '"..mtype.."'.")
-				end
-
-				proj = gis.Project{file = file}
-				if bbox then
-					local abstractLayer = proj.layers[bbox]
-					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
-
-					local layer = gis.Layer{project = proj, name = abstractLayer:getTitle()}
-					local typeMapped = SourceTypeMapper[layer.source]
-					verify(typeMapped == SourceType.OGR or typeMapped == SourceType.POSTGIS, "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..typeMapped.."'.")
-
-					data.project[name] = nil
-					table.insert(data.project, {project = name, layer = bbox})
-				end
-
-				projects[name] = proj
-				nProj = nProj + 1
-			end
-		end)
-
-		if nProj == 0 then
-			if data.output:exists() then data.output:delete() end
-			customError("Package '"..data.package.package.."' does not have any project.")
-		else
-			createDirectoryStructure(data)
-
-			if nProj == 1 then
-				forEachElement(projects, function(_, proj)
-					data.project = proj
-					return false
-				end)
-
-				loadLayers(data)
-				createApplicationProjects(data)
-			else
-				forEachElement(projects, function(fname, proj)
-					local datasource = Directory(data.datasource..fname)
-					if not datasource:exists() then -- SKIP
-						datasource:create() -- SKIP
-					end
-
-					local mdata = {project = proj, datasource = datasource}
-					forEachElement(data, function(idx, value)
-						if idx == "datasource" then -- SKIP
-							return
-						elseif idx == "project" then
-							idx = "projects" -- SKIP
-						end
-
-						mdata[idx] = value -- SKIP
-					end)
-
-					loadLayers(mdata) -- SKIP
-					createApplicationProjects(mdata, fname) -- SKIP
-				end)
-
-				createApplicationHome(data) -- SKIP
-			end
-
-			exportTemplates(data)
-		end
-	else
 		if data.project then
 			local ptype = type(data.project)
 			if ptype == "string" then
@@ -1673,7 +1544,6 @@ function Application(data)
 
 		createApplicationProjects(data)
 		exportTemplates(data)
-	end
 
 	setmetatable(data, metaTableApplication_)
 
