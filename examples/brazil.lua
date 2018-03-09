@@ -44,7 +44,9 @@ Application{
 	simplify = false,
 	biomes = View{
 		select = "name",
-		color = "Set2",
+--		color = "Set2", -- instead of using value/color
+		value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+		color = {"brown", "purple", "green", "yellow", "blue", "orange"},
 		description = "Brazilian Biomes, from IBGE.",
 		report = function(cell)
 			local mreport = Report{

@@ -54,10 +54,10 @@ Application{
 		title = "Emas National Park",
 		description = "Cellular layer",
 		select = "river",
-		color = "PuBu",
+		color = {"gray", "blue"},
 		width = 0,
-		value = {0, 1, 2},
-		label = {"Small", "Medium", "Large"},
+		value = {0, 1},
+		label = {"No", "Yes"},
 		visible = false
 	}
 }

@@ -24,10 +24,10 @@
 
 return {
 	Application = function(unitTest)
-		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("functional-alternative-tostring")
+		local brazil = filePath("brazil.tview", "publish")
+		local brazilDir = Directory("functional-alternative-tostring")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local error_func = function()
 			Application()
@@ -42,20 +42,41 @@ return {
 		error_func = function()
 			Application{
 				arg = "void",
-				description = "abc.",
 				clean = true,
 				simplify = false,
 				progress = false,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				project = emas,
-				output = emasDir
+				project = brazil,
+				output = brazilDir,
+				biomes = View{
+					select = "name",
+					value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+					color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+					description = "abc.",
+				}
 			}
 		end
 		unitTest:assertWarning(error_func, unnecessaryArgumentMsg("arg"))
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
+
+		error_func = function()
+			Application{
+				clean = true,
+				simplify = false,
+				progress = false,
+				project = brazil,
+				output = brazilDir,
+				biomes = View{
+					select = "name",
+					value = {"Catinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+					color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+					description = "abc.",
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Value 'Caatinga' belongs to the data but not to the values in the View. Did you write 'Catinga' wrongly?")
+
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local data = {
 			clean = true,
@@ -64,7 +85,7 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = emasDir,
+			output = brazilDir,
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			zoom = 14,
@@ -74,9 +95,9 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
+		unitTest:assertError(error_func, "Argument 'project' or a View with argument 'layer' is mandatory to publish your data.")
 
-		data.project = emas
+		data.project = brazil
 		data.key = 1
 		error_func = function()
 			Application(clone(data))
@@ -117,7 +138,7 @@ return {
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("output", "Directory", 1))
 
-		data.output = emasDir
+		data.output = brazilDir
 		data.color = 123456
 		error_func = function()
 			Application(clone(data))
@@ -201,7 +222,7 @@ return {
 			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local caraguaDir = Directory("CaraguaWebMap")
 		if caraguaDir:exists() then caraguaDir:delete() end
@@ -243,7 +264,7 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("simplify", "boolean", 1))
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local arapiunsDir = Directory("ArapiunsWebMap")
 		if arapiunsDir:exists() then arapiunsDir:delete() end

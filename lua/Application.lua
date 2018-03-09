@@ -635,8 +635,6 @@ local function validateTemporalProperty(project, name, view)
 end
 
 local function loadViewValue(data, name, view)
-	view.value = {}
-
 	local select = view.select[2] or view.select
 
 	do
@@ -660,26 +658,58 @@ local function loadViewValue(data, name, view)
 		local huge = math.huge
 		local min = huge
 		local max = -huge
-		for v in pairs(set) do
-			if view.slices then
-				if view.min == nil or view.max == nil then
-					if min > v then
-						min = v
-					elseif max < v then
-						max = v
+
+		if view.value then
+			local options = {}
+			forEachElement(view.value, function(_, mvalue)
+				options[mvalue] = false
+			end)
+
+			for v in pairs(set) do
+				if belong(v, view.value) then
+					options[v] = true
+				else
+					local str = "Value '"..v.."' belongs to the data but not to the values in the View."
+
+					local sug = suggestion(v, options)
+
+					if sug then
+						str = str.." Did you write '"..sug.."' wrongly?"
 					end
-				end
 
-				if view.min and view.min > v then
-					customWarning("Value "..v.." out of range [min: "..view.min.."] and will not be drawn.")
-				end
-
-				if view.max and view.max < v then
-					customWarning("Value "..v.." out of range [max: "..view.max.."] and will not be drawn.")
+					customError(str)
 				end
 			end
 
-			table.insert(view.value, v)
+			forEachOrderedElement(options, function(idx, mvalue)
+				if not mvalue then
+					customError("Selected value '"..idx.."' does not exist in the data.")
+				end
+			end)
+		else
+			view.value = {}
+
+			for v in pairs(set) do
+				if view.slices then
+					if view.min == nil or view.max == nil then
+						if min > v then
+							min = v
+						elseif max < v then
+							max = v
+						end
+					end
+
+					if view.min and view.min > v then
+						customWarning("Value "..v.." out of range [min: "..view.min.."] and will not be drawn.")
+					end
+
+					if view.max and view.max < v then
+						customWarning("Value "..v.." out of range [max: "..view.max.."] and will not be drawn.")
+					end
+				end
+
+				table.insert(view.value, v)
+			end
 		end
 
 		if view.slices and view.min == nil then view.min = min end
@@ -760,7 +790,7 @@ end
 local function loadLayers(data)
 	local nView = loadViews(data)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "display", "code", "legend", "layers", "progress", "loading", "key",
+	verifyUnnecessaryArguments(data, {"project", "output", "clean", "display", "code", "legend", "layers", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
 		"simplify", "fontSize", "name", "time", "temporal", "scenario"})
@@ -819,12 +849,12 @@ local function loadLayers(data)
 			end)
 		else
 			if data.output:exists() then data.output:delete() end
-			customError("Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
+			customError("Argument 'project' or a View with argument 'layer' is mandatory to publish your data.")
 		end
 	end
 
 	forEachElement(data.view, function(name, view)
-		if not (view.color and not view.value and view.select) then return end
+		if not view.color or not view.select then return end
 		loadViewValue(data, name, view)
 	end)
 
@@ -1347,23 +1377,21 @@ metaTableApplication_ = {
 -- @arg data.fontSize An optional number with the font size.
 -- @usage import("publish")
 --
--- local emas = filePath("emas.tview", "publish")
--- local emasDir = Directory("EmasWebMap")
---
--- local app = Application{
---     project = emas,
+-- Application{
+--     project = filePath("brazil.tview", "publish"),
+--     title = "Brazil Application",
+--     description = "Small application with some data related to Brazil.",
 --     clean = true,
---     description = "My description.",
+--     output = "BrazilWebMap",
 --     simplify = false,
---     select = "river",
---     color = "BuGn",
---     value = {0, 1, 2},
---     progress = false,
---     output = emasDir
+--     biomes = View{
+--         select = "name",
+--         color = "Set2", -- instead of using value/color
+--         description = "Brazilian Biomes, from IBGE.",
+--     }
 -- }
---
--- print(app)
--- if emasDir:exists() then emasDir:delete() end
+-- 
+-- Directory("BrazilWebMap"):delete()
 function Application(data)
 	verifyNamedTable(data)
 

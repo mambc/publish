@@ -346,6 +346,7 @@ decimal       number [5]
 description   string [abc.]
 download      boolean [false]
 label         named table of size 3
+loadColors    function
 select        string [river]
 title         string [Emas National Park]
 transparency  number [0]
