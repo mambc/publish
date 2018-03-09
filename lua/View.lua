@@ -24,13 +24,18 @@
 
 View_ = {
 	type_ = "View",
-	loadColors = function(data)
-		local realTransparency = 1 - data.transparency
+	--- Internal function to load View colors. Do not use it.
+	-- @usage -- DONTRUN
+	-- view:loadColors()
+	loadColors = function(self)
+		self.loadColors = function() end -- this function should run only once
+
+		local realTransparency = 1 - self.transparency
 			local classes
-			if data.slices and data.min and data.max then
-				classes = data.slices -- SKIP
+			if self.slices and self.min and self.max then
+				classes = self.slices -- SKIP
 			else
-				classes = #data.value
+				classes = #self.value
 			end
 
 			if classes == 0 then
@@ -38,10 +43,10 @@ View_ = {
 			end
 			local mcolor
 
-			if type(data.color) == "string" then
-				mcolor = color{color = data.color, classes = classes, alpha = realTransparency}
+			if type(self.color) == "string" then
+				mcolor = color{color = self.color, classes = classes, alpha = realTransparency}
 			else
-				mcolor = color{color = data.color, alpha = realTransparency}
+				mcolor = color{color = self.color, alpha = realTransparency}
 			end
 
 			local nColors = #mcolor
@@ -50,21 +55,21 @@ View_ = {
 			end
 
 			local colors = {}
-			if data.slices and data.min and data.max then
-				local step = (data.max - data.min) / (data.slices - 1)
+			if self.slices and self.min and self.max then
+				local step = (self.max - self.min) / (self.slices - 1)
 				for i = 1, classes do
-					colors[tostring(data.min + step * (i - 1))] = mcolor[i] -- SKIP
+					colors[tostring(self.min + step * (i - 1))] = mcolor[i] -- SKIP
 				end
 			else
 				for i = 1, classes do
-					colors[tostring(data.value[i])] = mcolor[i]
+					colors[tostring(self.value[i])] = mcolor[i]
 				end
 			end
 
 			local label = {}
 
-			if data.label then
-				local labels = #data.label
+			if self.label then
+				local labels = #self.label
 				if labels == 0 then
 					customError("Argument 'label' must be a table of strings with size greater than 0, got "..labels..".")
 				end
@@ -73,7 +78,7 @@ View_ = {
 					customError("The number of labels ("..labels..") must be equal to number of data classes ("..classes..").")
 				end
 
-				forEachElement(data.label, function(k, v, mtype)
+				forEachElement(self.label, function(k, v, mtype)
 					if mtype ~= "string" then
 						customError("Argument 'label' must be a table of strings, element "..k.." ("..tostring(v)..") got "..mtype..".")
 					end
@@ -81,7 +86,7 @@ View_ = {
 
 				local i = 1
 				forEachOrderedElement(colors, function(_, color)
-					label[data.label[i]] = tostring(color)
+					label[self.label[i]] = tostring(color)
 					i = i + 1
 				end)
 			else
@@ -90,8 +95,8 @@ View_ = {
 				end)
 			end
 
-			data.color = colors
-			data.label = label
+			self.color = colors
+			self.label = label
 	end
 }
 
