@@ -242,11 +242,6 @@ return {
 		unitTest:assertError(error_func, "The icon path 'K7Y' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
 
 		error_func = function()
-			View{description = "abc.", icon = {color = "red"}}
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("path"))
-
-		error_func = function()
 			View{
 				description = "abc.",
 				icon = {
@@ -427,56 +422,6 @@ return {
 		end
 
 		unitTest:assertWarning(warning_func, unnecessaryArgumentMsg("icon"))
-
-		local icons = {
-			airport = true,
-			animal = true,
-			bigcity = true,
-			bus = true,
-			car = true,
-			caution = true,
-			cycling = true,
-			database = true,
-			desert = true,
-			diving = true,
-			fillingstation = true,
-			finish = true,
-			fire = true,
-			firstaid = true,
-			fishing = true,
-			flag = true,
-			forest = true,
-			harbor = true,
-			helicopter = true,
-			home = true,
-			horseriding = true,
-			hospital = true,
-			lake = true,
-			motorbike = true,
-			mountains = true,
-			radio = true,
-			restaurant = true,
-			river = true,
-			road = true,
-			shipwreck = true,
-			thunderstorm = true
-		}
-
-		error_func = function()
-			View{
-				description = "abc.",
-				icon = "VOID"
-			}
-		end
-		unitTest:assertError(error_func, switchInvalidArgumentMsg("VOID", "icon", icons))
-
-		error_func = function()
-			View{
-				description = "abc.",
-				icon = "hom"
-			}
-		end
-		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
 
 		error_func = function()
 			View{

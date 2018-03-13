@@ -231,7 +231,7 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+		unitTest:assertError(error_func, incompatibleTypeMsg("icon", "table", "home"))
 
 		error_func = function()
 			Application{
@@ -258,14 +258,14 @@ return {
 				simplify = false,
 				progress = false,
 				output = arapiunsDir,
-				villages = View{
+				trajectory = View{
+					select = "abc",
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					select = "UC",
 					icon = {"home"}
 				}
 			}
 		end
-		unitTest:assertError(error_func, "The number of 'icon:makers' (1) must be equal to number of unique values in property 'UC' (2) in View 'villages'.")
+		unitTest:assertError(error_func, "All the elements of data.icon should be named.")
 
 		error_func = function()
 			Application{
@@ -282,7 +282,7 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "'fores' is an invalid value for argument 'icon:marker'. Do you mean 'forest'?")
+		unitTest:assertError(error_func, "'fores' is an invalid value for argument 'icon'. Do you mean 'forest'?")
 
 		error_func = function()
 			Application{

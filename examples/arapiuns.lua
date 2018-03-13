@@ -50,12 +50,10 @@ Application{
 	simplify = false,
 	trajectory = View{
 		description = "Route on the Arapiuns River.",
-		width = 3,
+		width = 2,
 		border = "blue",
 		icon = {
-			path = "M150 0 L75 200 L225 200 Z",
-			transparency = 0.2,
-			time = 35
+			time = 100
 		}
 	},
 	villages = View{

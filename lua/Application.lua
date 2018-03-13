@@ -976,12 +976,12 @@ local function processingView(data, layers, reports, name, view)
 			table.insert(reports, report)
 		end
 
-		if view.icon then
-			if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
-				if data.output:exists() then data.output:delete() end
-				customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
-			end
+		if view.icon and not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
+			if data.output:exists() then data.output:delete() end
+			customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
+		end
 
+		if view.icon and belong(view.geom, {"Point", "MultiPoint"}) then
 			local icon = {}
 			local itype = type(view.icon)
 			if itype == "string" then
@@ -990,130 +990,147 @@ local function processingView(data, layers, reports, name, view)
 					customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
 				end
 
-				view.icon = view.icon..".png"
-				icon.path = view.icon
-				os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
-			else
-				if #view.icon > 0 then
-					icon.options = {}
-					local set = {}
-					local label = view.label or {}
-					local col = view.select[2] or view.select
-					local nProp = 0
-					for i = 0, #dset do
-						local prop = dset[i][col]
-						if not prop then
-							if data.output:exists() then data.output:delete() end
-							customError("Column '"..col.."' does not exist in View '"..name.."'.")
-						end
+				view.icon = {view.icon}
+			end
 
-						if not set[prop] then
-							set[prop] = true
-							nProp = nProp + 1
-						end
-					end
+			icon.options = {}
+			local set = {}
+			local label = view.label or {}
+			local markers = view.icon
 
-					local markers = view.icon
-					local nMarkers = #markers
-					if nProp ~= nMarkers then
+			if view.select then
+				local col = view.select[2] or view.select
+				local nProp = 0
+				for i = 0, #dset do
+					local prop = dset[i][col]
+					if not prop then
 						if data.output:exists() then data.output:delete() end
-						customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
+						customError("Column '"..col.."' does not exist in View '"..name.."'.")
 					end
 
-					local ics = {
-						airport = true,
-						animal = true,
-						bigcity = true,
-						bus = true,
-						car = true,
-						caution = true,
-						cycling = true,
-						database = true,
-						desert = true,
-						diving = true,
-						fillingstation = true,
-						finish = true,
-						fire = true,
-						firstaid = true,
-						fishing = true,
-						flag = true,
-						forest = true,
-						harbor = true,
-						helicopter = true,
-						home = true,
-						horseriding = true,
-						hospital = true,
-						lake = true,
-						motorbike = true,
-						mountains = true,
-						radio = true,
-						restaurant = true,
-						river = true,
-						road = true,
-						shipwreck = true,
-						thunderstorm = true
-					}
-
-					local properties = {}
-					for prop in pairs(set) do
-						table.insert(properties, prop)
+					if not set[prop] then
+						set[prop] = true
+						nProp = nProp + 1
 					end
+				end
 
-					table.sort(properties)
-
-					local ltmp = {}
-					local copy = {}
-					for i, prop in pairs(properties) do
-						local strprop = tostring(prop)
-						local marker = tostring(markers[i])
-
-						if not ics[marker] then
-							switchInvalidArgument("icon:marker", marker, ics)
-						end
-
-						local mlabel = label[i]
-						if not mlabel then
-							mlabel = col.." "..strprop
-						elseif type(mlabel) ~= "string" then
-							incompatibleTypeError("label", "string", mlabel)
-						end
-
-						marker = marker..".png"
-						copy[marker] = true
-
-						ltmp[mlabel] = marker
-						icon.options[strprop] = marker
-					end
-
-					for el in pairs(copy) do
-						os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
-					end
-
-					view.label = ltmp
-				else
-					view.icon.transparency = 1 - view.icon.transparency
-					icon.options = {
-						path = view.icon.path,
-						fillColor = view.icon.color,
-						fillOpacity = view.icon.transparency,
-						strokeWeight = 2
-					}
-
-					icon.time = 1000 / (200 / view.icon.time)
+				local nMarkers = #markers
+				if nProp ~= nMarkers and nMarkers > 1 then
+					if data.output:exists() then data.output:delete() end
+					customError("The number of 'icon' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.") -- SKIP
 				end
 			end
 
-			view.icon = icon
-		elseif view.geom == "LineString" or view.geom == "MultiLineString" then
-			view.icon = {}
-			view.icon.options = {
-				path = "M150 0 L75 200 L225 200 Z",
-				fillColor = "rgba(0, 0, 0, 1)",
-				fillOpacity = 0.8,
-				strokeWeight = 2
+			local ics = {
+				airport = true,
+				animal = true,
+				bigcity = true,
+				bus = true,
+				car = true,
+				caution = true,
+				cycling = true,
+				database = true,
+				desert = true,
+				diving = true,
+				fillingstation = true,
+				finish = true,
+				fire = true,
+				firstaid = true,
+				fishing = true,
+				flag = true,
+				forest = true,
+				harbor = true,
+				helicopter = true,
+				home = true,
+				horseriding = true,
+				hospital = true,
+				lake = true,
+				motorbike = true,
+				mountains = true,
+				radio = true,
+				restaurant = true,
+				river = true,
+				road = true,
+				shipwreck = true,
+				thunderstorm = true
 			}
 
-			view.icon.time = 25
+			local properties = {}
+			for prop in pairs(set) do
+				table.insert(properties, prop)
+			end
+
+			table.sort(properties)
+
+			local ltmp = {}
+			local copy = {}
+			for i, prop in pairs(properties) do
+				local strprop = tostring(prop)
+				local marker = tostring(markers[i])
+
+				if #markers == 1 then marker = markers[1] end
+
+				local mlabel = label[i]
+
+				if not mlabel then
+					mlabel = strprop
+				elseif type(mlabel) ~= "string" then
+					incompatibleTypeError("label", "string", mlabel)
+				end
+
+				if ics[marker] then
+					marker = marker..".png"
+					copy[templateDir.."markers/"..marker] = true
+
+					ltmp[mlabel] = marker
+					icon.options[strprop] = marker
+					icon.path = marker
+				elseif isFile(marker) then
+					marker = File(marker) -- SKIP
+					copy[tostring(marker)] = true -- convert to string to guarantee that unique values are copied only once -- SKIP
+
+					ltmp[mlabel] = marker:name() -- SKIP
+					icon.options[strprop] = marker:name() -- SKIP
+					icon.path = marker -- SKIP
+				else
+					switchInvalidArgument("icon", marker, ics)
+				end
+			end
+
+			forEachOrderedElement(copy, function(el)
+				local file = File(el)
+				printNormal("Copying icon '"..file:name().."'")
+				file:copy(data.assets)
+			end)
+
+			if #markers > 1 then
+				view.label = ltmp
+			else
+				view.label = {}
+			end
+
+			view.icon = icon
+		end
+	end
+
+	if belong(view.geom, {"LineString", "MultiLineString"}) then
+		optionalTableArgument(view, "icon", "table")
+
+		if view.icon then
+			if #view.icon > 0 then
+				customError("All the elements of data.icon should be named.")
+			end
+
+			verifyUnnecessaryArguments(view.icon, {"path", "color", "transparency", "time"})
+
+			view.icon.options = { -- SKIP
+				path = "M150 0 L75 200 L225 200 Z",
+				fillColor = "rgba(0, 0, 0, 1)", -- SKIP
+				fillOpacity = 0.8, -- SKIP
+				strokeWeight = 2 -- SKIP
+			}
+
+			defaultTableValue(view.icon, "time", 5)
 		end
 	end
 
@@ -1390,7 +1407,7 @@ metaTableApplication_ = {
 --         description = "Brazilian Biomes, from IBGE.",
 --     }
 -- }
--- 
+--
 -- Directory("BrazilWebMap"):delete()
 function Application(data)
 	verifyNamedTable(data)

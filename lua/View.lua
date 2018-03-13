@@ -313,44 +313,6 @@ function View(data)
 			if data.icon:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon:find("[0-9]") then
 				data.icon = {path = data.icon}
 				itype = "table" -- SKIP
-			else
-				local ics = {
-					airport = true,
-					animal = true,
-					bigcity = true,
-					bus = true,
-					car = true,
-					caution = true,
-					cycling = true,
-					database = true,
-					desert = true,
-					diving = true,
-					fillingstation = true,
-					finish = true,
-					fire = true,
-					firstaid = true,
-					fishing = true,
-					flag = true,
-					forest = true,
-					harbor = true,
-					helicopter = true,
-					home = true,
-					horseriding = true,
-					hospital = true,
-					lake = true,
-					motorbike = true,
-					mountains = true,
-					radio = true,
-					restaurant = true,
-					river = true,
-					road = true,
-					shipwreck = true,
-					thunderstorm = true
-				}
-
-				if not ics[data.icon] then
-					switchInvalidArgument("icon", data.icon, ics)
-				end
 			end
 		end
 
@@ -364,7 +326,7 @@ function View(data)
 					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")
 				end
 			else
-				mandatoryTableArgument(data.icon, "path", "string")
+				defaultTableValue(data.icon, "path", "M150 0 L75 200 L225 200 Z")
 				defaultTableValue(data.icon, "time", 5)
 				defaultTableValue(data.icon, "color", "black")
 				defaultTableValue(data.icon, "transparency", 0)
