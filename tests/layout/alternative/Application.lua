@@ -37,7 +37,6 @@ return {
 				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
 				description = "abc.",
 			},
-			simplify = false,
 			progress = false,
 			output = brazilDir,
 			title = 1,
@@ -332,7 +331,6 @@ return {
 				project = proj,
 				clean = true,
 				output = municipalitiesir,
-				simplify = false,
 				progress = false,
 				municipalities = View {
 					description = "abc.",
@@ -351,7 +349,6 @@ return {
 				project = proj,
 				clean = true,
 				output = municipalitiesir,
-				simplify = false,
 				progress = false,
 				municipalities = View {
 					description = "abc.",
@@ -370,7 +367,6 @@ return {
 				project = proj,
 				clean = true,
 				output = municipalitiesir,
-				simplify = false,
 				progress = false,
 				municipalities = View {
 					description = "abc.",

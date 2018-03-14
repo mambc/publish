@@ -38,7 +38,6 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
-				simplify = false,
 				output = appAlternative
 			}
 		end
@@ -52,7 +51,6 @@ return {
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
-				simplify = false,
 				output = appAlternative
 			}
 		end

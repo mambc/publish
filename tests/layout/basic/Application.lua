@@ -37,7 +37,6 @@ return {
 				description = "Basic Test"
 			},
 			progress = false,
-			simplify = false,
 			output = brazilDir,
 			title = "Testing Application Functional",
 		}
@@ -63,7 +62,6 @@ return {
 				description = "Basic Test",
 			},
 			progress = false,
-			simplify = false,
 			output = brazilDir,
 			title = "Testing Application Functional",
 			base = "roadmap",
@@ -99,7 +97,6 @@ return {
 				description = "abc.",
 			},
 			progress = false,
-			simplify = false,
 			fontSize = 10
 		}
 
@@ -123,7 +120,6 @@ return {
 				description = "abc.",
 			},
 			progress = false,
-			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
@@ -151,7 +147,6 @@ return {
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			simplify = false,
 			logo = tostring(logo)
 		}
 
@@ -184,7 +179,6 @@ return {
 			output = caraguaDir,
 			clean = true,
 			progress = false,
-			simplify = false,
 			use = View{
 				description = "abc.",
 				title = "Occupational Classes 2010",
@@ -215,7 +209,6 @@ return {
 			output = caraguaDir,
 			clean = true,
 			progress = false,
-			simplify = false,
 			center = {lat = -23.648856395349, long = -45.489454594686094},
 			use = View{
 				description = "abc.",
@@ -247,7 +240,6 @@ return {
 			output = caraguaDir,
 			clean = true,
 			progress = false,
-			simplify = false,
 			zoom = 12,
 			use = View{
 				description = "abc.",
@@ -288,7 +280,6 @@ return {
 			project = proj,
 			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",
@@ -316,7 +307,6 @@ return {
 			project = proj,
 			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",
@@ -346,7 +336,6 @@ return {
 			project = proj,
 			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",
@@ -375,7 +364,6 @@ return {
 			project = proj,
 			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",

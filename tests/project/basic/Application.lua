@@ -40,7 +40,6 @@ return {
 				description = "abc.",
 			},
 			progress = false,
-			simplify = false,
 			output = brazilDir,
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
@@ -79,7 +78,6 @@ return {
 				description = "abc.",
 			},
 			progress = false,
-			simplify = false,
 			output = brazilDir,
 			title = "Brazil",
 			zoom = 14,

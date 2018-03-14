@@ -38,7 +38,6 @@ return {
 				description = "abc.",
 			},
 			progress = false,
-			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
@@ -62,7 +61,6 @@ return {
 				description = "abc.",
 			},
 			progress = false,
-			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
@@ -78,7 +76,6 @@ return {
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 			project = filePath("caragua.tview", "publish"),
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = caraguaDir,
 			Limit = List{
@@ -166,6 +163,7 @@ return {
 			output = caraguaDir,
 			clean = true,
 			progress = false,
+			simplify = true,
 			use = View{
 				description = "abc.",
 				title = "Occupational Classes 2010",
@@ -228,6 +226,7 @@ return {
 			output = arapiunsDir,
 			clean = true,
 			progress = false,
+			simplify = true,
 			villages = View{
 				description = "abc.",
 				select = {"Nome", "UC"},
@@ -319,7 +318,6 @@ return {
 			project = proj,
 			output = temporalDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			uc = View {
 				title = "UC",
@@ -357,7 +355,6 @@ return {
 			project = proj,
 			output = temporalDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			uc_2016 = View {
 				title = "UC",
@@ -404,7 +401,6 @@ return {
 			project = proj,
 			output = temporalDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			uc = View {
 				title = "UC",
@@ -479,7 +475,6 @@ return {
 		app = Application{
 			project = proj,
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = caraguaDir,
 			scenario = {
@@ -544,7 +539,6 @@ return {
 			project = proj,
 			output = "myresult",
 			clean = true,
-			simplify = false,
 			progress = false,
 			amaz = View {
 				title = "Amaz",
@@ -571,7 +565,6 @@ return {
 				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
 				description = "abc.",
 			},
-			simplify = false,
 			progress = false,
 			output = brazilDir,
 			title = "Emas",

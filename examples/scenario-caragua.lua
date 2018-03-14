@@ -77,7 +77,6 @@ Application{
 	clean = true,
 	output = "ScenarioCaraguaWebMap",
 	report = report,
-	simplify = false,
 	scenario = {
 		BaseLine = "Baseline simulation for 2025.",
 		LessGrowth = "Less growth simulation in 2025. Categorizes the social conditions of households in Caraguatatuba using classes A (3), B (2) or C (1).",

@@ -38,7 +38,6 @@ app = Application {
 	description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
 	output = "VegetationWebMap",
 	clean = true,
-	simplify = false,
 	title = "Vegetation scenario",
 	vegtype = View {
 		title = "Vegetation Type 2000",

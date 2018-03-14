@@ -44,7 +44,6 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				order = 1,
@@ -64,7 +63,6 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				order = {1},
@@ -84,7 +82,6 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				order = {"limit", "cells"},
@@ -104,7 +101,6 @@ return {
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				order = {"limi"},
@@ -134,7 +130,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -155,7 +150,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -179,7 +173,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -202,7 +195,6 @@ return {
 				project = "emas.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				limit = View{
@@ -220,7 +212,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				trajectory = View{
@@ -238,7 +229,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -255,7 +245,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				trajectory = View{
@@ -272,7 +261,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -289,7 +277,6 @@ return {
 				project = "arapiuns.tview",
 				base = "roadmap",
 				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -322,7 +309,6 @@ return {
 				description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
 				output = vegDir,
 				clean = true,
-				simplify = false,
 				progress = false,
 				title = "Vegetation scenario",
 				vegtype = View {
@@ -344,7 +330,6 @@ return {
 				project = filePath("caragua.tview", "publish"),
 				output = caraguaDir,
 				clean = true,
-				simplify = false,
 				progress = false,
 				real = View{
 					title = "Social Classes 2010 Real",

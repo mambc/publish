@@ -36,7 +36,6 @@ return {
 				title = "Testing layer with the wrong source.",
 				output = sourceDir,
 				clean = true,
-				simplify = false,
 				progress = false,
 				wfsLayer = View {
 					title = "Wrong File",
@@ -70,7 +69,6 @@ return {
 					project = proj,
 					output = sourceDir,
 					clean = true,
-					simplify = false,
 					progress = false,
 					wfsLayer = View {
 						title = "WFS",

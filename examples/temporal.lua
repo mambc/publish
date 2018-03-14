@@ -48,7 +48,6 @@ Application{
 	project = proj,
 	output = temporalDir,
 	clean = true,
-	simplify = false,
 	uc = View{
 		title = "UC",
 		description = "UC Federais.",

@@ -64,7 +64,6 @@ return {
 			project = proj,
 			output = wmsDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			wmsLayer = View {
 				title = "WMS",
@@ -124,7 +123,6 @@ return {
 			project = proj,
 			output = wmsDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			wmsLayer = View {
 				title = "WMS",
@@ -179,7 +177,6 @@ return {
 			project = proj,
 			output = wmsDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			wms = View {
 				title = "WMS",

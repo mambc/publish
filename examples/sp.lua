@@ -32,7 +32,6 @@ Application {
 	base = "roadmap",
 	output = "SPWebMap",
 	clean = true,
-	simplify = false,
 	municipalities = View {
 		title = "GDP",
 		description = "Gross Domestic Product (GDP) of Sao Paulo, Brazil.",

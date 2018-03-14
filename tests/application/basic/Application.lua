@@ -46,7 +46,6 @@ return {
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778},
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = emasDir,
 			logo = packageInfo("luadoc").path.."/logo/logo.png",
@@ -116,7 +115,6 @@ return {
 			project = filePath("emas.tview", "publish"),
 			clean = true,
 			progress = false,
-			simplify = false,
 			output = emasDir,
 			order = {"river"},
 			river = View{
@@ -169,7 +167,6 @@ return {
 			project = filePath("emas.tview", "publish"),
 			clean = true,
 			progress = false,
-			simplify = false,
 			output = emasDir,
 			river = View{
 				description = "abc.",
@@ -195,7 +192,6 @@ return {
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			project = filePath("emas.tview", "publish"),
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = emasDir,
 		}
@@ -216,7 +212,6 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = caraguaDir,
 			report = report,
@@ -258,7 +253,6 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = caraguaDir,
 			limit = View{
@@ -380,7 +374,6 @@ return {
 					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 			output = caraguaDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			real = View {
 				title = "Social Classes 2010",
@@ -433,7 +426,6 @@ return {
 					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 			output = vegDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			vegtype = View {
 				title = "Vegetation Type 2000",
@@ -468,7 +460,6 @@ return {
 			description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
 			output = vegDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			title = "Vegetation scenario",
 			vegtype = View {
@@ -497,7 +488,6 @@ return {
 					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 			output = caraguaDir,
 			clean = true,
-			simplify = false,
 			progress = false,
 			limit = View{
 				description = "Bounding box of Caraguatatuba.",
@@ -521,7 +511,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -549,7 +538,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -587,7 +575,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -619,7 +606,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
@@ -647,7 +633,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
@@ -677,7 +662,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -715,7 +699,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -755,7 +738,6 @@ return {
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
 			clean = true,
-			simplify = false,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
