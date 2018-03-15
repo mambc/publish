@@ -33,12 +33,10 @@ return {
 		local error_func = function()
 			Application{
 				project = proj,
-				clean = true,
 				select = "river",
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
-				simplify = false,
 				output = appAlternative
 			}
 		end
@@ -47,12 +45,10 @@ return {
 		error_func = function()
 			Application{
 				project = 1,
-				clean = true,
 				select = "river",
 				color = "BuGn",
 				value = {0, 1, 2},
 				progress = false,
-				simplify = false,
 				output = appAlternative
 			}
 		end

@@ -30,9 +30,6 @@ local gis = getPackage("gis")
 local file = File("temporal.tview")
 file:deleteIfExists()
 
-local temporalDir = Directory("TemporalWebMap")
-if temporalDir:exists() then temporalDir:delete() end
-
 local proj = gis.Project{
 	title = "Testing temporal View",
 	author = "Carneiro, H.",
@@ -46,9 +43,6 @@ local proj = gis.Project{
 Application{
 	base = "roadmap",
 	project = proj,
-	output = temporalDir,
-	clean = true,
-	simplify = false,
 	uc = View{
 		title = "UC",
 		description = "UC Federais.",

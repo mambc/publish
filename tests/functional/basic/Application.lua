@@ -24,24 +24,24 @@
 
 return {
 	Application = function(unitTest)
-		local emasDir = Directory("functional-basic-app")
-		if emasDir:exists() then emasDir:delete() end
+		local brazilDir = Directory("functional-basic-app")
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local app = Application{
-			project = filePath("emas.tview", "publish"),
+			project = filePath("brazil.tview", "publish"),
 			output = "functional-basic-app",
-			clean = true,
-			select = "river",
-			description = "abc.",
-			color = "BuGn",
-			value = {0, 1, 2},
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertType(app.output, "Directory")
-		unitTest:assertEquals(app.title, "Emas database")
+		unitTest:assertEquals(app.title, "No title")
 		unitTest:assert(app.clean)
 		unitTest:assert(not app.progress)
 		unitTest:assertNil(app.key)
@@ -49,23 +49,23 @@ return {
 		if app.output:exists() then app.output:delete() end
 
 		app = Application{
-			project = filePath("emas.tview", "publish"),
-			output = emasDir,
-			description = "abc.",
+			project = filePath("brazil.tview", "publish"),
+			output = brazilDir,
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertNotNil(app.key)
 		unitTest:assertEquals(app.key, "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local caraguaDir = Directory("CaraguaWebMap")
 		if caraguaDir:exists() then caraguaDir:delete() end
@@ -73,8 +73,6 @@ return {
 		app = Application{
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 			project = filePath("caragua.tview", "publish"),
-			clean = true,
-			simplify = false,
 			progress = false,
 			output = caraguaDir,
 			Limit = List{
@@ -160,8 +158,8 @@ return {
 		app = Application{
 			project = proj,
 			output = caraguaDir,
-			clean = true,
 			progress = false,
+			simplify = true,
 			use = View{
 				description = "abc.",
 				title = "Occupational Classes 2010",
@@ -222,8 +220,8 @@ return {
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 			project = proj,
 			output = arapiunsDir,
-			clean = true,
 			progress = false,
+			simplify = true,
 			villages = View{
 				description = "abc.",
 				select = {"Nome", "UC"},
@@ -314,8 +312,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = temporalDir,
-			clean = true,
-			simplify = false,
 			progress = false,
 			uc = View {
 				title = "UC",
@@ -352,8 +348,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = temporalDir,
-			clean = true,
-			simplify = false,
 			progress = false,
 			uc_2016 = View {
 				title = "UC",
@@ -399,8 +393,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = temporalDir,
-			clean = true,
-			simplify = false,
 			progress = false,
 			uc = View {
 				title = "UC",
@@ -474,8 +466,6 @@ return {
 
 		app = Application{
 			project = proj,
-			clean = true,
-			simplify = false,
 			progress = false,
 			output = caraguaDir,
 			scenario = {
@@ -539,8 +529,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = "myresult",
-			clean = true,
-			simplify = false,
 			progress = false,
 			amaz = View {
 				title = "Amaz",
@@ -553,22 +541,22 @@ return {
 		Directory("myresult"):delete()
 	end,
 	__tostring = function(unitTest)
-		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("functional-basic-tostring")
+		local brazil = filePath("brazil.tview", "publish")
+		local brazilDir = Directory("functional-basic-tostring")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local app = Application{
-			project = tostring(emas),
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
-			simplify = false,
+			project = tostring(brazil),
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			output = emasDir,
+			output = brazilDir,
 			title = "Emas",
-			description = "Creates a database that can be used by the example fire-spread of base package.",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -576,30 +564,29 @@ return {
 		unitTest:assertType(app, "Application")
 		unitTest:assert(app.clean)
 		unitTest:assert(not app.progress)
-		unitTest:assertEquals(tostring(app), [[assets       Directory
-base         string [satellite]
-center       named table of size 2
-clean        boolean [true]
-code         boolean [true]
-datasource   Directory
-description  string [Creates a database that can be used by the example fire-spread of base package.]
-display      boolean [true]
-layers       string [Layers]
-legend       string [Legend]
-loading      string [default.gif]
-maxZoom      number [20]
-minZoom      number [0]
-output       Directory
-progress     boolean [false]
-project      Project
-simplify     boolean [false]
-template     named table of size 2
-temporal     vector of size 0
-title        string [Emas]
-view         named table of size 4
-zoom         number [14]
+		unitTest:assertEquals(tostring(app), [[assets      Directory
+base        string [satellite]
+center      named table of size 2
+clean       boolean [true]
+code        boolean [true]
+datasource  Directory
+display     boolean [true]
+layers      string [Layers]
+legend      string [Legend]
+loading     string [default.gif]
+maxZoom     number [20]
+minZoom     number [0]
+output      Directory
+progress    boolean [false]
+project     Project
+simplify    boolean [false]
+template    named table of size 2
+temporal    vector of size 0
+title       string [Emas]
+view        named table of size 1
+zoom        number [14]
 ]])
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 	end
 }

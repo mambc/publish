@@ -24,21 +24,21 @@
 
 return {
 	Application = function(unitTest)
-		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("Application-alternative-app")
-		if emasDir:exists() then emasDir:delete() end
+		local brazil = filePath("brazil.tview", "publish")
+		local brazilDir = Directory("Application-alternative-app")
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local data = {
-			project = emas,
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
-			simplify = false,
+			project = brazil,
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			output = emasDir,
+			output = brazilDir,
 			title = 1,
-			description = "Basic Test",
 			base = "roadmap",
 			zoom = 10,
 			minZoom = 5,
@@ -51,14 +51,7 @@ return {
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("title", "string", 1))
-
 		data.title = "Testing Application Application"
-		data.description = 1
-		error_func = function()
-			Application(clone(data))
-		end
-
-		unitTest:assertError(error_func, incompatibleTypeMsg("description", "string", 1))
 
 		data.description = "Alternative Test"
 		data.base = 1
@@ -307,7 +300,7 @@ return {
 
 		unitTest:assertError(error_func, "Logo '"..tostring(logo).."' does not exist.")
 
-		logo = tostring(emas)
+		logo = tostring(brazil)
 		data.logo = tostring(logo)
 		error_func = function()
 			Application(clone(data))
@@ -315,7 +308,7 @@ return {
 
 		unitTest:assertError(error_func, "'tview' is an invalid extension for argument 'logo'. Valid extensions ['bmp', 'gif', 'jpeg', 'jpg', 'png', 'svg'].")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local municipalitiesProj = File("municipalities.tview")
 		municipalitiesProj:deleteIfExists()
@@ -335,9 +328,7 @@ return {
 		warning_func = function()
 			 Application {
 				project = proj,
-				clean = true,
 				output = municipalitiesir,
-				simplify = false,
 				progress = false,
 				municipalities = View {
 					description = "abc.",
@@ -354,9 +345,7 @@ return {
 		warning_func = function()
 			 Application {
 				project = proj,
-				clean = true,
 				output = municipalitiesir,
-				simplify = false,
 				progress = false,
 				municipalities = View {
 					description = "abc.",
@@ -373,9 +362,7 @@ return {
 		error_func = function()
 			 Application {
 				project = proj,
-				clean = true,
 				output = municipalitiesir,
-				simplify = false,
 				progress = false,
 				municipalities = View {
 					description = "abc.",

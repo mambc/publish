@@ -63,8 +63,6 @@ return {
 		local app = Application{
 			project = proj,
 			output = wmsDir,
-			clean = true,
-			simplify = false,
 			progress = false,
 			wmsLayer = View {
 				title = "WMS",
@@ -123,8 +121,6 @@ return {
 		app = Application{
 			project = proj,
 			output = wmsDir,
-			clean = true,
-			simplify = false,
 			progress = false,
 			wmsLayer = View {
 				title = "WMS",
@@ -178,8 +174,6 @@ return {
 		app = Application{
 			project = proj,
 			output = wmsDir,
-			clean = true,
-			simplify = false,
 			progress = false,
 			wms = View {
 				title = "WMS",

@@ -44,10 +44,7 @@ Layer {
 
 Application {
 	project = proj,
-	output = "WMSWebMap",
-	clean = true,
 	base = "terrain",
-	simplify = false,
 	wmsLayer = View {
 		title = "WMS",
 		description = "Municipality data from a WMS.",

@@ -24,44 +24,44 @@
 
 return {
 	Application = function(unitTest)
-		local emasDir = Directory("layout-basic-app")
-		if emasDir:exists() then emasDir:delete() end
+		local brazilDir = Directory("layout-basic-app")
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local app = Application{
-			project = filePath("emas.tview", "publish"),
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
+			project = filePath("brazil.tview", "publish"),
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "Basic Test"
+			},
 			progress = false,
-			simplify = false,
-			output = emasDir,
+			output = brazilDir,
 			title = "Testing Application Functional",
-			description = "Basic Test"
 		}
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertEquals(app.title, "Testing Application Functional")
-		unitTest:assertEquals(app.description, "Basic Test")
+		unitTest:assertNil(app.description)
 		unitTest:assertEquals(app.base, "satellite")
 		unitTest:assertEquals(app.minZoom, 0)
 		unitTest:assertEquals(app.maxZoom, 20)
 		unitTest:assertNotNil(app.zoom)
 		unitTest:assertNotNil(app.center)
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		app = Application{
-			project = filePath("emas.tview", "publish"),
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
+			project = filePath("brazil.tview", "publish"),
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "Basic Test",
+			},
 			progress = false,
-			simplify = false,
-			output = emasDir,
+			output = brazilDir,
 			title = "Testing Application Functional",
-			description = "Basic Test",
 			base = "roadmap",
 			zoom = 10,
 			minZoom = 5,
@@ -71,7 +71,7 @@ return {
 
 		unitTest:assertType(app, "Application")
 		unitTest:assertEquals(app.title, "Testing Application Functional")
-		unitTest:assertEquals(app.description, "Basic Test")
+		unitTest:assertNil(app.description)
 		unitTest:assertEquals(app.base, "roadmap")
 		unitTest:assertEquals(app.zoom, 10)
 		unitTest:assertEquals(app.minZoom, 5)
@@ -81,19 +81,19 @@ return {
 		unitTest:assertEquals(app.template.navbar, "#1ea789")
 		unitTest:assertEquals(app.template.title, "white")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		app = Application{
-			project = filePath("emas.tview", "publish"),
-			description = "abc.",
-			output = emasDir,
+			project = filePath("brazil.tview", "publish"),
+			output = brazilDir,
 			template = {navbar = "#034871", title = "#F63B4C"},
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			simplify = false,
 			fontSize = 10
 		}
 
@@ -103,19 +103,19 @@ return {
 		unitTest:assertEquals(app.template.title, "#F63B4C")
 		unitTest:assertEquals(app.fontSize, 10)
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		app = Application{
-			project = filePath("emas.tview", "publish"),
-			output = emasDir,
+			project = filePath("brazil.tview", "publish"),
+			output = brazilDir,
 			template = {navbar = {3, 72, 113}, title = {246, 59, 76}},
-			description = "abc.",
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			simplify = false
 		}
 
 		unitTest:assertType(app, "Application")
@@ -123,20 +123,25 @@ return {
 		unitTest:assertEquals(app.template.navbar, "rgba(3, 72, 113, 1)")
 		unitTest:assertEquals(app.template.title, "rgba(246, 59, 76, 1)")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local logo = File(packageInfo("luadoc").path.."/logo/logo.png")
 		app = Application{
-			project = filePath("emas.tview", "publish"),
-			output = emasDir,
+			project = filePath("brazil.tview", "publish"),
+			output = brazilDir,
 			template = {navbar = "dodgerblue", title = "brown"},
 			description = "abc.",
-			clean = true,
+
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			simplify = false,
 			logo = tostring(logo)
 		}
 
@@ -147,7 +152,7 @@ return {
 		unitTest:assertEquals(app.template.title, "rgba(165, 42, 42, 1)")
 		unitTest:assertEquals(app.logo, logo:name())
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local caraguaDir = Directory("CaraguaWebMap")
 		if caraguaDir:exists() then caraguaDir:delete() end
@@ -167,9 +172,7 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			output = caraguaDir,
-			clean = true,
 			progress = false,
-			simplify = false,
 			use = View{
 				description = "abc.",
 				title = "Occupational Classes 2010",
@@ -198,9 +201,7 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			output = caraguaDir,
-			clean = true,
 			progress = false,
-			simplify = false,
 			center = {lat = -23.648856395349, long = -45.489454594686094},
 			use = View{
 				description = "abc.",
@@ -230,9 +231,7 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			output = caraguaDir,
-			clean = true,
 			progress = false,
-			simplify = false,
 			zoom = 12,
 			use = View{
 				description = "abc.",
@@ -271,9 +270,7 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",
@@ -299,9 +296,7 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",
@@ -329,9 +324,7 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",
@@ -358,9 +351,7 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
-			simplify = false,
 			progress = false,
 			municipalities = View {
 				description = "abc.",

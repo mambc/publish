@@ -57,8 +57,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -75,8 +73,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -90,8 +86,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -106,8 +100,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -133,8 +125,6 @@ return {
 			Application{
 				project = errorProj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -159,8 +149,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -178,8 +166,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -195,8 +181,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",
@@ -213,8 +197,6 @@ return {
 			Application{
 				project = proj,
 				output = wmsDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wmsLayer = View {
 					title = "WMS",

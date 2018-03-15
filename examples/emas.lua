@@ -32,10 +32,7 @@ import("publish")
 Application{
 	project = filePath("emas.tview", "publish"),
 	description = "A small example related to a fire spread model.",
-	clean = true,
-	output = "EmasWebMap",
 	order = {"cells", "river", "firebreak", "limit"},
-	simplify = false,
 	river = View{
 		description = "Rivers.",
 		color = "blue"
@@ -54,10 +51,10 @@ Application{
 		title = "Emas National Park",
 		description = "Cellular layer",
 		select = "river",
-		color = "PuBu",
+		color = {"gray", "blue"},
 		width = 0,
-		value = {0, 1, 2},
-		label = {"Small", "Medium", "Large"},
+		value = {0, 1},
+		label = {"No", "Yes"},
 		visible = false
 	}
 }
