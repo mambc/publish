@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+		<title>The riverine settlements at Arapiuns (PA)</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+		<link rel="stylesheet" href="./publish.min.css"/>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-fixed-top navbar-light" style="background-color: rgba(0, 0, 139, 1);" role="navigation">
+				<div class="container-fluid">
+					<div class="navbar-header">
+						<a class="navbar-brand custom-font-app-title" style="color: rgba(255, 255, 255, 1);">The riverine settlements at Arapiuns (PA)</a>
+					</div>
+					
+				</div>
+			</nav>
+		</div>
+		<div class="navbar-offset"></div>
+		<div id="map-canvas">
+			<div id="map"></div>
+		</div>
+		<div class="row main-row">
+			<div class="col-sm-4 col-md-2 sidebar sidebar-left pull-left">
+				<div class="panel-group sidebar-body" id="accordion-left">
+					<div class="panel panel-default">
+						<div class="panel-heading padding-header" >
+							<h4 class="panel-title custom-font-subtitle">
+                                <i class="fa fa-list-alt"></i><a id="layers-title" data-toggle="collapse" href="#layers"> Layers</a>
+								<span class="pull-right slide-submenu"><i class="fa fa-chevron-left"></i></span>
+							</h4>
+						</div>
+						<div id="layers" class="panel-collapse collapse in overflow-y">
+								<div class="panel-body list-group padding-body">
+										<label>
+											<input name="trajectory" type="checkbox">
+											<a id="trajectory" href="javascript:void(0);"> Trajectory </a>
+										</label>
+										<label>
+											<input name="villages" type="checkbox">
+											<a id="villages" href="javascript:void(0);"> Villages </a>
+										</label>
+								</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading padding-header">
+							<h4 class="panel-title custom-font-subtitle">
+								<i class="fa fa-list-alt"></i><a id="description-title" data-toggle="collapse" href="#properties"> Description</a>
+							</h4>
+						</div>
+						<div id="properties" class="panel-collapse collapse overflow-y">
+							<div class="panel-body padding-body">
+								<p class="custom-font-body" id="layer-description"></p>
+								<button id="more" type="button" class="btn btn-default custom-font-more" style="display:none;">
+									More
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading padding-header">
+							<h4 class="panel-title custom-font-subtitle">
+								<i class="fa fa-list-alt"></i><a id="legend-title" data-toggle="collapse" href="#legends"> Legend</a>
+							</h4>
+						</div>
+						<div id="legends" class="panel-collapse collapse overflow-y">
+							<div id="legend" class="panel-body padding-body custom-font-legend"></div>
+						</div>
+					</div>
+					<div id="panel-download" class="panel panel-default">
+						<div class="panel-heading padding-header" style="height: 29px;">
+							<h4 class="panel-title custom-font-subtitle">
+								<i class="fa fa-download"></i><a id="download-title"> Download</a>
+							</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="mini-submenu mini-submenu-left pull-left">
+			<i class="fa fa-list-alt"></i>
+		</div>
+		<img id="loader" src="./default.gif" hidden="hidden"/>
+		<div id="loader-message"><h4 id="loader-message-text"></h4></div>
+		<footer class="navbar-default navbar-fixed-bottom">
+			<div id="footer" class="container-fluid">
+				<p>Powered by package <a href="https://github.com/TerraME/publish" target="_blank">publish</a> of <a href="http://www.terrame.org" target="_blank">TerraME</a>.</p>
+			</div>
+		</footer>
+		<div class="modal fade" id="modal-app-description" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title custom-font-subtitle">The riverine settlements at Arapiuns (PA)</h4>
+					</div>
+					<div class="modal-body">
+						<p class="custom-font-body">	This report presents the methodology and the initial results obtained at the fieldwork along riverine settlements at
+	Arapiuns River, tributary of Tapajós River, municipality of Santarém, Pará state, from June 4 th to 15 th , 2012.
+	This research reproduces and extends the data collection accomplished for Tapajós communities in 2009, regarding the
+	infrastructure and network relations of riverine human settlements. The main objective was to characterize the
+	organization and interdependence between settlements concerning to:infrastructure, health and education services,
+	land use, ecosystem services provision and perception of welfare.
+	Source: Escada et. al (2013) Infraestrutura, Serviços e Conectividade das Comunidades Ribeirinhas do Arapiuns, PA.
+	Relatório Técnico de Atividade de Campo - Projeto UrbisAmazônia e Projeto Cenários para a Amazônia: Uso da terra,
+	Biodiversidade e Clima, INPE.
+</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesFranca" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesFranca"> Franca</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesFranca">
+						<img class="report-img" src="Franca.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Franca was founded 168 years ago and has around 127 inhabitants. It belongs to a Conservation Unit. The community has health center and has access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Franca has the following infrastructure: church, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAningalsinho" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesAningalsinho"> Aningalsinho</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAningalsinho">
+						<img class="report-img" src="Aningalsinho.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Aningalsinho was founded 48 years ago and has around 33 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and has access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Aningalsinho has the following infrastructure: church, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesGurupa" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesGurupa"> Gurupa</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesGurupa">
+						<img class="report-img" src="Gurupa.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Gurupa was founded 40 years ago and has around 20 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Gurupa has the following infrastructure: church, soccer field, public telephone, oil generator, school. The school offers Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSaoFrancisco" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSaoFrancisco"> Sao Francisco</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSaoFrancisco">
+						<img class="report-img" src="Sao Francisco.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sao Francisco was founded 43 years ago and has around 49 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sao Francisco has the following infrastructure: church, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAtrocal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesAtrocal"> Atrocal</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAtrocal">
+						<img class="report-img" src="Atrocal.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Atrocal was founded 8 years ago and has around 96 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Atrocal has the following infrastructure: churches, soccer field, school. The school offers Early Childhood Education, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSaoJoseI" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSaoJoseI"> Sao Jose I</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSaoJoseI">
+						<img class="report-img" src="Sao Jose I.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sao Jose I was founded 12 years ago and has around 26 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and has access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sao Jose I has the following infrastructure: churches, soccer field, oil generator, school. The school offers Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesBomFuturo" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesBomFuturo"> Bom Futuro</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesBomFuturo">
+						<img class="report-img" src="Bom Futuro.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Bom Futuro was founded 44 years ago and has around 60 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Bom Futuro has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCutile" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesCutile"> Cutile</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCutile">
+						<img class="report-img" src="Cutile.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Cutile was founded 21 years ago and has around 24 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Cutile has the following infrastructure: church, soccer field, school. The school offers Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSaoJoaodaPira" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSaoJoaodaPira"> Sao Joao da Pira</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSaoJoaodaPira">
+						<img class="report-img" src="Sao Joao da Pira.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sao Joao da Pira was founded 8 years ago and has around 17 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sao Joao da Pira has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCamara" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesCamara"> Camara</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCamara">
+						<img class="report-img" src="Camara.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Camara was founded 26 years ago and has around 41 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and hasn't access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Camara has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesPascoal" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesPascoal"> Pascoal</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesPascoal">
+						<img class="report-img" src="Pascoal.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Pascoal was founded 19 years ago and has around 32 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and hasn't access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Pascoal has the following infrastructure: church, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAna" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesAna"> Ana</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAna">
+						<img class="report-img" src="Ana.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Ana was founded 84 years ago and has around 119 inhabitants. It belongs to a Conservation Unit. The community has health center and has access to water. Many of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Ana has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNovoHorizonte" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesNovoHorizonte"> Novo Horizonte</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovoHorizonte">
+						<img class="report-img" src="Novo Horizonte.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Novo Horizonte was founded 9 years ago and has around 16 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Novo Horizonte has the following infrastructure: churches, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSaoJoseII" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSaoJoseII"> Sao Jose II</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSaoJoseII">
+						<img class="report-img" src="Sao Jose II.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sao Jose II was founded 16 years ago and has around 28 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sao Jose II has the following infrastructure: church, soccer field.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesMonteSiao" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesMonteSiao"> Monte Siao</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesMonteSiao">
+						<img class="report-img" src="Monte Siao.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Monte Siao was founded 52 years ago and has around 85 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Monte Siao has the following infrastructure: church, soccer field, public telephone, oil generator, school. The school offers Early Childhood Education.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesMentai" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesMentai"> Mentai</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesMentai">
+						<img class="report-img" src="Mentai.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Mentai was founded 64 years ago and has around 205 inhabitants. It belongs to a Conservation Unit. The community has health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Mentai has the following infrastructure: churches, soccer field, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSaoJoseIII" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSaoJoseIII"> Sao Jose III</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSaoJoseIII">
+						<img class="report-img" src="Sao Jose III.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sao Jose III was founded 18 years ago and has around 31 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sao Jose III has the following infrastructure: church, soccer field, school. The school offers Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCachoeiradoArua" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesCachoeiradoArua"> Cachoeira do Arua</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCachoeiradoArua">
+						<img class="report-img" src="Cachoeira do Arua.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Cachoeira do Arua was founded 80 years ago and has around 245 inhabitants. It belongs to PAE Lago Grande. The community has health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Cachoeira do Arua has the following infrastructure: churches, soccer field, public telephone, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSociedadedosParentes" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSociedadedosParentes"> Sociedade dos Parentes</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSociedadedosParentes">
+						<img class="report-img" src="Sociedade dos Parentes.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sociedade dos Parentes was founded 40 years ago and has around 13 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sociedade dos Parentes has the following infrastructure: soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCachoeiradoMaro" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesCachoeiradoMaro"> Cachoeira do Maro</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCachoeiradoMaro">
+						<img class="report-img" src="Cachoeira do Maro.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Cachoeira do Maro was founded 80 years ago and has around 54 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Cachoeira do Maro has the following infrastructure: church, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesFeemDeus" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesFeemDeus"> Fe em Deus</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesFeemDeus">
+						<img class="report-img" src="Fe em Deus.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Fe em Deus was founded 13 years ago and has around 79 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Fe em Deus has the following infrastructure: church, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNovoLugar" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesNovoLugar"> Novo Lugar</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovoLugar">
+						<img class="report-img" src="Novo Lugar.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Novo Lugar was founded 24 years ago and has around 57 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and hasn't access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Novo Lugar has the following infrastructure: church, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesRaposa" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesRaposa"> Raposa</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesRaposa">
+						<img class="report-img" src="Raposa.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Raposa was founded 168 years ago and has around 13 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and has access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Raposa has the following infrastructure: churches, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSaoPedro" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSaoPedro"> Sao Pedro</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSaoPedro">
+						<img class="report-img" src="Sao Pedro.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sao Pedro was founded 64 years ago and has around 245 inhabitants. It belongs to a Conservation Unit. The community has health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sao Pedro has the following infrastructure: churches, soccer field, public telephone, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCuri" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesCuri"> Curi</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCuri">
+						<img class="report-img" src="Curi.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Curi was founded 80 years ago and has around 227 inhabitants. It belongs to PAE Lago Grande. The community has health center and has access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Curi has the following infrastructure: churches, soccer field, public telephone, oil generator, school. The school offers Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNovaVista" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesNovaVista"> Nova Vista</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovaVista">
+						<img class="report-img" src="Nova Vista.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Nova Vista was founded 58 years ago and has around 84 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and has access to water. Many of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Nova Vista has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesBacuri" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesBacuri"> Bacuri</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesBacuri">
+						<img class="report-img" src="Bacuri.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Bacuri was founded 43 years ago and has around 35 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Bacuri has the following infrastructure: churches, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesVilaGorete" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesVilaGorete"> Vila Gorete</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesVilaGorete">
+						<img class="report-img" src="Vila Gorete.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Vila Gorete was founded 45 years ago and has around 180 inhabitants. It belongs to PAE Lago Grande. The community has health center and has access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Vila Gorete has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSantissimaTrindade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSantissimaTrindade"> Santissima Trindade</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSantissimaTrindade">
+						<img class="report-img" src="Santissima Trindade.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Santissima Trindade was founded 59 years ago and has around 24 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Santissima Trindade has the following infrastructure: oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesVilaBrasil" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesVilaBrasil"> Vila Brasil</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesVilaBrasil">
+						<img class="report-img" src="Vila Brasil.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Vila Brasil was founded 44 years ago and has around 181 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Vila Brasil has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCoroca" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesCoroca"> Coroca</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCoroca">
+						<img class="report-img" src="Coroca.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Coroca was founded 62 years ago and has around 28 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Coroca has the following infrastructure: churches, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSaoMiguel" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSaoMiguel"> Sao Miguel</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSaoMiguel">
+						<img class="report-img" src="Sao Miguel.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Sao Miguel was founded 64 years ago and has around 120 inhabitants. It belongs to a Conservation Unit. The community has health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Sao Miguel has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesArimum" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesArimum"> Arimum</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesArimum">
+						<img class="report-img" src="Arimum.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Arimum was founded 32 years ago and has around 46 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. All inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Arimum has the following infrastructure: church, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNovaSociedadedoTucuma" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesNovaSociedadedoTucuma"> Nova Sociedade do Tucuma</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovaSociedadedoTucuma">
+						<img class="report-img" src="Nova Sociedade do Tucuma.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Nova Sociedade do Tucuma was founded 18 years ago and has around 102 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Nova Sociedade do Tucuma has the following infrastructure: churches, soccer field, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesLagoadaPraia" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesLagoadaPraia"> Lagoa da Praia</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesLagoadaPraia">
+						<img class="report-img" src="Lagoa da Praia.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Lagoa da Praia was founded 7 years ago and has around 92 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Many of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Lagoa da Praia has the following infrastructure: churches, soccer field, public telephone, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesLagoCentral" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesLagoCentral"> Lago Central</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesLagoCentral">
+						<img class="report-img" src="Lago Central.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Lago Central was founded 24 years ago and has around 26 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Lago Central has the following infrastructure: churches, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesMaica" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesMaica"> Maica</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesMaica">
+						<img class="report-img" src="Maica.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Maica was founded 48 years ago and has around 55 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Many of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Maica has the following infrastructure: churches, soccer field, oil generator, school. The school offers Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesSantaLuzia" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesSantaLuzia"> Santa Luzia</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesSantaLuzia">
+						<img class="report-img" src="Santa Luzia.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Santa Luzia was founded 6 years ago and has around 67 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Santa Luzia has the following infrastructure: churches, soccer field, oil generator, school. The school offers Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAmari" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesAmari"> Amari</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAmari">
+						<img class="report-img" src="Amari.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Amari was founded 40 years ago and has around 33 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Amari has the following infrastructure: church, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesCuipiranga" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesCuipiranga"> Cuipiranga</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesCuipiranga">
+						<img class="report-img" src="Cuipiranga.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Cuipiranga was founded 80 years ago and has around 31 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Many of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Cuipiranga has the following infrastructure: churches, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesUrucurea" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesUrucurea"> Urucurea</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesUrucurea">
+						<img class="report-img" src="Urucurea.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Urucurea was founded 88 years ago and has around 124 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Many of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Urucurea has the following infrastructure: churches, soccer field, public telephone, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, fruits, mandioc, rice.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNovaSociedade" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesNovaSociedade"> Nova Sociedade</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovaSociedade">
+						<img class="report-img" src="Nova Sociedade.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Nova Sociedade was founded 16 years ago and has around 67 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Nova Sociedade has the following infrastructure: church, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAtodi" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesAtodi"> Atodi</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAtodi">
+						<img class="report-img" src="Atodi.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Atodi was founded 43 years ago and has around 76 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Atodi has the following infrastructure: church, soccer field, oil generator, school. The school offers Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesPiaui" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesPiaui"> Piaui</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesPiaui">
+						<img class="report-img" src="Piaui.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Piaui was founded 47 years ago and has around 24 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Piaui has the following infrastructure: church, soccer field, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesTucuma" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesTucuma"> Tucuma</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesTucuma">
+						<img class="report-img" src="Tucuma.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Tucuma was founded 52 years ago and has around 94 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Tucuma has the following infrastructure: churches, soccer field, public telephone, oil generator, school. The school offers Early Childhood Education, Elementary School.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesNovaPedreira" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesNovaPedreira"> Nova Pedreira</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesNovaPedreira">
+						<img class="report-img" src="Nova Pedreira.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Nova Pedreira was founded 8 years ago and has around 17 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Few of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Nova Pedreira has the following infrastructure: church, soccer field, oil generator, school. The school offers Early Childhood Education.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesVistaAlegre" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesVistaAlegre"> Vista Alegre</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesVistaAlegre">
+						<img class="report-img" src="Vista Alegre.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Vista Alegre was founded 24 years ago and has around 0 inhabitants. It belongs to PAE Lago Grande. The community hasn't health center and has access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Vista Alegre has the following infrastructure: church, oil generator.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesArapiranga" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesArapiranga"> Arapiranga</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesArapiranga">
+						<img class="report-img" src="Arapiranga.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Arapiranga was founded 22 years ago and has around 44 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and hasn't access to water. Most of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Arapiranga has the following infrastructure: churches, soccer field, oil generator, school. The school offers Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, cattle, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-report-villagesAmina" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h2 class="modal-title custom-font-report-title" id="modal-report-label-villagesAmina"> Amina</h2>
+						<p class="text-muted custom-font-body">Escada et. al (2013)</p>
+					</div>
+					<div class="modal-body" id="modal-report-text-villagesAmina">
+						<img class="report-img" src="Amina.jpg"/>
+						<br/>
+						
+						<p class="custom-font-body">The community Amina was founded 56 years ago and has around 131 inhabitants. It belongs to a Conservation Unit. The community hasn't health center and has access to water. Many of its inhabitants have Bolsa Familia.</p>
+						
+						<p class="custom-font-body">Amina has the following infrastructure: churches, soccer field, public telephone, oil generator, school. The school offers Early Childhood Education, Elementary School, Education of Young and Adults.</p>
+						
+						<p class="custom-font-body">The community produces the following commodities: acai, chestnut, fruits, mandioc.</p>
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modal-completed-description" role="dialog">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title custom-font-subtitle" id="modal-title-description"></h4>
+					</div>
+					<div class="modal-body">
+						<p class="custom-font-body" id="info-description"></p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-info" data-dismiss="modal">Ok</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+		<script type="text/javascript" src="./jquery-1.9.1.min.js"></script>
+		
+		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		
+		<script type="text/javascript" src="./config.js"></script>
+		<script type="text/javascript" src="./publish.min.js"></script>
+	</body>
+</html>
+
