@@ -29,7 +29,6 @@ return {
 
 		local app = Application{
 			project = filePath("brazil.tview", "publish"),
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -54,7 +53,6 @@ return {
 
 		app = Application{
 			project = filePath("brazil.tview", "publish"),
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -89,7 +87,6 @@ return {
 			project = filePath("brazil.tview", "publish"),
 			output = brazilDir,
 			template = {navbar = "#034871", title = "#F63B4C"},
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -112,7 +109,6 @@ return {
 			project = filePath("brazil.tview", "publish"),
 			output = brazilDir,
 			template = {navbar = {3, 72, 113}, title = {246, 59, 76}},
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -135,7 +131,6 @@ return {
 			output = brazilDir,
 			template = {navbar = "dodgerblue", title = "brown"},
 			description = "abc.",
-			clean = true,
 
 			biomes = View{
 				select = "name",
@@ -177,7 +172,6 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			output = caraguaDir,
-			clean = true,
 			progress = false,
 			use = View{
 				description = "abc.",
@@ -207,7 +201,6 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			output = caraguaDir,
-			clean = true,
 			progress = false,
 			center = {lat = -23.648856395349, long = -45.489454594686094},
 			use = View{
@@ -238,7 +231,6 @@ return {
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
 			output = caraguaDir,
-			clean = true,
 			progress = false,
 			zoom = 12,
 			use = View{
@@ -278,7 +270,6 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
 			progress = false,
 			municipalities = View {
@@ -305,7 +296,6 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
 			progress = false,
 			municipalities = View {
@@ -334,7 +324,6 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
 			progress = false,
 			municipalities = View {
@@ -362,7 +351,6 @@ return {
 
 		app = Application {
 			project = proj,
-			clean = true,
 			output = municipalitiesir,
 			progress = false,
 			municipalities = View {

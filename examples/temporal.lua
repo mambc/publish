@@ -47,7 +47,6 @@ Application{
 	base = "roadmap",
 	project = proj,
 	output = temporalDir,
-	clean = true,
 	uc = View{
 		title = "UC",
 		description = "UC Federais.",

@@ -51,7 +51,6 @@ Application{
 	project = proj,
 	output = "ProdesWebMap",
 	base = "terrain",
-	clean = true,
 	prodes = View{
 		title = "Prodes",
 		description = "Monitoring of the Amazon Rainforest by Satellite.",

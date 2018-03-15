@@ -42,7 +42,6 @@ return {
 		error_func = function()
 			Application{
 				arg = "void",
-				clean = true,
 				progress = false,
 				project = brazil,
 				output = brazilDir,
@@ -60,7 +59,6 @@ return {
 
 		error_func = function()
 			Application{
-				clean = true,
 				progress = false,
 				project = brazil,
 				output = brazilDir,
@@ -77,7 +75,6 @@ return {
 		if brazilDir:exists() then brazilDir:delete() end
 
 		local data = {
-			clean = true,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
@@ -114,7 +111,7 @@ return {
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("clean", "boolean", 1))
 
-		data.clean = true
+		data.clean = false
 		data.progress = 1
 		error_func = function()
 			Application(clone(data))
@@ -227,7 +224,6 @@ return {
 		error_func = function()
 			Application{
 				project = filePath("caragua.tview", "publish"),
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				Limit = List{
@@ -311,7 +307,6 @@ return {
 				base = "roadmap",
 				project = proj,
 				output = temporalDir,
-				clean = true,
 				progress = false,
 				uc = View {
 					title = "UC",
@@ -330,7 +325,6 @@ return {
 				base = "roadmap",
 				project = proj,
 				output = temporalDir,
-				clean = true,
 				progress = false,
 				uc = View {
 					title = "UC",
@@ -350,7 +344,6 @@ return {
 				base = "roadmap",
 				project = proj,
 				output = temporalDir,
-				clean = true,
 				progress = false,
 				uc = View {
 					title = "UC",
@@ -370,7 +363,6 @@ return {
 				base = "roadmap",
 				project = proj,
 				output = temporalDir,
-				clean = true,
 				progress = false,
 				uc = View {
 					title = "UC",
@@ -390,7 +382,6 @@ return {
 				base = "roadmap",
 				project = proj,
 				output = temporalDir,
-				clean = true,
 				progress = false,
 				a = View {
 					title = "UC",
@@ -417,7 +408,6 @@ return {
 				base = "roadmap",
 				project = proj,
 				output = temporalDir,
-				clean = true,
 				progress = false,
 				amaz = View {
 					title = "Amaz",
@@ -442,7 +432,6 @@ return {
 				base = "roadmap",
 				project = proj,
 				output = temporalDir,
-				clean = true,
 				progress = false,
 				snapshot1 = View {
 					title = "UC",
@@ -475,7 +464,6 @@ return {
 
 			Application{
 				project = proj,
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				scenario = {},
@@ -506,7 +494,6 @@ return {
 
 			Application{
 				project = proj,
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				scenario = {"Baseline simulation for 2025."},
@@ -537,7 +524,6 @@ return {
 
 			Application{
 				project = proj,
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				scenario = {
@@ -570,7 +556,6 @@ return {
 
 			Application{
 				project = proj,
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				scenario = {
@@ -603,7 +588,6 @@ return {
 
 			Application{
 				project = proj,
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				scenario = {
@@ -636,7 +620,6 @@ return {
 
 			Application{
 				project = proj,
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				scenario = {
@@ -669,7 +652,6 @@ return {
 
 			Application{
 				project = proj,
-				clean = true,
 				progress = false,
 				output = caraguaDir,
 				scenario = {

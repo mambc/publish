@@ -30,7 +30,6 @@ return {
 		local app = Application{
 			project = filePath("brazil.tview", "publish"),
 			output = "functional-basic-app",
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -53,7 +52,6 @@ return {
 			project = filePath("brazil.tview", "publish"),
 			output = brazilDir,
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -75,7 +73,6 @@ return {
 		app = Application{
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 			project = filePath("caragua.tview", "publish"),
-			clean = true,
 			progress = false,
 			output = caraguaDir,
 			Limit = List{
@@ -161,7 +158,6 @@ return {
 		app = Application{
 			project = proj,
 			output = caraguaDir,
-			clean = true,
 			progress = false,
 			simplify = true,
 			use = View{
@@ -224,7 +220,6 @@ return {
 			key = "AIzaSyCFXMRJlfDoDK7Hk8KkJ9R9bWpNauoLVuA",
 			project = proj,
 			output = arapiunsDir,
-			clean = true,
 			progress = false,
 			simplify = true,
 			villages = View{
@@ -317,7 +312,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = temporalDir,
-			clean = true,
 			progress = false,
 			uc = View {
 				title = "UC",
@@ -354,7 +348,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = temporalDir,
-			clean = true,
 			progress = false,
 			uc_2016 = View {
 				title = "UC",
@@ -400,7 +393,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = temporalDir,
-			clean = true,
 			progress = false,
 			uc = View {
 				title = "UC",
@@ -474,7 +466,6 @@ return {
 
 		app = Application{
 			project = proj,
-			clean = true,
 			progress = false,
 			output = caraguaDir,
 			scenario = {
@@ -538,7 +529,6 @@ return {
 			base = "roadmap",
 			project = proj,
 			output = "myresult",
-			clean = true,
 			progress = false,
 			amaz = View {
 				title = "Amaz",
@@ -558,7 +548,6 @@ return {
 
 		local app = Application{
 			project = tostring(brazil),
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},

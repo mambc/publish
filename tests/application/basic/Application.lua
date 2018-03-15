@@ -45,7 +45,6 @@ return {
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778},
-			clean = true,
 			progress = false,
 			output = emasDir,
 			logo = packageInfo("luadoc").path.."/logo/logo.png",
@@ -113,7 +112,6 @@ return {
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778},
 			project = filePath("emas.tview", "publish"),
-			clean = true,
 			progress = false,
 			output = emasDir,
 			order = {"river"},
@@ -165,7 +163,6 @@ return {
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			project = filePath("emas.tview", "publish"),
-			clean = true,
 			progress = false,
 			output = emasDir,
 			river = View{
@@ -191,7 +188,6 @@ return {
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			project = filePath("emas.tview", "publish"),
-			clean = true,
 			progress = false,
 			output = emasDir,
 		}
@@ -211,7 +207,6 @@ return {
 
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
-			clean = true,
 			progress = false,
 			output = caraguaDir,
 			report = report,
@@ -252,7 +247,6 @@ return {
 
 		app = Application{
 			project = filePath("caragua.tview", "publish"),
-			clean = true,
 			progress = false,
 			output = caraguaDir,
 			limit = View{
@@ -373,7 +367,6 @@ return {
 			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
 					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 			output = caraguaDir,
-			clean = true,
 			progress = false,
 			real = View {
 				title = "Social Classes 2010",
@@ -425,7 +418,6 @@ return {
 			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
 					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 			output = vegDir,
-			clean = true,
 			progress = false,
 			vegtype = View {
 				title = "Vegetation Type 2000",
@@ -459,7 +451,6 @@ return {
 			project = proj,
 			description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
 			output = vegDir,
-			clean = true,
 			progress = false,
 			title = "Vegetation scenario",
 			vegtype = View {
@@ -487,7 +478,6 @@ return {
 			description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
 					.. "Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
 			output = caraguaDir,
-			clean = true,
 			progress = false,
 			limit = View{
 				description = "Bounding box of Caraguatatuba.",
@@ -510,7 +500,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -537,7 +526,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -574,7 +562,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -605,7 +592,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
@@ -632,7 +618,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			trajectory = View{
@@ -661,7 +646,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -698,7 +682,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{
@@ -737,7 +720,6 @@ return {
 		app = Application{
 			project = filePath("arapiuns.tview", "publish"),
 			base = "roadmap",
-			clean = true,
 			progress = false,
 			output = arapiunsDir,
 			villages = View{

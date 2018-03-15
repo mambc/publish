@@ -33,7 +33,6 @@ return {
 		local error_func = function()
 			Application{
 				project = proj,
-				clean = true,
 				select = "river",
 				color = "BuGn",
 				value = {0, 1, 2},
@@ -46,7 +45,6 @@ return {
 		error_func = function()
 			Application{
 				project = 1,
-				clean = true,
 				select = "river",
 				color = "BuGn",
 				value = {0, 1, 2},

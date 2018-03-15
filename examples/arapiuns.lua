@@ -44,7 +44,6 @@ Application{
 	project = filePath("arapiuns.tview", "publish"),
 	description = description,
 	base = "roadmap",
-	clean = true,
 	output = "ArapiunsWebMap",
 	template = {navbar = "darkblue", title = "white"},
 	trajectory = View{

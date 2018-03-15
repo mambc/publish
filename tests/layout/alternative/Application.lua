@@ -30,7 +30,6 @@ return {
 
 		local data = {
 			project = brazil,
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -329,7 +328,6 @@ return {
 		warning_func = function()
 			 Application {
 				project = proj,
-				clean = true,
 				output = municipalitiesir,
 				progress = false,
 				municipalities = View {
@@ -347,7 +345,6 @@ return {
 		warning_func = function()
 			 Application {
 				project = proj,
-				clean = true,
 				output = municipalitiesir,
 				progress = false,
 				municipalities = View {
@@ -365,7 +362,6 @@ return {
 		error_func = function()
 			 Application {
 				project = proj,
-				clean = true,
 				output = municipalitiesir,
 				progress = false,
 				municipalities = View {

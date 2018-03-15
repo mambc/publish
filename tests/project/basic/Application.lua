@@ -32,7 +32,6 @@ return {
 		-- Testing Application: project = tview, package = nil.
 		local app = Application{
 			project = brazil,
-			clean = true,
 			biomes = View{
 				select = "name",
 				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
@@ -64,7 +63,6 @@ return {
 		brazilDir = "project-basic-app-stroutput"
 		app = Application{
 			project = brazil,
-			clean = true,
 			biomes = View{
 				-- TODO: test with these arguments. it stops with a strange error
 				--select = "name",

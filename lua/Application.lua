@@ -1356,12 +1356,12 @@ metaTableApplication_ = {
 }
 
 --- Creates a web page to visualize the published data.
--- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is false.
+-- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is true.
 -- @arg data.legend An optional value with the title of the legend box. The default value is 'Legend'.
 -- @arg data.layers An optional value with the title of the layers box. The default value is 'Layers'.
 -- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
--- @arg data.simplify An optional boolean value indicating if the data should be simplified. The default value is true.
+-- @arg data.simplify An optional boolean value indicating if the data should be simplified. The default value is false.
 -- @arg data.project An optional gis::Project or string with the path to a .tview file.
 -- @arg data.report An option Report with data information.
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
@@ -1398,7 +1398,6 @@ metaTableApplication_ = {
 --     project = filePath("brazil.tview", "publish"),
 --     title = "Brazil Application",
 --     description = "Small application with some data related to Brazil.",
---     clean = true,
 --     output = "BrazilWebMap",
 --     simplify = false,
 --     biomes = View{
@@ -1423,7 +1422,7 @@ function Application(data)
 	optionalTableArgument(data, "logo", "string")
 	optionalTableArgument(data, "fontSize", "number")
 
-	defaultTableValue(data, "clean", false)
+	defaultTableValue(data, "clean", true)
 	defaultTableValue(data, "display", true)
 	defaultTableValue(data, "code", true)
 	defaultTableValue(data, "progress", true)

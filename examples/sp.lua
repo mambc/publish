@@ -31,7 +31,6 @@ Application {
 	project = filePath("sp.tview", "publish"),
 	base = "roadmap",
 	output = "SPWebMap",
-	clean = true,
 	municipalities = View {
 		title = "GDP",
 		description = "Gross Domestic Product (GDP) of Sao Paulo, Brazil.",
