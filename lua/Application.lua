@@ -1399,6 +1399,7 @@ metaTableApplication_ = {
 --     project = filePath("brazil.tview", "publish"),
 --     title = "Brazil Application",
 --     description = "Small application with some data related to Brazil.",
+--     progress = false,
 --     biomes = View{
 --         select = "name",
 --         color = "Set2", -- instead of using value/color
@@ -1406,7 +1407,7 @@ metaTableApplication_ = {
 --     }
 -- }
 --
--- Directory("BrazilWebMap"):delete()
+-- Directory("brazilWebMap"):delete()
 function Application(data)
 	verifyNamedTable(data)
 
