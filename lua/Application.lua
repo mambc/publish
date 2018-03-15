@@ -1359,7 +1359,8 @@ metaTableApplication_ = {
 -- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is true.
 -- @arg data.legend An optional value with the title of the legend box. The default value is 'Legend'.
 -- @arg data.layers An optional value with the title of the layers box. The default value is 'Layers'.
--- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
+-- @arg data.output A mandatory base::Directory or directory name where the output will be stored. The default value is the name of the
+-- project followed by "WebMap".
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
 -- @arg data.simplify An optional boolean value indicating if the data should be simplified. The default value is false.
 -- @arg data.project An optional gis::Project or string with the path to a .tview file.
@@ -1398,8 +1399,6 @@ metaTableApplication_ = {
 --     project = filePath("brazil.tview", "publish"),
 --     title = "Brazil Application",
 --     description = "Small application with some data related to Brazil.",
---     output = "BrazilWebMap",
---     simplify = false,
 --     biomes = View{
 --         select = "name",
 --         color = "Set2", -- instead of using value/color
@@ -1433,12 +1432,6 @@ function Application(data)
 	defaultTableValue(data, "base", "satellite")
 	defaultTableValue(data, "minZoom", 0)
 	defaultTableValue(data, "maxZoom", 20)
-
-	if type(data.output) == "string" then
-		data.output = Directory(data.output)
-	end
-
-	mandatoryTableArgument(data, "output", "Directory")
 
 	if data.center then
 		verifyNamedTable(data.center)
@@ -1580,6 +1573,18 @@ function Application(data)
 
 			mandatoryTableArgument(data, "project", "Project")
 		end
+
+	if type(data.output) ~= "Directory" and data.project then
+		local _, name = data.project.file:split()
+
+		defaultTableValue(data, "output", name.."WebMap")
+	end
+
+	if type(data.output) == "string" then
+		data.output = Directory(data.output)
+	end
+
+	mandatoryTableArgument(data, "output", "Directory")
 
 		createDirectoryStructure(data)
 		loadLayers(data)

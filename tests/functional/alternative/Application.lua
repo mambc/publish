@@ -130,7 +130,7 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("output", "Directory", 1))
+		unitTest:assertError(error_func, incompatibleTypeMsg("output", "string", 1))
 
 		data.output = brazilDir
 		data.color = 123456

@@ -49,7 +49,6 @@ end)
 
 Application{
 	project = proj,
-	output = "ProdesWebMap",
 	base = "terrain",
 	prodes = View{
 		title = "Prodes",

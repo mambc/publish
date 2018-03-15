@@ -44,7 +44,6 @@ Layer {
 
 Application {
 	project = proj,
-	output = "WMSWebMap",
 	base = "terrain",
 	wmsLayer = View {
 		title = "WMS",

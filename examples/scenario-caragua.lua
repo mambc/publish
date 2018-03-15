@@ -51,7 +51,7 @@ report:addText("The base scenario considers the zoning proposed by the new maste
 
 import("gis")
 
-local file = File("caragua.tview")
+local file = File("scenario-caragua.tview")
 file:deleteIfExists()
 
 local project = Project{
@@ -74,7 +74,6 @@ Application{
 	project = project,
 	description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
 			.."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-	output = "ScenarioCaraguaWebMap",
 	report = report,
 	scenario = {
 		BaseLine = "Baseline simulation for 2025.",

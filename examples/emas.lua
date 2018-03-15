@@ -32,7 +32,6 @@ import("publish")
 Application{
 	project = filePath("emas.tview", "publish"),
 	description = "A small example related to a fire spread model.",
-	output = "EmasWebMap",
 	order = {"cells", "river", "firebreak", "limit"},
 	river = View{
 		description = "Rivers.",
