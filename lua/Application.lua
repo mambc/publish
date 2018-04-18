@@ -584,7 +584,7 @@ end
 
 local function loadValuesFromDataSet(set, project, name, select, slices, missing)
 	local tlib = gis.TerraLib{}
-	local dset = tlib.getDataSet(project, name, missing)
+	local dset = tlib.getDataSet{project = project, layer = name, missing = missing}
 	for i = 0, #dset do
 		for k, v in pairs(dset[i]) do
 			if k == select and not set[v] then
@@ -600,7 +600,7 @@ end
 
 local function validateTemporalProperty(project, name, view)
 	local tlib = gis.TerraLib{}
-	local dset = tlib.getDataSet(project, name)
+	local dset = tlib.getDataSet{project = project, layer = name}
 
 	local set = {}
 	local numberOfYearChars = 4
@@ -938,7 +938,7 @@ local function processingView(data, layers, reports, name, view)
 				layerName = viewConfig.name[1]
 			end
 
-			dset = tlib.getDataSet(data.project, layerName, view.missing)
+			dset = tlib.getDataSet{project = data.project, layer = layerName, missing = view.missing}
 			for i = 0, #dset do
 				if view.geom then break end
 
