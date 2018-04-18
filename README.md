@@ -16,8 +16,6 @@ Application{
     project = filePath("brazil.tview", "publish"),
     title = "Brazil Application",
     description = "Small application with some data related to Brazil.",
-    clean = true,
-    output = "BrazilWebMap",
     biomes = View{
         select = "name",
         color = "Set2",
@@ -29,7 +27,7 @@ Application{
     }
 }
 ```
-You can see the result in [Brazil](https://rawgit.com/TerraME/publish/master/examples/BrazilWebMap/index.html).
+You can see the result in [Brazil](https://rawgit.com/TerraME/publish/master/examples/brazilWebMap/index.html).
 
 ```lua
 import("publish")
@@ -59,8 +57,6 @@ Application{
     project = filePath("caragua.tview", "publish"),
     description = "The data of this application were extracted from Feitosa et. al (2014) URBIS-Caraguá: "
             .."Um Modelo de Simulação Computacional para a Investigação de Dinâmicas de Ocupação Urbana em Caraguatatuba, SP.",
-    clean = true,
-    output = "CaraguaWebMap",
     report = report,
     Border = List{
         limit = View{
@@ -106,7 +102,7 @@ Application{
     }
 }
 ```
-You can see the result in [Caragua](https://rawgit.com/TerraME/publish/master/examples/CaraguaWebMap/index.html).
+You can see the result in [Caragua](https://rawgit.com/TerraME/publish/master/examples/caraguaWebMap/index.html).
 
 ```lua
 import("publish")
@@ -127,8 +123,6 @@ Application{
     project = filePath("arapiuns.tview", "publish"),
     description = description,
     base = "roadmap",
-    clean = true,
-    output = "ArapiunsWebMap",
     template = {navbar = "darkblue", title = "white"},
     trajectory = View{
         description = "Route on the Arapiuns River.",
@@ -173,7 +167,7 @@ Application{
     }
 }
 ```
-You can see the result in [Arapiuns](https://rawgit.com/TerraME/publish/master/examples/ArapiunsWebMap/index.html).
+You can see the result in [Arapiuns](https://rawgit.com/TerraME/publish/master/examples/arapiunsWebMap/index.html).
 
 ## Reporting Bugs
 If you have found a bug, open an entry in the [issues](https://github.com/TerraME/publish/issues).

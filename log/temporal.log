@@ -1,0 +1,13 @@
+Creating directory structure
+Copying dependency 'model/dist/publish.min.css'
+Copying dependency 'model/dist/publish.min.js'
+Copying dependency 'model/src/assets/jquery-1.9.1.min.js'
+Copying dependency 'loader/default.gif'
+Loading layers from 'temporal.tview'
+Exporting layer 'uc_2001'
+Exporting layer 'uc_2009'
+Exporting layer 'uc_2016'
+Loading Template
+Creating file 'config.js'
+Creating file 'index.html'
+Summing up, application 'Testing temporal View' was successfully created.

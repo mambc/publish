@@ -43,13 +43,13 @@ return {
 		unitTest:assertError(error_func, "All elements of the argument must be named.")
 
 		local warning_func = function()
-			View{arg = "void"}
+			View{description = "abc.", arg = "void"}
 		end
 
 		unitTest:assertWarning(warning_func, unnecessaryArgumentMsg("arg"))
 
 		error_func = function()
-			View{title = 1}
+			View{description = "abc.", title = 1}
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("title", "string", 1))
@@ -61,193 +61,189 @@ return {
 		unitTest:assertError(error_func, incompatibleTypeMsg("description", "string", 1))
 
 		error_func = function()
-			View{border = 1}
+			View{description = "abc.", border = 1}
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("border", "string or table", 1))
 
 		error_func = function()
-			View{border = {}}
+			View{description = "abc.", border = {}}
 		end
 
 		unitTest:assertError(error_func, "Argument 'border' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
-			View{width = "mwidth"}
+			View{description = "abc.", width = "mwidth"}
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("width", "number", "mwidth"))
 
 		warning_func = function()
-			View{width = 1}
+			View{description = "abc.", width = 1}
 		end
 
 		unitTest:assertWarning(warning_func, defaultValueMsg("width", 1))
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = 1, select = "river"}
+			View{description = "abc.", value = {0, 1, 2}, color = 1, select = "river"}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("color", "string or table", 1))
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = {}, select = "river"}
+			View{description = "abc.", value = {0, 1, 2}, color = {}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' must be a table with 3 or 4 arguments (red, green, blue and alpha), got 0.")
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {}}
+			View{description = "abc.", value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {}}
 		end
 		unitTest:assertError(error_func, "Argument 'label' must be a table of strings with size greater than 0, got 0.")
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {1}}
+			View{description = "abc.", value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {1}}
 		end
 		unitTest:assertError(error_func, "The number of labels (1) must be equal to number of data classes (3).")
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {"Condition C", true, 2}}
+			View{description = "abc.", value = {0, 1, 2}, color = {"red", "orange", "yellow"}, select = "classe", label = {"Condition C", true, 2}}
 		end
 
 		unitTest:assertError(error_func, "Argument 'label' must be a table of strings, element 2 (true) got boolean.")
 
 		error_func = function()
-			View{value = {0, 1, 2}, color = "mcolor", select = "river"}
+			View{description = "abc.", value = {0, 1, 2}, color = "mcolor", select = "river"}
 		end
 
 		unitTest:assertError(error_func, "Argument 'color' (mcolor) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{visible = 1}
+			View{description = "abc.", visible = 1}
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("visible", "boolean", 1))
 
 		warning_func = function()
-			View{visible = true}
+			View{description = "abc.", visible = true}
 		end
 
 		unitTest:assertWarning(warning_func, defaultValueMsg("visible", true))
 
 		error_func = function()
-			View{select = 1}
+			View{description = "abc.", select = 1}
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("select", "string or table", 1))
 
 		error_func = function()
-			View{value = "mvalue", select = "river"}
+			View{description = "abc.", value = "mvalue", select = "river"}
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("value", "table", "mvalue"))
 
 		error_func = function()
-			View{report = "myreport"}
+			View{description = "abc.", report = "myreport"}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("report", "Report or function", "myreport"))
 
 		error_func = function()
-			View{border = "PuBu"}
+			View{description = "abc.", border = "PuBu"}
 		end
 		unitTest:assertError(error_func, "Argument 'border' (PuBu) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = "red", value = {}, select = "river"}
+			View{description = "abc.", color = "red", value = {}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'value' must be a table with size greater than 0, got 0.")
 
 		error_func = function()
-			View{color = {"#afafah", "#afafah", "#afafah"}, value = {1, 2, 3}, select = "river"}
+			View{description = "abc.", color = {"#afafah", "#afafah", "#afafah"}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (#afafah) is not a valid hex color. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = "Redss", value = {1, 2, 3}, select = "river"}
+			View{description = "abc.", color = "Redss", value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (Redss) does not exist in ColorBrewer. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = {"Reds", "Blues", "PuRd"}, value = {1, 2, 3}, select = "river"}
+			View{description = "abc.", color = {"Reds", "Blues", "PuRd"}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' (Reds) is not a valid color name. Please run 'terrame -package publish -showdoc' for more details.")
 
 		error_func = function()
-			View{color = {"Reds", "Blues", "PuRd"}}
+			View{description = "abc.", color = {"Reds", "Blues", "PuRd"}}
 		end
 		unitTest:assertError(error_func, "ColorBrewer 'Reds' is not allowed to be used in a table of colors.")
 
 		error_func = function()
-			View{color = {"red", "green", 1}}
+			View{description = "abc.", color = {"red", "green", 1}}
 		end
 		unitTest:assertError(error_func, "Incompatible types. Argument 'color[3]' expected string or table, got number.")
 
 		error_func = function()
-			View{color = {true, true, true}, value = {1, 2, 3}, select = "river"}
+			View{description = "abc.", color = {true, true, true}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Argument 'color' has an invalid description for color in position '#1'. It should be a string, number or table, got boolean.")
 
 		error_func = function()
-			View{color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}, value = {1, 2, 3}, select = "river"}
+			View{description = "abc.", color = {{-1, 1, 1}, {256, 255, 255}, {1, 1, 1, 2}}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "Element '#1' in color '#1' must be an integer between 0 and 255, got -1.")
 
 		error_func = function()
-			View{color = {{0, 0, 0}, {1, 1, 1}, {255, 255, 255, 2}}, value = {1, 2, 3}, select = "river"}
+			View{description = "abc.", color = {{0, 0, 0}, {1, 1, 1}, {255, 255, 255, 2}}, value = {1, 2, 3}, select = "river"}
 		end
 		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 2.")
 
 		error_func = function()
-			View{color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}, value = {1, 2, 3}, select = "river"}
+			View{description = "abc.", color = {{0, 0, 0, 0.5}, {1, 1, 1, 1}, {255, 255, 255, 1.00001}}, value = {1, 2, 3}, select = "river"}
 		end
 
 		unitTest:assertError(error_func, "The alpha parameter of color '#3' should be a number between 0.0 (fully transparent) and 1.0 (fully opaque), got 1.00001.")
 
 		error_func = function()
-			View{color = {"red", "blue"}, value = {1}, select = "river"}
+			View{description = "abc.", color = {"red", "blue"}, value = {1}, select = "river"}
 		end
 
 		unitTest:assertError(error_func, "The number of colors (2) must be equal to number of data classes (1).")
 
 		error_func = function()
-			View{color = "red", transparency = "a"}
+			View{description = "abc.", color = "red", transparency = "a"}
 		end
 
 		unitTest:assertError(error_func, incompatibleTypeMsg("transparency", "number", "a"))
 
 		warning_func = function()
-			View{color = "red", transparency = 0}
+			View{description = "abc.", color = "red", transparency = 0}
 		end
 
 		unitTest:assertWarning(warning_func, defaultValueMsg("transparency", 0))
 
 		error_func = function()
-			View{color = "red", transparency = -1}
+			View{description = "abc.", color = "red", transparency = -1}
 		end
 
 		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got -1.")
 
 		error_func = function()
-			View{color = "red", transparency = 1.1}
+			View{description = "abc.", color = "red", transparency = 1.1}
 		end
 
 		unitTest:assertError(error_func, "Argument 'transparency' should be a number between 0.0 (fully opaque) and 1.0 (fully transparent), got 1.1.")
 
 		error_func = function()
-			View{icon = 1}
+			View{description = "abc.", icon = 1}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("icon", "string or table", 1))
 
 		error_func = function()
-			View{icon = {path = "K7Y"}}
+			View{description = "abc.", icon = {path = "K7Y"}}
 		end
 		unitTest:assertError(error_func, "The icon path 'K7Y' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
 
 		error_func = function()
-			View{icon = {color = "red"}}
-		end
-		unitTest:assertError(error_func, mandatoryArgumentMsg("path"))
-
-		error_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					color = 1
@@ -258,6 +254,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					transparency = "a"
@@ -268,6 +265,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					transparency = 2
@@ -278,6 +276,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = "a"
@@ -288,6 +287,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = 0
@@ -298,6 +298,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = -1
@@ -309,6 +310,7 @@ return {
 
 		warning_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					time = 5
@@ -319,13 +321,14 @@ return {
 		unitTest:assertWarning(warning_func, defaultValueMsg("time", 5))
 
 		error_func = function()
-			View{report = function() end}
+			View{description = "abc", report = function() end}
 		end
 
 		unitTest:assertError(error_func, mandatoryArgumentMsg("select"))
 
 		warning_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					transparency = 0
@@ -337,6 +340,7 @@ return {
 
 		warning_func = function()
 			View{
+				description = "abc.",
 				icon = {
 					path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0",
 					color = "black"
@@ -348,6 +352,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				icon = {path = "1234"}
 			}
 		end
@@ -355,18 +360,19 @@ return {
 		unitTest:assertError(error_func, "The icon path '1234' contains no valid commands. The following commands are available for path: M, L, H, V, C, S, Q, T, A, Z")
 
 		error_func = function()
-			View{download = 1}
+			View{description = "abc.", download = 1}
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("download", "boolean", 1))
 
 		warning_func = function()
-			View{download = false}
+			View{description = "abc.", download = false}
 		end
 
 		unitTest:assertWarning(warning_func, defaultValueMsg("download", false))
 
 		error_func = function()
 			View{
+				description = "abc.",
 				icon = {"forest"}
 			}
 		end
@@ -375,6 +381,7 @@ return {
 
 		warning_func = function()
 			View{
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				border = "red"
@@ -385,6 +392,7 @@ return {
 
 		warning_func = function()
 			View{
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				value = {1, 2, 3}
@@ -395,6 +403,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				label = {"Absence of Conservation Unit", "Presence of Conservation Unit"}
@@ -405,6 +414,7 @@ return {
 
 		warning_func = function()
 			View{
+				description = "abc.",
 				select = "UC",
 				icon = {"forest"},
 				color = "PuBu"
@@ -413,70 +423,25 @@ return {
 
 		unitTest:assertWarning(warning_func, unnecessaryArgumentMsg("icon"))
 
-		local icons = {
-			airport = true,
-			animal = true,
-			bigcity = true,
-			bus = true,
-			car = true,
-			caution = true,
-			cycling = true,
-			database = true,
-			desert = true,
-			diving = true,
-			fillingstation = true,
-			finish = true,
-			fire = true,
-			firstaid = true,
-			fishing = true,
-			flag = true,
-			forest = true,
-			harbor = true,
-			helicopter = true,
-			home = true,
-			horseriding = true,
-			hospital = true,
-			lake = true,
-			motorbike = true,
-			mountains = true,
-			radio = true,
-			restaurant = true,
-			river = true,
-			road = true,
-			shipwreck = true,
-			thunderstorm = true
-		}
-
 		error_func = function()
 			View{
-				icon = "VOID"
+				description = "abc.",
+				decimal = "a"
 			}
 		end
-		unitTest:assertError(error_func, switchInvalidArgumentMsg("VOID", "icon", icons))
-
-		error_func = function()
-			View{
-				icon = "hom"
-			}
-		end
-		unitTest:assertError(error_func, "'hom' is an invalid value for argument 'icon'. Do you mean 'home'?")
-
-		error_func = function()
-				View{
-					decimal = "a"
-				}
-			end
 		unitTest:assertError(error_func, incompatibleTypeMsg("decimal", "number", "a"))
 
 		error_func = function()
-				View{
-					decimal = -3
-				}
-			end
+			View{
+				description = "abc.",
+				decimal = -3
+			}
+		end
 		unitTest:assertError(error_func, "Argument 'decimal' should be an integer greater than 0, got -3.")
 
 		error_func = function()
 			View{
+				description = "abc.",
 				select = {"Nome"},
 				icon = {"home", "forest"},
 				report = function(cell)
@@ -490,6 +455,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				select = {"Nome"},
 				color = {"red", "blue"},
 				report = function(cell)
@@ -503,6 +469,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				slices = "a",
 				color = "Spectral"
 			}
@@ -511,6 +478,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				slices = 5,
 				min = "a",
 				color = "Spectral"
@@ -520,6 +488,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				slices = 5,
 				max = "a",
 				color = "Spectral"
@@ -529,6 +498,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				min = 1
 			}
 		end
@@ -536,6 +506,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				max = 1
 			}
 		end
@@ -543,6 +514,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				slices = 5,
 				min = 2,
 				max = 1,
@@ -553,6 +525,7 @@ return {
 
 		error_func = function()
 			View{
+				description = "abc.",
 				slices = 1,
 				color = "Spectral"
 			}
@@ -560,19 +533,82 @@ return {
 		unitTest:assertError(error_func, "Argument 'slices' (1) should be greater than one.")
 
 		error_func = function()
-				View{
-					slices = -2,
-					color = "Spectral"
-				}
-			end
-			unitTest:assertError(error_func, positiveArgumentMsg("slices", -2))
+			View{
+				description = "abc.",
+				slices = -2,
+				color = "Spectral"
+			}
+		end
+		unitTest:assertError(error_func, positiveArgumentMsg("slices", -2))
 
 		error_func = function()
 			View{
+				description = "abc.",
 				slices = 2.1,
 				color = "Spectral"
 			}
 		end
 		unitTest:assertError(error_func, integerArgumentMsg("slices", 2.1))
+
+		error_func = function()
+			View{
+				description = "abc.",
+				time = "creation"
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("name"))
+
+		error_func = function()
+			View{
+				description = "abc.",
+				name = "anoCriacao"
+			}
+		end
+		unitTest:assertError(error_func, mandatoryArgumentMsg("time"))
+
+		error_func = function()
+			View{
+				description = "abc.",
+				name = "anoCriacao",
+				time = 1
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("time", "string", 1))
+
+		error_func = function()
+			View{
+				description = "abc.",
+				name = 1,
+				time = "snapshot"
+			}
+		end
+		unitTest:assertError(error_func, incompatibleTypeMsg("name", "string", 1))
+
+		error_func = function()
+			View{
+				description = "abc.",
+				name = "anoCriacao",
+				time = "snapshot"
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' is valid only when time is equals to 'creation', got 'snapshot'.")
+
+		error_func = function()
+			View{
+				description = "abc.",
+				time = "a"
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'time' must be 'snapshot' or 'creation', got 'a'.")
+
+		error_func = function()
+			View{
+				description = "abc.",
+				time = "snapshot",
+				select = "a",
+				report = function() end
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'report' is invalid in temporal views.")
 	end
 }

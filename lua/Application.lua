@@ -39,7 +39,8 @@ local ViewModel = {}
 local SourceType = {
 	OGR = "OGR",
 	GDAL = "GDAL",
-	POSTGIS = "POSTGIS"
+	POSTGIS = "POSTGIS",
+	WMS = "WMS"
 }
 
 local SourceTypeMapper = {
@@ -48,12 +49,13 @@ local SourceTypeMapper = {
 	tif = SourceType.GDAL,
 	nc = SourceType.GDAL,
 	asc = SourceType.GDAL,
-	postgis = SourceType.POSTGIS
+	postgis = SourceType.POSTGIS,
+	wms = SourceType.WMS
 }
 
 local printNormal = print
 local printInfo = function (value)
-	if sessionInfo().color then
+	if sessionInfo().color then -- SKIP
 		printNormal("\027[00;34m"..tostring(value).."\027[00m")
 	else
 		printNormal(value)
@@ -124,22 +126,19 @@ local function createDirectoryStructure(data)
 
 	data.assets = data.output -- Directory(data.output.."assets")
 	if not data.assets:exists() then
-		data.assets:create() -- SKIP
+		data.assets:create() -- SKIP'
 	end
 
-	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-3.1.1.min.js", "loader/"..data.loading}
-	if data.package then
-		table.insert(depends, "model/dist/package.min.js")
-	end
+	local depends = {"model/dist/publish.min.css", "model/dist/publish.min.js", "model/src/assets/jquery-1.9.1.min.js", "loader/"..data.loading}
 
 	if data.logo then
 		table.insert(depends, data.logo)
 	end
 
-	forEachElement(depends, function(_, file)
+	forEachElement(depends, function(_, file, etype)
 		printNormal("Copying dependency '"..file.."'")
 		local filepath = templateDir..file
-		if type(file) == "File" then
+		if etype == "File" then
 			filepath = file
 		end
 
@@ -153,7 +152,7 @@ end
 
 local function isValidSource(source)
 	local typeMapped = SourceTypeMapper[source]
-	return typeMapped == SourceType.OGR or typeMapped == SourceType.POSTGIS or typeMapped == SourceType.GDAL
+	return typeMapped == SourceType.OGR or typeMapped == SourceType.POSTGIS or typeMapped == SourceType.GDAL or typeMapped == SourceType.WMS
 end
 
 local function getReducedNames(properties, select)
@@ -190,7 +189,6 @@ local function reduceCoordinates(coordinates, decimalFormat)
 	end
 end
 
-
 local function getPropertiesWithReducedNames(propertiesMap, properties, select)
 	local newProperties = {}
 	if select then
@@ -204,7 +202,6 @@ local function getPropertiesWithReducedNames(propertiesMap, properties, select)
 
 	return newProperties
 end
-
 
 local function uglify(file, decimal, select)
 	local fopen = file:open()
@@ -307,6 +304,91 @@ local function exportBounds(data)
 	data.bounds = nil
 end
 
+local function exportRasterLayer(name, layer, filePathWithoutExtension, jsonPath, defaultEPSG, exportArgs)
+	local layerExported
+	if layer.epsg == defaultEPSG then
+		layer:polygonize{file = jsonPath, overwrite = true}
+		layerExported = layer
+	else
+		local vectorPath = File(filePathWithoutExtension..".shp")
+		layer:polygonize{file = vectorPath, overwrite = true}
+
+		local tempFileProj = File(filePathWithoutExtension..".tview")
+		local tempProj = gis.Project{file = tempFileProj}
+		local tmpLayer = gis.Layer{
+			project = tempProj,
+			name = name,
+			file = vectorPath
+		}
+
+		tmpLayer:export(exportArgs)
+		layerExported = tmpLayer
+
+		vectorPath:deleteIfExists()
+		tempFileProj:deleteIfExists()
+	end
+
+	return layerExported
+end
+
+local function exportWMSLayer(data, name, layer, defaultEPSG, view)
+	verifyUnnecessaryArguments(view, {"title", "description", "width", "visible", "layer", "report", "transparency",
+		"label", "icon", "download", "group", "decimal", "properties", "color", "time"})
+
+	mandatoryTableArgument(view, "color", {"string", "table"})
+	mandatoryTableArgument(view, "label", "table")
+
+	if view.download then
+		customError("WMS layer '"..name.."' does not support download.")
+	end
+
+	if layer.epsg ~= defaultEPSG then
+		customError("Layer '"..name.."' must use projection 'EPSG:"..defaultEPSG.."', got 'EPSG:"..layer.epsg.."'.")
+	end
+
+	if type(view.color) == "string" then
+		view.color = {view.color}
+	end
+
+	local colors = view.color
+	local label = view.label
+
+	local colorSize = #colors
+	local labelSize = #label
+
+	if colorSize == 0 or colorSize ~= getn(colors) then
+		customError("Argument 'color' of View '"..name.."' must be a table with the colors. Example {'#F4C87F', '#CB8969', '#885944'}.")
+	end
+
+	if labelSize == 0 or labelSize ~= getn(label) then
+		customError("Argument 'label' of View '"..name.."' must be a table with the labels. Example {'Class 1', 'Class 2', 'Class 3'}.")
+	end
+
+	if colorSize ~= labelSize then
+		customError("Argument 'color' and 'label' of View '"..name.."' must have the same size, got "..colorSize.." and "..labelSize..".")
+	end
+
+	local newLabel = {}
+	forEachElement(label, function(idx, description)
+		local colorValue = colors[idx]
+		if type(colorValue) == "table" then
+			colorValue = color{color = colorValue, alpha = 1 - view.transparency}
+			colors[idx] = colorValue
+		end
+
+		newLabel[tostring(description)] = colorValue
+	end)
+
+	view.label = newLabel
+	view.name = layer.map
+	view.url = layer.service
+	view.geom = SourceType.WMS
+	data.hasWMS = true
+
+	local tilesLib = templateDir.."model/dist/geoambientev2.min.js"
+	os.execute("cp \""..tilesLib.."\" \""..data.assets.."\"")
+end
+
 local function layerPreProcessing(data)
 	if not (data.center and data.zoom) then
 		local huge = math.huge
@@ -314,24 +396,26 @@ local function layerPreProcessing(data)
 	end
 end
 
-local function layerPostProcessing(data, layer, jsonPath, isRaster)
-	local mview = data.view[layer.name]
-	if isRaster then
-		if mview.select then
-			customError("Argument 'select' for View '"..layer.name.."' is not valid for raster data.")
+local function layerPostProcessing(data, layer, jsonPath, view, isRaster, isWMS)
+	local name = layer.name
+	if not isWMS then
+		if isRaster then
+			if view.select then
+				customError("Argument 'select' for View '"..name.."' is not valid for raster data.")
+			end
+
+			view.select = "value"
 		end
 
-		mview.select = "value"
-	end
+		if view.color and view.value then
+			mandatoryTableArgument(view, "select", {"string", "table"})
+		end
 
-	if mview.color and mview.value then
-		mandatoryTableArgument(mview, "select", {"string", "table"})
-	end
-
-	if data.simplify then
-		printInfo("Simplifying layer'"..layer.name.."'")
-		local properties = simplify(jsonPath, mview.decimal, mview.select)
-		mview.properties = properties
+		if data.simplify then
+			printInfo("Simplifying layer'"..name.."'")
+			local properties = simplify(jsonPath, view.decimal, view.select)
+			view.properties = properties
+		end
 	end
 
 	if data.bounds then
@@ -339,146 +423,301 @@ local function layerPostProcessing(data, layer, jsonPath, isRaster)
 	end
 end
 
+local function splitLayerName(name, scenarios, yearPattern, scenarioPattern, numberOfScenarioSeparator)
+	local basename
+	local scenario
+	local strYear
+	local _, numberOfUnderscore = string.gsub(name, "_", "")
+	if scenarios and numberOfUnderscore == numberOfScenarioSeparator then
+		basename, scenario, strYear = string.match(name, scenarioPattern)
+	else
+		basename, strYear = string.match(name, yearPattern)
+	end
+
+	return basename, strYear, scenario
+end
+
 local function exportLayers(data, sof)
 	layerPreProcessing(data)
 
-	local mproj = {}
+	local scenarios = data.scenario
+	local snapshot = data.temporal.snapshot
+
 	local defaultEPSG = 4326
 	local hasRaster = false
+
+	local nView = 0
+	local mproj = {}
+	local uniqueScenarios = {}
+	local wmsTemporalExported = {}
+
+	local numberOfYearChars = 4
+	local numberOfScenarioSeparator = 2
+	local yearPattern = "(%w+)_(%d+)"
+	local scenarioPattern = "(%w+)_"..yearPattern
 	gis.forEachLayer(data.project, function(layer, idx)
-		local name = layer.name
-		if (sof and not sof(layer, idx)) or not data.view[name] then
+		if (sof and not sof(layer, idx)) then
 			return
 		end
 
-		if not isValidSource(layer.source) then
-			customError("Layer '"..name.."' with source '"..layer.source.."' is not supported by publish.")
+		local name = layer.name
+		local source = layer.source
+
+		local isOGR = SourceTypeMapper[source] == SourceType.OGR
+		local isRaster = SourceTypeMapper[source] == SourceType.GDAL
+		local isWMS = SourceTypeMapper[source] == SourceType.WMS
+
+		if not isValidSource(source) then
+			customError("Layer '"..name.."' with source '"..source.."' is not supported by publish.")
+		end
+
+		local mview = data.view[name]
+		if not mview then
+			if not snapshot then
+				return
+			end
+
+			local basename, strYear, scenario = splitLayerName(name, scenarios, yearPattern, scenarioPattern, numberOfScenarioSeparator)
+			local year = tonumber(strYear)
+			if not (basename and strYear and year) or (#strYear ~= numberOfYearChars or year ~= math.floor(year)) then
+				customError("Layer '"..name.."' has an invalid pattern for temporal View [Ex. name_2017].")
+			end
+
+			if not belong(basename, snapshot) then
+				customError("Layer '"..name.."' is not a temporal View of mode 'snapshot'.")
+			end
+
+			mview = data.view[basename]
+			if not data.temporalConfig then
+				data.temporalConfig = {}
+			end
+
+			if not data.temporalConfig[basename] then
+				data.temporalConfig[basename] = {
+					name = {},
+					timeline = {},
+					scenario = {}
+				}
+			end
+
+			local viewTemporalConfig = data.temporalConfig[basename]
+			local viewTemporalName = name
+			if isWMS then
+				viewTemporalName = layer.map
+			end
+
+			if scenario then
+				if not viewTemporalConfig.scenario[scenario] then
+					viewTemporalConfig.scenario[scenario] = {
+						name = {},
+						timeline = {}
+					}
+				end
+
+				table.insert(viewTemporalConfig.scenario[scenario].name, viewTemporalName)
+				table.insert(viewTemporalConfig.scenario[scenario].timeline, year)
+				uniqueScenarios[scenario] = true
+			else
+				table.insert(viewTemporalConfig.name, viewTemporalName)
+				table.insert(viewTemporalConfig.timeline, year)
+			end
+		end
+
+		if mview.time and mview.time == "creation" and not isOGR then
+			customError("Temporal View with mode 'creation' only support OGR data, got '"..source.."'.")
 		end
 
 		local filePathWithoutExtension = data.datasource..name
 		local jsonPath = filePathWithoutExtension..".geojson"
 		local exportArgs = {file = jsonPath, epsg = defaultEPSG, overwrite = true }
-		local isRaster = false
 
 		printNormal("Exporting layer '"..name.."'")
 
 		local layerExported
-		if SourceTypeMapper[layer.source] == SourceType.GDAL then
-			if layer.epsg == defaultEPSG then
-				layer:polygonize{file = jsonPath, overwrite = true}
-				layerExported = layer
-			else
-				local vectorPath = File(filePathWithoutExtension..".shp")
-				layer:polygonize{file = vectorPath, overwrite = true}
-
-				local tempFileProj = File(filePathWithoutExtension..".tview")
-				local tempProj = gis.Project{file = tempFileProj}
-				local tmpLayer = gis.Layer{
-					project = tempProj,
-					name = name,
-					file = vectorPath
-				}
-
-				tmpLayer:export(exportArgs)
-				layerExported = tmpLayer
-
-				vectorPath:deleteIfExists()
-				tempFileProj:deleteIfExists()
-			end
-
-			isRaster = true
+		if isRaster then
+			layerExported = exportRasterLayer(name, layer, filePathWithoutExtension, jsonPath, defaultEPSG, exportArgs)
 			if not hasRaster then hasRaster = true end
 		else
-			layer:export(exportArgs)
+
+			if isWMS then
+				if not wmsTemporalExported[mview] then
+					exportWMSLayer(data, name, layer, defaultEPSG, mview)
+					wmsTemporalExported[mview] = true
+				end
+			else
+				layer:export(exportArgs)
+			end
+
 			layerExported = layer
 		end
 
-		layerPostProcessing(data, layerExported, jsonPath, isRaster)
+		layerPostProcessing(data, layerExported, jsonPath, mview, isRaster, isWMS)
 		mproj[name] = jsonPath
+		nView = nView + 1
 	end)
+
+	if nView == 0 then
+		customError("The application does not have any View related to a Layer.")
+	end
+
+	if snapshot and #snapshot > 0 and not data.temporalConfig then
+		customError("Temporal View of mode 'snapshot' declared, but no Layer was found.")
+	end
+
+	if scenarios then
+		for scene in pairs(scenarios) do
+			if not uniqueScenarios[scene] then
+				customError("Scenario '"..scene.."' does not exist in project '"..data.project.title.."'.")
+			end
+		end
+	end
 
 	if hasRaster then
 		mproj.file = Directory{tmp = true}..data.project.title..".tview"
 		mproj.clean = true
 		data.project = gis.Project(mproj)
 	end
+
+	local wmsDir = Directory("wms")
+	if wmsDir:exists() then wmsDir:delete() end
+end
+
+local function loadValuesFromDataSet(set, project, name, select, slices, missing)
+	local tlib = gis.TerraLib{}
+	local dset = tlib.getDataSet(project, name, missing)
+	for i = 0, #dset do
+		for k, v in pairs(dset[i]) do
+			if k == select and not set[v] then
+				if slices and type(v) ~= "number" then
+					customError("Selected element should be number, got "..type(v).." in row "..(i + 1)..".")
+				end
+
+				set[v] = true
+			end
+		end
+	end
+end
+
+local function validateTemporalProperty(project, name, view)
+	local tlib = gis.TerraLib{}
+	local dset = tlib.getDataSet(project, name)
+
+	local set = {}
+	local numberOfYearChars = 4
+	local propertyTemporal = view.name
+	for i = 0, #dset do
+		for k, v in pairs(dset[i]) do
+			if k == propertyTemporal and not set[v] then
+				local vtype = type(v)
+				if vtype == "number" and v ~= math.floor(v) then
+					vtype = "float"
+				end
+
+				if vtype ~= "number" then
+					customError("Argument 'name' of View '"..name.."' must be a column with integers that represent years, got "..vtype.." in row "..(i + 1)..".")
+				end
+
+				if #tostring(v) ~= numberOfYearChars then
+					customError("Argument 'name' of View '"..name.."' with invalid pattern for year (YYYY), got "..v.." in row "..(i + 1)..".")
+				end
+
+				set[v] = true
+			end
+		end
+	end
+
+	local timeline = {}
+	for v in pairs(set) do
+		table.insert(timeline, v)
+	end
+
+	view.timeline = timeline
 end
 
 local function loadViewValue(data, name, view)
-	local mview = clone(view, {type_ = true, value = true, width = true, transparency = true, visible = true,
-		report = true, download = true, decimal = true})
-	mview.value = {}
-	mview.report = view.report
-
-	if view.width ~= 1 then
-		mview.width = view.width
-	end
-
-	if view.transparency ~= 0 then
-		mview.transparency = view.transparency
-	end
-
-	if view.visible == false then
-		mview.visible = false
-	end
-
-	if view.download == true then
-		mview.download = true
-	end
-
-	if view.decimal ~= 5 then
-		mview.decimal = view.decimal
-	end
-
 	local select = view.select[2] or view.select
 
 	do
 		local set = {}
-		local tlib = gis.TerraLib{}
-		local dset = tlib.getDataSet(data.project, name)
-		for i = 0, #dset do
-			for k, v in pairs(dset[i]) do
-				if k == select and not set[v] then
-					if mview.slices and type(v) ~= "number" then
-						customError("Selected element should be number, got "..type(v).." in row "..(i + 1)..".")
-					end
+		if not data.project.layers[name] then
+			for _, layerName in ipairs(data.temporalConfig[name].name) do
+				loadValuesFromDataSet(set, data.project, layerName, select, view.slices, view.missing)
+			end
 
-					set[v] = true
+			if data.scenario then
+				for _, params in pairs(data.temporalConfig[name].scenario) do
+					for _, layerName in ipairs(params.name) do
+						loadValuesFromDataSet(set, data.project, layerName, select, view.slices, view.missing)
+					end
 				end
 			end
+		else
+			loadValuesFromDataSet(set, data.project, name, select, view.slices, view.missing)
 		end
 
 		local huge = math.huge
 		local min = huge
 		local max = -huge
-		for v in pairs(set) do
-			if mview.slices then
-				if mview.min == nil or mview.max == nil then
-					if min > v then
-						min = v
-					elseif max < v then
-						max = v
+
+		if view.value then
+			local options = {}
+			forEachElement(view.value, function(_, mvalue)
+				options[mvalue] = false
+			end)
+
+			for v in pairs(set) do
+				if belong(v, view.value) then
+					options[v] = true
+				else
+					local str = "Value '"..v.."' belongs to the data but not to the values in the View."
+
+					local sug = suggestion(v, options)
+
+					if sug then
+						str = str.." Did you write '"..sug.."' wrongly?"
 					end
-				end
 
-				if mview.min and mview.min > v then
-					customWarning("Value "..v.." out of range [min: "..mview.min.."] and will not be drawn.")
-				end
-
-				if mview.max and mview.max < v then
-					customWarning("Value "..v.." out of range [max: "..mview.max.."] and will not be drawn.")
+					customError(str)
 				end
 			end
 
-			table.insert(mview.value, v)
+			forEachOrderedElement(options, function(idx, mvalue)
+				if not mvalue then
+					customError("Selected value '"..idx.."' does not exist in the data.")
+				end
+			end)
+		else
+			view.value = {}
+
+			for v in pairs(set) do
+				if view.slices then
+					if view.min == nil or view.max == nil then
+						if min > v then
+							min = v
+						elseif max < v then
+							max = v
+						end
+					end
+
+					if view.min and view.min > v then
+						customWarning("Value "..v.." out of range [min: "..view.min.."] and will not be drawn.")
+					end
+
+					if view.max and view.max < v then
+						customWarning("Value "..v.." out of range [max: "..view.max.."] and will not be drawn.")
+					end
+				end
+
+				table.insert(view.value, v)
+			end
 		end
 
-		if mview.slices and mview.min == nil then mview.min = min end
-		if mview.slices and mview.max == nil then mview.max = max end
+		if view.slices and view.min == nil then view.min = min end
+		if view.slices and view.max == nil then view.max = max end
 	end
 
-	table.sort(mview.value)
-	data.view[name] = View(mview)
+	table.sort(view.value)
+	view:loadColors()
 end
 
 local function loadViews(data)
@@ -487,6 +726,7 @@ local function loadViews(data)
 	local nViews = 0
 	local nGroups = 0
 	local nGroupViews = 0
+	local temporal =  {}
 	forEachElement(data, function(idx, mview, mtype)
 		if mtype == "View" then
 			views[idx] = mview
@@ -520,17 +760,40 @@ local function loadViews(data)
 		nViews = nGroupViews
 	end
 
+	local temporalCount = 0
+	forEachElement(views, function(name, mview)
+		local time = mview.time
+		if time then
+			if not temporal[time] then
+				temporal[time] = {}
+			end
+
+			table.insert(temporal[time], name)
+			temporalCount = temporalCount + 1
+		end
+	end)
+
+	if data.scenario and not temporal.snapshot then
+		customError("View temporal of mode 'snapshot' is mandatory when using argument 'scenario'.")
+	end
+
+	if temporalCount > 0 then
+		local sliderLib = templateDir.."model/src/assets/jquery-ui.min.js"
+		os.execute("cp \""..sliderLib.."\" \""..data.assets.."\"")
+	end
+
 	data.view = views
+	data.temporal = temporal
 	return nViews
 end
 
 local function loadLayers(data)
 	local nView = loadViews(data)
 
-	verifyUnnecessaryArguments(data, {"project", "package", "output", "clean", "legend", "progress", "loading", "key",
+	verifyUnnecessaryArguments(data, {"project", "output", "clean", "display", "code", "legend", "layers", "progress", "loading", "key",
 		"title", "description", "base", "zoom", "minZoom", "maxZoom", "center", "assets", "datasource", "view", "template",
 		"border", "color", "select", "value", "visible", "width", "order", "report", "images", "group", "logo",
-		"simplify", "fontSize"})
+		"simplify", "fontSize", "name", "time", "temporal", "scenario"})
 
 	if nView > 0 then
 		if data.project then
@@ -586,13 +849,30 @@ local function loadLayers(data)
 			end)
 		else
 			if data.output:exists() then data.output:delete() end
-			customError("Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
+			customError("Argument 'project' or a View with argument 'layer' is mandatory to publish your data.")
 		end
 	end
 
 	forEachElement(data.view, function(name, view)
-		if not (view.color and not view.value and view.select) then return end
+		if not view.color or not view.select then return end
 		loadViewValue(data, name, view)
+	end)
+
+	forEachElement(data.view, function(name, view)
+		if view.time and view.time == "creation" then
+			validateTemporalProperty(data.project, name, view)
+		end
+
+		if view.time then
+			if view.time == "creation" then
+				validateTemporalProperty(data.project, name, view)
+			else
+				local viewConfig = data.temporalConfig[name]
+				if #viewConfig.timeline == 0 and getn(viewConfig.scenario) > 0 then
+					customError("View '"..name.."' has only future scenarios.")
+				end
+			end
+		end
 	end)
 
 	if data.order then
@@ -648,69 +928,77 @@ local function processingView(data, layers, reports, name, view)
 		label = viewLabel
 	})
 
-	local dset
-	do
-		local tlib = gis.TerraLib{}
-		dset = tlib.getDataSet(data.project, name)
-		for i = 0, #dset do
-			if view.geom then break end
-
-			local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
-			if geom then
-				local subType = tlib.castGeomToSubtype(geom)
-				view.geom = subType:getGeometryType()
+	if view.geom ~= SourceType.WMS then
+		local dset
+		do
+			local tlib = gis.TerraLib{}
+			local layerName = name
+			if not data.project.layers[layerName] then
+				local viewConfig = data.temporalConfig[name]
+				layerName = viewConfig.name[1]
 			end
-		end
-	end
 
-	if view.report then
-		if type(view.report) == "Report" then
-			table.insert(reports, {title = view.report.title, author = view.report.author, layer = view.report.layer, reports = exportReportImages(data, view.report)})
-		else
+			dset = tlib.getDataSet(data.project, layerName, view.missing)
 			for i = 0, #dset do
-				local cell = Cell(dset[i])
-				local report = view.report(cell)
-				if type(report) ~= "Report" then
-					if data.output:exists() then data.output:delete() end
-					customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
-				end
+				if view.geom then break end
 
-				local select = cell[view.select[1] or view.select]
-				if select and type(select) == "string" then
-					select = select:gsub("%s+", "")
+				local geom = dset[i]["OGR_GEOMETRY"] or dset[i]["geom"]
+				if geom then
+					local subType = tlib.castGeomToSubtype(geom)
+					view.geom = subType:getGeometryType()
 				end
-
-				table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
 			end
 		end
-	elseif data.report then
-		local report = clone(data.report)
-		report.layer = name
-		table.insert(reports, report)
-	end
 
-	if view.icon then
-		if not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
+		if view.report then
+			if type(view.report) == "Report" then
+				table.insert(reports, {title = view.report.title, author = view.report.author, layer = name, reports = exportReportImages(data, view.report)})
+			else
+				for i = 0, #dset do
+					local cell = Cell(dset[i])
+					local report = view.report(cell)
+					if type(report) ~= "Report" then
+						if data.output:exists() then data.output:delete() end
+						customError("Argument report of View '"..name.."' must be a function that returns a Report, got "..type(report)..".")
+					end
+
+					local select = cell[view.select[1] or view.select]
+					if select and type(select) == "string" then
+						select = select:gsub("%s+", "")
+					end
+
+					table.insert(reports, {title = report.title, author = report.author, layer = name, select = select, reports = exportReportImages(data, report)})
+				end
+			end
+		elseif data.report then
+			local report = clone(data.report)
+			report.layer = name
+			table.insert(reports, report)
+		end
+
+		if view.icon and not belong(view.geom, {"Point", "MultiPoint", "LineString", "MultiLineString"}) then
 			if data.output:exists() then data.output:delete() end
 			customError("Argument 'icon' of View must be used only with the following geometries: 'Point', 'MultiPoint', 'LineString' and 'MultiLineString'.")
 		end
 
-		local icon = {}
-		local itype = type(view.icon)
-		if itype == "string" then
-			if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
-				if data.output:exists() then data.output:delete() end
-				customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+		if view.icon and belong(view.geom, {"Point", "MultiPoint"}) then
+			local icon = {}
+			local itype = type(view.icon)
+			if itype == "string" then
+				if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
+					if data.output:exists() then data.output:delete() end
+					customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+				end
+
+				view.icon = {view.icon}
 			end
 
-			view.icon = view.icon..".png"
-			icon.path = view.icon
-			os.execute("cp \""..templateDir.."markers/"..view.icon.."\" \""..data.assets.."\"")
-		else
-			if #view.icon > 0 then
-				icon.options = {}
-				local set = {}
-				local label = view.label or {}
+			icon.options = {}
+			local set = {}
+			local label = view.label or {}
+			local markers = view.icon
+
+			if view.select then
 				local col = view.select[2] or view.select
 				local nProp = 0
 				for i = 0, #dset do
@@ -726,107 +1014,124 @@ local function processingView(data, layers, reports, name, view)
 					end
 				end
 
-				local markers = view.icon
 				local nMarkers = #markers
-				if nProp ~= nMarkers then
+				if nProp ~= nMarkers and nMarkers > 1 then
 					if data.output:exists() then data.output:delete() end
-					customError("The number of 'icon:makers' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.")
+					customError("The number of 'icon' ("..nMarkers..") must be equal to number of unique values in property '"..col.."' ("..nProp..") in View '"..name.."'.") -- SKIP
+				end
+			end
+
+			local ics = {
+				airport = true,
+				animal = true,
+				bigcity = true,
+				bus = true,
+				car = true,
+				caution = true,
+				cycling = true,
+				database = true,
+				desert = true,
+				diving = true,
+				fillingstation = true,
+				finish = true,
+				fire = true,
+				firstaid = true,
+				fishing = true,
+				flag = true,
+				forest = true,
+				harbor = true,
+				helicopter = true,
+				home = true,
+				horseriding = true,
+				hospital = true,
+				lake = true,
+				motorbike = true,
+				mountains = true,
+				radio = true,
+				restaurant = true,
+				river = true,
+				road = true,
+				shipwreck = true,
+				thunderstorm = true
+			}
+
+			local properties = {}
+			for prop in pairs(set) do
+				table.insert(properties, prop)
+			end
+
+			table.sort(properties)
+
+			local ltmp = {}
+			local copy = {}
+			for i, prop in pairs(properties) do
+				local strprop = tostring(prop)
+				local marker = tostring(markers[i])
+
+				if #markers == 1 then marker = markers[1] end
+
+				local mlabel = label[i]
+
+				if not mlabel then
+					mlabel = strprop
+				elseif type(mlabel) ~= "string" then
+					incompatibleTypeError("label", "string", mlabel)
 				end
 
-				local ics = {
-					airport = true,
-					animal = true,
-					bigcity = true,
-					bus = true,
-					car = true,
-					caution = true,
-					cycling = true,
-					database = true,
-					desert = true,
-					diving = true,
-					fillingstation = true,
-					finish = true,
-					fire = true,
-					firstaid = true,
-					fishing = true,
-					flag = true,
-					forest = true,
-					harbor = true,
-					helicopter = true,
-					home = true,
-					horseriding = true,
-					hospital = true,
-					lake = true,
-					motorbike = true,
-					mountains = true,
-					radio = true,
-					restaurant = true,
-					river = true,
-					road = true,
-					shipwreck = true,
-					thunderstorm = true
-				}
-
-				local properties = {}
-				for prop in pairs(set) do
-					table.insert(properties, prop)
-				end
-
-				table.sort(properties)
-
-				local ltmp = {}
-				local copy = {}
-				for i, prop in pairs(properties) do
-					local strprop = tostring(prop)
-					local marker = tostring(markers[i])
-
-					if not ics[marker] then
-						switchInvalidArgument("icon:marker", marker, ics)
-					end
-
-					local mlabel = label[i]
-					if not mlabel then
-						mlabel = col.." "..strprop
-					elseif type(mlabel) ~= "string" then
-						incompatibleTypeError("label", "string", mlabel)
-					end
-
+				if ics[marker] then
 					marker = marker..".png"
-					copy[marker] = true
+					copy[templateDir.."markers/"..marker] = true
 
 					ltmp[mlabel] = marker
 					icon.options[strprop] = marker
-				end
+					icon.path = marker
+				elseif isFile(marker) then
+					marker = File(marker) -- SKIP
+					copy[tostring(marker)] = true -- convert to string to guarantee that unique values are copied only once -- SKIP
 
-				for el in pairs(copy) do
-					os.execute("cp \""..templateDir.."markers/"..el.."\" \""..data.assets.."\"")
+					ltmp[mlabel] = marker:name() -- SKIP
+					icon.options[strprop] = marker:name() -- SKIP
+					icon.path = marker -- SKIP
+				else
+					switchInvalidArgument("icon", marker, ics)
 				end
+			end
 
+			forEachOrderedElement(copy, function(el)
+				local file = File(el)
+				printNormal("Copying icon '"..file:name().."'")
+				file:copy(data.assets)
+			end)
+
+			if #markers > 1 then
 				view.label = ltmp
 			else
-				view.icon.transparency = 1 - view.icon.transparency
-				icon.options = {
-					path = view.icon.path,
-					fillColor = view.icon.color,
-					fillOpacity = view.icon.transparency,
-					strokeWeight = 2
-				}
-
-				icon.time = 1000 / (200 / view.icon.time)
+				view.label = {}
 			end
+
+			view.icon = icon
 		end
+	end
 
-		view.icon = icon
-	elseif view.geom == "LineString" or view.geom == "MultiLineString" then
-		view.icon = {}
-		view.icon.options = {
-			path = "M150 0 L75 200 L225 200 Z",
-			fillColor = "rgba(0, 0, 0, 1)",
-			fillOpacity = 0.8,
-			strokeWeight = 2
-		}
+	if belong(view.geom, {"LineString", "MultiLineString"}) then
+		optionalTableArgument(view, "icon", "table")
 
-		view.icon.time = 25
+		if view.icon then
+			if #view.icon > 0 then
+				customError("All the elements of data.icon should be named.")
+			end
+
+			verifyUnnecessaryArguments(view.icon, {"path", "color", "transparency", "time"})
+
+			view.icon.options = { -- SKIP
+				path = "M150 0 L75 200 L225 200 Z",
+				fillColor = "rgba(0, 0, 0, 1)", -- SKIP
+				fillOpacity = 0.8, -- SKIP
+				strokeWeight = 2 -- SKIP
+			}
+
+			defaultTableValue(view.icon, "time", 5)
+		end
 	end
 
 	if view.download then
@@ -850,6 +1155,18 @@ local function processingView(data, layers, reports, name, view)
 
 			zip:deleteIfExists()
 		end
+	end
+
+	if view.time then
+		if view.time == "snapshot" then
+			local viewConfig = data.temporalConfig[name]
+			view.timeline = viewConfig.timeline
+			view.name = viewConfig.name
+			view.scenario = viewConfig.scenario
+			table.sort(view.name)
+		end
+
+		table.sort(view.timeline)
 	end
 end
 
@@ -905,28 +1222,52 @@ local function createApplicationProjects(data, proj)
 	end
 
 	local mview = clone(data.view, {type_ = true, value = true})
-	forEachElement(mview, function(_, mdata)
-		if mdata.report then
-			mdata.report = type(mdata.report)
+	forEachElement(mview, function(_, viewAttributes)
+		if viewAttributes.report then
+			viewAttributes.report = type(viewAttributes.report)
 		elseif data.report then
-			mdata.report = type(data.report)
+			viewAttributes.report = type(data.report)
 		end
 
-		if mdata.select and data.simplify then
-			if type(mdata.select) == "string" then
-				mdata.select = mdata.properties[mdata.select]
+		if viewAttributes.select and data.simplify then
+			if type(viewAttributes.select) == "string" then
+				viewAttributes.select = viewAttributes.properties[viewAttributes.select]
 			else
 				local select = {}
-				for _, property in ipairs(mdata.select) do
-					table.insert(select, mdata.properties[property])
+				for _, property in ipairs(viewAttributes.select) do
+					table.insert(select, viewAttributes.properties[property])
 				end
 
-				mdata.select = select
+				viewAttributes.select = select
 			end
 
-			mdata.properties = nil
+			viewAttributes.properties = nil
 		end
 	end)
+
+	local scenarios
+	local scenariosWrapper
+	local hasScenario = false
+	if data.scenario then
+		scenarios = {}
+		scenariosWrapper = {}
+		forEachElement(mview, function(viewName, viewAttributes)
+			if not viewAttributes.scenario then return end
+
+			forEachElement(viewAttributes.scenario, function(scenarioName)
+				local label = _Gtme.stringToLabel(scenarioName)
+				scenariosWrapper[label] = scenarioName
+				table.insert(scenarios, {scenario = label, view = viewName})
+			end)
+		end)
+
+		table.sort(scenarios, function(k1, k2)
+			return k1.scenario < k2.scenario
+		end)
+
+		table.insert(scenarios, 1, {scenario = "None", view = ""})
+		hasScenario = true
+	end
 
 	if data.bounds then
 		exportBounds(data)
@@ -941,10 +1282,13 @@ local function createApplicationProjects(data, proj)
 			maxZoom = data.maxZoom,
 			mapTypeId = data.base:upper(),
 			legend = data.legend,
+			layers = data.layers,
 			data = mview,
 			path = path,
 			group = data.group,
-			fontSize = data.fontSize
+			fontSize = data.fontSize,
+			scenario = data.scenario,
+			scenarioWrapper = scenariosWrapper
 		}
 	}
 
@@ -962,46 +1306,11 @@ local function createApplicationProjects(data, proj)
 			navbarColor = data.template.navbar,
 			titleColor = data.template.title,
 			groups = groups,
-			logo = data.logo
-		}
-	}
-end
-
-local function createApplicationHome(data)
-	printInfo("Loading Home Page")
-	local index = "index.html"
-	local config = "config.js"
-
-	local layers = {}
-	for _, mproj in pairs(data.project) do
-		layers[mproj.project] = mproj.layer -- SKIP
-	end
-
-	registerApplicationModel { -- SKIP
-		output = config, -- SKIP
-		model = { -- SKIP
-			center = data.center, -- SKIP
-			zoom = data.zoom, -- SKIP
-			minZoom = data.minZoom, -- SKIP
-			maxZoom = data.maxZoom, -- SKIP
-			mapTypeId = data.base:upper(), -- SKIP
-			legend = data.legend, -- SKIP
-			data = layers -- SKIP
-		}
-	}
-
-	registerApplicationModel { -- SKIP
-		input = templateDir.."package.mustache", -- SKIP
-		output = index, -- SKIP
-		model = { -- SKIP
-			config = config, -- SKIP
-			package = data.package.package, -- SKIP
-			description = data.package.content, -- SKIP
-			projects = data.project, -- SKIP
-			loading = data.loading, -- SKIP
-			key = data.key, -- SKIP
-			navbarColor = data.template.navbar, -- SKIP
-			titleColor = data.template.title -- SKIP
+			logo = data.logo,
+			wms = data.hasWMS,
+			slider = getn(data.temporal) > 0,
+			scenarios = scenarios,
+			hasScenario = hasScenario
 		}
 	}
 end
@@ -1032,6 +1341,11 @@ local function exportTemplates(data)
 	end)
 end
 
+local function endswith(str, word)
+	local len = #word
+	return word == '' or string.sub(str, -len) == word
+end
+
 Application_ = {
 	type_ = "Application"
 }
@@ -1042,12 +1356,13 @@ metaTableApplication_ = {
 }
 
 --- Creates a web page to visualize the published data.
--- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is false.
--- @arg data.legend An optional value with the layers legend. The default value is 'Legend'.
--- @arg data.output A mandatory base::Directory or directory name where the output will be stored.
--- @arg data.package An optional string with the package name. Uses automatically the .tview files of the package to create the application.
+-- @arg data.clean An optional boolean value indicating if the output directory could be automatically removed. The default value is true.
+-- @arg data.legend An optional value with the title of the legend box. The default value is 'Legend'.
+-- @arg data.layers An optional value with the title of the layers box. The default value is 'Layers'.
+-- @arg data.output A mandatory base::Directory or directory name where the output will be stored. The default value is the name of the
+-- project followed by "WebMap".
 -- @arg data.progress An optional boolean value indicating if the progress should be shown. The default value is true.
--- @arg data.simplify An optional boolean value indicating if the data should be simplified. The default value is true.
+-- @arg data.simplify An optional boolean value indicating if the data should be simplified. The default value is false.
 -- @arg data.project An optional gis::Project or string with the path to a .tview file.
 -- @arg data.report An option Report with data information.
 -- @arg data.title An optional string with the application's title. The title will be placed at the left top of the application page.
@@ -1064,30 +1379,35 @@ metaTableApplication_ = {
 -- @arg data.loading An optional string with the name of loading icon. The loading available are: "balls",
 -- "box", "default", "ellipsis", "hourglass", "poi", "reload", "ring", "ringAlt", "ripple", "rolling", "spin",
 -- "squares", "triangle", "wheel" (see http://loading.io/). The default value is "default".
+-- @arg data.display An optional boolean value indicating whether the application should be opened in a Web Browser
+-- after being created. The default value is true.
+-- @arg data.code An optional boolean value indicating whether the source code of the application should be
+-- copied to the directory of the final application. Note that only the script that was passed as
+-- argument to TerraME will be copied. If it include other files, they will not be copied.
+-- The default value is true.
 -- @arg data.key An optional string with 39 characters describing the Google Maps key (see https://developers.google.com/maps/documentation/javascript/get-api-key).
 -- The Google Maps API key monitors your Application's usage in the Google API Console.
 -- This parameter is compulsory when the Application has at least 25,000 map loads per day, or when the Application will be installed on a server.
+-- @arg data.order An optional vector of strings with the order of the Views to be displayed, from
+-- top to bottom. The elements of the vector are the names of each View.
 -- @arg data.template An optional named table with two string elements called navbar and
 -- title to describe colors for the navigation bar and for the background of the upper part of the application, respectively.
 -- @arg data.fontSize An optional number with the font size.
 -- @usage import("publish")
 --
--- local emas = filePath("emas.tview", "publish")
--- local emasDir = Directory("EmasWebMap")
---
--- local app = Application{
---     project = emas,
---     clean = true,
---     simplify = false,
---     select = "river",
---     color = "BuGn",
---     value = {0, 1, 2},
+-- Application{
+--     project = filePath("brazil.tview", "publish"),
+--     title = "Brazil Application",
+--     description = "Small application with some data related to Brazil.",
 --     progress = false,
---     output = emasDir
+--     biomes = View{
+--         select = "name",
+--         color = "Set2", -- instead of using value/color
+--         description = "Brazilian Biomes, from IBGE.",
+--     }
 -- }
 --
--- print(app)
--- if emasDir:exists() then emasDir:delete() end
+-- Directory("brazilWebMap"):delete()
 function Application(data)
 	verifyNamedTable(data)
 
@@ -1102,20 +1422,17 @@ function Application(data)
 	optionalTableArgument(data, "logo", "string")
 	optionalTableArgument(data, "fontSize", "number")
 
-	defaultTableValue(data, "clean", false)
+	defaultTableValue(data, "clean", true)
+	defaultTableValue(data, "display", true)
+	defaultTableValue(data, "code", true)
 	defaultTableValue(data, "progress", true)
-	defaultTableValue(data, "simplify", true)
+	defaultTableValue(data, "simplify", false)
 	defaultTableValue(data, "legend", "Legend")
+	defaultTableValue(data, "layers", "Layers")
 	defaultTableValue(data, "loading", "default")
 	defaultTableValue(data, "base", "satellite")
 	defaultTableValue(data, "minZoom", 0)
 	defaultTableValue(data, "maxZoom", 20)
-
-	if type(data.output) == "string" then
-		data.output = Directory(data.output)
-	end
-
-	mandatoryTableArgument(data, "output", "Directory")
 
 	if data.center then
 		verifyNamedTable(data.center)
@@ -1218,94 +1535,28 @@ function Application(data)
 		customError("Argument 'fontSize' must be a number greater than 0, got "..data.fontSize..".")
 	end
 
+	if data.scenario then
+		if #data.scenario > 0 or getn(data.scenario) == 0 then
+			customError("Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+		end
+
+		local dot = "."
+		forEachElement(data.scenario, function(scenario, description, descriptionType)
+			if descriptionType ~= "string" then
+				customError("Argument 'scenario' must have strings values with the descriptions, got "..descriptionType.." in the scenario '"..scenario.."'.")
+			end
+
+			if not endswith(description, dot) then
+				data.scenario[scenario] = description..dot
+			end
+		end)
+	end
+
 	if not data.progress then
 		printNormal = function() end
 		printInfo = function() end
 	end
 
-	if data.package then
-		mandatoryTableArgument(data, "package", "string")
-		optionalTableArgument(data, "project", "table")
-		data.package = packageInfo(data.package)
-		defaultTableValue(data, "title", data.package.package)
-
-		printInfo("Creating application for package '"..data.package.package.."'")
-		local nProj = 0
-		local projects = {}
-		forEachFile(data.package.data, function(file)
-			if file:extension() == "tview" then
-				local proj, bbox
-				local _, name = file:split()
-				if data.project then
-					bbox = data.project[name]
-					if not bbox then
-						return
-					end
-
-					local mtype = type(bbox)
-					verify(mtype == "string", "Each element of 'project' must be a string, '"..name.."' got type '"..mtype.."'.")
-				end
-
-				proj = gis.Project{file = file}
-				if bbox then
-					local abstractLayer = proj.layers[bbox]
-					verify(abstractLayer, "Layer '"..bbox.."' does not exist in project '".. file .."'.")
-
-					local layer = gis.Layer{project = proj, name = abstractLayer:getTitle()}
-					local typeMapped = SourceTypeMapper[layer.source]
-					verify(typeMapped == SourceType.OGR or typeMapped == SourceType.POSTGIS, "Layer '"..bbox.."' must be OGR or POSTGIS, got '"..typeMapped.."'.")
-
-					data.project[name] = nil
-					table.insert(data.project, {project = name, layer = bbox})
-				end
-
-				projects[name] = proj
-				nProj = nProj + 1
-			end
-		end)
-
-		if nProj == 0 then
-			if data.output:exists() then data.output:delete() end
-			customError("Package '"..data.package.package.."' does not have any project.")
-		else
-			createDirectoryStructure(data)
-
-			if nProj == 1 then
-				forEachElement(projects, function(_, proj)
-					data.project = proj
-					return false
-				end)
-
-				loadLayers(data)
-				createApplicationProjects(data)
-			else
-				forEachElement(projects, function(fname, proj)
-					local datasource = Directory(data.datasource..fname)
-					if not datasource:exists() then -- SKIP
-						datasource:create() -- SKIP
-					end
-
-					local mdata = {project = proj, datasource = datasource}
-					forEachElement(data, function(idx, value)
-						if idx == "datasource" then -- SKIP
-							return
-						elseif idx == "project" then
-							idx = "projects" -- SKIP
-						end
-
-						mdata[idx] = value -- SKIP
-					end)
-
-					loadLayers(mdata) -- SKIP
-					createApplicationProjects(mdata, fname) -- SKIP
-				end)
-
-				createApplicationHome(data) -- SKIP
-			end
-
-			exportTemplates(data)
-		end
-	else
 		if data.project then
 			local ptype = type(data.project)
 			if ptype == "string" then
@@ -1324,6 +1575,18 @@ function Application(data)
 			mandatoryTableArgument(data, "project", "Project")
 		end
 
+	if type(data.output) ~= "Directory" and data.project then
+		local _, name = data.project.file:split()
+
+		defaultTableValue(data, "output", name.."WebMap")
+	end
+
+	if type(data.output) == "string" then
+		data.output = Directory(data.output)
+	end
+
+	mandatoryTableArgument(data, "output", "Directory")
+
 		createDirectoryStructure(data)
 		loadLayers(data)
 
@@ -1331,10 +1594,21 @@ function Application(data)
 
 		createApplicationProjects(data)
 		exportTemplates(data)
-	end
 
 	setmetatable(data, metaTableApplication_)
-	printInfo("Summing up, application '"..data.title.."' was successfully created.")
 
+	local currentFile = sessionInfo().currentFile
+
+	if data.code and currentFile then -- does not execute along tests
+		printInfo("Copying source code") -- SKIP
+		currentFile:copy(data.output) -- SKIP
+	end
+
+	if data.display and currentFile then -- does not execute along tests
+		printInfo("Opening index.html...") -- SKIP
+		openWebpage(data.output.."index.html") -- SKIP
+	end
+
+	printInfo("Summing up, application '"..data.title.."' was successfully created.")
 	return data
 end

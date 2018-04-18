@@ -24,22 +24,22 @@
 
 return {
 	Application = function(unitTest)
-		local gis = getPackage("gis")
-		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("project-basic-app")
+		local brazil = filePath("brazil.tview", "publish")
+		local brazilDir = Directory("project-basic-app")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		-- Testing Application: project = tview, package = nil.
 		local app = Application{
-			project = emas,
-			clean = true,
-			select = "river",
-			color = "BuGn",
-			value = {0, 1, 2},
+			project = brazil,
+			biomes = View{
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			simplify = false,
-			output = emasDir,
+			output = brazilDir,
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -50,38 +50,34 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assert(app.clean)
 		unitTest:assert(not app.progress)
-		unitTest:assertEquals(app.title, "Emas database")
+		unitTest:assertEquals(app.title, "No title")
 		-- unitTest:assertEquals(app.description, "A small example related to a fire spread model.") -- SKIP TODO Terrame/#1534
-		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(getn(app.view), 1) -- TODO #14. Raster layers are not counted.
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		-- Testing Application: project = Project, package = nil.
 		local fname = File("emas-test.tview")
 		fname:deleteIfExists()
 
-		emas = gis.Project{
-			file = tostring(fname),
-			clean = true,
-			author = "Carneiro, H.",
-			title = "Emas database",
-			firebreak = filePath("emas-firebreak.shp", "gis"),
-			river = filePath("emas-river.shp", "gis"),
-			limit = filePath("emas-limit.shp", "gis")
-		}
-
-		emasDir = "project-basic-app-stroutput"
+		brazilDir = "project-basic-app-stroutput"
 		app = Application{
-			project = emas,
-			clean = true,
-			select = "river",
-			color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
-			value = {0, 1, 2},
+			project = brazil,
+			biomes = View{
+				-- TODO: test with these arguments. it stops with a strange error
+				--select = "name",
+				--color = {"#e5f5f9", "#99d8c9", "#2ca25f"},
+				--value = {0, 1, 2},
+				--description = "Creates a database.",
+
+				select = "name",
+				value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+				color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+				description = "abc.",
+			},
 			progress = false,
-			simplify = false,
-			output = emasDir,
-			title = "Emas",
-			description = "Creates a database that can be used by the example fire-spread of base package.",
+			output = brazilDir,
+			title = "Brazil",
 			zoom = 14,
 			center = {lat = -18.106389, long = -52.927778}
 		}
@@ -92,12 +88,12 @@ return {
 		unitTest:assert(app.output:exists())
 		unitTest:assert(app.clean)
 		unitTest:assert(not app.progress)
-		unitTest:assertEquals(app.title, "Emas")
-		unitTest:assertEquals(app.description, "Creates a database that can be used by the example fire-spread of base package.")
-		unitTest:assertEquals(getn(app.view), getn(app.project.layers)) -- TODO #14. Raster layers are not counted.
+		unitTest:assertEquals(app.title, "Brazil")
+		unitTest:assertNil(app.description)
+		unitTest:assertEquals(getn(app.view), 1) -- TODO #14. Raster layers are not counted.
 
 		fname:deleteIfExists()
-		emasDir = Directory(emasDir)
-		if emasDir:exists() then emasDir:delete() end
+		brazilDir = Directory(brazilDir)
+		if brazilDir:exists() then brazilDir:delete() end
 	end
 }

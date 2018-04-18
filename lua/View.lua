@@ -23,7 +23,81 @@
 -------------------------------------------------------------------------------------------
 
 View_ = {
-	type_ = "View"
+	type_ = "View",
+	--- Internal function to load View colors. Do not use it.
+	-- @usage -- DONTRUN
+	-- view:loadColors()
+	loadColors = function(self)
+		self.loadColors = function() end -- this function should run only once
+
+		local realTransparency = 1 - self.transparency
+			local classes
+			if self.slices and self.min and self.max then
+				classes = self.slices -- SKIP
+			else
+				classes = #self.value
+			end
+
+			if classes == 0 then
+				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
+			end
+			local mcolor
+
+			if type(self.color) == "string" then
+				mcolor = color{color = self.color, classes = classes, alpha = realTransparency}
+			else
+				mcolor = color{color = self.color, alpha = realTransparency}
+			end
+
+			local nColors = #mcolor
+			if classes ~= nColors then
+				customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
+			end
+
+			local colors = {}
+			if self.slices and self.min and self.max then
+				local step = (self.max - self.min) / (self.slices - 1)
+				for i = 1, classes do
+					colors[tostring(self.min + step * (i - 1))] = mcolor[i] -- SKIP
+				end
+			else
+				for i = 1, classes do
+					colors[tostring(self.value[i])] = mcolor[i]
+				end
+			end
+
+			local label = {}
+
+			if self.label then
+				local labels = #self.label
+				if labels == 0 then
+					customError("Argument 'label' must be a table of strings with size greater than 0, got "..labels..".")
+				end
+
+				if classes ~= labels then
+					customError("The number of labels ("..labels..") must be equal to number of data classes ("..classes..").")
+				end
+
+				forEachElement(self.label, function(k, v, mtype)
+					if mtype ~= "string" then
+						customError("Argument 'label' must be a table of strings, element "..k.." ("..tostring(v)..") got "..mtype..".")
+					end
+				end)
+
+				local i = 1
+				forEachOrderedElement(colors, function(_, color)
+					label[self.label[i]] = tostring(color)
+					i = i + 1
+				end)
+			else
+				forEachElement(colors, function(value, color)
+					label[value] = tostring(color)
+				end)
+			end
+
+			self.color = colors
+			self.label = label
+	end
 }
 
 metaTableView_ = {
@@ -35,7 +109,9 @@ metaTableView_ = {
 -- One Application is composed by a set of Views.
 -- @arg data.select An optional string with the name of the attribute to be visualized.
 -- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
--- @arg data.visible An optional boolean whether the layer is visible. Defaults to false.
+-- @arg data.name An optional string with the name of the attribute to be visualized over time. This argument is mandatory when using time equals to 'creation'.
+-- @arg data.time An optional string with the temporal mode. The possible values are: 'snapshot' and 'creation'.
+-- @arg data.visible An optional boolean whether the layer is visible. Default value is true.
 -- @arg data.width An optional argument with the stroke width in pixels.
 -- @arg data.transparency An optional argument with the opacity of color attribute. The transparency parameter is a number between 0.0 (fully opaque) and 1.0 (fully transparent).
 -- The default value is 0.
@@ -56,7 +132,7 @@ metaTableView_ = {
 -- BrBG, Paired, PiYG, PuOr, RdBu, RdGy, RdYlBu, Set3 & 11 \
 -- BuGn, BuPu, OrRd, PuBu & 19 \
 -- Blues, GnBu, Greens, Greys, Oranges, PuBuGn, PuRd, Purples, RdPu, Reds, YlGn, YlGnBu, YlOrBr, YlOrRd & 20 \
--- @arg data.label An optional table of strings that describes the labels to be shown in the Legend.
+-- @arg data.label An optional string or table of strings that describes the labels to be shown in the Legend.
 -- @arg data.icon An optional table or string. A table with the icon properties, such as path, color and transparency. The property path
 -- uses SVG notation (see https://www.w3.org/TR/SVG/paths.html). A string with the name of marker icon. The markers available are:
 -- "airport", "animal", "bigcity", "bus", "car", "caution", "cycling", "database", "desert", "diving", "fillingstation", "finish", "fire", "firstaid", "fishing",
@@ -64,9 +140,12 @@ metaTableView_ = {
 --"shipwreck" and "thunderstorm".
 -- @arg data.report An optional argument that describes what happens when the user clicks in a given object of the View. It can be a Report or a user-defined function that creates a report for each spatial object of that view.
 -- @arg data.download An optional boolean to allow its data to be downloaded from a link available in the created web page. Default value is false.
--- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates.  Default value is 5.
+-- @arg data.decimal An optional integer to allow reduce the number of decimals used for layer coordinates. Default value is 5.
 -- @arg data.max The maximum value of the attribute (used only for numbers).
 -- @arg data.min The minimum value of the attribute (used only for numbers).
+-- @arg data.missing An optional number that replaces all attributes read from a data source
+-- that do not have any value. If this argument is not set and there is some attribute without
+-- a value, TerraME will stop with an error.
 -- @arg data.slices Number of colors to be used for drawing. It must be an integer number greater than one.
 -- @usage import("publish")
 --
@@ -83,17 +162,35 @@ metaTableView_ = {
 -- print(vardump(view))
 function View(data)
 	verifyNamedTable(data)
+	mandatoryTableArgument(data, "description", "string")
+
 	optionalTableArgument(data, "title", "string")
-	optionalTableArgument(data, "description", "string")
 	optionalTableArgument(data, "value", "table")
+	optionalTableArgument(data, "missing", "number")
 	optionalTableArgument(data, "select", {"string", "table"})
+
+	if type(data.label) == "string" then
+		data.label = {data.label}
+	end
+
 	optionalTableArgument(data, "label", "table")
 	optionalTableArgument(data, "report", {"Report", "function"})
 	optionalTableArgument(data, "icon", {"string", "table"})
 	optionalTableArgument(data, "min", "number")
 	optionalTableArgument(data, "max", "number")
 	optionalTableArgument(data, "slices", "number")
+
+	local mcolor = data.color
+
+	if type(mcolor) == "table" and #mcolor == 3 then
+		if type(mcolor[1]) == "number" and type(mcolor[2]) == "number" and type(mcolor[3]) == "number" then
+			data.color = {data.color}
+		end
+	end
+
 	optionalTableArgument(data, "color", {"string", "table"})
+	optionalTableArgument(data, "name", "string")
+	optionalTableArgument(data, "time", "string")
 
 	defaultTableValue(data, "width", 1)
 	defaultTableValue(data, "transparency", 0)
@@ -103,7 +200,7 @@ function View(data)
 
 	verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 		"value", "layer", "report", "transparency", "label", "icon", "download", "group", "decimal", "properties",
-		"min", "max", "slices"})
+		"min", "max", "slices", "name", "time", "missing"})
 
 	if data.report and type(data.report) == "function" then
 		mandatoryTableArgument(data, "select")
@@ -139,78 +236,38 @@ function View(data)
 		customError("Argument 'min' ("..data.min..") should be less than 'max' ("..data.max..").")
 	end
 
+	if data.name then
+		mandatoryTableArgument(data, "time", "string")
+
+		if data.time == "snapshot" then
+			customError("Argument 'name' is valid only when time is equals to 'creation', got 'snapshot'.")
+		end
+	end
+
+	if data.time then
+		if not belong(data.time, {"snapshot", "creation"}) then
+			customError("Argument 'time' must be 'snapshot' or 'creation', got '"..data.time.."'.")
+		end
+
+		if data.time == "creation" then
+			mandatoryTableArgument(data, "name", "string")
+		end
+
+		if data.report then
+			customError("Argument 'report' is invalid in temporal views.")
+		end
+	end
+
+	setmetatable(data, metaTableView_)
+
 	if data.color then
 		verifyUnnecessaryArguments(data, {"title", "description", "border", "width", "color", "visible", "select",
 			"value", "layer", "report", "transparency", "label", "download", "group", "decimal", "properties",
-			"min", "max", "slices"})
+			"min", "max", "slices", "name", "time"})
 
 		local realTransparency = 1 - data.transparency
 		if data.value then
-			local classes
-			if data.slices and data.min and data.max then
-				classes = data.slices
-			else
-				classes = #data.value
-			end
-
-			if classes == 0 then
-				customError("Argument 'value' must be a table with size greater than 0, got "..classes..".")
-			end
-
-			local mcolor
-			if type(data.color) == "string" then
-				mcolor = color{color = data.color, classes = classes, alpha = realTransparency}
-			else
-				mcolor = color{color = data.color, alpha = realTransparency}
-			end
-
-			local nColors = #mcolor
-			if classes ~= nColors then
-				customError("The number of colors ("..nColors..") must be equal to number of data classes ("..classes..").")
-			end
-
-			local colors = {}
-			if data.slices and data.min and data.max then
-				local step = (data.max - data.min) / (data.slices - 1)
-				for i = 1, classes do
-					colors[tostring(data.min + step * (i - 1))] = mcolor[i]
-				end
-			else
-				for i = 1, classes do
-					colors[tostring(data.value[i])] = mcolor[i]
-				end
-			end
-
-			local label = {}
-			if data.label then
-				local labels = #data.label
-				if labels == 0 then
-					customError("Argument 'label' must be a table of strings with size greater than 0, got "..labels..".")
-				end
-
-				if classes ~= labels then
-					customError("The number of labels ("..labels..") must be equal to number of data classes ("..classes..").")
-				end
-
-				forEachElement(data.label, function(k, v, mtype)
-					if mtype ~= "string" then
-						customError("Argument 'label' must be a table of strings, element "..k.." ("..tostring(v)..") got "..mtype..".")
-					end
-				end)
-
-				local i = 1
-				forEachOrderedElement(colors, function(_, color)
-					label[data.label[i]] = tostring(color)
-					i = i + 1
-				end)
-			else
-				forEachElement(colors, function(value, color)
-					label[value] = tostring(color)
-				end)
-			end
-
-			data.color = colors
-			data.label = label
+			data:loadColors()
 		else
 			local brewerNames = {"Accent", "Blues", "BrBG", "BuGn", "BuPu", "Dark", "GnBu", "Greens", "Greys", "OrRd",
 				"Oranges", "PRGn", "Paired", "Pastel1", "Pastel2", "PiYG", "PuBu", "PuBuGn", "PuOr", "PuRd", "Purples",
@@ -255,45 +312,7 @@ function View(data)
 		if itype == "string" then
 			if data.icon:find(".*[MLHVCSQTAZmlhvcsqtaz].*") and data.icon:find("[0-9]") then
 				data.icon = {path = data.icon}
-				itype = "table"
-			else
-				local ics = {
-					airport = true,
-					animal = true,
-					bigcity = true,
-					bus = true,
-					car = true,
-					caution = true,
-					cycling = true,
-					database = true,
-					desert = true,
-					diving = true,
-					fillingstation = true,
-					finish = true,
-					fire = true,
-					firstaid = true,
-					fishing = true,
-					flag = true,
-					forest = true,
-					harbor = true,
-					helicopter = true,
-					home = true,
-					horseriding = true,
-					hospital = true,
-					lake = true,
-					motorbike = true,
-					mountains = true,
-					radio = true,
-					restaurant = true,
-					river = true,
-					road = true,
-					shipwreck = true,
-					thunderstorm = true
-				}
-
-				if not ics[data.icon] then
-					switchInvalidArgument("icon", data.icon, ics)
-				end
+				itype = "table" -- SKIP
 			end
 		end
 
@@ -301,13 +320,13 @@ function View(data)
 			if #data.icon > 0 then
 				mandatoryTableArgument(data, "select")
 				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report",
-					"transparency", "label", "icon", "download", "group", "decimal", "properties"})
+					"transparency", "label", "icon", "download", "group", "decimal", "properties", "name", "time"})
 
 				if data.label and (#data.icon ~= #data.label)then
 					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")
 				end
 			else
-				mandatoryTableArgument(data.icon, "path", "string")
+				defaultTableValue(data.icon, "path", "M150 0 L75 200 L225 200 Z")
 				defaultTableValue(data.icon, "time", 5)
 				defaultTableValue(data.icon, "color", "black")
 				defaultTableValue(data.icon, "transparency", 0)
@@ -335,6 +354,5 @@ function View(data)
 		customError("Argument 'decimal' should be an integer greater than 0, got "..data.decimal..".")
 	end
 
-	setmetatable(data, metaTableView_)
 	return data
 end

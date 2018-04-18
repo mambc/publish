@@ -1,7 +1,7 @@
 Creating directory structure
 Copying dependency 'model/dist/publish.min.css'
 Copying dependency 'model/dist/publish.min.js'
-Copying dependency 'model/src/assets/jquery-3.1.1.min.js'
+Copying dependency 'model/src/assets/jquery-1.9.1.min.js'
 Copying dependency 'loader/default.gif'
 Loading layers from 'sp.tview'
 Exporting layer 'municipalities'

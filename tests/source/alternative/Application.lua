@@ -35,8 +35,6 @@ return {
 			Application{
 				title = "Testing layer with the wrong source.",
 				output = sourceDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				wfsLayer = View {
 					title = "Wrong File",
@@ -60,7 +58,6 @@ return {
 			local feature = "reddpac:wfs_biomes"
 			gis.Layer{
 				project = proj,
-				source = "wfs",
 				name = "wfsLayer",
 				service = service,
 				feature = feature
@@ -70,8 +67,6 @@ return {
 				Application{
 					project = proj,
 					output = sourceDir,
-					clean = true,
-					simplify = false,
 					progress = false,
 					wfsLayer = View {
 						title = "WFS",

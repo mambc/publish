@@ -43,12 +43,11 @@ return {
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				order = 1,
 				cover = View{
+					description = "abc.",
 					color = "green"
 				}
 			}
@@ -62,12 +61,11 @@ return {
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				order = {1},
-				cover = View{
+				limit = View{
+					description = "abc.",
 					color = "green"
 				}
 			}
@@ -81,12 +79,11 @@ return {
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
-				order = {"cover", "cells"},
-				cover = View{
+				order = {"limit", "cells"},
+				limit = View{
+					description = "abc.",
 					color = "green"
 				}
 			}
@@ -100,17 +97,16 @@ return {
 				zoom = 14,
 				center = {lat = -18.106389, long = -52.927778},
 				project = "emas.tview",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
-				order = {"cove"},
-				cover = View{
+				order = {"limi"},
+				limit = View{
+					description = "abc.",
 					color = "green"
 				}
 			}
 		end
-		unitTest:assertError(error_func, "View 'cove' in argument 'order' (1) does not exist.")
+		unitTest:assertError(error_func, "View 'limi' in argument 'order' (1) does not exist.")
 
 		if emasDir:exists() then emasDir:delete() end
 
@@ -129,8 +125,6 @@ return {
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -150,8 +144,6 @@ return {
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -174,8 +166,6 @@ return {
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -197,11 +187,10 @@ return {
 			Application{
 				project = "emas.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = emasDir,
 				limit = View{
+					description = "abc.",
 					icon = {path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0"}
 				}
 			}
@@ -214,8 +203,6 @@ return {
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				trajectory = View{
@@ -226,14 +213,12 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+		unitTest:assertError(error_func, incompatibleTypeMsg("icon", "table", "home"))
 
 		error_func = function()
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -249,25 +234,21 @@ return {
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
-				villages = View{
+				trajectory = View{
+					select = "abc",
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
-					select = "UC",
 					icon = {"home"}
 				}
 			}
 		end
-		unitTest:assertError(error_func, "The number of 'icon:makers' (1) must be equal to number of unique values in property 'UC' (2) in View 'villages'.")
+		unitTest:assertError(error_func, "All the elements of data.icon should be named.")
 
 		error_func = function()
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -277,14 +258,12 @@ return {
 				}
 			}
 		end
-		unitTest:assertError(error_func, "'fores' is an invalid value for argument 'icon:marker'. Do you mean 'forest'?")
+		unitTest:assertError(error_func, "'fores' is an invalid value for argument 'icon'. Do you mean 'forest'?")
 
 		error_func = function()
 			Application{
 				project = "arapiuns.tview",
 				base = "roadmap",
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = arapiunsDir,
 				villages = View{
@@ -316,8 +295,6 @@ return {
 				project = proj,
 				description = "The data of this application were extracted from INLAND project (http://www.ccst.inpe.br/projetos/inland/).",
 				output = vegDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				title = "Vegetation scenario",
 				vegtype = View {
@@ -338,8 +315,6 @@ return {
 			Application {
 				project = filePath("caragua.tview", "publish"),
 				output = caraguaDir,
-				clean = true,
-				simplify = false,
 				progress = false,
 				real = View{
 					title = "Social Classes 2010 Real",

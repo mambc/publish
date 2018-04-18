@@ -24,10 +24,10 @@
 
 return {
 	Application = function(unitTest)
-		local emas = filePath("emas.tview", "publish")
-		local emasDir = Directory("functional-alternative-tostring")
+		local brazil = filePath("brazil.tview", "publish")
+		local brazilDir = Directory("functional-alternative-tostring")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local error_func = function()
 			Application()
@@ -42,28 +42,44 @@ return {
 		error_func = function()
 			Application{
 				arg = "void",
-				clean = true,
-				simplify = false,
 				progress = false,
-				select = "river",
-				color = "BuGn",
-				value = {0, 1, 2},
-				project = emas,
-				output = emasDir
+				project = brazil,
+				output = brazilDir,
+				biomes = View{
+					select = "name",
+					value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+					color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+					description = "abc.",
+				}
 			}
 		end
 		unitTest:assertWarning(error_func, unnecessaryArgumentMsg("arg"))
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
+
+		error_func = function()
+			Application{
+				progress = false,
+				project = brazil,
+				output = brazilDir,
+				biomes = View{
+					select = "name",
+					value = {"Catinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
+					color = {"brown", "purple", "green", "yellow", "blue", "orange"},
+					description = "abc.",
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Value 'Caatinga' belongs to the data but not to the values in the View. Did you write 'Catinga' wrongly?")
+
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local data = {
-			clean = true,
-			simplify = false,
 			select = "river",
 			color = "BuGn",
 			value = {0, 1, 2},
 			progress = false,
-			output = emasDir,
+			output = brazilDir,
 			title = "Emas",
 			description = "Creates a database that can be used by the example fire-spread of base package.",
 			zoom = 14,
@@ -73,9 +89,9 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, "Argument 'project', 'package' or a View with argument 'layer' is mandatory to publish your data.")
+		unitTest:assertError(error_func, "Argument 'project' or a View with argument 'layer' is mandatory to publish your data.")
 
-		data.project = emas
+		data.project = brazil
 		data.key = 1
 		error_func = function()
 			Application(clone(data))
@@ -95,7 +111,7 @@ return {
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("clean", "boolean", 1))
 
-		data.clean = true
+		data.clean = false
 		data.progress = 1
 		error_func = function()
 			Application(clone(data))
@@ -114,9 +130,9 @@ return {
 		error_func = function()
 			Application(clone(data))
 		end
-		unitTest:assertError(error_func, incompatibleTypeMsg("output", "Directory", 1))
+		unitTest:assertError(error_func, incompatibleTypeMsg("output", "string", 1))
 
-		data.output = emasDir
+		data.output = brazilDir
 		data.color = 123456
 		error_func = function()
 			Application(clone(data))
@@ -200,7 +216,7 @@ return {
 			.." set ['balls', 'box', 'default', 'ellipsis', 'hourglass', 'poi', 'reload', 'ring', 'ringAlt', 'ripple',"
 			.." 'rolling', 'spin', 'squares', 'triangle', 'wheel'].")
 
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local caraguaDir = Directory("CaraguaWebMap")
 		if caraguaDir:exists() then caraguaDir:delete() end
@@ -208,20 +224,21 @@ return {
 		error_func = function()
 			Application{
 				project = filePath("caragua.tview", "publish"),
-				clean = true,
-				simplify = false,
 				progress = false,
 				output = caraguaDir,
 				Limit = List{
 					limit = View{
+						description = "abc.",
 						color = "goldenrod",
 					},
 					regions = View{
+						description = "abc.",
 						select = "name",
 						color = "Set2"
 					}
 				},
 				real = View{
+					description = "abc.",
 					title = "Social Classes 2010",
 					select = "classe",
 					color = {"red", "orange", "yellow"},
@@ -239,7 +256,7 @@ return {
 			Application(clone(data))
 		end
 		unitTest:assertError(error_func, incompatibleTypeMsg("simplify", "boolean", 1))
-		if emasDir:exists() then emasDir:delete() end
+		if brazilDir:exists() then brazilDir:delete() end
 
 		local arapiunsDir = Directory("ArapiunsWebMap")
 		if arapiunsDir:exists() then arapiunsDir:delete() end
@@ -260,14 +277,401 @@ return {
 			Application{
 				project = proj,
 				output = arapiunsDir,
-				simplify = true,
+				simplify = false,
 				villages = View{
 					description = "Riverine settlements corresponded to Indian tribes, villages, and communities that are inserted into public lands.",
 				}
 			}
 		end
-		unitTest:assertWarning(warning_func, defaultValueMsg("simplify", true))
+		unitTest:assertWarning(warning_func, defaultValueMsg("simplify", false))
 		if arapiunsDir:exists() then arapiunsDir:delete() end
 		file:deleteIfExists()
+
+		file = File("temporal.tview")
+		file:deleteIfExists()
+
+		local temporalDir = Directory("temporal-test")
+		if temporalDir:exists() then temporalDir:delete() end
+
+		local gis = getPackage("gis")
+		local proj = gis.Project{
+			title = "Testing temporal View",
+			author = "Carneiro, H.",
+			file = file,
+			clean = true,
+			uc = filePath("uc_federais_2016.shp", "publish")
+		}
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Temporal View of mode 'snapshot' declared, but no Layer was found.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "nome",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' of View 'uc' must be a column with integers that represent years, got string in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "areaHa",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' of View 'uc' must be a column with integers that represent years, got float in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				progress = false,
+				uc = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices =  10,
+					name = "codUso",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'name' of View 'uc' with invalid pattern for year (YYYY), got 1 in row 1.")
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				progress = false,
+				a = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices = 10,
+					name = "anoCriacao",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "The application does not have any View related to a Layer.")
+
+		proj = gis.Project{
+			title = "Testing temporal View",
+			file = file,
+			clean = true,
+			amaz = filePath("test/CellsAmaz.shp", "publish")
+		}
+
+		error_func = function()
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				progress = false,
+				amaz = View {
+					title = "Amaz",
+					description = "Amazonia.",
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Data has a missing value in attribute 'pointcount'. Use argument 'missing' to set its value.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Testing temporal View",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				snapshot1_2001 = filePath("uc_federais_2001.shp", "publish"),
+				snapshot2_2001 = filePath("uc_federais_2001.shp", "publish")
+			}
+
+			Application{
+				base = "roadmap",
+				project = proj,
+				output = temporalDir,
+				progress = false,
+				snapshot1 = View {
+					title = "UC",
+					description = "UC Federais.",
+					select = "anoCriacao",
+					color = "Spectral",
+					slices = 10,
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Layer 'snapshot2_2001' is not a temporal View of mode 'snapshot'.")
+
+		file:deleteIfExists()
+		if temporalDir:exists() then temporalDir:delete() end
+
+		if caraguaDir:exists() then caraguaDir:delete() end
+		file = File("scenario.tview")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				progress = false,
+				output = caraguaDir,
+				scenario = {},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				progress = false,
+				output = caraguaDir,
+				scenario = {"Baseline simulation for 2025."},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'scenario' must be named table whose indexes are the names of the scenarios and whose values are strings with the descriptions of the scenarios.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = 1,
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Argument 'scenario' must have strings values with the descriptions, got number in the scenario 'baseline'.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					void = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Scenario 'void' does not exist in project 'Future Scenarios'.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_20255 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "Layer 'classes_baseline_20255' has an invalid pattern for temporal View [Ex. name_2017].")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_2010 = filePath("caragua_classes2010_regioes.shp", "publish"),
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					name = "classe",
+					time = "creation"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "View temporal of mode 'snapshot' is mandatory when using argument 'scenario'.")
+
+		error_func = function()
+			file:deleteIfExists()
+			proj = gis.Project{
+				title = "Future Scenarios",
+				author = "Carneiro, H.",
+				file = file,
+				clean = true,
+				classes_baseline_2025 = filePath("simulation2025_baseline.shp", "publish")
+			}
+
+			Application{
+				project = proj,
+				progress = false,
+				output = caraguaDir,
+				scenario = {
+					baseline = "Baseline simulation for 2025.",
+				},
+				classes = View{
+					title = "Social Classes 2010",
+					description = "This is the main endogenous variable of the model. It was obtained from a classification that "
+							.."categorizes the social conditions of households in Caraguatatuba on 'condition A' (best), 'B' or 'C''.",
+					width = 0,
+					select = "classe",
+					color = {"red", "orange", "yellow"},
+					label = {"Condition C", "Condition B", "Condition A"},
+					time = "snapshot"
+				}
+			}
+		end
+		unitTest:assertError(error_func, "View 'classes' has only future scenarios.")
+
+		file:deleteIfExists()
+		if caraguaDir:exists() then caraguaDir:delete() end
 	end
 }

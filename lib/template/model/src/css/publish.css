@@ -108,6 +108,8 @@ body{
 
 .button-selected {
 	border: 1px solid #a0bfda!important;
+	padding-left: 1px;
+	padding-right: 1px;
 }
 
 @media (min-width: 768px){
@@ -178,4 +180,70 @@ input[type="checkbox"] {
 
 .padding-body {
 	padding: 5px!important;
+}
+
+#slider label {
+	position: absolute;
+	width: 20px;
+	margin-left: -10px;
+	text-align: center;
+	margin-top: 20px;
+}
+
+#slider {
+	width: 75%;
+	margin: 2em auto;
+}
+
+#panel-slider {
+	height: 40px;
+	width: 110%;
+}
+
+.ui-widget {
+	font-size: 0.6em!important;
+}
+
+.bottom-align-text {
+	position: absolute;
+	bottom: 0;
+	margin-left: 30%;
+}
+
+.position {
+	margin-left: -13%;
+	margin-top: -5px;
+	float: left;
+}
+
+label {
+	text-align: right;
+	clear: both;
+	float:left;
+	margin-left: 5px;
+	margin-right:15px;
+	white-space:nowrap;
+}
+
+label a {
+	margin-left: 5px;
+	text-decoration: none!important;
+	color: inherit;
+	font-weight:normal;
+}
+
+label a:link {
+	color: inherit;
+}
+
+label a:visited {
+	color: inherit;
+}
+
+label a:hover {
+	color: inherit;
+}
+
+label a:active {
+	color: inherit;
 }
