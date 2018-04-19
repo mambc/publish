@@ -1124,7 +1124,7 @@ local function processingView(data, layers, reports, name, view)
 			verifyUnnecessaryArguments(view.icon, {"path", "color", "transparency", "time"})
 
 			view.icon.options = { -- SKIP
-				path = "M150 0 L75 200 L225 200 Z",
+				path = "M150 0 L75 200 L225 200 Z", -- SKIP
 				fillColor = "rgba(0, 0, 0, 1)", -- SKIP
 				fillOpacity = 0.8, -- SKIP
 				strokeWeight = 2 -- SKIP
