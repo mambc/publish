@@ -24,6 +24,11 @@
 
 return {
 	Application = function(unitTest)
+		local wmsUserDir = Directory("wms")
+		if wmsUserDir:exists() then
+			wmsUserDir:delete()
+		end
+
 		local gis = getPackage("gis")
 		local service = "http://www.geoservicos.inde.gov.br:80/geoserver/ows"
 		local map = "MPOG:BASE_SPI_pol"
@@ -213,5 +218,6 @@ return {
 
 		projFile:deleteIfExists()
 		if wmsDir:exists() then wmsDir:delete() end
+		wmsUserDir:delete()
 	end
 }

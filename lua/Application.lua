@@ -584,7 +584,7 @@ end
 
 local function loadValuesFromDataSet(set, project, name, select, slices, missing)
 	local tlib = gis.TerraLib{}
-	local dset = tlib.getDataSet(project, name, missing)
+	local dset = tlib.getDataSet{project = project, layer = name, missing = missing}
 	for i = 0, #dset do
 		for k, v in pairs(dset[i]) do
 			if k == select and not set[v] then
@@ -600,7 +600,7 @@ end
 
 local function validateTemporalProperty(project, name, view)
 	local tlib = gis.TerraLib{}
-	local dset = tlib.getDataSet(project, name)
+	local dset = tlib.getDataSet{project = project, layer = name}
 
 	local set = {}
 	local numberOfYearChars = 4
@@ -938,7 +938,7 @@ local function processingView(data, layers, reports, name, view)
 				layerName = viewConfig.name[1]
 			end
 
-			dset = tlib.getDataSet(data.project, layerName, view.missing)
+			dset = tlib.getDataSet{project = data.project, layer = layerName, missing = view.missing}
 			for i = 0, #dset do
 				if view.geom then break end
 
@@ -987,7 +987,7 @@ local function processingView(data, layers, reports, name, view)
 			if itype == "string" then
 				if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
 					if data.output:exists() then data.output:delete() end
-					customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+					customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.") -- SKIP
 				end
 
 				view.icon = {view.icon}
@@ -1124,13 +1124,13 @@ local function processingView(data, layers, reports, name, view)
 			verifyUnnecessaryArguments(view.icon, {"path", "color", "transparency", "time"})
 
 			view.icon.options = { -- SKIP
-				path = "M150 0 L75 200 L225 200 Z",
+				path = "M150 0 L75 200 L225 200 Z", -- SKIP
 				fillColor = "rgba(0, 0, 0, 1)", -- SKIP
 				fillOpacity = 0.8, -- SKIP
 				strokeWeight = 2 -- SKIP
 			}
 
-			defaultTableValue(view.icon, "time", 5)
+			defaultTableValue(view.icon, "time", 5) -- SKIP
 		end
 	end
 
