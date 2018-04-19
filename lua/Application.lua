@@ -987,7 +987,7 @@ local function processingView(data, layers, reports, name, view)
 			if itype == "string" then
 				if (view.geom == "LineString" or view.geom == "MultiLineString") and not view.icon:match("[0-9]") then
 					if data.output:exists() then data.output:delete() end
-					customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.")
+					customError("Argument 'icon' must be expressed using SVG path notation in Views with geometry: LineString and MultiLineString.") -- SKIP
 				end
 
 				view.icon = {view.icon}
@@ -1130,7 +1130,7 @@ local function processingView(data, layers, reports, name, view)
 				strokeWeight = 2 -- SKIP
 			}
 
-			defaultTableValue(view.icon, "time", 5)
+			defaultTableValue(view.icon, "time", 5) -- SKIP
 		end
 	end
 
