@@ -25,7 +25,7 @@
 -- @example Creates a database that can be used by sp.
 -- The data of this application were extracted from IBGE(2010).
 
-import("publish")
+import("gis")
 
 project = Project{
 	title = "Sao Paulo Municipalities",
