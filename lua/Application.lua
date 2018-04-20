@@ -56,7 +56,7 @@ local SourceTypeMapper = {
 local printNormal = print
 local printInfo = function (value)
 	if sessionInfo().color then -- SKIP
-		printNormal("\027[00;34m"..tostring(value).."\027[00m")
+		printNormal("\027[1;32m"..tostring(value).."\027[00m")
 	else
 		printNormal(value)
 	end
@@ -110,7 +110,7 @@ local function exportReportImages(data, report)
 end
 
 local function createDirectoryStructure(data)
-	printInfo("Creating directory structure")
+	printInfo("Creating directory '"..data.output:name().."'")
 	if data.clean == true and data.output:exists() then
 		data.output:delete()
 	end
@@ -1000,17 +1000,23 @@ local function processingView(data, layers, reports, name, view)
 
 			if view.select then
 				local col = view.select[2] or view.select
-				local nProp = 0
-				for i = 0, #dset do
-					local prop = dset[i][col]
-					if not prop then
-						if data.output:exists() then data.output:delete() end
-						customError("Column '"..col.."' does not exist in View '"..name.."'.")
-					end
+				local nProp
 
-					if not set[prop] then
-						set[prop] = true
-						nProp = nProp + 1
+				if view.value then
+					nProp = #view.value
+				else
+					nProp = 0
+					for i = 0, #dset do
+						local prop = dset[i][col]
+						if not prop then
+							if data.output:exists() then data.output:delete() end
+							customError("Column '"..col.."' does not exist in View '"..name.."'.")
+						end
+
+						if not set[prop] then
+							set[prop] = true
+							nProp = nProp + 1
+						end
 					end
 				end
 
@@ -1055,12 +1061,17 @@ local function processingView(data, layers, reports, name, view)
 				thunderstorm = true
 			}
 
-			local properties = {}
-			for prop in pairs(set) do
-				table.insert(properties, prop)
-			end
+			local properties = view.value
 
-			table.sort(properties)
+			if not properties then
+				properties = {}
+
+				for prop in pairs(set) do
+					table.insert(properties, prop)
+				end
+
+				table.sort(properties)
+			end
 
 			local ltmp = {}
 			local copy = {}

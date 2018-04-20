@@ -108,7 +108,7 @@ metaTableView_ = {
 --- View is an object that contains the information of the data to be visualized.
 -- One Application is composed by a set of Views.
 -- @arg data.select An optional string with the name of the attribute to be visualized.
--- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color.
+-- @arg data.value An optional table with the possible values for the selected attributes. This argument is mandatory when using color or icon.
 -- @arg data.name An optional string with the name of the attribute to be visualized over time. This argument is mandatory when using time equals to 'creation'.
 -- @arg data.time An optional string with the temporal mode. The possible values are: 'snapshot' and 'creation'.
 -- @arg data.visible An optional boolean whether the layer is visible. Default value is true.
@@ -320,7 +320,7 @@ function View(data)
 			if #data.icon > 0 then
 				mandatoryTableArgument(data, "select")
 				verifyUnnecessaryArguments(data, {"title", "description", "width", "visible", "select", "layer", "report",
-					"transparency", "label", "icon", "download", "group", "decimal", "properties", "name", "time"})
+					"transparency", "label", "icon", "download", "group", "decimal", "properties", "value", "name", "time"})
 
 				if data.label and (#data.icon ~= #data.label)then
 					customError("The number of icons ("..#data.icon..") must be equal to number of labels ("..#data.label..").")

@@ -390,17 +390,6 @@ return {
 
 		unitTest:assertWarning(warning_func, unnecessaryArgumentMsg("border"))
 
-		warning_func = function()
-			View{
-				description = "abc.",
-				select = "UC",
-				icon = {"forest"},
-				value = {1, 2, 3}
-			}
-		end
-
-		unitTest:assertWarning(warning_func, unnecessaryArgumentMsg("value"))
-
 		error_func = function()
 			View{
 				description = "abc.",
