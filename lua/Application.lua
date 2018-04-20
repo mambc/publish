@@ -110,7 +110,7 @@ local function exportReportImages(data, report)
 end
 
 local function createDirectoryStructure(data)
-	printInfo("Creating directory structure")
+	printInfo("Creating directory '"..data.output:name().."'")
 	if data.clean == true and data.output:exists() then
 		data.output:delete()
 	end
