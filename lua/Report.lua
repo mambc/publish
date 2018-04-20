@@ -35,6 +35,7 @@ Report_ = {
 	end,
 	--- Add a new image to the Report.
 	-- @arg image A mandatory string or base::File with the image of the report.
+	-- The supported extensions are: bmp, gif, jpg, jpeg, png, and svg.
 	-- @arg package An optional string with the name of the package.
 	-- @usage import("publish")
 	-- local report = Report()
