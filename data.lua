@@ -141,6 +141,8 @@ data{
 	source = "IBGE",
 	attributes = {
 		name = "Name of the biome.",
+		link = "Link to a Wikipedia page with the description of the biome.",
+		cover = "Percentage of Brazil's area covered by the biome."
 	}
 }
 

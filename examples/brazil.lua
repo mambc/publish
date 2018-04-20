@@ -26,15 +26,6 @@
 
 import("publish")
 
-links = {
-	Amazonia           = "en.wikipedia.org/wiki/Amazon_biome",
-	Caatinga           = "en.wikipedia.org/wiki/Caatinga",
-	Cerrado            = "en.wikipedia.org/wiki/Cerrado",
-	Pampa              = "en.wikipedia.org/wiki/Pampas",
-	Pantanal           = "en.wikipedia.org/wiki/Pantanal",
-	["Mata Atlantica"] = "en.wikipedia.org/wiki/Atlantic_Forest"
-}
-
 Application{
 	project = filePath("brazil.tview", "publish"),
 	title = "Brazil Application",
@@ -51,8 +42,9 @@ Application{
 				author = "IBGE"
 			}
 
+			report:addText(cell.name.." covers approximately "..cell.cover.."% of Brazil.")
 			mreport:addImage(filePath("biomes/"..cell.name..".jpg", "publish"))
-			mreport:addText("For more information, please visit "..link(links[cell.name], "here")..".")
+			mreport:addText("For more information, please visit "..link(cell.link, "here")..".")
 
 			return mreport
 		end

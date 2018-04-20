@@ -1,4 +1,4 @@
-version = "0.5"
+version = "0.6"
 license = "LGPL-3"
 package = "publish"
 depends = "terrame (>= 2.0)"
