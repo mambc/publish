@@ -56,7 +56,7 @@ local SourceTypeMapper = {
 local printNormal = print
 local printInfo = function (value)
 	if sessionInfo().color then -- SKIP
-		printNormal("\027[00;34m"..tostring(value).."\027[00m")
+		printNormal("\027[1;32m"..tostring(value).."\027[00m")
 	else
 		printNormal(value)
 	end
