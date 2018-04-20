@@ -42,7 +42,7 @@ Application{
 				author = "IBGE"
 			}
 
-			report:addText(cell.name.." covers approximately "..cell.cover.."% of Brazil.")
+			mreport:addText(cell.name.." covers approximately "..cell.cover.."% of Brazil.")
 			mreport:addImage(filePath("biomes/"..cell.name..".jpg", "publish"))
 			mreport:addText("For more information, please visit "..link(cell.link, "here")..".")
 
