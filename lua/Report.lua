@@ -93,6 +93,31 @@ Report_ = {
 		mandatoryArgument(1, "string", text)
 		self.text[self.nextIdx_] = text
 	end,
+	--- Add a new table to the Report.
+	-- @arg table accept string and data to the report.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:addTable("My table")
+	addTable = function(self, data)
+		self.matrix[self.nextIdx_] = data
+	end,
+	--- Add a new graphic to the Report.
+	-- @arg graphic/table accept string and data to the report.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:addGraphic("My graphic")
+	addGraphic = function(self, data)
+		self.graphic[self.nextIdx_] = data
+	end,
+	--- Add multiple data to the Report.
+	-- @arg mult accept string and data with to the report.
+	-- @usage import("publish")
+	-- local report = Report()
+	-- report:addMultiples("My multiples")
+	addMult = function(self, data)
+		self.mult[self.nextIdx_] = data
+	end,
+
 	--- Return the Report created.
 	-- @usage import("publish")
 	-- local report = Report()
@@ -101,12 +126,22 @@ Report_ = {
 	get = function(self)
 		local template = {}
 		for i = 1, self.nextIdx_ - 1 do
-			table.insert(template, {text = self.text[i], separator = self.separator[i], image = self.image[i], heading = self.heading[i]})
+			table.insert(template, {
+				text = self.text[i],
+				separator = self.separator[i],
+				image = self.image[i],
+				heading = self.heading[i],
+				matrix = self.matrix[i],
+				mult = self.mult[i],
+				graphic = self.graphic[i],
+				 }
+				)
 		end
 
 		return template
 	end
 }
+
 
 metaTableReport_ = {
 	__index = Report_,
@@ -131,7 +166,19 @@ function Report(data)
 	optionalTableArgument(data, "title", "string")
 	optionalTableArgument(data, "author", "string")
 
-	local mdata = {nextIdx_ = 1, title = data.title, author = data.author, text = {}, image = {}, separator = {}, heading = {}}
+	local mdata = {
+		nextIdx_ = 1,
+		title = data.title,
+		author = data.author,
+		text = {},
+		image = {},
+		separator = {},
+		heading = {},
+		matrix = {},
+		mult = {},
+		graphic = {},
+		}
+
 	local metaTableIdxs = {
 		__newindex = function(self, k, v)
 			if v and not rawget(self, k) then
@@ -142,10 +189,13 @@ function Report(data)
 		end
 	}
 
-	setmetatable(mdata.text, metaTableIdxs)
-	setmetatable(mdata.image, metaTableIdxs)
-	setmetatable(mdata.separator, metaTableIdxs)
-	setmetatable(mdata.heading, metaTableIdxs)
+	setmetatable(mdata.text, 		metaTableIdxs)
+	setmetatable(mdata.image,	 	metaTableIdxs)
+	setmetatable(mdata.separator, 	metaTableIdxs)
+	setmetatable(mdata.heading, 	metaTableIdxs)
+	setmetatable(mdata.matrix, 		metaTableIdxs)
+	setmetatable(mdata.mult,		metaTableIdxs)
+	setmetatable(mdata.graphic,		metaTableIdxs)
 	setmetatable(mdata, metaTableReport_)
 
 	return mdata
