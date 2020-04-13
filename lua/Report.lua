@@ -94,28 +94,28 @@ Report_ = {
 		self.text[self.nextIdx_] = text
 	end,
 	--- Add a new table to the Report.
-	-- @arg table accept string and data to the report.
+	-- @arg table accept text and data to the report.
 	-- @usage import("publish")
 	-- local report = Report()
 	-- report:addTable("My table")
-	addTable = function(self, data)
-		self.matrix[self.nextIdx_] = data
+	addTable = function(self, matrix)
+		self.matrix[self.nextIdx_] = matrix
 	end,
 	--- Add a new graphic to the Report.
-	-- @arg graphic/table accept string and data to the report.
+	-- @arg graphic accept string and data to the report.
 	-- @usage import("publish")
 	-- local report = Report()
 	-- report:addGraphic("My graphic")
-	addGraphic = function(self, data)
-		self.graphic[self.nextIdx_] = data
+	addGraphic = function(self, graphic)
+		self.graphic[self.nextIdx_] = graphic
 	end,
-	--- Add multiple data to the Report.
-	-- @arg mult accept string and data with to the report.
+	--- Add a new text or multiple data to the Report.
+	-- @arg mult is not mandatory string the text to the report.
 	-- @usage import("publish")
 	-- local report = Report()
-	-- report:addMultiples("My multiples")
-	addMult = function(self, data)
-		self.mult[self.nextIdx_] = data
+	-- report:addMult("My text")
+	addMult = function(self, mult)
+		self.mult[self.nextIdx_] = mult
 	end,
 
 	--- Return the Report created.
