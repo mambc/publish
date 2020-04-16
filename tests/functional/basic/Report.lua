@@ -31,7 +31,7 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		local image = packageInfo("publish").path.."images/urbis_2010_real.PNG"
 		report = Report{title = "My Report"}
@@ -68,7 +68,7 @@ return {
 		unitTest:assertEquals(getn(report.heading), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		report:addHeading("Social Classes 2010 Real")
 		report:addText("This is the main endogenous variable of the model.")
@@ -76,7 +76,7 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 		unitTest:assertEquals(getn(report.heading), 1)
 		unitTest:assertEquals(getn(report.text), 1)
 		unitTest:assertEquals(report.heading[1], "Social Classes 2010 Real")
@@ -91,7 +91,7 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		report:addImage("urbis_2010_real.PNG", "publish")
 
@@ -99,7 +99,7 @@ return {
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 		unitTest:assertEquals(getn(report.image), 1)
 		unitTest:assertEquals(tostring(report.image[1]), packageInfo("publish").path.."images/urbis_2010_real.PNG")
 	end,
@@ -113,7 +113,7 @@ return {
 		unitTest:assertEquals(getn(report.separator), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		report:addSeparator()
 
@@ -126,7 +126,7 @@ return {
 
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 		unitTest:assertEquals(getn(report.separator), 2)
 		unitTest:assertEquals(getn(report.text), 2)
 		unitTest:assert(report.separator[1])
@@ -142,7 +142,7 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		report:addText(text)
 
@@ -150,19 +150,19 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 		unitTest:assertEquals(report.text[1], text)
 	end,
 	addMatrix = function(unitTest)
 		local report = Report()
-	
+
 		unitTest:assertType(report, "Report")
 		unitTest:assertNil(report.title)
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		report:addMatrix("My table")
 
@@ -170,19 +170,19 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 1)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 		unitTest:assertEquals(report.matrix[1], matrix)
 	end,
 	addGraphic = function(unitTest)
 		local report = Report()
-	
+
 		unitTest:assertType(report, "Report")
 		unitTest:assertNil(report.title)
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		report:addGraphic("My graphic")
 
@@ -190,19 +190,19 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 1)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 		unitTest:assertEquals(report.graphic[1], graphic)
 	end,
 	addMult = function(unitTest)
 		local report = Report()
-	
+
 		unitTest:assertType(report, "Report")
 		unitTest:assertNil(report.title)
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		report:addMult("My mult text")
 
@@ -210,10 +210,9 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 1)
+		unitTest:assertEquals(getn(report.mult), 1)
 		unitTest:assertEquals(report.mult[1], mult)
 	end,
-
 
 
 	get = function(unitTest)
@@ -231,8 +230,8 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.separator), 0)
 		unitTest:assertEquals(getn(report.matrix), 0)
-		unitTest:assertEquals(gent(report.graphic), 0)
-		unitTest:assertEquals(gent(report.mult), 0)
+		unitTest:assertEquals(getn(report.graphic), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
 
 		local template = report:get()
 		unitTest:assertType(template, "table")
@@ -328,7 +327,7 @@ return {
 	end,
 	__tostring = function(unitTest)
 		local report = Report{
-			title = "My Report",
+			title = "My Report", 
 			author = "Carneiro, Heitor"
 		}
 
@@ -336,14 +335,14 @@ return {
 
 		unitTest:assertType(report, "Report")
 		unitTest:assertEquals(tostring(report), [[author     string [Carneiro, Heitor]
+graphic    vector of size 0
 heading    vector of size 0
 image      vector of size 0
+matrix     vector of size 0
+mult       vector of size 0
 nextIdx_   number [2]
 separator  vector of size 0
 text       vector of size 1
-matrix     vector of size 0
-graphic    vector of size 0
-mult       vector of size 0
 title      string [My Report]
 ]])
 

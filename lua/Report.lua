@@ -93,8 +93,8 @@ Report_ = {
 		mandatoryArgument(1, "string", text)
 		self.text[self.nextIdx_] = text
 	end,
-	--- Add a new table to the Report.
-	-- @arg table accept text and data to the report.
+	--- Add a new matrix (table) to the Report.
+	-- @arg matrix is a table that accept text and data to the report.
 	-- @usage import("publish")
 	-- local report = Report()
 	-- report:addTable("My table")
@@ -141,7 +141,6 @@ Report_ = {
 		return template
 	end
 }
-
 
 metaTableReport_ = {
 	__index = Report_,
