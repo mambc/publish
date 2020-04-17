@@ -327,7 +327,7 @@ return {
 	end,
 	__tostring = function(unitTest)
 		local report = Report{
-			title = "My Report", 
+			title = "My Report",
 			author = "Carneiro, Heitor"
 		}
 

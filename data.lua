@@ -286,8 +286,8 @@ data{
 
 data{
 	file = "temporal-data.shp",
-	summary = "Test of temporal data to create graphic and table",
-	source = "CCST",
+	summary = "Test of temporal data to create graphic and table.",
+	source = "CCST.",
 	attributes = {
 		id = "Identifying of label.",
 		col = "Column.",
