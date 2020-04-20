@@ -156,16 +156,17 @@ return {
 		local TABLE = {
 			title = { "Data of name"},
 			th = {
-				 "Title Column01",
+				 "Label Column",
 				 "Title Column02",
 				 "Title Column03",
 				 "Title Column04",
+				 "Title Column5",
 			},--end th
 			td = {
-				 {"Label01", "value", "value", "value", },
-				 {"Label02", "value", "value", "value", },
-				 {"Label03", "value", "value", "value", },
-				 {"Label04", "value", "value", "value", },
+				 {"Label01", "value", "value", "value", "value",},
+				 {"Label02", "value", "value", "value", "value",},
+				 {"Label03", "value", "value", "value", "value",},
+				 {"Label04", "value", "value", "value", "value",},
 				 }
 			}
 

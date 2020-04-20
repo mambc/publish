@@ -48,34 +48,34 @@ Application{
 		}
 
 
-           mreport:addImage(filePath("biomes/"..cell.name..".jpg", "publish"))
-           mreport:addText("For more information, please visit "..link(cell.link, "here")..".")
+		   mreport:addImage(filePath("biomes/"..cell.name..".jpg", "publish"))
+		   mreport:addText("For more information, please visit "..link(cell.link, "here")..".")
 
-           ------ Creat Table -----------
-           local TABLE = {
+		   ------ Creat Table -----------
+		   local TABLE = {
 					title = { "Data of "..cell.name},
 					th = {
-                         "Title Column01",
-                         "Title Column02",
-                         "Title Column03",
-                         "Title Column04",
-                         "Title Column05",
-                     }, --end th
+						 "Title Column01",
+						 "Title Column02",
+						 "Title Column03",
+						 "Title Column04",
+						 "Title Column05",
+					 }, --end th
 					td = {
-                         {cell.name, cell.name, cell.name, cell.name, cell.name, },
-                         {cell.name, cell.name, cell.name, cell.name, cell.name, },
-                         {cell.name, cell.name, cell.name, cell.name, cell.name, },
-                         {cell.name, cell.name, cell.name, cell.name, cell.name, },
-                     } -- end td
-                  } -- end table
+						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
+						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
+						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
+						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
+					 } -- end td
+				  } -- end table
 
-            mreport:addTable(TABLE)
-            ------ End Creat Table -----------
+			mreport:addMatrix(TABLE)
+			------ End Creat Table -----------
 
 		   -- Creat mult datas in line
-            mreport:addMult{ cell.name, cell.cover, cell.link}
+			mreport:addMult{ cell.name, cell.cover, cell.link}
 
-            return mreport
+			return mreport
 		end
 	},
 

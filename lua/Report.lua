@@ -98,7 +98,7 @@ Report_ = {
 	-- @usage import("publish")
 	-- local report = Report()
 	-- report:addTable("My table")
-	addTable = function(self, matrix)
+	addMatrix = function(self, matrix)
 		self.matrix[self.nextIdx_] = matrix
 	end,
 	--- Add a new graphic to the Report.
