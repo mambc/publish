@@ -94,10 +94,10 @@ Report_ = {
 		self.text[self.nextIdx_] = text
 	end,
 	--- Add a new matrix (table) to the Report.
-	-- @arg matrix is a table that accept text and data to the report.
+	-- @arg matrix accept text and data to the report.
 	-- @usage import("publish")
 	-- local report = Report()
-	-- report:addTable("My table")
+	-- report:addMatrix("My matrix")
 	addMatrix = function(self, matrix)
 		self.matrix[self.nextIdx_] = matrix
 	end,
@@ -134,8 +134,7 @@ Report_ = {
 				matrix = self.matrix[i],
 				mult = self.mult[i],
 				graphic = self.graphic[i],
-				 }
-				)
+				 })
 		end
 
 		return template
