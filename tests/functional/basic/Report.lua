@@ -39,7 +39,6 @@ return {
 		report:addHeading("My Heading")
 		report:addImage(image)
 		report:addText("Some text")
-		report:addMatrix("My table")
 		report:addGraphic("My graphic")
 		report:addMult("My mult text")
 
@@ -155,6 +154,21 @@ return {
 	end,
 	addMatrix = function(unitTest)
 		local report = Report()
+		local TABLE = {
+			title = { "Data of "..cell.name},
+			th = {
+				 "Title Column01",
+				 "Title Column02",
+				 "Title Column03",
+				 "Title Column04",
+			},--end th
+			td = {
+				 {"Label01", "value", "value", "value", },
+				 {"Label02", "value", "value", "value", },
+				 {"Label03", "value", "value", "value", },
+				 {"Label04", "value", "value", "value", },
+				 }
+			}
 
 		unitTest:assertType(report, "Report")
 		unitTest:assertNil(report.title)
@@ -164,7 +178,7 @@ return {
 		unitTest:assertEquals(getn(report.graphic), 0)
 		unitTest:assertEquals(getn(report.mult), 0)
 
-		report:addMatrix("My table")
+		report:addMatrix(TABLE)
 
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
