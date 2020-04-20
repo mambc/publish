@@ -154,7 +154,7 @@ return {
 	addMatrix = function(unitTest)
 		local report = Report()
 		local TABLE = {
-			title = { "Data of "..cell.name},
+			title = { "Data of name"},
 			th = {
 				 "Title Column01",
 				 "Title Column02",
@@ -208,6 +208,7 @@ return {
 	end,
 	addMult = function(unitTest)
 		local report = Report()
+		local mult = "This is the main endogenous variable of the model."
 
 		unitTest:assertType(report, "Report")
 		unitTest:assertNil(report.title)
@@ -217,7 +218,7 @@ return {
 		unitTest:assertEquals(getn(report.graphic), 0)
 		unitTest:assertEquals(getn(report.mult), 0)
 
-		report:addMult("My mult text")
+		report:addMult(mult)
 
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
