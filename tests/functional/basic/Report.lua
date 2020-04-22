@@ -157,7 +157,7 @@ return {
 	end,
 	addGraphic = function(unitTest)
 		local report = Report()
-			local GRAPHIC0 = {
+			local GRAPHIC = {
 				id = 0,
 				title = { "Name of graphic"},
 				th = {
@@ -190,7 +190,7 @@ return {
 		unitTest:assertEquals(getn(report.graphic), 0)
 		unitTest:assertEquals(getn(report.mult), 0)
 
-		report:addGraphic("GRAPHIC0")
+		report:addGraphic("GRAPHIC")
 
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
