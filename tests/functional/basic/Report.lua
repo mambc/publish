@@ -190,7 +190,7 @@ return {
 		unitTest:assertEquals(getn(report.graphic), 0)
 		unitTest:assertEquals(getn(report.mult), 0)
 
-		report:addGraphic("GRAPHIC")
+		report:addGraphic(GRAPHIC)
 
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
