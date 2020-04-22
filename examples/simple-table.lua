@@ -53,21 +53,21 @@ Application{
 
 		   ------ Creat Table -----------
 		   local TABLE = {
-					title = { "Data of "..cell.name},
-					th = {
-						 "Title Column01",
-						 "Title Column02",
-						 "Title Column03",
-						 "Title Column04",
-						 "Title Column05",
-					 }, --end th
-					td = {
-						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
-						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
-						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
-						 {cell.name, cell.name, cell.name, cell.name, cell.name, },
-					 } -- end td
-				  } -- end table
+					title = { "Data of name"},
+			th = {
+				 "Label Column",
+				 "Title Column02",
+				 "Title Column03",
+				 "Title Column04",
+				 "Title Column5",
+			},
+			td = {
+				 {"Label01", "value", "value", "value", "value",},
+				 {"Label02", "value", "value", "value", "value",},
+				 {"Label03", "value", "value", "value", "value",},
+				 {"Label04", "value", "value", "value", "value",},
+				 }
+			}--end TABLE
 
 			mreport:addMatrix(TABLE)
 			------ End Creat Table -----------
