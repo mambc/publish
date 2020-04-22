@@ -119,6 +119,28 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(report.text[1], text)
 	end,
+		addMult = function(unitTest)
+		local report = Report()
+		local mult = "This is the main endogenous variable of the model."
+
+		unitTest:assertType(report, "Report")
+		unitTest:assertNil(report.title)
+		unitTest:assertEquals(getn(report.text), 0)
+		unitTest:assertEquals(getn(report.image), 0)
+		unitTest:assertEquals(getn(report.matrix), 0)
+		unitTest:assertEquals(getn(report.graphic), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
+
+		report:addMult(mult)
+
+		unitTest:assertEquals(getn(report.text), 0)
+		unitTest:assertEquals(getn(report.image), 0)
+		unitTest:assertEquals(getn(report.matrix), 0)
+		unitTest:assertEquals(getn(report.graphic), 0)
+		unitTest:assertEquals(getn(report.mult), 1)
+		unitTest:assertEquals(report.mult[1], mult)
+	end,
+
 	get = function(unitTest)
 		local report = Report()
 
