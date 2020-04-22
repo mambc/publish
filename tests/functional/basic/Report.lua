@@ -29,7 +29,6 @@ return {
 		unitTest:assertNil(report.title)
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
-		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
 		unitTest:assertEquals(getn(report.mult), 0)
 
@@ -46,10 +45,7 @@ return {
 		unitTest:assertEquals(report.heading[1], "My Heading")
 		unitTest:assertEquals(tostring(report.image[2]), image)
 		unitTest:assertEquals(report.text[3], "Some text")
-		unitTest:assertEquals(report.matrix[4], "My table")
-		unitTest:assertEquals(report.graphic[5], "My graphic")
-		unitTest:assertEquals(report.mult[6], "My mult text")
-		unitTest:assertEquals(report.nextIdx_, 7)
+		unitTest:assertEquals(report.nextIdx_, 4)
 
 
 		report.image["fake"] = nil
@@ -109,7 +105,6 @@ return {
 		unitTest:assertEquals(getn(report.text), 0)
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(getn(report.separator), 0)
-		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
 		unitTest:assertEquals(getn(report.mult), 0)
 
@@ -122,7 +117,6 @@ return {
 		report:addText("My text 2")
 		report:addSeparator()
 
-		unitTest:assertEquals(getn(report.matrix), 0)
 		unitTest:assertEquals(getn(report.graphic), 0)
 		unitTest:assertEquals(getn(report.mult), 0)
 		unitTest:assertEquals(getn(report.separator), 2)
@@ -161,7 +155,7 @@ return {
 				 "Title Column03",
 				 "Title Column04",
 				 "Title Column5",
-			},--end th
+			},
 			td = {
 				 {"Label01", "value", "value", "value", "value",},
 				 {"Label02", "value", "value", "value", "value",},
@@ -189,6 +183,9 @@ return {
 	end,
 	addGraphic = function(unitTest)
 		local report = Report()
+				add um local graphic
+
+
 
 		unitTest:assertType(report, "Report")
 		unitTest:assertNil(report.title)
