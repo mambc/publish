@@ -119,6 +119,42 @@ return {
 		unitTest:assertEquals(getn(report.image), 0)
 		unitTest:assertEquals(report.text[1], text)
 	end,
+	addMatrix = function(unitTest)
+		local report = Report()
+		local TABLE = {
+			title = { "Data of name"},
+			th = {
+				 "Label Column",
+				 "Title Column02",
+				 "Title Column03",
+				 "Title Column04",
+				 "Title Column5",
+			},
+			td = {
+				 {"Label01", "value", "value", "value", "value",},
+				 {"Label02", "value", "value", "value", "value",},
+				 {"Label03", "value", "value", "value", "value",},
+				 {"Label04", "value", "value", "value", "value",},
+				 }
+			}
+
+		unitTest:assertType(report, "Report")
+		unitTest:assertNil(report.title)
+		unitTest:assertEquals(getn(report.text), 0)
+		unitTest:assertEquals(getn(report.image), 0)
+		unitTest:assertEquals(getn(report.matrix), 0)
+		unitTest:assertEquals(getn(report.graphic), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
+
+		report:addMatrix(TABLE)
+
+		unitTest:assertEquals(getn(report.text), 0)
+		unitTest:assertEquals(getn(report.image), 0)
+		unitTest:assertEquals(getn(report.matrix), 1)
+		unitTest:assertEquals(getn(report.graphic), 0)
+		unitTest:assertEquals(getn(report.mult), 0)
+		unitTest:assertEquals(report.matrix[1], matrix)
+	end,
 		addMult = function(unitTest)
 		local report = Report()
 		local mult = "This is the main endogenous variable of the model."
