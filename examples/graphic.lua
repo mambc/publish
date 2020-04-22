@@ -30,9 +30,7 @@ local content = {
 		A = "This is application sample that show you a dynamic graphic, click on about the graphic label to turn on and turn off the graphic data",
 	}
 
-
 import("publish")
-
 
 Application{
 	project = filePath("temporal-data.tview", "publish"),
@@ -40,7 +38,6 @@ Application{
 	title	= "Teste de dados Temporais",
 	description = "Small application with some data",
 	output	= "/Applications/MAMP/htdocs/Aplication/Dados_Temporais_09",
-
 
 
 	data = View{
@@ -57,7 +54,6 @@ Application{
 			report:addHeading("First Graphic application")
 			report:addText(content.A)
 			report:addSeparator()
-
 
 			------ Creat Graphic -----------
 			local GRAPHIC01 = {
@@ -78,7 +74,7 @@ Application{
 					}, --end th
 				td = {
 						{
-						"dg dÁrea", -- label graphic
+						"dg dÁrea", -- label of graphic
 						cell.dg_darea06,
 						cell.dg_darea07,
 						cell.dg_darea08,
@@ -92,7 +88,7 @@ Application{
 						},
 
 						{
-						"d Área", -- label graphic
+						"d Área", -- label of graphic
 						cell.d_area02,
 						cell.d_area03,
 						cell.d_area04,
@@ -106,7 +102,7 @@ Application{
 						},
 
 						{
-						"mcwd", -- label graphic
+						"mcwd", -- label of graphic
 						cell.mcwd06,
 						cell.mcwd07,
 						cell.mcwd08,
@@ -121,7 +117,7 @@ Application{
 
 					} -- end td
 				} -- end table
-            report:addGraphic(GRAPHIC01)
+			report:addGraphic(GRAPHIC01)
 
 			return report
 		end
