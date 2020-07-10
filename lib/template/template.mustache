@@ -148,7 +148,7 @@
 			</div>
 		</footer>
 		{{#description}}
-		<div class="modal fade" id="modal-app-description" role="dialog">
+		<div class="modal fade modal-player" id="modal-app-description" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -165,7 +165,7 @@
 		</div>
 		{{/description}}
 		{{#report}}
-		<div class="modal fade" id="modal-report-{{layer}}{{select}}" role="dialog">
+		<div class="modal fade modal-player" id="modal-report-{{layer}}{{select}}" role="dialog">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -294,6 +294,9 @@
 		<!-- script graphic -->
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 		<script type="text/javascript" src="./graphic.js"></script>
+		<!-- script close player -->
+		<script type="text/javascript" src="./player.js"></script>
+
 
 	</body>
 </html>
