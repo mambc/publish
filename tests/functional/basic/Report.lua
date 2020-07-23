@@ -123,7 +123,7 @@ return {
 		local report = Report()
 		local TABLE = {
 			title = { "Data of name"},
-			th = {
+			tl = {
 				 "Label Column",
 				 "Title Column02",
 				 "Title Column03",
@@ -160,7 +160,7 @@ return {
 			local GRAPHIC = {
 				id = 0,
 				title = { "Name of graphic"},
-				th = {
+				tl = {
 						"area01",
 						"area02",
 						"area03",

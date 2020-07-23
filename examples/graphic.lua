@@ -37,7 +37,8 @@ Application{
 	base = "roadmap",
 	title	= "Teste de dados Temporais",
 	description = "Small application with some data",
-	output	= "/Applications/MAMP/htdocs/Aplication/Dados_Temporais_09",
+	output	= "graphicWebMap",
+
 
 
 	data = View{
@@ -59,8 +60,7 @@ Application{
 			local GRAPHIC01 = {
 				id = 0, -- madatory start at zero
 				title = { "Data of 01 "},
-				th = {
-						"", --madatory null
+				tl = {
 						"area01",
 						"area02",
 						"area03",
@@ -72,7 +72,7 @@ Application{
 						"area09",
 						"area10",
 					}, --end th
-				td = {
+				values = {
 						{
 						"dg dÁrea", -- label of graphic
 						cell.dg_darea06,

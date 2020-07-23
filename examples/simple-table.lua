@@ -34,6 +34,7 @@ Application{
 	description = "Small application with some data related to Brazil.",
 	template = {navbar = "darkblue", title = "white"},
 	clean = false,
+	output	= "simple-tableWebMap",
 
 	biomes = View{
 		select = "name",
@@ -48,25 +49,22 @@ Application{
 		}
 
 
-		   mreport:addImage(filePath("biomes/"..cell.name..".jpg", "publish"))
-		   mreport:addText("For more information, please visit "..link(cell.link, "here")..".")
-
 		   ------ Creat Table -----------
 		   local TABLE = {
 					title = { "Data of name"},
-			th = {
-				 "Label Column",
-				 "Title Column02",
-				 "Title Column03",
-				 "Title Column04",
-				 "Title Column5",
-			},
-			td = {
-				 {"Label01", "value", "value", "value", "value",},
-				 {"Label02", "value", "value", "value", "value",},
-				 {"Label03", "value", "value", "value", "value",},
-				 {"Label04", "value", "value", "value", "value",},
-				 }
+					tl = {
+						"Label Column",
+						"Title Column02",
+						"Title Column03",
+						"Title Column04",
+						"Title Column5",
+						},
+					values = {
+						{"Label01", "value", "value", "value", "value",},
+						{"Label02", "value", "value", "value", "value",},
+						{"Label03", "value", "value", "value", "value",},
+						{"Label04", "value", "value", "value", "value",},
+					}
 			}--end TABLE
 
 			mreport:addMatrix(TABLE)
