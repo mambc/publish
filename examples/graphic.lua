@@ -40,7 +40,6 @@ Application{
 	output	= "graphicWebMap",
 
 
-
 	data = View{
 		color = "RdYlGn",
 		select  = "id_1",
@@ -59,8 +58,8 @@ Application{
 			------ Creat Graphic -----------
 			local GRAPHIC01 = {
 				id = 0, -- madatory start at zero
-				title = { "Data of 01 "},
-				tl = {
+				title = {"Data of "..cell.id_1},
+				columns = {
 						"area01",
 						"area02",
 						"area03",
@@ -71,7 +70,7 @@ Application{
 						"area08",
 						"area09",
 						"area10",
-					}, --end th
+					}, --end columns
 				values = {
 						{
 						"dg dÁrea", -- label of graphic
@@ -115,7 +114,7 @@ Application{
 						cell.mcwd15,
 						},
 
-					} -- end td
+					} -- end values
 				} -- end table
 			report:addGraphic(GRAPHIC01)
 
