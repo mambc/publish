@@ -58,7 +58,7 @@ Application{
 			------ Creat Graphic -----------
 			local GRAPHIC01 = {
 				id = 0, -- madatory start at zero
-				title = {"Data of "..cell.id_1},
+				title = "Data of "..cell.id_1,
 				columns = {
 						"area01",
 						"area02",

@@ -82,7 +82,7 @@ function generateChart() {
         title: {
           fontSize: 13,
           display: !0,
-          text: "Chart: " + e.Title[0].innerText,
+          text: "" + e.Title[0].innerText,
           position: "top"
         }
       }

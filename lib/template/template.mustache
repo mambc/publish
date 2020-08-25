@@ -42,7 +42,6 @@
 										<option value="{{view}}">{{scenario}}</option>
 										{{/scenarios}}
 									</select>
-
 									<p class="custom-font-body" id="scenario-description"></p>
 									<button id="more-scenario-description" type="button" class="btn btn-default custom-font-more" style="display:none;">
 										More
@@ -185,13 +184,13 @@
 						<!-- Function addGraphic -->
 							<table class="{{class}} table table-hover {{select}}-{{id}} hidden" id="data">
 								<tr>
-									{{#title}}<th colspan="100%" class="text-center">{{.}}</th>{{/title}}
+									{{#title}}<th colspan="100%" class="text-center">{{title}}</th>{{/title}}
 								</tr>
 								<tr>
 									<th></th>
-									{{#tl}}
+									{{#columns}}
 										<th>{{#.}}{{.}}{{/.}}</th>
-									{{/tl}}
+									{{/columns}}
 								</tr>
 									{{#values}}
 										<tr>
@@ -210,12 +209,12 @@
 						<div>
 							<table class="{{class}} table table-hover table-responsive" id="data">
 								<tr>
-									{{#title}}<th colspan="100%" class="text-center">{{.}}</th>{{/title}}
+									{{#title}}<th colspan="100%" class="text-center">{{title}}</th>{{/title}}
 								</tr>
 								<tr>
-									{{#tl}}
+									{{#columns}}
 										<th>{{#.}}{{.}}{{/.}}</th>
-									{{/tl}}
+									{{/columns}}
 								</tr>
 									{{#values}}
 										<tr>
@@ -291,12 +290,9 @@
 		{{#wms}}<script type="text/javascript" src="./geoambientev2.min.js"></script>{{/wms}}
 		<script type="text/javascript" src="./{{config}}"></script>
 		<script type="text/javascript" src="./publish.min.js"></script>
-		<!-- script graphic -->
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 		<script type="text/javascript" src="./graphic.js"></script>
-		<!-- script close player -->
 		<script type="text/javascript" src="./player.js"></script>
-
 
 	</body>
 </html>

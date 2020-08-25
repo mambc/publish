@@ -53,7 +53,7 @@ Application{
 
 			------ Creat Table -----------
 			local Table = {
-				title = {"Data of "..cell.id_1},
+				title = "Table of "..cell.id_1,
 				columns = {
 						"area01",
 						"area02",
