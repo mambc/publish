@@ -123,7 +123,7 @@ return {
 		local report = Report()
 		local TABLE = {
 			title = { "Data of name"},
-			th = {
+			columns = {
 				 "Label Column",
 				 "Title Column02",
 				 "Title Column03",
@@ -131,10 +131,10 @@ return {
 				 "Title Column5",
 			},
 			values = {
-				 {"Label01", "value", "value", "value", "value",},
-				 {"Label02", "value", "value", "value", "value",},
-				 {"Label03", "value", "value", "value", "value",},
-				 {"Label04", "value", "value", "value", "value",},
+				 {math.random(), math.random(), math.random(),},
+				 {math.random(), math.random(), math.random(),},
+				 {math.random(), math.random(), math.random(),},
+				 {math.random(), math.random(), math.random(),},
 				 }
 			}
 
@@ -160,7 +160,7 @@ return {
 			local GRAPHIC = {
 				id = 0,
 				title = { "Name of graphic"},
-				th = {
+				columns = {
 						"area01",
 						"area02",
 						"area03",

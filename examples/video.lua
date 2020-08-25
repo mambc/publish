@@ -30,9 +30,11 @@ Application{
 	project = filePath("brazil.tview", "publish"),
 	title = "Brazil Application",
 	description = "Small application with a video player",
+	output	= "videoWebMap",
+
+
 	biomes = View{
 		select = "name",
---		color = "Set2", -- instead of using value/color
 		value = {"Caatinga", "Cerrado", "Amazonia", "Pampa", "Mata Atlantica", "Pantanal"},
 		color = {"brown", "purple", "green", "yellow", "blue", "orange"},
 		description = "Brazilian Biomes, from IBGE.",
