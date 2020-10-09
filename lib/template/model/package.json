@@ -14,7 +14,7 @@
   "author": "Heitor Carneiro",
   "license": "ISC",
   "devDependencies": {
-    "eslint": "4.12.0",
+    "eslint": "4.18.2",
     "eslint-plugin-import": "2.8.0",
     "gulp": "3.9.1",
     "gulp-clean-css": "2.0.13",
